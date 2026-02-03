@@ -1,0 +1,993 @@
+
+
+\chapter{实数的构造}
+
+严格的实数理论是在 19 世纪的后半叶 才 由 Cantor 和 Dedekind等数学家完整地建立起来的. 这一章我们介绍Cantor的实数构造理论.
+
+\section{实数的定义}
+
+Cantor是以有理数系为基础用引进有理数Cauchy序列等价类的方法来定义实数的. 关于有理数集 $\mathbf{Q}$ ,我们已经在 第 1 章 $§2$ 例 9 中严格定义它了,并在同一节的习题 9 中详细列出了它的基本性质, 因此现在我们可以来介绍Cantor实 数构造理论了
+
+\section*{1. 有理数 Cauchy 序列}
+
+定义 从 $\mathrm{N}$ 到 $\mathrm{Q}$ 的任一映射 $r : \mathrm{N} \rightarrow  \mathrm{Q}$ 称为一个有理数序列, 简记为 $\left\langle  {r}_{n}\right\rangle$ . ${r}_{n}\left( {n \in  \mathbf{N}}\right)$ 称为此序列的第 $n$ 项或通项.
+
+例1 以下列各项:
+
+1) ${r}_{n} = \frac{1}{{10}^{n}}\left( {n \in  \mathbf{N}}\right)$ ;
+
+2) ${r}_{n} = 1 + \frac{1}{1!} + \frac{1}{2!} + \cdots  + \frac{1}{n!}\left( {n \in  \mathbf{N}}\right)$ ;
+
+3) ${r}_{n} = 1 + \frac{1}{2} + \frac{1}{3} + \cdots  + \frac{1}{n}\left( {n \in  \mathbf{N}}\right)$
+
+为通项的序列都是有理数序列.
+
+定义 我们称有理数序列 $\left\langle  {r}_{n}\right\rangle$ 是 Cauchy 序列,如果它具有下述性质:
+
+$\left( {\forall 0 < \varepsilon  \in  \mathbf{Q}}\right) \left( {\exists N \in  \mathbf{N}}\right) \left( {\forall n,m \in  \mathbf{N},n,m \geq  N}\right)$
+$$\Rightarrow  \left| {{r}_{n} - {r}_{m}}\right|  < \varepsilon \text{ . }$$
+(*)
+
+显然性质 (*) 也可以表示成下述等价的形式:
+\begin{align*}
+	&\left( {\forall 0 < \varepsilon  \in  \mathbf{Q}}\right) \left( {\exists N \subset  \mathbf{N}}\right) \left( {\forall n,k \in  \mathbf{N},n \geq  N}\right)\\
+	&\Rightarrow  \left| {{r}_{n + k} - {r}_{n}}\right|  < \varepsilon \text{ . }
+\end{align*}
+
+例 2 证明有理数序列 $\left\langle  \frac{1}{{10}^{n}}\right\rangle$ 是 Cauchy 序列.
+
+事实上, $\forall n,m \in  \mathbf{N}$ 且 $m \geq  n$ ,有
+$$\left| {\frac{1}{{10}^{n}} - \frac{1}{{10}^{m}}}\right|  = \frac{1}{{10}^{n}}\left| {1 - \frac{1}{{10}^{m - n}}}\right|  \leq  \frac{1}{{10}^{n}} < \frac{1}{n}.$$
+
+$\forall 0 < \varepsilon  = \frac{q}{p} \in  \mathbf{Q}$ ,由 $\frac{1}{n} < \frac{q}{p}$ 知,取 $N = p$ ,则
+$$\forall n,m \in  \mathbf{N},n,m \geq  N \Rightarrow  \left| {\frac{1}{{10}^{n}} - \frac{1}{{10}^{m}}}\right|  < \frac{1}{n} < \frac{q}{p}.$$
+
+因此 $\left\langle  \frac{1}{{10}^{n}}\right\rangle$ 是有理数Cauchy序列.
+
+例 3 证明有理数序列 $\left\langle  {1 + \frac{1}{1!} + \frac{1}{2!} + \cdots  + \frac{1}{n!}}\right\rangle$ 是 Cauchy 序列.
+
+事实上,若令 ${r}_{n} = 1 + \frac{1}{1!} + \frac{1}{2!} + \cdots  + \frac{1}{n!}$ ,则 $\forall n,k \in  \mathbf{N}$ 有
+\begin{align*}
+	&0 < {r}_{n + k} - {r}_{n} = \frac{1}{\left( {n + 1}\right) !} + \frac{1}{\left( {n + 2}\right) !} + \cdots  + \frac{1}{\left( {n + k}\right) !}\\
+	&< \frac{1}{\left( {n + 1}\right) !} + \frac{1}{\left( {n + 1}\right) !\left( {n + 1}\right) } + \cdots\\
+	&+ \frac{1}{\left( {n + 1}\right) !{\left( n + 1\right) }^{k - 1}}\\
+	&< \frac{1}{\left( {n + 1}\right) !}\left( {1 + \frac{1}{n + 1} + \cdots  + \frac{1}{{\left( n + 1\right) }^{k - 1}}}\right)\\
+	&< \frac{1}{\left( {n + 1}\right) !} \cdot  \frac{1}{1 - \frac{1}{n + 1}}\\
+	&= \frac{1}{n \cdot  n!} \leq   - \frac{1}{n}.
+\end{align*}
+
+$\forall 0 < \bar{\varepsilon } = \frac{q}{p} \in  \mathbf{Q}$ ,由 $\frac{1}{n} < \frac{q}{p}$ 知,若取 $N = p$ ,则
+$$\forall n,k \in  \mathbf{N},n \geq  N \Rightarrow  \left| {{r}_{n + k} - {r}_{n}}\right|  < \frac{1}{n} < \frac{q}{p}.$$
+
+因此 $\left\langle  {1 + \frac{1}{1!} + \frac{1}{2!} + \cdots  + \frac{1}{n!}}\right\rangle$ 是有理数Cauchy序列.
+
+例4 证明由下述递推公式
+$${r}_{0} = 1,{r}_{n} = \frac{1}{1 + {r}_{n - 1}}\left( {n \in  \mathbf{N}}\right)$$
+
+所定义的有理数序列是Cauchy序列.
+
+首先容易证明 $\frac{1}{2} \leq  {r}_{n} \leq  1\left( {\forall n \in  \mathbf{N}}\right)$ .
+
+其次由
+\begin{align*}
+	&\left| {{r}_{n + 1} - {r}_{n}}\right|  = \left| {\frac{1}{1 + {r}_{n}} - \frac{1}{1 + {r}_{n - 1}}}\right|  = \frac{\left| {r}_{n - 1} - {r}_{n}\right| }{\left( {1 + {r}_{n}}\right) \left( {1 + {r}_{n - 1}}\right) }\\
+	&\leq  \frac{4}{9}\left| {{r}_{n} - {r}_{n - 1}}\right|  \leq  \cdots\\
+	&\leq  {\left( \frac{4}{9}\right) }^{n}\left| {{r}_{1} - {r}_{0}}\right|  < {\left( \frac{4}{9}\right) }^{n}
+\end{align*}
+
+得到: $\forall n,k \in  \mathbf{N}$ 且 $n \geq  2$
+\begin{align*}
+	&\left| {{r}_{n + k} - {r}_{n}}\right|  \leq  \left| {{r}_{n + k} - {r}_{n + k - 1}}\right|  + \left| {{r}_{n + k - 1} - {r}_{n + k - 2}}\right|  + \cdots  +\\
+	&+ \left| {{r}_{n + 1} - {r}_{n}}\right|  < {\left( \frac{4}{9}\right) }^{n + k - 1} + {\left( \frac{4}{9}\right) }^{n + k - 2} + \cdots  + {\left( \frac{4}{9}\right) }^{n}\\
+	&< {\left( \frac{4}{9}\right) }^{n} \cdot  2 \cdot  {\left( \frac{1}{2}\right) }^{n} \cdot  2 = \frac{1}{{2}^{n - 1}} < \frac{1}{n - 1}.
+\end{align*}
+
+$\forall 0 < \bar{\varepsilon } = \frac{q}{p} \in  \mathbf{Q}$ ,由 $\frac{1}{n - 1} < \frac{q}{p}$ 知若取 $N = p + 1$ ,则
+$$\forall n,k \in  \mathbf{N},n \geq  N \Rightarrow  \left| {{r}_{n + k} - {r}_{n}}\right|  < \frac{1}{n - 1} < \frac{q}{p}.$$
+
+因此序列 $\left\langle  {r}_{n}\right\rangle$ 是有理数 Cauchy 序列.
+
+现在设 $\left\langle  {r}_{n}\right\rangle$ 是任一有理数序列,由 Cauchy 序列的定义可知, $\left\langle  {r}_{n}\right\rangle$ 不是Cauchy序列当且仅当:
+\begin{align*}
+	&\left( {\exists 0 < {\varepsilon }_{0} \in  \mathbf{Q}}\right) \left( {\forall n \in  \mathbf{N}}\right) \left( {\exists {k}_{n},{m}_{n} \in  \mathbf{N},{k}_{n},{m}_{n} \geq  n}\right)\\
+	&\Rightarrow  \left| {{r}_{{k}_{n}} - {r}_{{m}_{n}}}\right|  \geq  {\bar{\varepsilon }}_{0}.
+\end{align*}
+
+例 5 证明有理数序列 $\left\langle  {1 + \frac{1}{2} + \frac{1}{3} + \cdots  + \frac{1}{n}}\right\rangle$ 不是 Cauchy 序列.
+
+事实上, $\forall n \in  \mathbf{N}$ ,
+$$\left| {{r}_{2n} - {r}_{n}}\right|  = \frac{1}{n + 1} + \frac{1}{n + 2} + \cdots  + \frac{1}{2n} > \frac{{2n} - n}{2n} = \frac{1}{2}.$$
+
+因此 $\left\langle  {1 + \frac{1}{2} + \frac{1}{3} + \cdots  + \frac{1}{n}}\right\rangle$ 不是 Cauchy 序列.
+
+我们用 $E$ 表示由所有的有理数 Cauchy 序列组成的 集合. $E$  $\neq  \varnothing$ ,因为 $\forall a \in  \mathbf{Q}$ ,常值有理数序列 $\langle a\rangle  \in  E$ .
+
+在 $E$ 上我们定义加法 “+” 、乘法 “ $\cdot$ ” 及数乘运算如下:
+
+$\forall \left\langle  {r}_{n}\right\rangle  ,\left\langle  {s}_{n}\right\rangle   \in  E,\forall \lambda  \in  \mathbf{Q}$ ,我们规定:
+$$\left\langle  {r}_{n}\right\rangle   + \left\langle  {s}_{n}\right\rangle   = \Delta \left\langle  {{r}_{n} + {s}_{n}}\right\rangle  ;\left\langle  {r}_{n}\right\rangle   \cdot  \left\langle  {s}_{n}\right\rangle   = \Delta \left\langle  {{r}_{n}{s}_{n}}\right\rangle$$
+
+$\lambda \left\langle  {r}_{n}\right\rangle  \overset{\bigtriangleup }{ = }\left\langle  {\lambda {r}_{n}}\right\rangle  .$
+
+我们有下述定理:
+
+定理 $2 \cdot  1 \cdot  1$ 集合 $E$ 具有下述性质:
+
+1) $\forall \left\langle  {r}_{n}\right\rangle   \in  E,\left\langle  {r}_{n}\right\rangle$ 是有界的,即
+$$\exists 0 < M \in  \mathbf{Q},\;\forall n \in  \mathbf{N},\left| {r}_{n}\right|  \leq  M;$$
+
+2) $\forall \left\langle  {r}_{n}\right\rangle  ,\left\langle  {s}_{n}\right\rangle   \in  E,\forall \lambda  \in  \mathbf{Q},\left\langle  {r}_{n}\right\rangle   + \left\langle  {s}_{n}\right\rangle  ,\left\langle  {r}_{n}\right\rangle   \cdot  \left\langle  {s}_{n}\right\rangle$ ,
+$$\lambda \left\langle  {r}_{n}\right\rangle   \in  E.$$
+
+证明 1) 设 $\left\langle  {r}_{n}\right\rangle   \in  E$ . 由定义,对 $\bar{\varepsilon } = 1$ ,
+
+$\exists N \in  \mathbf{N},\;\forall n \geq  N \Rightarrow  \left| {{r}_{n} - {r}_{N}}\right|  < 1$
+$$\Rightarrow  \left| {r}_{n}\right|  \leq  \left| {{r}_{n} - {r}_{N}}\right|  + \left| {r}_{N}\right|  < 1 + \left| {r}_{N}\right| .$$
+
+令 $M = \max \left( {\left| {r}_{1}\right| ,\left| {r}_{2}\right| ,\cdots ,\left| {r}_{N - 1}\right| ,1 + \left| {r}_{N}\right| }\right)$ ① 则
+
+$0 < M \in  \mathbf{Q},\;\forall n \in  \mathbf{N},\left| {r}_{n}\right|  \leq  M.$
+
+2) 设 $\lambda  \in  Q,\left\langle  {r}_{n}\right\rangle  ,\left\langle  {s}_{n}\right\rangle   \in  E$ . 于是由定义有
+$$\left( {\forall 0 < \varepsilon  \in  \mathbf{Q}}\right) \left\{  \begin{array}{l} \left( {\exists {N}_{1} \in  \mathbf{N}}\right) \left( {\forall n,m \in  \mathbf{N},n,m \geq  {N}_{1}}\right) \\   \Rightarrow  \left| {{r}_{n} - {r}_{m}}\right|  < \varepsilon , \\  \left( {\exists {N}_{2} \in  \mathbf{N}}\right) \left( {\forall n,m \in  \mathbf{N},n,m \geq  {N}_{2}}\right) \\   \Rightarrow  \left| {{s}_{n} - {s}_{m}}\right|  < \varepsilon . \end{array}\right.$$
+
+令 $N = \max \left( {{N}_{1},{N}_{2}}\right)$ ,则
+\begin{align*}
+	&\forall n,m \in  \mathbf{N},n,m \geq  N \Rightarrow  \left| {{r}_{n} - {r}_{m}}\right|  < \varepsilon \text{ 且 }\left| {{s}_{n} - {s}_{m}}\right|  < \varepsilon\\
+	&\Rightarrow  \left| {\left( {{r}_{n} + {s}_{n}}\right)  - \left( {{r}_{m} + {s}_{m}}\right) }\right|\\
+	&< \left| {{r}_{n} - {r}_{m}}\right|  + \left| {{s}_{n} - {s}_{m}}\right|  < \varepsilon  + \varepsilon\\
+	&= {2\varepsilon }\text{ . }
+\end{align*}
+
+因此 $\left\langle  {r}_{n}\right\rangle   + \left\langle  {s}_{n}\right\rangle   \in  E$ .
+
+为了证明 $\left\langle  {r}_{n}\right\rangle   \cdot  \left\langle  {s}_{n}\right\rangle   \in  E$ ,由 1 )所证知
+$$\exists 0 < A,B \in  \mathrm{Q},\forall n \in  \mathrm{N},\left| {r}_{n}\right|  \leq  A,\left| {s}_{n}\right|  \leq  B.$$
+
+于是
+\begin{align*}
+	&\forall n,m \in  \mathbf{N},n,m \geq  N \Rightarrow  \left| {{r}_{n}{s}_{n} - {r}_{m}{s}_{m}}\right|\\
+	&\leq  \left| {r}_{n}\right| \left| {{s}_{n} - {s}_{m}}\right|  + \left| {s}_{m}\right| \left| {{r}_{n} - {r}_{m}}\right|\\
+	&< {A\varepsilon } + {B\varepsilon } = \left( {A + B}\right) {\varepsilon }_{ * }
+\end{align*}
+
+因此 $\left\langle  {r}_{n}\right\rangle   \cdot  \left\langle  {s}_{n}\right\rangle   \in  E$ .
+
+最后证明 $\lambda \left\langle  {r}_{n}\right\rangle   \in  E$ .
+
+若 $\lambda  = 0$ ,则 $\lambda \left\langle  {r}_{n}\right\rangle   = \langle 0\rangle  \in  E$ .
+
+\footnote{
+	
+	① max, min分别表示英文单词maximun、minimun(最大数、最小数)的 头三. 个字母.
+	
+}
+
+若 $\lambda  \neq  0$ ,则
+\begin{align*}
+	&\forall n,m \in  \mathbf{N},n,m \geq  N \Rightarrow  \left| {\lambda {r}_{n} - \lambda {r}_{m}}\right|  = \left| \lambda \right| \left| {{r}_{n} - {r}_{m}}\right|\\
+	&< \left| \lambda \right| \varepsilon \text{ . }
+\end{align*}
+
+因此 $\lambda \left\langle  {r}_{n}\right\rangle   \in  E$ .
+
+现在我们介绍实数集的构造.
+
+\section*{2. 实数集的构造}
+
+在 $E$ 上定义关系 $\mathcal{R}$ 如下:
+$$\forall \left\langle  {r}_{n}\right\rangle  ,\left\langle  {s}_{n}\right\rangle   \in  E,\left\langle  {r}_{n}\right\rangle  \mathcal{R}\left\langle  {s}_{n}\right\rangle   \Leftrightarrow$$
+
+$\left( {\forall 0 < \varepsilon  \in  \mathbf{Q}}\right) \left( {\exists N \in  \mathbf{N}}\right) \left( {\forall n \in  \mathbf{N},n \geq  N}\right)  \Rightarrow  \left| {{r}_{n} - {s}_{n}}\right|$
+$$< \varepsilon \text{ . }$$
+
+容易验证 $\mathcal{B}$ 是 $E$ 上的一个等价关系.
+
+定义 $E$ 关于 $\mathcal{R}$ 的商集 $E/\mathcal{R}$ 称为实数集,记为 $\mathrm{R}$ . $\mathrm{R}$ 中的每一个元素 $x$ 称为实数.
+
+现在设 $x \in  \mathbf{R}$ 是任一实数. 由于 $x$ 是一个 $\mathcal{B}$ 等价类,所以 我们有:
+$$\forall \left\langle  {r}_{n}\right\rangle  ,\left\langle  {s}_{n}\right\rangle   \in  x,x = \overset{⏜}{\left\langle  {r}_{n}\right\rangle  } = \overset{⏜}{\left\langle  {s}_{n}\right\rangle  }.$$
+
+下面我们将要在 $\mathbf{R}$ 上定义加法与乘法运算,为此先证明下述命题.
+
+命题 设 $\left\langle  {r}_{n}\right\rangle  ,\left\langle  {r}_{n}^{\prime }\right\rangle  ,\left\langle  {s}_{n}\right\rangle  ,\left\langle  {s}_{n}^{\prime }\right\rangle  , \in  E$ ,如果 $\left\langle  {r}_{n}\right\rangle  \mathcal{R}\left\langle  {r}_{n}^{\prime }\right\rangle$ , $\left\langle  {s}_{n}\right\rangle  \mathcal{R}\left\langle  {s}_{n}^{\prime }\right\rangle$ ,那末
+$$\left( {\left\langle  {r}_{n}\right\rangle   + \left\langle  {s}_{n}\right\rangle  }\right) \mathcal{R}\left( {\left\langle  {r}_{n}^{\prime }\right\rangle   + \left\langle  {s}_{n}^{\prime }\right\rangle  }\right) ,\left( {\left\langle  {r}_{n}\right\rangle   \cdot  \left\langle  {s}_{n}\right\rangle  }\right) \mathcal{R}\left( {\left\langle  {r}_{n}^{\prime }\right\rangle   \cdot  \left\langle  {s}_{n}^{\prime }\right\rangle  }\right) .$$
+
+证明 首先由 $\left\langle  {r}_{n}^{\prime }\right\rangle  ,\left\langle  {s}_{n}\right\rangle   \in  E$ 及定理 $2 \cdot  1 \cdot  1$ 知
+$$\exists 0 < A,B \in  \mathbf{Q},\forall n \in  \mathbf{N},\left| {r}_{n}^{\prime }\right|  \leq  A,\left| {s}_{n}\right|  \leq  B.$$
+
+另一方面,由于 $\left\langle  {r}_{n}\right\rangle  \mathcal{R}\left\langle  {r}_{n}^{\prime }\right\rangle  ,\left\langle  {s}_{n}\right\rangle  \mathcal{R}\left\langle  {s}_{n}^{\prime }\right\rangle$ ,故有
+$$\left( {\forall 0 < \varepsilon  \in  \mathbf{Q}}\right) \left\{  \begin{array}{l} \left( {\exists {N}_{1} \in  \mathbf{N}}\right) \left( {\forall n \in  \mathbf{N},n \geq  {N}_{1}}\right)  \Rightarrow  \left| {{r}_{n} - {r}_{n}^{\prime }}\right|  < \bar{\varepsilon }, \\  \left( {\exists {N}_{2} \in  \mathbf{N}}\right) \left( {\forall n \in  \mathbf{N},n \geq  {N}_{2}}\right)  \Rightarrow  \left| {{s}_{n} - {s}_{n}^{\prime }}\right|  < \bar{\varepsilon }. \end{array}\right.$$
+
+令 $N = \max \left( {{N}_{1},{N}_{2}}\right)$ ,则我们有
+\begin{align*}
+	&\forall n \in  \mathbf{N},n \geq  N \Rightarrow  \left| {\left( {{r}_{n} + {s}_{n}}\right)  - \left( {{r}_{n}^{\prime } + {s}_{n}^{\prime }}\right) }\right|\\
+	&\leq  \left| {{r}_{n} - {r}_{n}^{\prime }}\right|  + \left| {{s}_{n} - {s}_{n}^{\prime }}\right|  < {2\varepsilon },\\
+	&\forall n \in  \mathbf{N},n \geq  N \Rightarrow  \left| {{r}_{n}{s}_{n} - {r}_{n}^{\prime }{s}_{n}^{\prime }}\right|\\
+	&\leq  \left| {s}_{n}\right| \left| {{r}_{n} - {r}_{n}^{\prime }}\right|  + \left| {r}_{n}^{\prime }\right| \left| {{s}_{n} - {s}_{n}^{\prime }}\right|\\
+	&< {B\varepsilon } + {A\varepsilon } = \left( {A + B}\right) \varepsilon .
+\end{align*}
+
+因此
+\begin{align*}
+	&\left( {\left\langle  {r}_{n}\right\rangle   + \left\langle  {s}_{n}\right\rangle  }\right) \mathcal{B}\left( {\left\langle  {r}_{n}^{\prime }\right\rangle   + \left\langle  {s}_{n}^{\prime }\right\rangle  }\right) ,\\
+	&\left( {\left\langle  {r}_{n}\right\rangle   \cdot  \left\langle  {s}_{n}\right\rangle  }\right) \mathcal{R}\left( {\left\langle  {r}_{n}^{\prime }\right\rangle   \cdot  \left\langle  {s}_{n}^{\prime }\right\rangle  }\right) .
+\end{align*}
+
+这个命题说明, $\forall x,y \in  \mathbf{R}$ ,若 $\left\langle  {r}_{n}\right\rangle  ,\left\langle  {r}_{n}^{\prime }\right\rangle   \in  x,\left\langle  {s}_{n}\right\rangle$ , $\left\langle  {s}_{n}^{\prime }\right\rangle   \in  y$ ,则
+$$\overset{⏜}{\left\langle  {r}_{n}\right\rangle   + \left\langle  {s}_{n}\right\rangle  } = \overset{⏜}{\left\langle  {r}_{n}^{\prime }\right\rangle   + \left\langle  {s}_{n}^{\prime }\right\rangle  },\overline{\left\langle  {r}_{n}\right\rangle   \cdot  \left\langle  {s}_{n}\right\rangle  } = \overline{\left\langle  {r}_{n}^{\prime }\right\rangle   \cdot  \left\langle  {s}_{n}^{\prime }\right\rangle  }.$$
+
+也就是说 $\left\langle  {r}_{n}\right\rangle   + \left\langle  {s}_{n}\right\rangle$ 与 $\left\langle  {r}_{n}\right\rangle   \cdot  \left\langle  {s}_{n}\right\rangle$ 是两个只与 $x,y$ 有关而与 $x$ , ${}^{y}$ 的代表元的选择无关的实数. 因此在 $\mathbf{R}$ 上按下面定义中的 方 式定义实数的加法与乘法就是合理的.
+
+定义 $\forall x,y \in  \mathbf{R}$ ,令 $x = \left\langle  {x}_{n}\right\rangle  ,y = \left\langle  {y}_{n}\right\rangle  .x$ 与 $y$ 的和 $x + y$ 及积 $x \cdot  y$ 分别定义为:
+$$x + y = \overline{\left\langle  {x}_{n}\right\rangle   + \left\langle  {y}_{n}\right\rangle  },x \cdot  y = \overline{\left\langle  {x}_{n}\right\rangle   \cdot  \left\langle  {y}_{n}\right\rangle  }.$$
+
+关于实数的加法与乘法的运算性质, 我们在下一节中讨论.
+
+\section*{习 题}
+
+1. 证明以下列各 ${r}_{n}$ 为通项的有理数序列是 Cauchy 序列:
+
+1) ${r}_{n} = \frac{1}{{n}^{2}}$ ; 2) ${r}_{n} = \frac{n}{{n}^{3} + 1}$ ; 3) ${r}_{n} = \frac{{a}^{n}}{n!}\left( {a \in  Q}\right)$ ;
+
+4) ${r}_{n} = \mathop{\sum }\limits_{{k = 1}}^{n}\frac{1}{{k}^{2}}$ 5) ${r}_{n} = \mathop{\sum }\limits_{{k = 1}}^{n}\frac{{\left( -1\right) }^{k}}{k}$ , 6) ${r}_{n} = \mathop{\sum }\limits_{{k = 1}}^{n}\frac{1}{{k}^{k}}$ .
+
+2. 设 $\left\langle  {r}_{n}\right\rangle$ 是如下定义的有理数序列:
+\begin{align*}
+	&{r}_{1} = {0.1},\\
+	&{r}_{2} = {0.101},\\
+	&{r}_{3} = {0.101001}\text{ , }
+\end{align*}
+
+\_\_\_\_\_
+$${r}_{n} = {0.1010010}\cdots {010}\cdots {01}\text{ , }$$
+
+................................
+
+证明 $\left\langle  {r}_{n}\right\rangle$ 是 Cauchy 序列.
+
+3. 证明: $\forall {r}_{0},{r}_{1} \in  Q$ ,由下述递推公式
+$${r}_{n + 1} = \frac{1}{2}\left( {{r}_{n} + {r}_{n - 1}}\right) ,n \in  \mathrm{N}$$
+
+所定义的 $\left\langle  {r}_{n}\right\rangle$ 是有理数 Cauchy 序列.
+
+4. 设 $\left\langle  {r}_{n}\right\rangle$ 是任一有理数序列. 如果存在一个有理数 $l$ . 它具有下述性质:
+$$\left( {\forall 0 < z \in  \mathbf{Q}}\right) \left( {\exists N \in  \mathbf{N}}\right) \left( {\forall n \in  \mathbf{N},n \geq  \mathbf{N}}\right)  \Rightarrow  \left| {{r}_{n} - l}\right|  < \varepsilon ,$$
+
+则称 $\left\langle  {r}_{n}\right\rangle$ 收敛于 $l$ ,并记为 $\mathop{\lim }\limits_{{n \rightarrow   + \infty }}{r}_{n} = l$ .
+
+1) 证明: 任何一个收敛的有理数序列 $\left\langle  {r}_{n}\right\rangle$ 是 Cauchy 序列.
+
+2) 设 $\left\langle  {r}_{n}\right\rangle$ 与 $\left\langle  {s}_{n}\right\rangle$ 是两个有理数序列,并且 $\mathop{\lim }\limits_{{n \rightarrow   + \infty }}{r}_{n} = \mathop{\lim }\limits_{{n \rightarrow   + \infty }}{s}_{n} = l$ ,证明序列 $\left\langle  {r}_{n}\right\rangle$ 与 $\left\langle  {s}_{n}\right\rangle$ 互等价.
+
+3) 证明: 任何一个收敛的有理数序列 $\left\langle  {r}_{n}\right\rangle$ 是有界的.
+
+5. 设 $\left\langle  {r}_{n}\right\rangle$ 是任一有理数 Cauchy 序列. 证明下述三个结论中有一个并且只有一个成立:
+
+1) $\mathop{\lim }\limits_{{n \rightarrow   + \infty }}{r}_{n} = 0$ ,
+
+2) $\left( {\exists 0 < M \in  \mathbf{Q}}\right) \left( {\exists N \in  \mathbf{N}}\right) \left( {\forall n \in  \mathbf{N},n \geq  N}\right)  \Rightarrow  {r}_{n} > M$ ,
+
+3) $\left( {\exists 0 < M \in  \mathbf{Q}}\right) \left( {\exists N \in  \mathbf{N}}\right) \left( {\forall n \in  \mathbf{N},n \geq  N}\right)  \Rightarrow  {r}_{n} <  - M$ .
+
+6. 设 $\mathcal{X}$ 是有理数 Cauchy 序列集合 $E$ 的一个非空子集合. 我们称 $\mathcal{X}$ 是 $E$ 的一个理想,如果 $\mathcal{X}$ 具有下述性质:
+
+1) $\forall \left\langle  {r}_{n}\right\rangle  ,\left\langle  {s}_{n}\right\rangle   \in  \mathcal{X},\left\langle  {-{r}_{n}}\right\rangle  ,\left\langle  {r}_{n}\right\rangle   + \left\langle  {s}_{n}\right\rangle   \in  \mathcal{X}$ ;
+
+2) $\forall \left\langle  {a}_{n}\right\rangle   \in  E,\forall \left\langle  {r}_{n}\right\rangle   \in  \mathcal{X},\left\langle  {a}_{n}\right\rangle   \cdot  \left\langle  {r}_{n}\right\rangle   \in  \mathcal{X}$ .
+
+我们称 $\mathcal{X}$ 是 $E$ 的一个极大理想,如果 $\mathcal{X}$ 是 $E$ 的一个理想,并且 $E$ 中不存在适合 $\mathcal{X} \subset  \mathcal{X} \subseteq  E$ 的理想 $\mathcal{A}$ .
+
+1) 证明 $\mathcal{X} = \left\{  {\left\langle  {r}_{n}\right\rangle   \in  E\; \mid  \mathop{\lim }\limits_{{n \rightarrow   + \infty }}{r}_{n} = 0}\right\}$ 是 $E$ 的一个理想.
+
+2) 设 $\mathcal{A}$ 是 $E$ 的任一理想 使得 $x \subsetneq  x$ ,令 $\left\langle  {s}_{n}\right\rangle   \in  \mathcal{A} - \mathcal{X}$ . 试证明:
+
+a) $\exists \left\langle  {r}_{n}\right\rangle   \in  E$ 使得 $\left\langle  {r}_{n}\right\rangle   + \left\langle  {s}_{n}\right\rangle   \in  \mathcal{A}$ ,
+\begin{align*}
+	&\forall n \in  \mathbf{N},{r}_{n} + {s}_{n} \neq  0,\\
+	&\left\langle  \frac{1}{{r}_{n} + {s}_{n}}\right\rangle   \in  E
+\end{align*}
+
+b) 常值序列 $\langle 1\rangle  \in  \mathcal{A}$ ;
+
+c) 由此推出 $\mathcal{X}$ 是一个极大理想.
+
+\section{实数集 $\mathbf{R}$ 的群性质}
+
+\section*{1. R关于加法的群性质}
+
+定理 $2 \cdot  2 \cdot  1$ 实数集 $\mathbf{R}$ 关于加法运算是一个交换群,即下述性质成立:
+
+1) $\forall x,y \in  \mathbf{R},x + y = y + x$ ;
+
+2) $\forall x,y,z \in  \mathbf{R},\left( {x + y}\right)  + z = x + \left( {y + z}\right)$ ;
+
+3) 存在零元素 0,使得 $\forall x \in  \mathbf{R},x + 0 = x$ ;
+
+4) $\forall x \in  \mathrm{R}$ ,存在负元素,记为 $- x$ ,使得 $x + \left( {-x}\right)  = 0$ .
+
+证明 设 $x = \left\langle  {x}_{n}\right\rangle  ,y = \left\langle  {y}_{n}\right\rangle  ,z = \left\langle  {z}_{n}\right\rangle$ ,由定义
+\begin{align*}
+	&x + y = \overset{⏜}{\left\langle  {x}_{n}\right\rangle   + \left\langle  {y}_{n}\right\rangle   = \left\langle  {{x}_{n} + {y}_{n}}\right\rangle   = \left\langle  {y}_{n}\right\rangle   + \left\langle  {x}_{n}\right\rangle   = y + x},\\
+	&\left( {x + y}\right)  + z = \overset{⏜}{\left\langle  {x}_{n}\right\rangle   + \left\langle  {y}_{n}\right\rangle   + \left\langle  {z}_{n}\right\rangle  } = \left\langle  {{x}_{n} + {y}_{n} + {z}_{n}}\right\rangle\\
+	&= \overset{⏜}{\left\langle  {x}_{n}\right\rangle  } + \overset{⏜}{\left\langle  {y}_{n}\right\rangle   + \left\langle  {z}_{n}\right\rangle  } = x + \left( {y + z}\right) .
+\end{align*}
+
+因此 1 )、 2 )成立.
+
+现证 3 ). 因为 $0 \in  \mathbf{Q}$ ,若令 ${0}_{n} = 0\left( {\forall n \in  \mathbf{N}}\right)$ ,则 $\left\langle  {0}_{n}\right\rangle   \in  E$ ,
+
+记 $0 = \left\langle  {0}_{n}\right\rangle$ . 那末
+$$x + 0 = \overset{⏜}{\left\langle  {x}_{n}\right\rangle  } + \overset{⏜}{\left\langle  {0}_{n}\right\rangle  } = \overset{⏜}{\left\langle  {x}_{n} + {0}_{n}\right\rangle  } = \overset{⏜}{\left\langle  {x}_{n}\right\rangle  } = x.$$
+
+最后证 4 ). 记 $- x = \left\langle  {-{x}_{n}}\right\rangle$ ,则 $- x \in  \mathbf{R}$ 并且.
+$$x + \left( {-x}\right)  = \overset{⏜}{\left\langle  {x}_{n}\right\rangle  } + \overset{⏜}{\left\langle  -{x}_{n}\right\rangle  } = \overset{⏜}{\left\langle  {x}_{n} - {x}_{n}\right\rangle  } = \overset{⏜}{\left\langle  {0}_{n}\right\rangle  } = 0.$$
+
+\section*{2. $\mathbf{R} - \{ 0\}$ 关于乘法的群性质}
+
+在介绍 $\mathbf{R} - \{ 0\}$ 关于乘法的群性质之前,我们先证明下述引理.
+
+引理 $\forall x \in  \mathbb{R} - \{ 0\}$ ,存在有理数 $r > 0$ 及 $x$ 的一个代表 $\left\langle  {r}_{n}\right\rangle$ 使得
+$$\left( {\forall n \in  \mathbf{N},{r}_{n} \geq  r}\right) \text{ 或者 }\left( {\forall n \in  \mathbf{N},{r}_{n} \leq   - r}\right) .$$
+
+证明 设 $\left\langle  {x}_{n}\right\rangle$ 是 $x$ 的任一代表. 由于 $x \neq  0$ ,故 $\left\langle  {x}_{n}\right\rangle$ 不等价于 $\left\langle  {0}_{n}\right\rangle$ 。因此
+$$\left( {\exists 0 < {\varepsilon }_{0} \in  \mathbf{Q}}\right) \left( {\forall n \in  \mathbf{N}}\right) \left( {\exists {k}_{n} \in  \mathbf{N},{k}_{n} \geq  n}\right)  \Rightarrow  \left| {x}_{{k}_{n}}\right|  = \left| {{x}_{{k}_{n}} - {0}_{n}}\right|$$
+
+$\geq  {\varepsilon }_{0}$ .
+
+另一方面,由于 $\left\langle  {x}_{n}\right\rangle   \in  E$ ,对于 ${\varepsilon }_{0} > 0$ ,存在 $N \in  \mathbf{N}$ 使得
+$$\forall n,m \in  \mathbf{N},n,m \geq  N \Rightarrow  \left| {{x}_{n} - {x}_{m}}\right|  < {\varepsilon }_{0}/2.$$
+
+下面分两种情形讨论:
+
+1) ${x}_{{k}_{N}} \geq  {\varepsilon }_{0}$ ; 这时我们有
+$$\forall n \in  \mathbf{N},n \geq  {k}_{N} > N \Rightarrow  \left| {{x}_{n} - {x}_{{k}_{N}}}\right|  < {\bar{\varepsilon }}_{0}/2.$$
+
+因为 ${x}_{{k}_{N}} - {x}_{n} \leq  \left| {{x}_{n} - {x}_{{k}_{N}}}\right|$ ,所以
+$${x}_{n} \geq  {x}_{{k}_{N}} - \left| {{x}_{n} - {x}_{{k}_{N}}}\right|  > {\widetilde{\varepsilon }}_{0} - {\widetilde{\varepsilon }}_{0}/2 = {\varepsilon }_{0}/2.$$
+
+定义有理数序列 $\left\langle  {r}_{n}\right\rangle$ 如下:
+$${r}_{n} = \left\{  \begin{array}{ll} {\varepsilon }_{0}/2, & \forall n < {k}_{N}; \\  {x}_{n}, & \forall n \geq  {k}_{N}, \end{array}\right.$$
+
+那末 $\left\langle  {r}_{n}\right\rangle   \in  E$ ,并且 $x = \overset{⏜}{\left\langle  {r}_{n}\right\rangle  }$ . 显然我们有
+$$\forall n \in  \mathbf{N},{r}_{n} \geq  {\varepsilon }_{0}/2.$$
+
+2) ${x}_{{k}_{N}} \leq   - {\varepsilon }_{0}$ : 这时我们有
+$$\forall n \in  \mathbf{N},n \geq  {k}_{N} > N \Rightarrow  \left| {{x}_{n} - {x}_{k}\;}\right|  < {\bar{\varepsilon }}_{0}/2.$$
+
+由于 ${x}_{n} - {x}_{{k}_{N}} \leq  \left| {{x}_{n} - {x}_{{k}_{N}}}\right|$ ,故
+$${x}_{n} \leq  {x}_{{k}_{N}} + \left| {{x}_{n} - {x}_{{k}_{N}}}\right|  <  - {\varepsilon }_{0} + {\varepsilon }_{0}/2 =  - {\varepsilon }_{0}/2.$$
+
+若我们定义有理数序列 $\left\langle  {r}_{n}\right\rangle$ 为:
+$${r}_{n} = \left\{  \begin{matrix}  - {\varepsilon }_{0}/2, & \forall n < {k}_{N}, \\  {x}_{n}, & \forall n \geq  {k}_{N}, \end{matrix}\right.$$
+
+则 $\left\langle  {r}_{n}\right\rangle   \in  E$ ,并且 $x = \overset{⏜}{\left\langle  {r}_{n}\right\rangle  }$ . 对于此 $\left\langle  {r}_{n}\right\rangle$ 显然有
+$$\forall n \in  \mathbf{N},{r}_{n} \leq   - {\varepsilon }_{0}/2.$$
+
+现在我们可以来介绍 $\mathbf{R} - \{ 0\}$ 的群性质,即下述定理.
+
+定理 $2 \cdot  2 \cdot  2\;\mathbf{R} - \{ 0\}$ 关于乘法运算是一个交换群,即 下述性质成立:
+
+1) $\forall x,y \in  \mathbf{R} - \{ 0\} ,x \cdot  y \in  \mathbf{R} - \{ 0\} ,x \cdot  y = y \cdot  x$ ;
+
+2) $\forall x,y,z \in  \mathbf{R} - \{ 0\} ,\left( {x \cdot  y}\right)  \cdot  z = x \cdot  \left( {y \cdot  z}\right)$ ;
+
+3) 存在单位元 $1 \in  \mathbf{R} - \{ 0\}$ ,使得 $\forall x \in  \mathbf{R} - \{ 0\} ,x \cdot  1 = x$ ;
+
+4) $\forall x \in  \mathbf{R} - \{ 0\}$ ,存在逆元素,记为 ${x}^{-1}$ ,使得 $x \cdot  {x}^{-1} = 1$ .
+
+证明 $\forall x,y,z \in  \mathrm{R} - \{ 0\}$ ,令 $x = \left\langle  {x}_{n}\right\rangle  ,y = \left\langle  {y}_{n}\right\rangle  ,z = \left\langle  {z}_{n}\right\rangle$ . 根据上述引理,不妨设存在正有理数 $\alpha ,\beta$ 使得 $\left| {x}_{n}\right|  \geq  \alpha ,\left| {y}_{n}\right|  \geq  \beta$ ( $\forall n \in  \mathbf{N}$ ). 于是
+
+1) $x \cdot  y = \left\langle  {x}_{n}\right\rangle   \cdot  \left\langle  {y}_{n}\right\rangle   = \left\langle  {{x}_{n}{y}_{n}}\right\rangle   = \left\langle  {y}_{n}\right\rangle   \cdot  \left\langle  {x}_{n}\right\rangle   = y \cdot  x$ ,
+$$\left| {{x}_{n}{y}_{n}}\right|  \geq  {\alpha \beta }\left( {\forall n \in  \mathbf{N}}\right) .$$
+
+因此 $\left\langle  {{x}_{n}{y}_{n}}\right\rangle$ 不与 $\left\langle  {0}_{n}\right\rangle$ 等价,从而 $x \cdot  y \in  \mathbf{R} - \{ 0\}$ .
+
+2) $\left( {x \cdot  y}\right)  \cdot  z = \left\langle  {{x}_{n}{y}_{n}}\right\rangle   \cdot  \left\langle  {z}_{n}\right\rangle   = \left\langle  {{x}_{n}{y}_{n}{z}_{n}}\right\rangle$
+$$= \left\langle  {x}_{n}\right\rangle   \cdot  \left\langle  {{y}_{n}{z}_{n}}\right\rangle   = x \cdot  \left( {y \cdot  z}\right) .$$
+
+3) 因为 $1 \in  \mathbf{Q}$ ,若令 ${1}_{n} = 1\left( {\forall n \in  \mathbf{N}}\right)$ ,则 $\left\langle  {1}_{n}\right\rangle   \in  E$ 并且 $\left\langle  {1}_{n}\right\rangle$ 不与 $\left\langle  {0}_{n}\right\rangle$ 等价. 令 $1 = \left\langle  {1}_{n}\right\rangle$ ,则 $1 \in  \mathbf{R} - \{ 0\}$ . 并且
+$$x \cdot  1 = \overline{\left\langle  {x}_{n}\right\rangle  } \cdot  \overline{\left\langle  {1}_{n}\right\rangle  } = \overline{\left\langle  {x}_{n}{1}_{n}\right\rangle  } = \overline{\left\langle  {x}_{n}\right\rangle  } = x.$$
+
+4) 首先证明 $\left\langle  {x}_{n}^{-1}\right\rangle   \in  E$ . 因为 $\left\langle  {x}_{n}\right\rangle   \in  E$ ,由定义
+$$\left( {\forall 0 < \varepsilon  \in  \mathbf{Q}}\right) \left( {\exists N \in  \mathbf{N}}\right) \left( {\forall n,m \in  \mathbf{N},n,m \geq  N}\right)  \Rightarrow$$
+
+$\left| {{x}_{n} - {x}_{m}}\right|  < \varepsilon$ 因此
+$$\forall n,m \in  N,n,m \geq  N \Rightarrow  \left| {{x}_{n}^{-1} - {x}_{m}^{-1}}\right|  = \frac{\left| {x}_{n} - {x}_{m}\right| }{\left| {x}_{n}\right| \left| {x}_{m}\right| } < \frac{1}{{\alpha }^{2}}\varepsilon .$$
+
+此即表 明 $\left\langle  {x}^{-1}\right\rangle   \in  E$ . 我们记 ${x}^{-1} = \overset{⏜}{\left\langle  {x}^{-1}\right\rangle  }$ . 下面 证明 ${x}^{-1} \in  \mathbf{R}$  $- \{ 0\}$ .
+
+事实上,由定理 $2 \cdot  1 \cdot  1,\left\langle  {x}_{n}\right\rangle$ 是有界的,于是存在正有理数 $M$ 使得 $\left| {x}_{n}\right|  \leq  M\left( {\forall n \in  \mathbf{N}}\right)$ . 由此得 $\left| {x}_{n}^{-1}\right|  \geq  \frac{1}{M}\left( {\forall n \in  \mathbf{N}}\right)$ ,因此 $\left\langle  {x}_{n}^{-1}\right\rangle$ 不与 $\left\langle  {0}_{n}\right\rangle$ 等价,从而 ${x}^{-1} \in  \mathbf{R} - \{ 0\}$ . 现在
+$$x \cdot  {x}^{-1} = \overset{⏜}{\left\langle  {x}_{n}\right\rangle   \cdot  \left\langle  {x}_{n}^{-1}\right\rangle  } = \overset{⏜}{\left\langle  {x}_{n}{x}_{n}^{-1}\right\rangle  } = \overset{⏜}{\left\langle  {1}_{n}\right\rangle  } = 1.$$
+
+\section*{3. $\mathrm{R}$ 的加法对乘法的分配性质}
+
+定理 $2 \cdot  2 \cdot  3\;\forall x,y,z \in  \mathbf{R}$ ,
+$$\left( {x + y}\right)  \cdot  z = x \cdot  z + y \cdot  z.$$
+
+证明 设 $x = \left\langle  {x}_{n}\right\rangle  ,y = \left\langle  {y}_{n}\right\rangle  ,z = \left\langle  {z}_{n}\right\rangle$ ,则
+\begin{align*}
+	&\left( {x + y}\right)  \cdot  z = \left\langle  {{x}_{n} + {y}_{n}}\right\rangle   \cdot  \left\langle  {z}_{n}\right\rangle   = \left\langle  {\left( {{x}_{n} + {y}_{n}}\right) {z}_{n}}\right\rangle\\
+	&= \left\langle  {{x}_{n}{z}_{n}}\right\rangle   + \left\langle  {{y}_{n}{z}_{n}}\right\rangle   = x \cdot  z + y \cdot  z.
+\end{align*}
+
+附注 1)根据上述三个定理, $\mathbf{R}$ 对于加法形成交换群, $\mathbb{R} - \{ 0\}$ 对于乘法形成交换群,并且 $\mathbf{R}$ 的加法对乘法满足分配律, 因此我们称实数集 $\mathbf{R}$ 对于加法与乘法运算构成一个交换域.
+
+2) 为了书写简便起见, 从以下开始, 我们记1为1, 0为0, $x \cdot  y$ 为 ${xy}$ .
+
+\section*{习 题}
+
+1. 证明: $\forall x \in  R,{0x} = 0,x =  - \left( {-x}\right)$ .
+
+2. 证明: $\forall x,y \in  \mathrm{R},\left( {-x}\right) \left( {-y}\right)  = {xy},\left( {-x}\right) y = x\left( {-y}\right)  =  - {xy}$ .
+
+3. 证明: $\forall a,b \in  R$ ,且 $a \neq  0$ ,则方程 ${ax} = b$ 有唯一的解 $x$ .
+
+4. 证明: 零元、负元、逆元都是唯一确定的.
+
+\section{实数集 $\mathbf{R}$ 的全序性}
+
+为了研究实数集 $\mathbf{R}$ 的全序性,我们首先介绍 $\mathbf{R}$ 上的序关系.
+
+\section*{1. R上的序关系}
+
+考虑下面两个集合
+
+${\mathbf{R}}^{ + },\left\{  {x \in  \mathbf{R} \mid  \text{ 存在 }\left\langle  {r}_{n}\right\rangle   \in  x\text{ 使得 }{r}_{n} \geq  0,\forall n \in  \mathbf{N}}\right\}  ,$
+$${\mathbf{R}}^{ - } = \left\{  {x \in  \mathbf{R} \mid   - x \in  {\mathbf{R}}^{ + }}\right\}  .$$
+
+${\mathbf{R}}^{ + }$ 与 ${\mathbf{R}}^{ - }$ 分别称为非负实数集与非正实数集. 除此以外,我们还分别称
+$${\mathbf{R}}_{ * }^{ + } \triangleq  {\mathbf{R}}^{ + } - \{ 0\} \text{ 与 }{\mathbf{R}}_{ * }^{ - } \triangleq  {\mathbf{R}}^{ - } - \{ 0\}$$
+
+为正实数集与负实数集.
+
+关于这些集合之间的关系, 我们有下述定理.
+
+定理 $2 \cdot  3 \cdot  1$ 如果我们定义 $\mathrm{R}$ 的任意两个子集合 $A$ 与 $B$ 的和 $A + B$ 与积 $A \cdot  B$ 为
+\begin{align*}
+	&A + B = \{ x + y \in  \mathbf{R} \mid  x \in  A,y \in  B\} ,\\
+	&A \cdot  B = \{ {xy} \in  \mathbf{R} \mid  x \in  A,y \in  B\} .
+\end{align*}
+
+那末我们有:
+
+1) ${\mathbf{R}}^{ + } + {\mathbf{R}}^{ + } = {\mathbf{R}}^{ + },{\mathbf{R}}^{ - } + {\mathbf{R}}^{ - } = {\mathbf{R}}^{ - }$ ;
+
+2) ${\mathbf{R}}^{ + } \cdot  {\mathbf{R}}^{ + } = {\mathbf{R}}^{ - } \cdot  {\mathbf{R}}^{ - } = {\mathbf{R}}^{ + },{\mathbf{R}}^{ + } \cdot  {\mathbf{R}}^{ - } = {\mathbf{R}}^{ - }$ ;
+
+3) ${\mathbf{R}}^{ + } \cap  {\mathbf{R}}^{ - } = \{ 0\} ,{\mathbf{R}}^{ + } \cup  {\mathbf{R}}^{ - } = \mathbf{R} = {\mathbf{R}}_{ * }^{ + } \cup  {\mathbf{R}}_{ * }^{ - } \cup  \{ 0\}$ .
+
+证明 1) 与 2) 的论证我们留给读者作为练习. 我们来证明 3 ).
+
+设 $x \in  {\mathbf{R}}^{ + } \cap  {\mathbf{R}}^{ - }$ . 于是 $x \in  {\mathbf{R}}^{ + }, - x \in  {\mathbf{R}}^{ + }$ . 根据定义存在 $\left\langle  {r}_{n}\right\rangle  ,\left\langle  {s}_{n}\right\rangle   \in  E$ 使得
+$$x = \overset{⏜}{\left\langle  {r}_{n}\right\rangle  }, - x = \overset{⏜}{\left\langle  {s}_{n}\right\rangle  }\text{ 且 }{r}_{n} \geq  0,{s}_{n} \geq  0\left( {\forall n \in  \mathbf{N}}\right) \text{ . }$$
+
+由于 $x =  - \left( {-x}\right)$ ,故 $x = \left\langle  {-{s}_{n}}\right\rangle$ ,从而 $\left\langle  {r}_{n}\right\rangle$ 与 $\left\langle  {-{s}_{n}}\right\rangle$ 等价. 因此
+\begin{align*}
+	&\left( {\forall 0 < \varepsilon  \in  \mathbf{Q}}\right) \left( {\exists N \in  \mathbf{N}}\right) \left( {\forall n \in  \mathbf{N},n \geq  N}\right)  \Rightarrow\\
+	&\left| {{r}_{n} - \left( {-{s}_{n}}\right) }\right|  < \varepsilon .
+\end{align*}
+
+\section*{由此推得}
+$$\forall n \in  \mathbf{N},n \geq  N \Rightarrow  \left| {{r}_{n} - {0}_{n}}\right|  = \left| {r}_{n}\right|  \leq  \left| {{r}_{n} + {s}_{n}}\right|  < \bar{\varepsilon }.$$
+
+此即表明 $\left\langle  {r}_{n}\right\rangle$ 与 $\left\langle  {0}_{n}\right\rangle$ 等价,因此 $x = 0$ .
+
+为了证 ${\mathbf{R}}^{ + } \cup  {\mathbf{R}}^{ - } = \mathbf{R}$ ,首先注意到 ${\mathbf{R}}^{ + } \cup  {\mathbf{R}}^{ - } \subset  \mathbf{R}$ . 现设 $x$  $\in  \mathbf{R}$ .
+
+若 $x = 0$ ,则 $x \in  {\mathbf{R}}^{ + } \cup  {\mathbf{R}}^{ - }$ .
+
+若 $x \neq  0$ ,则由 $§2$ 的引理知,存在 $\left\langle  {r}_{n}\right\rangle   \in  E$ 及正有理数 $r$ 使得
+
+$x = \left\langle  {r}_{n}\right\rangle  ,{r}_{n} \geq  r\left( {\forall n \in  \mathbf{N}}\right)$ 或者 ${r}_{n} \leq   - r\left( {\forall n \in  \mathbf{N}}\right) .$
+
+如果 ${r}_{n} \geq  r\left( {\forall n \in  \mathbf{N}}\right)$ ,则 $x \in  {\mathbf{R}}^{ + }$ ;
+
+如果 ${r}_{n} \leq   - r\left( {\forall n \in  \mathbf{N}}\right)$ ,则 $- {r}_{n} \geq  r\left( {\forall n \in  \mathbf{N}}\right)$ . 由于 $- x = \left\langle  {-{r}_{n}}\right\rangle$ ,所以 $- x \in  {\mathbf{R}}^{ + }$ ,即 $x \in  {\mathbf{R}}^{ - }$ .
+
+因此 $\mathbf{R} = {\mathbf{R}}^{ + } \cup  {\mathbf{R}}^{ - }$ . 从而 $\mathbf{R} = {\mathbf{R}}_{ * }^{ + } \cup  {\mathbf{R}}_{ * }^{ - } \cup  \{ 0\}$ .
+
+现在我们在 $\mathbf{R}$ 上定义关系 $\leq$ 如下:
+$$\forall x,y \in  \mathbf{R},x \leq  y \Leftrightarrow  y - x\overset{ \bigtriangleup  }{ = }y + \left( {-x}\right)  \in  {\mathbf{R}}^{ + }.$$
+
+并且规定:
+$$x < y \Leftrightarrow  x \leq  y\text{ 及 }x \neq  y\text{ . }$$
+
+定理 $2 \cdot  3 \cdot  2$ 实数集 $\mathrm{R}$ 关于如上定义的关系 $\leq$ 是一个全序集.
+
+证明 1) 自反性: $\forall x \in  \mathbf{R}$ ,由于 $x - x = x + \left( {-x}\right)  = 0 \in  {\mathbf{R}}^{ + }$ , 所以 $x \leq  x$ .
+
+2) 反对称性: 设 $x,y \in  \mathbf{R}$ 并且 $x \leq  y,y \leq  x$ . 那末 $y - x \in  {\mathbf{R}}^{ + }$ , $x - y \in  {\mathbf{R}}^{ + }$ ,从而 $y - x \in  {\mathbf{R}}^{ - }$ . 因此 $y - x \in  {\mathbf{R}}^{ + } \cap  {\mathbf{R}}^{ - }$ . 由定理 $2 \cdot  3 \cdot  1$ 知 $y - x = 0$ 即 $x = y$ .
+
+3) 传递性: 设 $x,y,z \in  \mathbf{R}$ 并且 $x \leq  y,y \leq  z$ . 那末 $y - x \in  {\mathbf{R}}^{ + }$ , $z - y \in  {\mathbf{R}}^{ + }$ . 于是由定理 $2 \cdot  3 \cdot  1$ 知
+$$z - x = \left( {z - y}\right)  + \left( {y - x}\right)  \in  {\mathbf{R}}^{ + } + {\mathbf{R}}^{ + } \subset  {\mathbf{R}}^{ + }.$$
+
+因此 $x \leq  z$ .
+
+4) 证明 $\forall x,y \in  \mathbf{R},x \leq  y$ 或 $y \leq  x$ .
+
+事实上, $y - x \in  \mathbf{R} = {\mathbf{R}}^{ + } \cup  {\mathbf{R}}^{ - }$ . 所以 $y - x \in  {\mathbf{R}}^{ + }$ 或 $y - x \in  {\mathbf{R}}^{ - }$ , 从而 $x \leq  y$ 或 $y \leq  x$ .
+
+综合上述所证知, $\leq$ 是 $\mathrm{R}$ 上的一个序关系,从而 $\left( {\mathrm{R}, \leq  }\right)$ 是全序集.
+
+推论 $\forall x,y \in  \mathbf{R}$ ,下述三个关系式
+$$x < y,y < x,,x = y$$
+
+中有一个并且只有一个成立.
+
+证明留给读者.
+
+下面我们研究 $\mathrm{Q}$ 在 $\mathrm{R}$ 中的嵌入.
+
+\section*{2. $\mathrm{Q}$ 在 $\mathrm{R}$ 中的嵌入}
+
+在 $§1$ ,我们从有理数出发构造了实数. 自然要问: 实数集 $\mathbf{R}$ 一定比有理数集 $\mathbf{Q}$ 有更“多”的元素吗? 下面我们就来研究这个问题. 为此我们定义映射 $p : \mathbf{Q} \rightarrow  \mathbf{R}$ 如下:
+$$\forall r \in  \mathbf{Q},p\left( r\right)  = \langle r\rangle .$$
+
+映射 $p$ 的性质可以综述为下述定理.
+
+定理 $2 \cdot  3 \cdot  3$ 映射 $p$ 是从 $\mathbf{Q}$ 到 $p\left( \mathbf{Q}\right)$ 上的保序同构映射,即下述性质成立:
+
+1) $p : \mathbf{Q} \rightarrow  p\left( \mathbf{Q}\right)$ 是一一映射;
+
+2) $\forall r,s \in  \mathbf{Q},p\left( {r + s}\right)  = p\left( r\right)  + p\left( s\right) ,p\left( {rs}\right)  = p\left( r\right) p\left( s\right)$ ;
+
+3) $\forall r,s \in  \mathbf{Q}$ ,若 $r < s$ ,则 $p\left( r\right)  < p\left( s\right)$ .
+
+证明 1) 我们只需证明 $p$ 是单射. 设 $r,s \in  \mathbf{Q},r \neq  s$ . 那末 $\langle r\rangle$ 与 $\langle s\rangle$ 不等价,因此 $\overset{⏜}{\langle r\rangle } = \overset{⏜}{\langle s\rangle }$ 从而 $p\left( r\right)  = p\left( s\right)$ .
+
+$2)\forall r,s \in  \mathbf{Q}$ ,由定义我们有
+\begin{align*}
+	&p\left( r\right)  + p\left( s\right)  = \langle r\rangle  + \langle s\rangle  = \overset{⏜}{\langle r + s\rangle } = p\left( {r + s}\right) ,\\
+	&p\left( r\right)  \cdot  p\left( s\right)  = \langle r\rangle  \cdot  \langle s\rangle  = \langle {rs}\rangle  = p\left( {rs}\right) .
+\end{align*}
+
+3) 设 $r,s \in  \mathrm{Q}$ 且 $r < s$ ,那末 $r \leq  s,r \neq  s$ . 于是 $s - r \geq  0$ , 从而 $p\left( {s - r}\right)  = \left\langle  {s - r}\right\rangle   \in  {\mathbf{R}}^{ + }$ . 但是 $p\left( {s - r}\right)  = p\left( {s + \left( {-r}\right) }\right)$  $= p\left( s\right)  - p\left( r\right)$ ,因此 $p\left( s\right)  - p\left( r\right)  \in  {\mathbf{R}}^{ + }$ 即 $p\left( r\right)  \leq  p\left( s\right)$ . 由于 $p$ 的单射性 $p\left( r\right)  = p\left( s\right)$ . 因此 $p\left( r\right)  < p\left( s\right)$ .
+
+附注 我们记 $\widetilde{\mathbb{Q}} = p\left( \mathbb{Q}\right) ,\forall r \in  \mathbb{Q}$ ,记 $\widetilde{r} = p\left( r\right)$ ,并称 $\widetilde{r}$ 为有理实数, $\widetilde{\mathrm{Q}}$ 为有理实数集. 在本节习题 9 中我们将证明 ${\widetilde{\mathrm{Q}}}^{c} = \mathrm{R}$  $- \widetilde{\mathbf{Q}} \fallingdotseq  \varnothing$ ,因此 $\widetilde{\mathbf{Q}}$ 是 $\mathbf{R}$ 的一个真子集. $\mathbf{R} - \widetilde{\mathbf{Q}}$ 中的每一个元素称为无理实数.
+
+定理 $2 \cdot  3 \cdot  3$ 表明 $\mathbf{Q}$ 与 $\widetilde{\mathbf{Q}}$ 上的加法、乘法及序关系保持不变, 又附注表明 $\widetilde{\mathbf{Q}}$ 是 $\mathbf{R}$ 的真子集,据此我们称 $\mathbf{Q}$ 嵌入 $\mathbf{R}$ 中 或 $\mathbf{R}$ 是 $\mathbf{Q}$ 的扩张.
+
+正因为有理数集 $\mathbf{Q}$ 与有理实数集 $\widetilde{\mathbf{Q}}$ 之间保持这种运算关系及序关系, 故从下一章起, 如未特别指明, 我们将不再区分有理数 $r$ 与有理实数 $\bar{r}$ ,而一律记 $\bar{r}$ 为 $r$ .
+
+最后我们介绍有理实数集 $\widetilde{\mathbf{Q}}$ 的两个重要性质,即下述定理.
+
+定理 $2 \cdot  3 \cdot  4$ ( $\widetilde{\mathbf{Q}}$ 在 $\mathbf{R}$ 中的稠密性) $\forall x,y \in  \mathbf{R}$ ,若 $x < y$ ,则存
+
+在 $\widetilde{r} \in  \widetilde{\mathbf{Q}}$ 使得 $x < \widetilde{r} < y$ .
+
+证明 因为 $x < y$ ,所以 $0 < y - x$ . 由 $§2$ 引理知,存在 $\left\langle  {r}_{n}^{\prime }\right\rangle$ , $\left\langle  {s}_{n}^{\prime }\right\rangle   \in  E$ 及正有理数 $\alpha$ 使得
+$$x = \widetilde{\left\langle  {r}_{n}^{\prime }\right\rangle  },y = \widetilde{\left\langle  {s}_{n}^{\prime }\right\rangle  }\text{ 且 }{s}_{n}^{\prime } - {r}_{n}^{\prime } \geq  \alpha \left( {\forall n \in  \mathbf{N}}\right) \text{ . }$$
+
+另一方面,对 $\alpha  > 0$ ,存在 $N \in  \mathbf{N}$ 使得
+\begin{align*}
+	&\forall n \in  \mathbf{N},n \geq  N \Rightarrow  \left| {{r}_{n}^{\prime } - {r}_{N}^{\prime }}\right|  < \frac{\alpha }{4},\left| {{s}_{n}^{\prime } - {s}_{N}^{\prime }}\right|  < \frac{\alpha }{4}\\
+	&\Rightarrow  {r}_{n}^{\prime } < {r}_{N}^{\prime } + \frac{\alpha }{4},{s}_{N}^{\prime } - \frac{\alpha }{4} < {s}_{n}^{\prime }.
+\end{align*}
+
+令 $r = \frac{{r}_{N}^{\prime } + {s}_{N}^{\prime }}{2}$ ,则 $r \in  \mathbf{Q}$ ,并且
+$$\forall n \in  \mathbf{N},n \geq  N \Rightarrow  {r}_{n}^{\prime } < {r}_{N}^{\prime } + \frac{\alpha }{4} < r < {s}_{N}^{\prime } - \frac{\alpha }{4} < {s}_{n}^{\prime }.$$
+
+现在我们定义有理数序列 $\left\langle  {r}_{n}\right\rangle$ 及 $\left\langle  {s}_{n}\right\rangle$ 如下:
+
+${r}_{n} = \left\{  {\begin{array}{ll} {r}_{N}^{\prime } + \frac{\alpha }{4}, & \text{ 若 }n < N, \\  {r}_{n}^{\prime }, & \text{ 若 }n \geq  N, \end{array}\;{s}_{n} = \left\{  \begin{array}{ll} {s}_{N}^{\prime } - \frac{\alpha }{4}, & \text{ 若 }n < N, \\  {s}_{n}^{\prime }, & \text{ 若 }n \geq  N. \end{array}\right. }\right.$
+
+则 $\left\langle  {r}_{n}\right\rangle  ,\left\langle  {s}_{n}\right\rangle   \in  E$ 并且 ${r}_{n} < r < {s}_{n}\left( {\forall n \in  \mathbf{N}}\right) ,x = \overset{⏜}{\left\langle  {r}_{n}\right\rangle  },y = \overset{⏜}{\left\langle  {s}_{n}\right\rangle  }$ , $x < \widetilde{r} < y$ .
+
+定理 $2 \cdot  3 \cdot  5$ (Archimedes性质) $\forall x,y \in  \mathbf{R}$ ,若 $0 < x < y$ , 则存在 $N \in  \mathbf{N}$ 使得 $y < \widetilde{N}x$ .
+
+证明 因为 $x > 0$ ,故由 $§2$ 引理知,存在 $\left\langle  {r}_{n}\right\rangle   \in  E$ 及正有理数 $\frac{q}{p}$ 使得
+$$x = \overset{⏜}{\left\langle  {r}_{n}\right\rangle  },\frac{1}{p} \leq  \frac{q}{p} \leq  {r}_{n}.\;\left( {\forall n \in  \mathbf{N}}\right)$$
+
+令 $y = \overset{⏜}{\left\langle  {s}_{n}\right\rangle  }$ ,由于 $\left\langle  {s}_{n}\right\rangle$ 有界,存在 $m \in  \mathbf{N}$ 使得 $\left| {s}_{n}\right|  \leq  m$  $\left( {\forall n \in  \mathbf{N}}\right)$ . 记 $N = p\left( {m + 1}\right)$ ,则 $\widetilde{N}x = \widetilde{\left\langle  N{r}_{n}\right\rangle  }$ ,并且
+$${s}_{n} \leq  m < m + 1 = p\left( {m + 1}\right) \frac{1}{p} \leq  N{r}_{n}.$$
+
+因此 $y < \sqrt{x}$ .
+
+\section*{习 题}
+
+1. 证明定理 $2 \cdot  3 \cdot  1$ 的 1)、2).
+
+2. 证明: $\forall x,y \in  R$ ,若 $x \in  {R}_{ * }^{ + },{xy} \in  {R}^{ + }$ ,则 $y \in  {R}^{ + }$ .
+
+3. 设 $x,y \in  R$ ,证明:
+
+1) $x \leq  y$ 的充要条件是 $- y \leq   - x$ ;
+
+2) $0 < x < y$ 的充要条件是 $0 < {y}^{-1} < {x}^{-1}$ .
+
+4. 证明定理 $2 \cdot  3 \cdot  2$ 的推论.
+
+5. 证明在实数集 $R$ 上所定义的序关系 $\leq$ 与加法及乘法运算是相容的, 即
+
+1) 若 $x \leq  y,{x}^{\prime } \leq  {y}^{\prime }$ ,则 $x + {x}^{\prime } \leq  y + {y}^{\prime }$ ;
+
+2) 设 $x \leq  y$ ,若 $0 \leq  z$ ,则 ${xz} \leq  {yz}$ ,若 $z \leq  0$ ,则 ${yz} \leq  {xz}$ ;
+
+3) $0 < {xy} \Leftrightarrow  0 < x,0 < y$ 或 $x < 0,y < 0$ ,
+
+${xy} < 0 \Leftrightarrow  0 < x,y < 0$ 或 $x < 0,0 < y$ .
+
+6. 设 $x$ 是一个无理 实数, $a,b,c,d \in  \mathbf{Q}$ ,并且 ${ad} - {bc} \neq  0$ ,证明 $\frac{\widetilde{a}x + \widetilde{b}}{\widetilde{c}x + \widetilde{d}} \triangleq  \left( {\widetilde{a}x + b}\right) {\left( \widetilde{c}x + \widetilde{d}\right) }^{-1}$ 是无理实数.
+
+7. 证明: $\forall x \in  \mathbf{R}$ ,存在唯一的整数,记为 $\left\lbrack  x\right\rbrack$ 使得 $\overset{⏜}{\left\lbrack  x\right\rbrack   \leq  x < \left\lbrack  x\right\rbrack   + 1}$ ([ $x$ ]称为 $x$ 的整数部分).
+
+8. 设 $x \in  {\mathrm{R}}^{ + }$ . 我们把满足方程 ${z}^{2} = x$ 的非负实数 $z$ 记作 $\sqrt{x}$ . 证明: 如果 $\sqrt{x}$ 与 $\sqrt{y}$ 是无理实数,则 $\sqrt{x} + \sqrt{y}$ 也是无理实数.
+
+9. 证明: 无理 实 数集 ${\widetilde{\mathbf{Q}}}^{c}$ 在 $\mathbf{R}$ 中稠密,即
+
+$\forall x,y \in  \mathbf{R}$ 且 $x < y,\exists z \in  {\widetilde{Q}}^{c}$ 使得 $x < z < y$ .
+
+10. 这个题目的内容是介绍Dedekind实数构造法.
+
+1) 设 $Q$ 是有理数集, $X \subset  Q$ 是任一子集. 若它满足下列三个条件:
+
+i) $X \neq  \varnothing ,X \neq  Q$ ;
+
+ii) 若 $r \in  X,s \in  Q$ 且 $s < r$ ,则 $s \in  X$ ;
+
+iii) 若 $r \in  X$ ,则存在 $s \in  X$ 使得 $r < s$ .
+
+则我们称 $X$ 是一个Dedekind实数.
+
+现设 $X$ 是任一 Dedekind 实数. 如果 $Q - X$ 有最小者,则称 $X$ 是第一类 Dedekind实数,反之则称 $X$ 是第二类 Dedekind 实数.
+
+a) 证明 $X = \{ r \in  \mathbf{Q} \mid  r < 1\}$ 是第一类 Dedekind 实数.
+
+$b)$ 证明 $Y = \left\{  {r \in  \mathbf{Q} \mid  r < 0\text{ 或 }{r}^{2} < 2}\right\}$ 是第二类 Dedekind 实数.
+
+c) 证明 ${X}_{0}$ 是第一类 Dedekind 实数的充分必要条件是存在有理数 ${r}_{0}$ 使得 ${X}_{0} = \left\{  {r \in  \mathbf{Q} \mid  r < {r}_{0}}\right\}$ .
+
+2 )我们用 $R$ 表示所有 Dedekind 实数集合。在 $R$ 上定义关系 $\leq$ 如下:
+$$\forall X,Y \in  \mathrm{R},X \leq  Y \Leftrightarrow  X \subset  Y.$$
+
+证明 $\leq$ 是 $\mathrm{R}$ 上的一个序关系.
+
+\section{实数集 $\mathbf{R}$ 的扩展}
+
+\section*{1. $\mathrm{R}$ 的第一个扩展}
+
+将实数集 $\mathbf{R}$ 添加两个新的元素 $- \infty$ 与 $+ \infty$ 所得新的集合记为 R. R上的序关系“≤”加上下述约定:
+$$\forall x \in  \mathbf{R}, - \infty  < x <  + \infty , - \infty  \leq   - \infty , + \infty  \leq   + \infty$$
+
+所得 $\overline{\mathbf{R}}$ 上的一个关系显然也是序关系. 因此, $\overline{\mathbf{R}}$ 关于这个序关系是一个全序集. 它是 $\mathbf{R}$ 的第一个扩展.
+
+$\overline{\mathbf{R}}$ 通常称为有终端的直线.
+
+\section*{2. $\mathrm{R}$ 的第二个扩展}
+
+我们来考虑乘积集合 $\mathbf{R} \times  \mathbf{R}$ . 在 $\mathbf{R} \times  \mathbf{R}$ 上定义加法 “+” 、乘法“·”与数乘运算:
+
+$\forall \left( {a,b}\right) ,\left( {c,d}\right)  \in  \mathbf{R} \times  \mathbf{R},\;\forall \lambda  \in  \mathbf{R},$
+
+i) $\left( {a,b}\right)  + \left( {c,d}\right)  - \left( {a + c,b + d}\right)$ ;
+
+ii) $\left( {a,b}\right)  \cdot  \left( {c,d}\right)  \triangleq  \left( {{ac} - {bd},{ad} + {bc}}\right)$ ;
+
+iii) $\lambda \left( {a,b}\right)  仝 \left( {{\lambda a},{\lambda b}}\right)$ .
+
+定义 定义了上述三个运算的集合 $\mathbf{R} \times  \mathbf{R}$ 称为复数集,记为 C. $\mathbf{C}$ 的每一个元素(a, b)称为复数.
+
+关于复数集 $\mathrm{C}$ 的性质,我们有下述定理.
+
+定理 $2 \cdot  4 \cdot  1\;1$ ) 复数集 $\mathrm{C}$ 关于加法与乘法运算 是一个交换域,即 $\mathbb{C}$ 关于加法是交换群; $\mathbb{C} - \{ \left( {0,0}\right) \}$ 关于乘法是交换群; $\mathrm{C}$ 的加法对乘法满足分配律.
+
+2) 映射 $\pi  : \mathbf{R} \rightarrow  \mathbf{C}\left( {\forall x \in  \mathbf{R},\pi \left( x\right)  = \left( {x,0}\right)  \in  \mathbf{C}}\right)$ 是从 $\mathbf{R}$ 到 $\pi \left( \mathbf{R}\right)$ 上的同构映射,即
+
+i) $\pi  : \mathbf{R} \rightarrow  \pi \left( \mathbf{R}\right)$ 是一一映射;
+
+ii) $\pi \left( {x + y}\right)  = \pi \left( x\right)  + \pi \left( y\right) ,\forall x,y \in  \mathbf{R}$ ;
+
+iii) $\pi \left( {xy}\right)  = \pi \left( x\right)  \cdot  \pi \left( y\right) ,\forall x,y \in  \mathbf{R}$ .
+
+定理的证明留给读者作为练习.
+
+利用映射 $\pi$ ,我们可以规定:
+$$\forall x \in  \mathbf{R},\left( {x,0}\right)  \bigtriangleup  x.$$
+
+如果我们引入记号
+$$\left( {0,1}\right)  \bigtriangleup  i,$$
+
+则由复数的乘法定义, 我们得到
+$${i}^{2} \triangleq  i \cdot  i = \left( {0,1}\right)  \cdot  \left( {0,1}\right)  = \left( {-1,0}\right)  =  - 1.$$
+
+现设 $z = \left( {a,b}\right)  \in  \mathbf{C}$ 是任一复数,由
+$$\left( {a,b}\right)  = \left( {a,0}\right)  + \left( {0,b}\right)  = \left( {a,0}\right)  + b\left( {0,1}\right)$$
+
+得到
+$$z = a + {ib}.$$
+
+这就是复数的通常表示法.
+
+定义 对任意一个复数 $z = a + {ib} \in  \mathbf{C}$ ,
+
+1) $i$ 称为虚数单位.
+
+2) $a$ 称为复数 $z$ 的实部, $b$ 称为复数 $z$ 的虚部系数,并记为 $a = \operatorname{Re}z,b = \operatorname{Im}z.$
+
+3) $a - {ib}$ 称为复数 $z = a + {ib}$ 的共轭复数,记为 $\bar{z}$ .
+
+4) 非负实数 $\sqrt{{a}^{2} + {b}^{2}}$ 称为复数 $z = a + {ib}$ 的模,记为 $\left| z\right|$ .
+
+5 )复数 $z = a + {ib}\left( {z \neq  \left( {0,0}\right) }\right)$ 的辐角就是满足
+$$\cos \theta  = \frac{a}{\sqrt{{a}^{2} + {b}^{2}}},\;\sin \theta  = \frac{b}{\sqrt{{a}^{2} + {b}^{2}}}$$
+
+的实数 $\theta$ 的模 ${2\pi }$ 类. 通常用 $\arg z$ 表示这个模 ${2\pi }$ 类中的任一元素.
+
+容易验证下述定理.
+
+定理 $2 \cdot  4 \cdot  2$ 模 $\left| z\right|$ 与辐角 $\arg z$ 具有下述性质:
+
+1) $\forall z \in  \mathbf{C},\left| z\right|  \geq  0$ ,且 $\left| z\right|  = 0 \Leftrightarrow  z = \left( {0,0}\right)$ ;
+
+2) $\forall {z}_{1},{z}_{2} \in  \mathbf{C}.\left| {{z}_{1} - {z}_{2}}\right|  = \left| {{z}_{2} - {z}_{1}}\right|$ ,
+\begin{align*}
+	&\left| {{z}_{1} + {z}_{2}}\right|  \leq  \left| {z}_{1}\right|  + \left| {z}_{2}\right|\\
+	&\left| {{z}_{1}{z}_{2}}\right|  = \left| {z}_{1}\right| \left| {z}_{2}\right|
+\end{align*}
+
+3) $\forall {z}_{1},{z}_{2} \in  \mathrm{C} - \{ \left( {0,0}\right) \}$ ,
+$$\arg \left( {{z}_{1}{z}_{2}}\right)  = \arg {z}_{1} + \arg {z}_{2}\left( {{\;\operatorname{mod}\;2}\pi }\right) .$$
+
+\section*{习 题}
+
+1. 证明: $R$ 上的序关系 $\leq$ 加上下述约定:
+$$\forall x \in  \mathbf{R}, - \infty  < x <  + \infty , - \infty  \leq   - \infty , + \infty  \leq   + \infty$$
+
+所得关系是 $\bar{R}$ 上的一个序关系.
+
+2. 证明定理 $2 \cdot  4 \cdot  1$ .
+
+3 . 证明定理 $2 \cdot  4 \cdot  2$ .
+
+\section{实数集 $\mathbf{R}$ 的特殊点、集}
+
+这一节我们初步介绍一些反映实数集 $\mathbf{R}$ 拓扑结构的特殊点、 集. 这不仅有助于我们加深对 $\mathrm{R}$ 的进一步认识,而且这些点、集在以后的一元实值函数的分析性质的研究中将发挥重要作用.
+
+\section*{1. $\mathbf{R}$ 的度量}
+
+我们首先介绍实数的绝对值概念.
+
+定义 $\forall x \in  \mathbf{R},x$ 的绝对值 $\left| x\right|$ 定义为
+$$\left| x\right|  = \left\{  \begin{array}{ll} x, & \text{ 若 }x \geq  0, \\   - x, & \text{ 若 }x < 0. \end{array}\right.$$
+
+绝对值有下面两个最基本的性质.
+
+性质 $1\;\forall x,y \in  \mathbf{R}$ ,
+
+1) $\left| x\right|  \geq  0,\left| x\right|  = 0 \Leftrightarrow  x = 0$ ;
+
+2) $\left| x\right|  = \left| {-x}\right| , - \left| x\right|  \leq  x \leq  \left| x\right|$ ;
+
+3) $\left| {xy}\right|  = \left| x\right| \left| y\right|$ ;
+
+4) $\forall \varepsilon  > 0,\left| x\right|  \leq  \varepsilon  \Leftrightarrow   - \varepsilon  \leq  x \leq  \varepsilon$ ;
+
+5) $\left| {x \pm  y}\right|  \leq  \left| x\right|  + \left| y\right| ,\left| \right| x\left| -\right| y\left| \right|  \leq  \left| {x - y}\right|$ .
+
+证明 1 )直接由绝对值定义推出.
+
+2) $\left| x\right|  = \left| {-x}\right|$ 也可由绝对值定义推得. 现在证明 $\left| x\right|  \geq  x$ . 为此只需证明 $\left| x\right|  - x \in  {\mathbf{R}}^{ + }$ .
+
+若 $x \geq  0$ ,则 $\left| x\right|  - x = x - x = 0 \in  {\mathbf{R}}^{ + }$ ;
+
+若 $x < 0$ ,则 $\left| x\right|  - x = \left( {-x}\right)  + \left( {-x}\right)  \in  {\mathbf{R}}^{ + } + {\mathbf{R}}^{ + } \subset  {\mathbf{R}}^{ + }$ . 因此 $\left| x\right|  \geq  x$ . 类似可证 $x \geq   - \left| x\right|$ .
+
+3) 若 ${xy} \geq  0$ ,则 $x \geq  0,y \geq  0$ 或 $x \leq  0,y \leq  0$ . 因此
+$$\left| {xy}\right|  = \left\{  \begin{array}{l} {xy} = \left| x\right|  \cdot  \left| y\right| ,\text{ 若 }x \geq  0,y \geq  0; \\  {xy} = \left( {-x}\right)  \cdot  \left( {-y}\right)  = \left| x\right| \left| y\right| ,\text{ 若 }x \leq  0,y \leq  0. \end{array}\right.$$
+
+若 ${xy} \leq  0$ ,则 $x \geq  0,y \leq  0$ 或 $x \leq  0,y \geq  0$ ,因此
+$$\left| {xy}\right|  = \left\{  \begin{array}{ll}  - \left( {xy}\right)  = x \cdot  \left( {-y}\right)  = \left| x\right| \left| y\right| , & \text{ 若 }x \geq  0,y \leq  0; \\   - \left( {xy}\right)  = \left( {-x}\right)  \cdot  y = \left| x\right| \left| y\right| , & \text{ 若 }x \leq  0,y \geq  0. \end{array}\right.$$
+
+因此 $\left| {xy}\right|  = \left| x\right| \left| y\right|$ .
+
+4) 设 $\varepsilon  > 0$ ,且 $\left| x\right|  \leq  \widetilde{\varepsilon }$ .
+
+若 $x \geq  0$ ,则 $\left| x\right|  = x$ ,从而 $0 \leq  x \leq  \bar{\varepsilon }$ . 因此 $- \bar{\varepsilon } \leq  x \leq  \bar{\varepsilon }$ .
+
+若 $x < 0$ ,则 $\left| x\right|  =  - x$ . 于是 $- x \leq  \varepsilon$ . 由 此得到 $- \varepsilon  \leq  x < 0$ . 因此 $- \varepsilon  \leq  x \leq  \varepsilon$ .
+
+反之设 $- \varepsilon  \leq  x \leq  \varepsilon$ .
+
+若 $x \geq  0$ ,则 $0 \leq  x \leq  \varepsilon$ . 从而 $\left| x\right|  \leq  \bar{\varepsilon }$ .
+
+若 $x < 0$ ,则 $- \varepsilon  \leq  x < 0$ ,从而 $0 <  - x \leq  \bar{\varepsilon }$ . 因此 $\left| x\right|  \leq  \bar{\varepsilon }$ .
+
+5)由 2 )我们有
+$$- \left| x\right|  \leq  x \leq  \left| x\right| ,\; - \left| y\right|  \leq  y \leq  \left| y\right| .$$
+
+因此
+$$- \left( {\left| x\right|  + \left| y\right| }\right)  =  - \left| x\right|  + \left( {-\left| y\right| }\right)  \leq  x + y \leq  \left| x\right|  + \left| y\right| .$$
+
+由 4 )得到
+$$\left| {x + y}\right|  \leq  \left| x\right|  + \left| y\right| .$$
+
+对第二个不等式, 我们有
+$$\left| {x - y}\right|  = \left| {x + \left( {-y}\right) }\right|  \leq  \left| x\right|  + \left| {-y}\right|  = \left| x\right|  + \left| y\right| .$$
+
+最后关于不等式 $\left| \right| x\left| -\right| y\left| \right|  \leq  \left| {x - y}\right|$ ,由于
+\begin{align*}
+	&\left| x\right|  = \left| {x - y + y}\right|  \leq  \left| {x - y}\right|  + \left| y\right| ,\\
+	&\left| y\right|  = \left| {y - x + x}\right|  \leq  \left| {y - x}\right|  + \left| x\right|  = \left| {x - y}\right|  + \left| x\right| ,
+\end{align*}
+
+故
+$$- \left| {x - y}\right|  \leq  \left| x\right|  - \left| y\right|  \leq  \left| {x - y}\right| .$$
+
+由 4 )得到
+$$\left| \right| x\left| -\right| y\left| \right|  \leq  \left| {x - y}\right| \text{ . }$$
+
+性质 $2\;\forall x,y,z \in  \mathbf{R}$ ,
+
+1) $\left| {x - y}\right|  \geq  0,\left| {x - y}\right|  = 0 \Leftrightarrow  x = y$ ;
+
+2) $\left| {x - y}\right|  = \left| {y - x}\right|$ ;
+
+3) $\left| {x - y}\right|  \leq  \left| {x - z}\right|  + \left| {z - y}\right|$ .
+
+证明 可由性质 1 推出.
+
+正因为绝对值 $\left| {x - y}\right|$ 具有性质 2,故引入下述定义.
+
+定义 $\forall x,y \in  \mathbf{R}$ ,实数值 $\left| {x - y}\right|$ 称为 $x$ 与 $y$ 之间的度量,实数集 $\mathbf{R}$ 连同这个度量一起称为实数度量空间,简称为实数空间.
+
+显然, $\mathbf{R}$ 上的这个绝对值度量不是别的,正是我们通常所说的实数轴上任意两点之间的Euclidean距离.
+
+一元函数的分析就是以这个实数度量空间为基本空间的.
+
+\section*{2. $\mathbf{R}$ 的一些重要集合}
+
+设 $a,b \in  \mathbf{R},a \leq  b$ ,我们定义下面四个集合:
+
+闭区间 $\left\lbrack  {a,b}\right\rbrack   \triangleq  \{ x \in  \mathbf{R} \mid  a \leq  x \leq  b\}$ ,
+
+开区间 $\rbrack a,b\lbrack  \triangleq  \{ x \in  \mathbf{R} \mid  a < x < b\}$ ,(1)
+
+左闭右开区间 $\lbrack a,b\lbrack  \triangleq  \{ x \in  \mathbf{R} \mid  a \leq  x < b\}$ ,
+
+左开右闭区间 $\rbrack a,b\rbrack  \triangleq  \{ x \in  \mathbf{R} \mid  a < x \leq  b\}$ .
+
+注意,若 $a = b$ ,则 $\left\lbrack  {a,b}\right\rbrack   = \{ a\} ,\rbrack a,b\lbrack  = \left\lbrack  {a,b\left\lbrack   = \right\rbrack  a,b}\right\rbrack   = \varnothing$ .
+
+此外, 我们还定义下面几个集合:
+\begin{align*}
+	&\rbrack  - \infty ,a\rbrack  \bigtriangleup  \{ x \in  \mathbf{R} \mid  x \leq  a\} ,\;\rbrack  - \infty ,a\lbrack  \triangleq  \{ x \in  \mathbf{R} \mid  x < a\} ,\\
+	&\left\lbrack  {a, + \infty \left\lbrack  { \triangleq  \{ x \in  \mathbf{R} \mid  x \geq  a\} ,}\right\rbrack  a, + \infty \lbrack  \triangleq  \{ x \in  \mathbf{R} \mid  x > a\} }\right\rbrack  ,
+\end{align*}
+
+(2)
+$$\mathbf{R} \triangleq  \rbrack  - \infty , + \infty \left\lbrack  {,\overline{\mathbf{R}} \triangleq  \left\lbrack  {-\infty , + \infty }\right\rbrack  }\right\rbrack  .$$
+
+(1)中的各区间称为 $\mathrm{R}$ 的有限区间. (2)中的各集合称为无限区间. 有限区间与无限区间统称为区间.
+
+\section*{3. 邻域}
+
+定义 设 $a \in  \mathbf{R}$ .
+
+1) 包含 $a$ 的任一开区间 $\rbrack \alpha ,\beta \lbrack$ 称为 $a$ 的一个邻域. 我们用 $\mathcal{N}\left( a\right)$ 表示由 $a$ 的所有邻域组成的邻域系.
+
+特别地, $\forall \delta  > 0$ ,
+$$B\left( {a,\delta }\right)  \triangleq  \{ x \in  \mathbf{R}\left| \right| x - a \mid   < \delta \}  = \rbrack a - \delta ,a + \delta \lbrack$$
+
+称为以 $a$ 为中心 $\delta$ 为半径的 $\delta$ 邻域.
+
+2) $\forall \delta  > 0$ ,
+$$\overset{ \circ  }{B}\left( {a,\delta }\right)  \triangleq  \{ x \in  \mathbf{R}\left| {0 < }\right| x - a \mid   < \delta \}$$
+
+称为以 $a$ 为中心 $\delta$ 为半径的去心 $\delta$ 邻域.
+\begin{align*}
+	&{B}_{ + }\left( {a,\delta }\right)  \triangleq  \{ x \in  \mathbf{R} \mid  a \leq  x < a + \delta \} ,\\
+	&{B}_{ - }\left( {a,\delta }\right)  \triangleq  \{ x \in  \mathbf{R} \mid  a - \delta  < x \leq  a\}
+\end{align*}
+
+分别称为 $a$ 的右侧与左侧 $\delta$ 邻域.
+\begin{align*}
+	&{\overset{ \circ  }{B}}_{ + }\left( {a,\delta }\right)  \triangleq  \{ x \in  \mathbf{R} \mid  a < x < a + \delta \} ,\\
+	&{\mathring{B}}_{ - }\left( {a,\delta }\right)  \triangleq  \{ x \in  \mathbf{R} \mid  a - \delta  < x < a\}
+\end{align*}
+
+分别称为 $a$ 的右侧与左侧去 ${a\delta }$ 邻域.
+
+3) 开区间 $\rbrack a, + \infty \lbrack$ 与 $\rbrack  - \infty ,a\lbrack$ 分别称为 $+ \infty$ 与 $- \infty$ 邻域.
+
+性质 (Hausdorff 分离性) $\forall x,y \in  \mathbf{R}$ ,且 $x \neq  y,\exists \delta  > 0$
+
+使得
+$$B\left( {x,\delta }\right)  \cap  B\left( {y,\delta }\right)  = \varnothing$$
+
+证明 取 $\delta  = \frac{\left| x - y\right| }{3}$ .
+
+\section*{4. 聚点、孤立点、内点}
+
+定义 设 $X \subset  \mathbf{R}$ 是任一集合. $a \in  \mathbf{R}$ .
+
+1) 我们称 $a$ 是 $X$ 的 (有限) 聚点,如果
+$$\forall \delta  > 0,X \cap  \overset{ \circ  }{B}\left( {a,\delta }\right)  \neq  \varnothing ,$$
+
+2) 我们称 $a$ 是 $X$ 的右侧聚点,如果
+$$\forall \delta  > 0,X \cap  {\overset{ \circ  }{B}}_{ + }\left( {a,\delta }\right)  \neq  \varnothing ,$$
+
+3) 我们称 $a$ 是 $X$ 的左侧聚点,如果
+$$\forall \delta  > 0,X \cap  {\overset{ \circ  }{B}}_{ - }\left( {a,\delta }\right)  \neq  \varnothing ;$$
+
+4) 我们称 $a$ 是 $X$ 的双侧聚点,如果 $a$ 是 $X$ 的右侧聚点又是 $X$ 的左侧聚点.
+
+注意: 由上述定义可知: 若 $a$ 是 $X$ 的聚点,则它至少是一个单侧聚点; $X$ 的聚点可以属于 $X$ ,也可以不属于 $X$ .
+
+例 1 考虑集合 $X = \left\{  {1,\frac{1}{2},\frac{1}{3},\cdots ,\frac{1}{n},\cdots }\right\}  ,0$ 是 $X$ 的唯一聚点. $0 \in  X$ .
+
+例2 考虑区间 $\rbrack a,b\rbrack .\forall x \in  \rbrack a,b\rbrack ,x$ 都是 $\rbrack a,b\rbrack$ 的聚点,但 $a$ 是右侧聚点, $b$ 是左侧聚点,而其它的点是 $\rbrack a,b\rbrack$ 的 双侧聚点.
+
+定义 设 $X \subset  \mathbf{R}$ 是任一集合, $a \in  X$ .
+
+1)我们称 $a$ 是 $X$ 的孤立点,如果
+$$\exists \delta  > 0,X \cap  B\left( {a,\delta }\right)  = \{ a\} .$$
+
+2) 我们称 $a$ 是 $X$ 的内点,如果
+$$\exists \delta  > 0,B\left( {a,\delta }\right)  \subset  X.$$
+
+由 $X$ 的所有内点组成的集合称为 $X$ 的内部,记为 $X$ .
+
+例 3 例 1 中的集合 $X$ 的每一个元素 $\frac{1}{n}\left( {n \in  \mathbf{N}}\right)$ 都是孤立点. $X$ 的内部 $\overset{ \circ  }{X} = \varnothing$ ; 例 2 中的集合 $\rbrack a,b\rbrack$ 没 有孤立点, $\rbrack a,b\rbrack$ 的内部 $\left\rbrack  {\overset{ \circ  }{a},b}\right\rbrack   = \rbrack a,b\lbrack$ .
+
+例 4 考虑开区间 $a,b$ [. 显然] $a,b$ [没有孤立点,并且] $a$ , $b\left\lbrack  {\text{ 的内部 }\rbrack \overset{ \circ  }{a},\overset{ \circ  }{b}\lbrack  = }\right\rbrack  a,b\lbrack$ .
+
+定义 设 $X \subset  \mathbf{R}$ 是任一集合. 我们称 $+ \infty \left( {-\infty }\right)$ 是 $X$ 的正 (负)无穷远聚点, 如果
+$$\forall M > 0,X \cap  \rbrack M, + \infty \lbrack  \neq  \varnothing \;\left( {X \cap  \rbrack  - \infty , - M\lbrack  \neq  \varnothing }\right) .$$
+
+例 5 考虑集合 $X = \mathbf{Z}$ ,显然 $\mathbf{Z}$ 有 $\pm  \infty$ 无穷远聚点. $\mathbf{Z}$ 没有有限聚点.
+
+例6 考虑集合
+\begin{align*}
+	&X = \left\{  {\left. {\frac{1}{n} + \left( {{\left( -1\right) }^{n} + 1}\right) n}\right| \;n \in  N}\right\}  ,\\
+	&Y = \left\{  {\left. {\frac{1}{n} + \left( {{\left( -1\right) }^{n} - 1}\right) n}\right| \;n \in  \mathbf{N}}\right\}  .
+\end{align*}
+
+$X$ 有 $+ \infty$ 无穷远聚点, $Y$ 有 $- \infty$ 无穷远聚点, $X$ 与 $Y$ 有有限聚点 0 .
+
+\section*{5. 开集、闭集}
+
+定义 设 $X \subset  \mathbf{R}$ 是任一集合.
+
+1)我们称 $X$ 是开集,如果
+$$\left( {\forall x \in  X}\right) \left( {\exists \delta  > 0}\right)  \Rightarrow  B\left( {x,\delta }\right)  \subset  X.$$
+
+2) 我们称 $X$ 是闭集,如果 $\mathbf{R} - X$ 是开集.
+
+显然空集 $\varnothing$ 与 $\mathbf{R}$ 既是开集又是闭集. 任何一个开区间 $a,b$ [ 是开集,而闭区间 $\left\lbrack  {a,b}\right\rbrack$ 是闭集,任何一个集合 $X$ 的内部 $\overset{ \circ  }{X}$ 是开集.
+
+\section*{习 题}
+
+1. 证明下列各关系式
+
+1) $\left| {x + y}\right|  = \left| x\right|  + \left| y\right|$ 当且仅当 ${xy} \geq  0$ ,
+
+$\left| {x + y}\right|  < \left| x\right|  + \left| y\right|$ 当且仅当 ${xy} < 0$ .
+
+2) $\frac{\left| x + y\right| }{1 + \left| {x + y}\right| } \leq  \frac{\left| x\right| }{1 + \left| x\right| } + \frac{\left| y\right| }{1 + \left| y\right| }$ .
+
+2. 证明绝对值的性质 2 .
+
+3. 指出下列各集合 $X$ 的 (有限或无穷远) 聚点.
+
+1) $X = \left\{  {\left. \frac{1 + {\left( -1\right) }^{n}}{n}\right| \;n \in  \mathbb{N}}\right\}  ,2)X = \left\{  {{n}^{\left( {-1}\right)  * } \mid  n \in  \mathbf{N}}\right\}$ ,
+
+3) $X = \left\{  {{\left( -1\right) }^{n}\left( {1 + \frac{1}{n}}\right)  \mid  n \in  \mathrm{N}}\right\}$ ,
+
+4) $X = \left\{  {\left. {\frac{1}{n} + \frac{1}{m}}\right| \;n,m \in  \mathrm{N}}\right\}$ .
+
+4. 有理数集 $Q$ 及无理数集 ${Q}^{c}$ 的聚点是哪些? $Q$ 与 ${Q}^{c}$ 有孤立点 与内点吗?
+
+5. 设 $X \subset  R$ 是任一非空集合,证明 $a \in  R$ 是 $X$ 的聚点 的充分必要条件是 $a$ 的每一个邻域 $U \in  \mathcal{N}\left( a\right)$ 包含 $X$ 的无限多个元素.
+
+6. 回答下列各问题:
+
+1) $\left. \mathop{\bigcap }\limits_{{n = 1}}^{{+\infty }}\right\rbrack  0,\frac{1}{n}\lbrack$ 是非空开集吗?
+
+2) $\mathop{\bigcap }\limits_{{n = 1}}^{{+\infty }}\rbrack  - \frac{1}{n},\frac{1}{n}$ [是非空开集?是闭集:
+
+3) $\left. \mathop{\bigcap }\limits_{{n = 1}}^{{+\infty }}\right\rbrack   - 1,1 + \frac{1}{n}\lbrack$ 是既非开又非闭集?
+
+4) $\mathop{\bigcap }\limits_{{n = 1}}^{{+\infty }}\left\lbrack  {-1 + \frac{1}{n},1 - \frac{1}{n}}\right\rbrack$ 是闭集?
+
+7. 证明 $\forall a,b \in  \mathrm{R}$ 且 $a < b,\lbrack a,b\lbrack$ 既不是 $\mathrm{R}$ 的开集也不是闭集.

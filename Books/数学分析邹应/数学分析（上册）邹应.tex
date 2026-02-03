@@ -1,0 +1,122 @@
+\documentclass[12pt, letterpaper]{ctexbook}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{stmaryrd}
+\usepackage{hyperref}
+\hypersetup{colorlinks=true, linkcolor=blue, filecolor=magenta, urlcolor=cyan,}
+\urlstyle{same}
+\usepackage{graphicx}
+\usepackage[export]{adjustbox}
+\usepackage{mdframed}
+\usepackage{booktabs,array,multirow}
+\usepackage{xeCJK}
+\graphicspath{ {./images/} }
+
+
+\usepackage[letterpaper, left=2.9cm, right=2.9cm, top=2.1cm, bottom=2.9cm]{geometry}
+\usepackage{color}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage[amsmath,thmmarks]{ntheorem}
+\usepackage{hyperref}
+
+%页面格式
+\pagestyle{plain}
+
+\ctexset{
+	chapter={
+		format={\Large\heiti\raggedright},
+		name={,},
+		number=\arabic{chapter},
+		beforeskip={0pt},
+		afterskip={11pt}
+	},
+	section={
+		format={\large\heiti\raggedright},
+		name={,},
+		number=\arabic{chapter},
+		beforeskip={11pt},
+		afterskip={0pt}
+	},
+}
+
+%定理环境
+\newenvironment{example}
+{\setlength{\parindent}{0em}
+	{\heiti 练习.}
+	\kaishu}%
+{}
+\newenvironment{note}
+{\setlength{\parindent}{0em}
+	{\heiti 注记.} \kaishu}%
+{}
+
+\newcounter{theoremlist}
+\newenvironment{theoremenum}%
+{\begin{list}{{\itshape \thetheoremlist )}}{\usecounter{theoremlist}}}%
+	{\end{list}}
+\begin{document}
+	\begin{titlepage}
+	\begin{center}
+		\vspace*{\stretch{1}}
+		{\LARGE 数学分析重排本~{\small 之}~邹应-上册}\\
+		\vspace*{11pt}
+		{\small 武汉大学数学学院}\\
+		\vspace*{33pt}
+		{\large 箸于1994年8月}\\
+		
+	\end{center}
+		\vspace*{33pt}
+		\begin{center}
+		\includegraphics[max
+		width=0.7\textwidth]{fig/1.png}
+		\end{center}
+		
+		\begin{center}
+		\vspace*{\stretch{4}}
+		{\large 武汉大学~{\small 囿}~珞珈山下}\\
+		\vspace*{33pt}
+		{\small \today}
+		\end{center}
+	\end{titlepage}
+	
+	
+	\tableofcontents%制作目录
+	
+	
+	\newpage
+
+	\input{cha/preface}
+
+	\input{cha/chapter0}
+	
+	\input{cha/chapter1}
+
+	\input{cha/chapter2}
+	
+	
+	\input{cha/chapter3}
+	
+	\input{cha/chapter4}
+	
+	\input{cha/chapter5}
+	
+	\input{cha/chapter6}
+	
+	\input{cha/chapter7}
+	
+	
+	\input{cha/chapter8}
+	
+	\input{cha/chapter9}
+
+
+
+
+
+\end{document}
+
