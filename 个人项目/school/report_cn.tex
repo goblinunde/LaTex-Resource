@@ -1,0 +1,1252 @@
+% !TeX program = xelatex
+% !TeX encoding = UTF-8
+% =========================================================
+% hustreport.cls 源代码完整分析教程
+% 版本: v3.0
+% 语言: 中文
+% =========================================================
+\documentclass[linux]{hustreport}
+
+% 文档基本信息
+\title{hustreport.cls 源代码分析}
+\author{HUST Report 开发团队}
+
+\begin{document}
+
+% =========================================================
+% 封面页
+% =========================================================
+\begin{titlepage}
+    \centering
+    \vspace*{3cm}
+    {\Huge\bfseries\heiti hustreport.cls\par}
+    \vspace{0.5cm}
+    {\Large\songti 黑龙江科技大学报告模板类\par}
+    \vspace{1cm}
+    {\large 源代码完整分析教程\par}
+    \vspace{2cm}
+    {\large 版本 v3.0\par}
+    \vspace{0.5cm}
+    {\large \today\par}
+    \vfill
+    {\small 本文档对 hustreport.cls 类文件进行逐模块的详细分析。\par}
+\end{titlepage}
+
+\tableofcontents
+\newpage
+
+% =========================================================
+% 第一章: 引言与概述
+% =========================================================
+\section{引言与概述}
+
+\subsection{模板用途}
+
+\texttt{hustreport.cls} 是为黑龙江科技大学本科生设计的 \LaTeX{} 文档类，主要用于：
+
+\begin{itemize}
+    \item 社会调查报告
+    \item 实习报告
+    \item 毕业论文（使用 \texttt{thesis} 选项）
+\end{itemize}
+
+\subsection{架构概览}
+
+类文件包含 \textbf{20 个功能模块}，共约 1445 行代码：
+
+\begin{enumerate}
+    \item \textbf{模块 0-1}：版本声明与类选项
+    \item \textbf{模块 2}：宏包加载（按功能分类）
+    \item \textbf{模块 3}：用户信息接口
+    \item \textbf{模块 4}：智能字体配置
+    \item \textbf{模块 5-6}：页面布局与章节标题
+    \item \textbf{模块 7-8}：图表格式与 PDF 属性
+    \item \textbf{模块 9-10}：特殊环境与封面生成
+    \item \textbf{模块 11-20}：高级功能（代码块、批注系统等）
+\end{enumerate}
+
+\subsection{编译要求}
+
+本模板\textbf{必须}使用 XeLaTeX 编译：
+
+\begin{verbatim}
+xelatex your_document.tex
+bibtex your_document      % 如有参考文献
+xelatex your_document.tex
+xelatex your_document.tex
+\end{verbatim}
+
+% =========================================================
+% 第二章: 模块 0-1 - 版本声明与类选项
+% =========================================================
+\newpage
+\section{模块 0-1：版本声明与类选项}
+
+\subsection{版本声明（第 1-14 行）}
+
+每个 \LaTeX{} 类文件必须声明格式要求并提供标识信息：
+
+\begin{verbatim}
+% 第 12-13 行：格式与类标识
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesClass{hustreport}[2026/01/05 v3.0 HUST Report Class]
+\end{verbatim}
+
+\textbf{要点说明：}
+\begin{itemize}
+    \item \verb|\NeedsTeXFormat{LaTeX2e}| 确保与现代 \LaTeX{} 兼容
+    \item \verb|\ProvidesClass| 提供版本信息，编译日志中可见
+\end{itemize}
+
+\subsection{布尔开关（第 19-24 行）}
+
+类使用布尔开关控制条件编译：
+
+\begin{verbatim}
+% 平台检测开关
+\newif\ifhust@oswin    \hust@oswinfalse
+\newif\ifhust@osmac    \hust@osmacfalse
+\newif\ifhust@oslinux  \hust@oslinuxfalse
+\newif\ifhust@optfonts \hust@optfontsfalse
+\newif\ifhust@thesis   \hust@thesisfalse
+\end{verbatim}
+
+\textbf{实现模式：}
+\begin{itemize}
+    \item \verb|\newif| 创建布尔开关，默认为 \texttt{false}
+    \item 命名约定：\verb|\ifhust@<名称>| 使用内部前缀 \verb|hust@|
+    \item 所有开关初始化为 \texttt{false}，采用"显式启用"模式
+\end{itemize}
+
+\subsection{选项声明（第 27-31 行）}
+
+使用 \verb|\DeclareOption| 声明选项：
+
+\begin{verbatim}
+% 平台选项
+\DeclareOption{win}{\hust@oswintrue}
+\DeclareOption{mac}{\hust@osmactrue}
+\DeclareOption{linux}{\hust@oslinuxtrue}
+\DeclareOption{fonts}{\hust@optfontstrue}
+\DeclareOption{thesis}{\hust@thesistrue}
+\end{verbatim}
+
+\subsection{选项转发与处理（第 33-35 行）}
+
+未识别的选项转发给基类：
+
+\begin{verbatim}
+\DeclareOption*{\PassOptionsToClass{\CurrentOption}{ctexrep}}
+\ProcessOptions\relax
+\end{verbatim}
+
+\subsection{基类加载（第 37-43 行）}
+
+模板基于 \texttt{ctexrep} 构建以支持中文：
+
+\begin{verbatim}
+\LoadClass[a4paper,UTF8,zihao=-4,linespread=1.5]{ctexrep}
+\end{verbatim}
+
+\textbf{参数说明：}
+\begin{optionlist}
+    \option{a4paper}{标准 A4 纸张尺寸（210mm × 297mm）}
+    \option{UTF8}{UTF-8 编码支持中文}
+    \option{zihao=-4}{默认字号：小四（相当于 12pt）}
+    \option{linespread=1.5}{1.5 倍行距提高可读性}
+\end{optionlist}
+
+% =========================================================
+% 第三章: 模块 2 - 宏包加载
+% =========================================================
+\newpage
+\section{模块 2：宏包加载}
+
+\subsection{组织理念}
+
+宏包按功能类别组织以便维护：
+
+\subsection{页面与布局宏包（第 51-55 行）}
+
+\begin{verbatim}
+\RequirePackage{geometry}   % 页面边距
+\RequirePackage{fancyhdr}   % 页眉页脚
+\RequirePackage{float}      % 浮动体控制
+\RequirePackage[sort&compress,numbers,square]{natbib}
+\end{verbatim}
+
+\subsection{标题与目录宏包（第 57-59 行）}
+
+\begin{verbatim}
+\RequirePackage{titletoc}   % 目录格式
+\RequirePackage{titlesec}   % 标题格式
+\end{verbatim}
+
+\subsection{数学与物理宏包（第 61-66 行）}
+
+\begin{verbatim}
+\RequirePackage{amsmath,amssymb,amsfonts,amsthm}
+\RequirePackage{physics}    % 物理符号简写
+\RequirePackage{siunitx}    % 国际单位制
+\RequirePackage{newtxmath}  % 数学字体优化
+\RequirePackage{calc}       % 长度计算
+\end{verbatim}
+
+\subsection{图形与颜色宏包（第 68-72 行）}
+
+\begin{verbatim}
+\RequirePackage{graphicx}   % 图片插入
+\RequirePackage{subcaption} % 子图支持
+\RequirePackage{tikz}       % 绘图与定位
+\RequirePackage[dvipsnames,svgnames,x11names]{xcolor}
+\end{verbatim}
+
+\subsection{表格与列表宏包（第 74-84 行）}
+
+\begin{verbatim}
+\RequirePackage{booktabs}   % 专业表格
+\RequirePackage{threeparttable}
+\RequirePackage{caption}
+\RequirePackage{tabularx}   % 自适应宽度表格
+\RequirePackage{xltabular}  % 跨页长表格
+\RequirePackage{multirow}   % 多行合并
+\RequirePackage{makecell}   % 单元格换行
+\RequirePackage{array}      % 列格式扩展
+\RequirePackage{enumitem}   % 列表定制
+\RequirePackage{diagbox}    % 斜线表头
+\end{verbatim}
+
+% =========================================================
+% 第四章: 模块 3 - 信息接口
+% =========================================================
+\newpage
+\section{模块 3：信息接口}
+
+\subsection{内部存储变量（第 97-102 行）}
+
+类定义使用 \verb|@| 前缀的内部变量：
+
+\begin{verbatim}
+\makeatletter
+\newcommand{\@major}{}      % 专业
+\newcommand{\@dept}{}       % 院系
+\newcommand{\@advisor}{}    % 指导教师
+\newcommand{\@team}{}       % 队员
+\newcommand{\@studentID}{}  % 学号
+\newcommand{\@reportID}{}   % 报告编号
+\end{verbatim}
+
+\subsection{对外接口命令（第 105-110 行）}
+
+用户使用的命令，用于设置内部变量：
+
+\begin{verbatim}
+\newcommand{\major}[1]{\def\@major{#1}}
+\newcommand{\dept}[1]{\def\@dept{#1}}
+\newcommand{\advisor}[1]{\def\@advisor{#1}}
+\newcommand{\team}[1]{\def\@team{#1}}
+\newcommand{\studentID}[1]{\def\@studentID{#1}}
+\newcommand{\reportID}[1]{\def\@reportID{#1}}
+\end{verbatim}
+
+\subsection{任务书变量（第 113-116 行）}
+
+任务书内容的预定义变量：
+
+\begin{verbatim}
+\newcommand{\taskTargetText}{内容待定}
+\newcommand{\taskContentText}{内容待定}
+\newcommand{\taskExpectedText}{内容待定}
+\newcommand{\taskScheduleText}{进度待定}
+\end{verbatim}
+
+\subsection{智能下划线组件（第 119-123 行）}
+
+表单填空处的自适应下划线：
+
+\begin{verbatim}
+\newcommand{\ulineinfo}[2][280pt]{%
+    \begin{minipage}[t]{#1}%
+        \centering\zihao{3}\songti\uline{#2\hfill}%
+    \end{minipage}%
+}
+\end{verbatim}
+
+% =========================================================
+% 第五章: 模块 4 - 字体配置
+% =========================================================
+\newpage
+\section{模块 4：智能字体配置}
+
+\subsection{设计理念}
+
+字体系统实现\textbf{回退链}，包含三个优先级：
+
+\begin{enumerate}
+    \item \textbf{最高优先级}：本地 \texttt{fonts/} 目录
+    \item \textbf{中等优先级}：平台特定系统字体
+    \item \textbf{保底策略}：Fandol 开源字体
+\end{enumerate}
+
+\subsection{字体重置（第 129-131 行）}
+
+清除现有字体定义以防冲突：
+
+\begin{verbatim}
+\let\songti\relax
+\let\heiti\relax
+\let\kaiti\relax
+\end{verbatim}
+
+\subsection{英文字体配置（第 147-167 行）}
+
+\begin{verbatim}
+\IfFileExists{fonts/times.ttf}{
+    % 找到本地 Times 字体
+    \setmainfont{times.ttf}[
+        Path = fonts/,
+        BoldFont = timesbd.ttf,
+        ItalicFont = timesi.ttf,
+        BoldItalicFont = timesbi.ttf
+    ]
+}{
+    % 系统回退
+    \ifhust@oswin
+        \setmainfont{Times New Roman}
+    \else
+        \ifhust@osmac
+            \setmainfont{Times New Roman}
+        \else
+            \setmainfont{TeX Gyre Termes}
+        \fi
+    \fi
+}
+\end{verbatim}
+
+\subsection{中文字体配置（第 171-254 行）}
+
+中文字体设置使用条件检查每个字体文件：
+
+\begin{verbatim}
+\IfFileExists{fonts/SimSun.ttf}{
+    % 本地中文字体可用
+    \setCJKmainfont{SimSun.ttf}[
+        Path = fonts/,
+        BoldFont = \hust@cjk@bold,
+        ItalicFont = \hust@cjk@italic,
+        AutoFakeBold = \hust@cjk@fakebold
+    ]
+    % ... 其他字体族定义
+}{
+    % 平台特定系统字体
+    \ifhust@oswin
+        % Windows: SimSun, SimHei, KaiTi
+    \else\ifhust@osmac
+        % macOS: Songti SC, Heiti SC, Kaiti SC
+    \else
+        % Linux: Fandol 字体
+    \fi\fi
+}
+\end{verbatim}
+
+% =========================================================
+% 第六章: 模块 5-6 - 页面布局与章节标题
+% =========================================================
+\newpage
+\section{模块 5-6：页面布局与章节标题}
+
+\subsection{条件页面布局（第 260-301 行）}
+
+布局根据 \texttt{thesis} 选项切换：
+
+\begin{verbatim}
+\ifhust@thesis
+    % 毕业论文模式：带校徽的特殊页眉
+    \geometry{
+        a4paper,
+        top=3.7cm, bottom=2.5cm,
+        left=3.9cm, right=2.5cm,
+        headheight=3cm, headsep=0.5cm
+    }
+    
+    % 带校徽的自定义页眉
+    \pagestyle{fancy}
+    \fancyhf{}
+    \renewcommand{\headrulewidth}{2.5pt}
+    \fancyhead[L]{\includegraphics[height=2.6cm]{logo.png}}
+    \fancyhead[C]{...校名和标题...}
+    \fancyfoot[C]{\thepage}
+\else
+    % 标准报告模式
+    \geometry{left=3.017cm, right=3.017cm, 
+              top=2.54cm, bottom=2.54cm}
+    \pagestyle{plain}
+\fi
+\end{verbatim}
+
+\subsection{计数器配置（第 305-313 行）}
+
+章节编号使用阿拉伯数字并与章绑定：
+
+\begin{verbatim}
+\renewcommand{\thesection}{\arabic{section}}
+\renewcommand{\thesubsection}{\thesection.\arabic{subsection}}
+\renewcommand{\thesubsubsection}{\thesubsection.\arabic{subsubsection}}
+
+% 计数器绑定到章节（每章重置）
+\counterwithin{equation}{section}
+\counterwithin{figure}{section}
+\counterwithin{table}{section}
+\end{verbatim}
+
+\subsection{章节标题样式（第 325-352 行）}
+
+使用 \texttt{ctexset} 进行中文感知格式化：
+
+\begin{verbatim}
+\ctexset{
+    section = {
+        number = \chinese{section},
+        name = {第,章},
+        format = \centering\zihao{3}\heiti\bfseries,
+        aftername = \quad,
+        beforeskip = 15pt, afterskip = 20pt
+    },
+    subsection = {
+        format = \zihao{4}\heiti\bfseries,
+        aftername = \hspace{1em}
+    },
+    subsubsection = {
+        format = \zihao{-4}\songti,
+        aftername = \hspace{1em}
+    }
+}
+\end{verbatim}
+
+\subsection{目录样式（第 358-376 行）}
+
+自定义目录格式：
+
+\begin{verbatim}
+\titlecontents{section}[0pt]
+{\addvspace{6pt}\bfseries\heiti\zihao{4}}
+{\thecontentslabel\quad}
+{}
+{\titlerule*[0.5pc]{.}\contentspage}
+\end{verbatim}
+
+% =========================================================
+% 第七章: 模块 7-8 - 图表与 PDF
+% =========================================================
+\newpage
+\section{模块 7-8：图表格式与 PDF 属性}
+
+\subsection{浮动体参数优化（第 386-392 行）}
+
+解决"图片乱跑"问题：
+
+\begin{verbatim}
+\renewcommand{\topfraction}{0.85}    % 顶部浮动体：85%
+\renewcommand{\bottomfraction}{0.70} % 底部浮动体：70%
+\renewcommand{\textfraction}{0.10}   % 最小文本：10%
+\renewcommand{\floatpagefraction}{0.50}
+\end{verbatim}
+
+\subsection{标题样式（第 395-410 行）}
+
+专业的标题格式：
+
+\begin{verbatim}
+\DeclareCaptionFont{heiti}{\heiti}
+\DeclareCaptionFont{fivehao}{\zihao{5}}
+\captionsetup{
+    format=hang,
+    labelsep=quad,
+    font={fivehao,heiti},
+    skip=6pt
+}
+\end{verbatim}
+
+\subsection{编号格式（第 415-423 行）}
+
+相对于章节的编号：
+
+\begin{verbatim}
+\renewcommand{\theequation}{\thesection-\arabic{equation}}
+\renewcommand{\thefigure}{\thesection-\arabic{figure}}
+\renewcommand{\thetable}{\thesection-\arabic{table}}
+
+% 引用自动添加前缀
+\labelformat{figure}{图~#1}
+\labelformat{table}{表~#1}
+\labelformat{equation}{式~(#1)}
+\end{verbatim}
+
+\subsection{PDF 属性（第 442-448 行）}
+
+Hyperref 配置：
+
+\begin{verbatim}
+\hypersetup{
+    hidelinks,
+    colorlinks=false,
+    bookmarksnumbered=true,
+    bookmarksopen=true,
+    pdfstartview=FitH
+}
+\end{verbatim}
+
+% =========================================================
+% 第八章: 模块 9-10 - 特殊环境与封面
+% =========================================================
+\newpage
+\section{模块 9-10：特殊环境与封面}
+
+\subsection{中文摘要环境（第 455-468 行）}
+
+\begin{verbatim}
+\newenvironment{cnabstract}[1]{
+    \def\@keyword{#1}
+    \clearpage
+    \phantomsection
+    \addcontentsline{toc}{section}{摘要}
+    \begin{center} \heiti\zihao{3} \@title \end{center}
+    \vspace{1ex}
+    \begin{center} \heiti\zihao{4} 摘　要 \end{center}
+    \par
+}{
+    \par\vspace{2ex}
+    \noindent{\heiti\zihao{-4} 关键词：}\@keyword
+    \newpage
+}
+\end{verbatim}
+
+\subsection{参考文献自动化（第 471-498 行）}
+
+\begin{verbatim}
+\newcommand{\MyBibliography}[1]{
+    \clearpage
+    \phantomsection
+    \addcontentsline{toc}{section}{参考文献}
+    \renewcommand{\section}[2]{}% 抑制自动标题
+    \bibliographystyle{plain}
+    \bibliography{#1}
+}
+\end{verbatim}
+
+\subsection{附录环境（第 501-527 行）}
+
+\begin{verbatim}
+\newenvironment{appendixblock}{
+    \clearpage
+    \setcounter{section}{0}
+    \renewcommand{\thesection}{\Alph{section}}
+    \ctexset{
+        section = {
+            name = {附录,},
+            format = \centering\zihao{4}\heiti\bfseries
+        }
+    }
+}{}
+\end{verbatim}
+
+\subsection{TikZ 封面生成（第 641-680 行）}
+
+封面使用 TikZ 进行绝对定位：
+
+\begin{verbatim}
+\newcommand{\makecover}{
+    \begin{titlepage}
+        \begin{tikzpicture}[remember picture, overlay]
+            % 校徽定位
+            \node[anchor=north east, xshift=-2cm, yshift=-2cm] 
+                at (current page.north east) {
+                \includegraphics[width=0.25\textwidth]{logo.png}
+            };
+        \end{tikzpicture}
+        % 标题和信息表格...
+    \end{titlepage}
+}
+\end{verbatim}
+
+% =========================================================
+% 第九章: 模块 11-12 - 高级布局与代码
+% =========================================================
+\newpage
+\section{模块 11-12：高级布局与代码环境}
+
+\subsection{图文混排布局（第 693-737 行）}
+
+\texttt{textfigure} 环境使用 \texttt{xparse}：
+
+\begin{verbatim}
+\NewDocumentEnvironment{textfigure}{O{right} m m O{0.4}}{%
+    \def\tf@pos{#1}%    % 位置：left 或 right
+    \def\tf@path{#2}%   % 图片路径
+    \def\tf@cap{#3}%    % 标题
+    \setlength{\tf@imagew}{#4\textwidth}%
+    % 计算文字宽度
+    \setlength{\tf@textw}{\textwidth}%
+    \addtolength{\tf@textw}{-\tf@imagew}%
+    \addtolength{\tf@textw}{-1.5em}%
+    % 开始文字捕获...
+}{%
+    % 并排渲染图片 + 文字
+}
+\end{verbatim}
+
+\subsection{代码环境设计（第 772-811 行）}
+
+语法高亮的颜色定义：
+
+\begin{verbatim}
+\definecolor{hust@codeback}{RGB}{250,250,250}
+\definecolor{hust@keyword}{RGB}{0,92,197}
+\definecolor{hust@comment}{RGB}{80,161,79}
+\definecolor{hust@string}{RGB}{227,17,108}
+
+\lstdefinestyle{huststyle}{
+    basicstyle=\small\ttfamily,
+    keywordstyle=\bfseries\color{hust@keyword},
+    commentstyle=\itshape\color{hust@comment},
+    stringstyle=\color{hust@string},
+    numbers=left,
+    breaklines=true,
+    keepspaces=true
+}
+\end{verbatim}
+
+\subsection{tcolorbox 集成（第 814-855 行）}
+
+Mac 风格三色点代码块：
+
+\begin{verbatim}
+\tcbset{
+    hustcodestyle/.style={
+        enhanced, breakable,
+        colback=hust@codeback,
+        title={\textbf{代码 \thehustcode：}#1},
+        % Mac 风格装饰
+        overlay unbroken and first={
+            \draw[fill=red!70!white] 
+                ([xshift=6mm,yshift=-1.5mm]frame.north west) 
+                circle (2.5pt);
+            \draw[fill=yellow!70!white] 
+                ([xshift=11mm,yshift=-1.5mm]frame.north west) 
+                circle (2.5pt);
+            \draw[fill=green!70!white] 
+                ([xshift=16mm,yshift=-1.5mm]frame.north west) 
+                circle (2.5pt);
+        }
+    }
+}
+\end{verbatim}
+
+% =========================================================
+% 第十章: 模块 13-16 - 摘要、算法、提示框
+% =========================================================
+\newpage
+\section{模块 13-16：摘要、算法与提示框环境}
+
+\subsection{英文摘要（第 872-887 行）}
+
+\begin{verbatim}
+\newenvironment{enabstract}[1]{
+    \def\@enkeyword{#1}
+    \clearpage
+    \addcontentsline{toc}{section}{Abstract}
+    \begin{center}\bfseries\zihao{4} Abstract \end{center}
+    \linespread{1.5}\selectfont
+    \zihao{-4}
+}{
+    \par\vspace{2ex}
+    \noindent\textbf{Keywords: } \@enkeyword
+    \newpage
+}
+\end{verbatim}
+
+\subsection{算法汉化（第 892-904 行）}
+
+\begin{verbatim}
+\RequirePackage{algorithm}
+\RequirePackage{algorithmicx}
+\RequirePackage{algpseudocode}
+
+\floatname{algorithm}{算法}
+\renewcommand{\algorithmicrequire}{\textbf{输入：}}
+\renewcommand{\algorithmicensure}{\textbf{输出：}}
+\algrenewcommand\algorithmicindent{2.0em}
+\end{verbatim}
+
+\subsection{提示框（第 928-957 行）}
+
+使用 tcolorbox 的三种主题框：
+
+\begin{verbatim}
+% 注意框（蓝色主题）
+\newtcolorbox{notice}[1]{
+    commonbox,
+    colback=Azure1, colframe=DodgerBlue3,
+    title={【注意】#1}
+}
+
+% 定义框（绿色主题）
+\newtcolorbox{definition}[1]{
+    commonbox,
+    colback=Honeydew1, colframe=ForestGreen,
+    title={【定义】#1}
+}
+
+% 结论框（红色主题）
+\newtcolorbox{conclusion}[1]{
+    commonbox,
+    colback=LavenderBlush1, colframe=Crimson,
+    title={【结论】#1}
+}
+\end{verbatim}
+
+\subsection{致谢环境（第 962-970 行）}
+
+\begin{verbatim}
+\newenvironment{acknowledgement}{
+    \clearpage
+    \addcontentsline{toc}{section}{致谢}
+    \section*{致谢}
+    \zihao{-4}\songti\linespread{1.5}\selectfont
+}{
+    \par
+}
+\end{verbatim}
+
+% =========================================================
+% 第十一章: 模块 17 - 列表定制
+% =========================================================
+\newpage
+\section{模块 17：专业列表定制}
+
+\subsection{自定义 TikZ 列表标记（第 981-1005 行）}
+
+\begin{verbatim}
+% 一级：实心方块
+\newcommand{\hust@item@square}{%
+    \tikz[baseline=-0.6ex] 
+    \node[fill=black, shape=rectangle, 
+          inner sep=0pt, minimum size=0.5em] {};%
+}
+
+% 二级：灰色圆点
+\newcommand{\hust@item@circle}{%
+    \tikz[baseline=-0.6ex] 
+    \node[fill=darkgray, shape=circle, 
+          inner sep=0pt, minimum size=0.35em] {};%
+}
+
+% 三级：短横线
+\newcommand{\hust@item@dash}{%
+    \tikz[baseline=-0.6ex] 
+    \draw[line width=0.8pt] (0,0) -- (0.5em,0);%
+}
+\end{verbatim}
+
+\subsection{无序列表配置（第 1018-1031 行）}
+
+\begin{verbatim}
+\setlist[itemize,1]{
+    label=\protect\hust@item@square,
+    leftmargin=2.0em, labelsep=0.6em
+}
+\setlist[itemize,2]{
+    label=\protect\hust@item@circle,
+    leftmargin=1.8em, labelsep=0.6em
+}
+\setlist[itemize,3]{
+    label=\protect\hust@item@dash,
+    leftmargin=1.8em, labelsep=0.6em
+}
+\end{verbatim}
+
+\subsection{自定义有序列表样式（第 1045-1070 行）}
+
+\begin{verbatim}
+% 括号式：(1), (2), (3)
+\newlist{enumpar}{enumerate}{1}
+\setlist[enumpar]{label=(\arabic*)}
+
+% 半括号式：1), 2), 3)
+\newlist{enumbra}{enumerate}{1}
+\setlist[enumbra]{label=\arabic*)}
+
+% 圆圈数字
+\newlist{enumcircled}{enumerate}{1}
+\setlist[enumcircled]{
+    label=\protect\hust@circled{\arabic*}
+}
+\end{verbatim}
+
+% =========================================================
+% 第十二章: 模块 18-19 - 实用功能与批注系统
+% =========================================================
+\newpage
+\section{模块 18-19：实用功能与批注系统}
+
+\subsection{目录树显示（第 1077-1078 行）}
+
+\begin{verbatim}
+\RequirePackage{dirtree}
+\renewcommand{\DTstyle}{\ttfamily\small}
+\end{verbatim}
+
+\subsection{Todo/Fixme/Note 命令（第 1100-1139 行）}
+
+可跨页的提示框：
+
+\begin{verbatim}
+\newcommand{\todo}[1]{%
+    \begin{tcolorbox}[
+        hust@todostyle,
+        colback=orange!5,
+        colframe=orange!80!black,
+        title={TODO (待办)}
+    ]
+    #1
+    \end{tcolorbox}%
+}
+\end{verbatim}
+
+\subsection{PDF 元数据注入（第 1142-1149 行）}
+
+\begin{verbatim}
+\AtBeginDocument{
+    \hypersetup{
+        pdftitle={\@title},
+        pdfauthor={\@author},
+        pdfsubject={黑龙江科技大学实习报告/毕业设计},
+        pdfcreator={HUST Report LaTeX Class}
+    }
+}
+\end{verbatim}
+
+\subsection{批注系统（第 1166-1284 行）}
+
+使用 \texttt{pgfkeys} 解析选项：
+
+\begin{verbatim}
+\pgfkeys{
+    /hustreview/.is family, /hustreview,
+    style/.store in  = \hust@review@style,
+    color/.store in  = \hust@review@color,
+    side/.store in   = \hust@review@side,
+    offset/.store in = \hust@review@offset
+}
+
+\NewDocumentCommand{\review}{ O{} m +m }{%
+    \pgfkeys{/hustreview, #1}%
+    % 根据样式渲染标记（下划线/波浪线等）
+    % 使用 TikZ overlay 绘制侧边批注
+}
+\end{verbatim}
+
+% =========================================================
+% 第十四章: 实战效果展示（使用教程环境）
+% =========================================================
+\newpage
+\section{实战效果展示}
+
+本章使用模板自带的教程环境（\texttt{democode}、\texttt{demovert}、\texttt{codeonly}）来展示各功能的\textbf{实际渲染效果}，让读者直观理解每个命令和环境的用法。
+
+\subsection{基础排版效果}
+
+\subsubsection{字体命令演示}
+
+\begin{democode}{三种预定义字体}
+{\songti 这是宋体文本} \\
+{\heiti 这是黑体文本} \\
+{\kaiti 这是楷体文本}
+\end{democode}
+
+\subsubsection{字号命令演示}
+
+\begin{democode}{常用字号对比}
+{\zihao{3} 三号字} \\
+{\zihao{4} 四号字} \\
+{\zihao{-4} 小四号字} \\
+{\zihao{5} 五号字}
+\end{democode}
+
+\subsubsection{文本修饰效果}
+
+\begin{democode}{加粗与斜体}
+普通文本、\textbf{加粗文本}、\textit{斜体文本}、\textbf{\textit{粗斜体}}
+\end{democode}
+
+% ---------------------------------------------------------
+\subsection{列表环境效果}
+
+\subsubsection{无序列表（自定义标记）}
+
+\begin{demovert}{三级无序列表}
+\begin{itemize}
+    \item 一级列表项（实心方块）
+    \begin{itemize}
+        \item 二级列表项（灰色圆点）
+        \begin{itemize}
+            \item 三级列表项（短横线）
+        \end{itemize}
+    \end{itemize}
+\end{itemize}
+\end{demovert}
+
+\subsubsection{有序列表}
+
+\begin{demovert}{标准有序列表}
+\begin{enumerate}
+    \item 第一项内容
+    \item 第二项内容
+    \begin{enumerate}
+        \item 子项目 (1)
+        \item 子项目 (2)
+    \end{enumerate}
+    \item 第三项内容
+\end{enumerate}
+\end{demovert}
+
+% ---------------------------------------------------------
+\subsection{数学公式效果}
+
+\subsubsection{行内公式}
+
+\begin{democode}{行内数学公式}
+质能方程 $E = mc^2$ 是物理学最著名的公式之一。
+\end{democode}
+
+\subsubsection{行间公式}
+
+\begin{demovert}{带编号的行间公式}
+牛顿第二定律表述为：
+\begin{equation}
+    F = ma
+\end{equation}
+其中 $F$ 为力，$m$ 为质量，$a$ 为加速度。
+\end{demovert}
+
+\subsubsection{物理符号（physics 宏包）}
+
+\begin{demovert}{physics 宏包便捷命令}
+偏导数：$\pdv{u}{t} + \pdv{u}{x} = 0$
+
+矢量符号：$\vb{F} = m\vb{a}$
+
+狄拉克符号：$\bra{\psi}\ket{\phi}$
+\end{demovert}
+
+% ---------------------------------------------------------
+\subsection{提示框效果}
+
+\subsubsection{注意框（蓝色主题）}
+
+\begin{notice}{编译提醒}
+本模板必须使用 XeLaTeX 编译，否则中文将无法正常显示！
+\end{notice}
+
+\subsubsection{定义框（绿色主题）}
+
+\begin{definition}{边际消费倾向 (MPC)}
+边际消费倾向是指每增加一单位可支配收入中用于消费的比例，计算公式为：
+\[ MPC = \frac{\Delta C}{\Delta Y} \]
+\end{definition}
+
+\subsubsection{结论框（红色主题）}
+
+\begin{conclusion}{核心发现}
+通过本次调查研究，我们发现大学生消费行为主要受以下三个因素影响：
+\begin{enumerate}
+    \item 家庭经济状况
+    \item 个人理财意识
+    \item 社交消费需求
+\end{enumerate}
+\end{conclusion}
+
+% ---------------------------------------------------------
+\subsection{待办提示效果}
+
+\todo{这是一个待办事项提醒框（橙色），用于标记需要完成的任务。}
+
+\fixme{这是一个需要修复的问题标记（红色），用于标记错误或需要修正的内容。}
+
+\note{这是一条备注信息（蓝色），用于补充说明或提供额外信息。}
+
+% ---------------------------------------------------------
+\subsection{API 参考卡片效果}
+
+\apibox{makecover}{无参数}{生成标准报告封面页，自动读取 \cmd{title}、\cmd{author} 等预设信息。}
+
+\apibox{maketaskbook}{无参数}{生成任务书页面，支持内容自动跨页。任务书内容通过 \cmd{renewcommand} 设置。}
+
+\apibox{cnabstract}{\{关键词\}}{中文摘要环境，自动生成标题和关键词格式，并添加到目录。}
+
+% ---------------------------------------------------------
+\subsection{选项列表效果}
+
+以下展示 \texttt{optionlist} 环境的实际效果：
+
+\begin{optionlist}
+    \option{win}{指定目标平台为 Windows，使用系统字体}
+    \option{mac}{指定目标平台为 macOS，使用系统字体}
+    \option{linux}{指定目标平台为 Linux，使用 Fandol 字体（默认）}
+    \option{thesis}{启用毕业论文模式，应用特殊页眉设计}
+\end{optionlist}
+
+% ---------------------------------------------------------
+\subsection{行内代码辅助命令}
+
+\begin{democode}{cmd/env/opt 命令}
+命令引用：\cmd{section} \\
+环境引用：\env{itemize} \\
+选项引用：\opt{win,thesis}
+\end{democode}
+
+% ---------------------------------------------------------
+\subsection{表格效果}
+
+\subsubsection{三线表}
+
+\begin{demovert}{标准三线表}
+\begin{table}[H]
+\centering
+\caption{消费类型统计}
+\begin{tabular}{lcc}
+\toprule
+消费类型 & 占比 & 月均金额 \\
+\midrule
+餐饮 & 45\% & 900元 \\
+学习用品 & 25\% & 500元 \\
+娱乐 & 15\% & 300元 \\
+其他 & 15\% & 300元 \\
+\bottomrule
+\end{tabular}
+\end{table}
+\end{demovert}
+
+% ---------------------------------------------------------
+\subsection{代码环境效果}
+
+\subsubsection{codeonly 环境}
+
+\begin{codeonly}{Python 数据处理示例}
+import pandas as pd
+
+def analyze_data(file_path):
+    df = pd.read_csv(file_path)
+    summary = df.describe()
+    return summary
+\end{codeonly}
+
+% ---------------------------------------------------------
+\subsection{图文混排效果}
+
+\texttt{textfigure} 环境用于创建图文并排的布局。由于演示环境的嵌套限制，这里使用 \texttt{codeonly} 展示语法：
+
+\begin{codeonly}{textfigure 环境语法}
+% 语法：\begin{textfigure}[位置]{图片路径}{标题}[宽度比例]
+% 位置参数：left = 左图右文，right = 右图左文（默认）
+% 宽度比例：图片占行宽比例，默认 0.4
+
+% 示例1：右图左文（默认）
+\begin{textfigure}{figure/chart.png}{消费结构饼图}
+    这是与图片并排显示的文字内容。
+    文字会自动排列在图片一侧。
+\end{textfigure}
+
+% 示例2：左图右文 + 自定义宽度
+\begin{textfigure}[left]{figure/trend.png}{趋势图}[0.5]
+    从时间维度分析数据变化趋势，
+    可以看到明显的增长模式。
+\end{textfigure}
+\end{codeonly}
+
+\subsubsection{实际效果演示}
+
+下面展示 \texttt{textfigure} 环境的实际渲染效果：
+
+\begin{textfigure}{figure/example_chart.png}{消费结构分析}
+    根据调查数据统计，大学生月均消费主要集中在以下几个方面：餐饮支出占比最高，约为 45\%；其次是学习用品支出，占 25\%；娱乐消费占 15\%；其他支出（如交通、通讯等）占 15\%。
+    
+    从数据可以看出，大学生的消费结构相对理性，基本生活需求占据主导地位。
+\end{textfigure}
+
+下面展示左图右文模式（\texttt{[left]} 参数）：
+
+\begin{textfigure}[left]{figure/example_bar.png}{月度消费趋势}[0.45]
+    从月度消费趋势来看，9月份因开学采购需求较高，消费水平达到峰值；10-11月趋于平稳；12月因期末考试和假期临近，娱乐消费有所下降。
+    
+    这一趋势与学期节奏高度吻合，反映了大学生消费行为的周期性特征。
+\end{textfigure}
+
+\textbf{参数说明}：
+\begin{optionlist}
+    \option{[位置]}{可选参数，\texttt{left}=左图右文，\texttt{right}=右图左文（默认）}
+    \option{\{图片路径\}}{必填参数，图片文件的相对路径}
+    \option{\{标题\}}{必填参数，图片的标题文字}
+    \option{[宽度比例]}{可选参数，图片占行宽比例，范围 0-1，默认 0.4}
+\end{optionlist}
+
+
+% ---------------------------------------------------------
+\subsection{并排多图效果}
+
+\texttt{parallelfigures} 环境用于并排展示多张图片：
+
+\begin{codeonly}{parallelfigures 环境语法}
+% 语法：\begin{parallelfigures}{总标题}
+%           \addfig[宽度]{路径}{子标题}
+%           \addfig[宽度]{路径}{子标题}
+%       \end{parallelfigures}
+
+% 示例：三图并排
+\begin{parallelfigures}{不同年级消费对比}
+    \addfig[0.32]{figure/grade1.png}{大一}
+    \addfig[0.32]{figure/grade2.png}{大二}
+    \addfig[0.32]{figure/grade3.png}{大三}
+\end{parallelfigures}
+
+% 示例：两图并排（默认宽度 0.48）
+\begin{parallelfigures}{性别消费差异}
+    \addfig{figure/male.png}{男生}
+    \addfig{figure/female.png}{女生}
+\end{parallelfigures}
+\end{codeonly}
+
+\textbf{参数说明}：
+\begin{itemize}
+    \item \textbf{总标题}（必填）：整组图片的总标题
+    \item \textbf{\textbackslash addfig} 命令：
+    \begin{optionlist}
+        \option{[宽度]}{可选，单图占行宽比例，默认 0.48}
+        \option{\{路径\}}{必填，图片文件路径}
+        \option{\{子标题\}}{必填，子图标题}
+    \end{optionlist}
+\end{itemize}
+
+\subsubsection{实际效果演示}
+
+下面使用 \texttt{parallelfigures} 环境展示两张示例图片的并排效果。注意子图编号自动采用 (a)、(b) 格式：
+
+\begin{parallelfigures}{消费数据可视化示例}
+    \addfig{figure/example_chart.png}{消费结构饼图}
+    \addfig{figure/example_bar.png}{月度消费对比}
+\end{parallelfigures}
+
+如上图所示，主图编号采用"章节-序号"格式（如：图 14-1），子图编号采用 (a)、(b)、(c) 格式。引用时可以使用 \verb|\ref{fig:label}| 来引用主图或子图。
+
+% ---------------------------------------------------------
+\subsection{新增多图环境}
+
+模板 v3.0 新增了两个多图环境，提供更灵活的排版方式：
+
+\subsubsection{figurerow 环境 - 自动等宽行布局}
+
+\begin{codeonly}{figurerow 环境语法}
+% 语法：\begin{figurerow}{总标题}[列数]
+%           \figitem{路径}{子标题}
+%           \figitem{路径}{子标题}
+%       \end{figurerow}
+
+% 示例：3列布局
+\begin{figurerow}{三张图并排}[3]
+    \figitem{figure/img1.png}{子图A}
+    \figitem{figure/img2.png}{子图B}
+    \figitem{figure/img3.png}{子图C}
+\end{figurerow}
+\end{codeonly}
+
+\subsubsection{figuregrid 环境 - 网格布局}
+
+\begin{codeonly}{figuregrid 环境语法}
+% 语法：支持2x2、2x3等任意网格布局
+\begin{figuregrid}{2x2 网格图片}
+    \gridrow{
+        \gridfig{figure/a.png}{(a) 第一张}
+        \gridfig{figure/b.png}{(b) 第二张}
+    }
+    \gridrow{
+        \gridfig{figure/c.png}{(c) 第三张}
+        \gridfig{figure/d.png}{(d) 第四张}
+    }
+\end{figuregrid}
+\end{codeonly}
+
+\textbf{子图编号说明}：
+\begin{itemize}
+    \item 主图编号：自动采用"章节-序号"格式，如 图 14-1
+    \item 子图编号：自动采用 (a)、(b)、(c) 格式
+    \item 引用语法：\verb|\ref{fig:main}| 引用主图，\verb|\ref{fig:sub}| 引用子图
+\end{itemize}
+
+
+
+
+模板自动设置"章节-序号"的编号格式，效果展示：
+
+\begin{democode}{图表编号引用}
+如\ref{fig:demo}所示... \\
+根据\ref{tab:demo}可知... \\
+由\ref{eq:demo}计算得...
+\end{democode}
+
+\textbf{实际编号格式}：图 14-1、表 14-1、式 (14-1)
+
+% ---------------------------------------------------------
+\subsection{交叉引用效果}
+
+\begin{demovert}{自动前缀的引用}
+使用 labelformat 设置后，引用自动添加前缀：
+\begin{itemize}
+    \item 图引用格式：图 X-Y
+    \item 表引用格式：表 X-Y
+    \item 公式引用格式：式 (X-Y)
+\end{itemize}
+\end{demovert}
+
+% =========================================================
+% 总结
+% =========================================================
+\newpage
+\section*{总结}
+\addcontentsline{toc}{section}{总结}
+
+本文档对 \texttt{hustreport.cls} 类文件进行了全面分析，涵盖全部 20 个功能模块：
+
+\begin{enumerate}
+    \item 版本声明与类选项
+    \item 按功能组织的宏包加载
+    \item 用户信息接口
+    \item 带回退链的智能字体配置
+    \item 条件页面布局（报告模式 vs 论文模式）
+    \item 章节标题与目录样式
+    \item 浮动体优化与标题格式
+    \item PDF 属性与超链接
+    \item 特殊环境（摘要、参考文献、附录）
+    \item TikZ 封面与任务书生成
+    \item 高级图文混排布局
+    \item 专业代码块与语法高亮
+    \item 英文摘要环境
+    \item 算法环境汉化
+    \item 主题提示框（注意/定义/结论）
+    \item 致谢环境
+    \item TikZ 绘制的自定义列表标记
+    \item 实用功能（目录树、待办、元数据）
+    \item 高级批注与审阅系统
+    \item 教程文档环境
+\end{enumerate}
+
+\textbf{第 14 章}通过 \texttt{democode}、\texttt{demovert}、\texttt{codeonly} 等教程环境，展示了模板各功能的\textbf{实际渲染效果}，帮助读者直观理解各命令和环境的用法。
+
+\vspace{2cm}
+\begin{center}
+    \rule{0.4\textwidth}{0.5pt}\\[5pt]
+    {\small 文档使用 hustreport.cls v3.0 生成}\\
+    {\small \today}
+\end{center}
+
+\end{document}
+

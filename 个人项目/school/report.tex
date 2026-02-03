@@ -1,0 +1,998 @@
+% !TeX program = xelatex
+% !TeX encoding = UTF-8
+% =========================================================
+% hustreport.cls - Complete Source Code Analysis Tutorial
+% Version: v3.0
+% Language: English
+% =========================================================
+\documentclass[linux]{hustreport}
+
+% Document Information
+\title{hustreport.cls Source Code Analysis}
+\author{HUST Report Development Team}
+
+\begin{document}
+
+% =========================================================
+% Title Page
+% =========================================================
+\begin{titlepage}
+    \centering
+    \vspace*{3cm}
+    {\Huge\bfseries\heiti hustreport.cls\par}
+    \vspace{0.5cm}
+    {\Large\songti HUST University Report Template Class\par}
+    \vspace{1cm}
+    {\large Complete Source Code Analysis Tutorial\par}
+    \vspace{2cm}
+    {\large Version 3.0\par}
+    \vspace{0.5cm}
+    {\large \today\par}
+    \vfill
+    {\small This document provides a comprehensive module-by-module analysis of the hustreport.cls class file.\par}
+\end{titlepage}
+
+\tableofcontents
+\newpage
+
+% =========================================================
+% Chapter 1: Introduction and Overview
+% =========================================================
+\section{Introduction and Overview}
+
+\subsection{Template Purpose}
+
+The \texttt{hustreport.cls} is a \LaTeX{} document class designed for Heilongjiang University of Science and Technology (HUST) undergraduate students. It provides a complete solution for:
+
+\begin{itemize}
+    \item Social investigation reports
+    \item Internship reports
+    \item Graduation theses (with \texttt{thesis} option)
+\end{itemize}
+
+\subsection{Architecture Overview}
+
+The class file consists of \textbf{20 functional modules} spanning approximately 1445 lines of code:
+
+\begin{enumerate}
+    \item \textbf{Module 0-1}: Version declaration and class options
+    \item \textbf{Module 2}: Package loading (categorized by function)
+    \item \textbf{Module 3}: User information interface
+    \item \textbf{Module 4}: Smart font configuration
+    \item \textbf{Module 5-6}: Page layout and section titles
+    \item \textbf{Module 7-8}: Figure/table formatting and PDF properties
+    \item \textbf{Module 9-10}: Special environments and cover generation
+    \item \textbf{Module 11-20}: Advanced features (code blocks, review system, etc.)
+\end{enumerate}
+
+\subsection{Compilation Requirements}
+
+This template \textbf{must} be compiled with XeLaTeX:
+
+\begin{verbatim}
+xelatex your_document.tex
+bibtex your_document      % If using bibliography
+xelatex your_document.tex
+xelatex your_document.tex
+\end{verbatim}
+
+% =========================================================
+% Chapter 2: Module 0-1 - Version and Class Options
+% =========================================================
+\newpage
+\section{Module 0-1: Version Declaration and Class Options}
+
+\subsection{Version Declaration (Lines 1-14)}
+
+Every \LaTeX{} class file must declare its format requirements and provide identification:
+
+\begin{verbatim}
+% Line 12-13: Format and class identification
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesClass{hustreport}[2026/01/05 v3.0 HUST Report Class]
+\end{verbatim}
+
+\textbf{Key Points:}
+\begin{itemize}
+    \item \verb|\NeedsTeXFormat{LaTeX2e}| ensures compatibility with modern \LaTeX{}
+    \item \verb|\ProvidesClass| provides version information displayed in logs
+\end{itemize}
+
+\subsection{Boolean Switches (Lines 19-24)}
+
+The class uses boolean switches to control conditional compilation:
+
+\begin{verbatim}
+% Platform detection switches
+\newif\ifhust@oswin    \hust@oswinfalse
+\newif\ifhust@osmac    \hust@osmacfalse
+\newif\ifhust@oslinux  \hust@oslinuxfalse
+\newif\ifhust@optfonts \hust@optfontsfalse
+\newif\ifhust@thesis   \hust@thesisfalse
+\end{verbatim}
+
+\textbf{Implementation Pattern:}
+\begin{itemize}
+    \item \verb|\newif| creates a boolean toggle with default \texttt{false}
+    \item Naming convention: \verb|\ifhust@<name>| uses internal prefix \verb|hust@|
+    \item All switches initialize to \texttt{false}, enabling opt-in behavior
+\end{itemize}
+
+\subsection{Option Declaration (Lines 27-31)}
+
+Options are declared using \verb|\DeclareOption|:
+
+\begin{verbatim}
+% Platform options
+\DeclareOption{win}{\\hust@oswintrue}
+\DeclareOption{mac}{\\hust@osmactrue}
+\DeclareOption{linux}{\\hust@oslinuxtrue}
+\DeclareOption{fonts}{\\hust@optfontstrue}
+\DeclareOption{thesis}{\\hust@thesistrue}
+\end{verbatim}
+
+\subsection{Option Forwarding and Processing (Lines 33-35)}
+
+Unrecognized options are forwarded to the base class:
+
+\begin{verbatim}
+\DeclareOption*{\PassOptionsToClass{\CurrentOption}{ctexrep}}
+\ProcessOptions\relax
+\end{verbatim}
+
+\subsection{Base Class Loading (Lines 37-43)}
+
+The template is built on \texttt{ctexrep} for Chinese support:
+
+\begin{verbatim}
+\LoadClass[a4paper,UTF8,zihao=-4,linespread=1.5]{ctexrep}
+\end{verbatim}
+
+\textbf{Parameters Explained:}
+\begin{optionlist}
+    \option{a4paper}{Standard A4 paper size (210mm × 297mm)}
+    \option{UTF8}{UTF-8 encoding for Chinese characters}
+    \option{zihao=-4}{Default font size: xiaosi (12pt equivalent)}
+    \option{linespread=1.5}{1.5x line spacing for readability}
+\end{optionlist}
+
+% =========================================================
+% Chapter 3: Module 2 - Package Loading
+% =========================================================
+\newpage
+\section{Module 2: Package Loading}
+
+\subsection{Organization Philosophy}
+
+Packages are organized by functional category for maintainability:
+
+\subsection{Page and Layout Packages (Lines 51-55)}
+
+\begin{verbatim}
+\RequirePackage{geometry}   % Page margins
+\RequirePackage{fancyhdr}   % Headers and footers
+\RequirePackage{float}      % Float placement control
+\RequirePackage[sort&compress,numbers,square]{natbib}
+\end{verbatim}
+
+\subsection{Title and TOC Packages (Lines 57-59)}
+
+\begin{verbatim}
+\RequirePackage{titletoc}   % TOC formatting
+\RequirePackage{titlesec}   % Section title formatting
+\end{verbatim}
+
+\subsection{Mathematics and Physics (Lines 61-66)}
+
+\begin{verbatim}
+\RequirePackage{amsmath,amssymb,amsfonts,amsthm}
+\RequirePackage{physics}    % Physics notation shortcuts
+\RequirePackage{siunitx}    % SI units
+\RequirePackage{newtxmath}  % Math font optimization
+\RequirePackage{calc}       % Length calculations
+\end{verbatim}
+
+\subsection{Graphics and Color (Lines 68-72)}
+
+\begin{verbatim}
+\RequirePackage{graphicx}   % Image inclusion
+\RequirePackage{subcaption} % Subfigures
+\RequirePackage{tikz}       % Drawing and positioning
+\RequirePackage[dvipsnames,svgnames,x11names]{xcolor}
+\end{verbatim}
+
+\subsection{Tables and Lists (Lines 74-84)}
+
+\begin{verbatim}
+\RequirePackage{booktabs}   % Professional tables
+\RequirePackage{threeparttable}
+\RequirePackage{caption}
+\RequirePackage{tabularx}   % Auto-width tables
+\RequirePackage{xltabular}  % Long tables with page breaks
+\RequirePackage{multirow}   % Multi-row cells
+\RequirePackage{makecell}   % Cell line breaks
+\RequirePackage{array}      % Column format extensions
+\RequirePackage{enumitem}   % List customization
+\RequirePackage{diagbox}    % Diagonal box headers
+\end{verbatim}
+
+% =========================================================
+% Chapter 4: Module 3 - Information Interface
+% =========================================================
+\newpage
+\section{Module 3: Information Interface}
+
+\subsection{Internal Storage Variables (Lines 97-102)}
+
+The class defines internal variables using \verb|@| prefix:
+
+\begin{verbatim}
+\makeatletter
+\newcommand{\@major}{}      % Major/Program
+\newcommand{\@dept}{}       % Department
+\newcommand{\@advisor}{}    % Advisor
+\newcommand{\@team}{}       % Team members
+\newcommand{\@studentID}{}  % Student ID
+\newcommand{\@reportID}{}   % Report number
+\end{verbatim}
+
+\subsection{Public Interface Commands (Lines 105-110)}
+
+User-facing commands that set the internal variables:
+
+\begin{verbatim}
+\newcommand{\major}[1]{\def\@major{#1}}
+\newcommand{\dept}[1]{\def\@dept{#1}}
+\newcommand{\advisor}[1]{\def\@advisor{#1}}
+\newcommand{\team}[1]{\def\@team{#1}}
+\newcommand{\studentID}[1]{\def\@studentID{#1}}
+\newcommand{\reportID}[1]{\def\@reportID{#1}}
+\end{verbatim}
+
+\subsection{Task Book Variables (Lines 113-116)}
+
+Predefined variables for task book content:
+
+\begin{verbatim}
+\newcommand{\taskTargetText}{Content pending}
+\newcommand{\taskContentText}{Content pending}
+\newcommand{\taskExpectedText}{Content pending}
+\newcommand{\taskScheduleText}{Schedule pending}
+\end{verbatim}
+
+\subsection{Smart Underline Component (Lines 119-123)}
+
+Adaptive underline for form fields:
+
+\begin{verbatim}
+\newcommand{\ulineinfo}[2][280pt]{%
+    \begin{minipage}[t]{#1}%
+        \centering\zihao{3}\songti\uline{#2\hfill}%
+    \end{minipage}%
+}
+\end{verbatim}
+
+% =========================================================
+% Chapter 5: Module 4 - Font Configuration
+% =========================================================
+\newpage
+\section{Module 4: Smart Font Configuration}
+
+\subsection{Design Philosophy}
+
+The font system implements a \textbf{fallback chain} with three priority levels:
+
+\begin{enumerate}
+    \item \textbf{Highest}: Local \texttt{fonts/} directory
+    \item \textbf{Medium}: Platform-specific system fonts
+    \item \textbf{Fallback}: Fandol open-source fonts
+\end{enumerate}
+
+\subsection{Font Reset (Lines 129-131)}
+
+Clear existing font definitions to prevent conflicts:
+
+\begin{verbatim}
+\let\songti\relax
+\let\heiti\relax
+\let\kaiti\relax
+\end{verbatim}
+
+\subsection{English Font Configuration (Lines 147-167)}
+
+\begin{verbatim}
+\IfFileExists{fonts/times.ttf}{
+    % Local Times font found
+    \setmainfont{times.ttf}[
+        Path = fonts/,
+        BoldFont = timesbd.ttf,
+        ItalicFont = timesi.ttf,
+        BoldItalicFont = timesbi.ttf
+    ]
+}{
+    % System fallback
+    \ifhust@oswin
+        \setmainfont{Times New Roman}
+    \else
+        \ifhust@osmac
+            \setmainfont{Times New Roman}
+        \else
+            \setmainfont{TeX Gyre Termes}
+        \fi
+    \fi
+}
+\end{verbatim}
+
+\subsection{Chinese Font Configuration (Lines 171-254)}
+
+The Chinese font setup uses conditional checks for each font file:
+
+\begin{verbatim}
+\IfFileExists{fonts/SimSun.ttf}{
+    % Local Chinese fonts available
+    \setCJKmainfont{SimSun.ttf}[
+        Path = fonts/,
+        BoldFont = \hust@cjk@bold,
+        ItalicFont = \hust@cjk@italic,
+        AutoFakeBold = \hust@cjk@fakebold
+    ]
+    % ... additional font family definitions
+}{
+    % Platform-specific system fonts
+    \ifhust@oswin
+        % Windows: SimSun, SimHei, KaiTi
+    \else\ifhust@osmac
+        % macOS: Songti SC, Heiti SC, Kaiti SC
+    \else
+        % Linux: Fandol fonts
+    \fi\fi
+}
+\end{verbatim}
+
+% =========================================================
+% Chapter 6: Module 5-6 - Page Layout and Section Titles
+% =========================================================
+\newpage
+\section{Module 5-6: Page Layout and Section Titles}
+
+\subsection{Conditional Page Layout (Lines 260-301)}
+
+The layout switches based on the \texttt{thesis} option:
+
+\begin{verbatim}
+\ifhust@thesis
+    % Thesis mode: special header with logo
+    \geometry{
+        a4paper,
+        top=3.7cm, bottom=2.5cm,
+        left=3.9cm, right=2.5cm,
+        headheight=3cm, headsep=0.5cm
+    }
+    
+    % Custom header with school logo
+    \pagestyle{fancy}
+    \fancyhf{}
+    \renewcommand{\headrulewidth}{2.5pt}
+    \fancyhead[L]{\includegraphics[height=2.6cm]{logo.png}}
+    \fancyhead[C]{...school name and title...}
+    \fancyfoot[C]{\thepage}
+\else
+    % Standard report mode
+    \geometry{left=3.017cm, right=3.017cm, 
+              top=2.54cm, bottom=2.54cm}
+    \pagestyle{plain}
+\fi
+\end{verbatim}
+
+\subsection{Counter Configuration (Lines 305-313)}
+
+Section numbering uses Arabic numerals with chapter binding:
+
+\begin{verbatim}
+\renewcommand{\thesection}{\arabic{section}}
+\renewcommand{\thesubsection}{\thesection.\arabic{subsection}}
+\renewcommand{\thesubsubsection}{\thesubsection.\arabic{subsubsection}}
+
+% Bind counters to sections (reset per chapter)
+\counterwithin{equation}{section}
+\counterwithin{figure}{section}
+\counterwithin{table}{section}
+\end{verbatim}
+
+\subsection{Section Title Styles (Lines 325-352)}
+
+Using \texttt{ctexset} for Chinese-aware formatting:
+
+\begin{verbatim}
+\ctexset{
+    section = {
+        number = \chinese{section},
+        name = {Chapter ,},
+        format = \centering\zihao{3}\heiti\bfseries,
+        aftername = \quad,
+        beforeskip = 15pt, afterskip = 20pt
+    },
+    subsection = {
+        format = \zihao{4}\heiti\bfseries,
+        aftername = \hspace{1em}
+    },
+    subsubsection = {
+        format = \zihao{-4}\songti,
+        aftername = \hspace{1em}
+    }
+}
+\end{verbatim}
+
+\subsection{TOC Styles (Lines 358-376)}
+
+Custom table of contents formatting:
+
+\begin{verbatim}
+\titlecontents{section}[0pt]
+{\addvspace{6pt}\bfseries\heiti\zihao{4}}
+{\thecontentslabel\quad}
+{}
+{\titlerule*[0.5pc]{.}\contentspage}
+\end{verbatim}
+
+% =========================================================
+% Chapter 7: Module 7-8 - Figures, Tables, and PDF
+% =========================================================
+\newpage
+\section{Module 7-8: Figures, Tables, and PDF Properties}
+
+\subsection{Float Parameters Optimization (Lines 386-392)}
+
+Solving the ``figure jumping'' problem:
+
+\begin{verbatim}
+\renewcommand{\topfraction}{0.85}    % Top floats: 85%
+\renewcommand{\bottomfraction}{0.70} % Bottom floats: 70%
+\renewcommand{\textfraction}{0.10}   % Min text: 10%
+\renewcommand{\floatpagefraction}{0.50}
+\end{verbatim}
+
+\subsection{Caption Styling (Lines 395-410)}
+
+Professional caption formatting:
+
+\begin{verbatim}
+\DeclareCaptionFont{heiti}{\heiti}
+\DeclareCaptionFont{fivehao}{\zihao{5}}
+\captionsetup{
+    format=hang,
+    labelsep=quad,
+    font={fivehao,heiti},
+    skip=6pt
+}
+\end{verbatim}
+
+\subsection{Numbering Formats (Lines 415-423)}
+
+Chapter-relative numbering:
+
+\begin{verbatim}
+\renewcommand{\theequation}{\thesection-\arabic{equation}}
+\renewcommand{\thefigure}{\thesection-\arabic{figure}}
+\renewcommand{\thetable}{\thesection-\arabic{table}}
+
+% Auto-prefix for references
+\labelformat{figure}{Figure~#1}
+\labelformat{table}{Table~#1}
+\labelformat{equation}{Eq.~(#1)}
+\end{verbatim}
+
+\subsection{PDF Properties (Lines 442-448)}
+
+Hyperref configuration:
+
+\begin{verbatim}
+\hypersetup{
+    hidelinks,
+    colorlinks=false,
+    bookmarksnumbered=true,
+    bookmarksopen=true,
+    pdfstartview=FitH
+}
+\end{verbatim}
+
+% =========================================================
+% Chapter 8: Module 9-10 - Special Environments
+% =========================================================
+\newpage
+\section{Module 9-10: Special Environments and Cover}
+
+\subsection{Chinese Abstract Environment (Lines 455-468)}
+
+\begin{verbatim}
+\newenvironment{cnabstract}[1]{
+    \def\@keyword{#1}
+    \clearpage
+    \phantomsection
+    \addcontentsline{toc}{section}{Abstract}
+    \begin{center} \heiti\zihao{3} \@title \end{center}
+    \vspace{1ex}
+    \begin{center} \heiti\zihao{4} Abstract \end{center}
+    \par
+}{
+    \par\vspace{2ex}
+    \noindent{\heiti\zihao{-4} Keywords: }\@keyword
+    \newpage
+}
+\end{verbatim}
+
+\subsection{Bibliography Automation (Lines 471-498)}
+
+\begin{verbatim}
+\newcommand{\MyBibliography}[1]{
+    \clearpage
+    \phantomsection
+    \addcontentsline{toc}{section}{References}
+    \renewcommand{\section}[2]{}% Suppress auto-heading
+    \bibliographystyle{plain}
+    \bibliography{#1}
+}
+\end{verbatim}
+
+\subsection{Appendix Environment (Lines 501-527)}
+
+\begin{verbatim}
+\newenvironment{appendixblock}{
+    \clearpage
+    \setcounter{section}{0}
+    \renewcommand{\thesection}{\Alph{section}}
+    \ctexset{
+        section = {
+            name = {Appendix ,},
+            format = \centering\zihao{4}\heiti\bfseries
+        }
+    }
+}{}
+\end{verbatim}
+
+\subsection{Cover Generation with TikZ (Lines 641-680)}
+
+The cover uses TikZ for absolute positioning:
+
+\begin{verbatim}
+\newcommand{\makecover}{
+    \begin{titlepage}
+        \begin{tikzpicture}[remember picture, overlay]
+            % Logo positioning
+            \node[anchor=north east, xshift=-2cm, yshift=-2cm] 
+                at (current page.north east) {
+                \includegraphics[width=0.25\textwidth]{logo.png}
+            };
+        \end{tikzpicture}
+        % Title and info table...
+    \end{titlepage}
+}
+\end{verbatim}
+
+% =========================================================
+% Chapter 9: Module 11-12 - Advanced Layouts and Code
+% =========================================================
+\newpage
+\section{Module 11-12: Advanced Layouts and Code Environments}
+
+\subsection{Text-Figure Mixed Layout (Lines 693-737)}
+
+The \texttt{textfigure} environment uses \texttt{xparse}:
+
+\begin{verbatim}
+\NewDocumentEnvironment{textfigure}{O{right} m m O{0.4}}{%
+    \def\tf@pos{#1}%    % Position: left or right
+    \def\tf@path{#2}%   % Image path
+    \def\tf@cap{#3}%    % Caption
+    \setlength{\tf@imagew}{#4\textwidth}%
+    % Calculate text width
+    \setlength{\tf@textw}{\textwidth}%
+    \addtolength{\tf@textw}{-\tf@imagew}%
+    \addtolength{\tf@textw}{-1.5em}%
+    % Begin text capture...
+}{%
+    % Render image + text side by side
+}
+\end{verbatim}
+
+\subsection{Parallel Figures Environment (Lines 739-761)}
+
+The \texttt{parallelfigures} environment uses \texttt{subfigure} for side-by-side images with automatic (a), (b), (c) numbering:
+
+\begin{verbatim}
+\NewDocumentEnvironment{parallelfigures}{m}{%
+    \renewcommand{\pf@maincap}{#1}%
+    \begin{figure}[H]
+        \centering
+        \newcommand{\addfig}[3][0.48]{%
+            \begin{subfigure}[b]{##1\textwidth} 
+                \centering
+                \includegraphics[width=\linewidth]{##2}
+                \caption{##3}
+            \end{subfigure}%
+            \hspace{\fill}
+        }%
+    }{%
+        \caption{\pf@maincap}%
+    \end{figure}%
+}
+\end{verbatim}
+
+\textbf{Subfigure Numbering}:
+\begin{itemize}
+    \item Main figure: Chapter-relative numbering (e.g., Figure 9-1)
+    \item Subfigures: Automatic (a), (b), (c) format
+    \item Defined in line 415: \verb|\renewcommand\thesubfigure{(\alph{subfigure})}|
+\end{itemize}
+
+\subsection{New Multi-Figure Environments (v3.0)}
+
+Two new environments for flexible layouts:
+
+\subsubsection{figurerow - Auto-width Row Layout}
+
+\begin{verbatim}
+\begin{figurerow}{Main Title}[columns]
+    \figitem{path}{subcaption}
+    \figitem{path}{subcaption}
+\end{figurerow}
+\end{verbatim}
+
+\subsubsection{figuregrid - Grid Layout}
+
+\begin{verbatim}
+\begin{figuregrid}{Main Title}
+    \gridrow{
+        \gridfig[width]{path}{subcaption}
+        \gridfig[width]{path}{subcaption}
+    }
+\end{figuregrid}
+\end{verbatim}
+
+\subsection{Code Environment Design (Lines 772-811)}
+
+Color definitions for syntax highlighting:
+
+\begin{verbatim}
+\definecolor{hust@codeback}{RGB}{250,250,250}
+\definecolor{hust@keyword}{RGB}{0,92,197}
+\definecolor{hust@comment}{RGB}{80,161,79}
+\definecolor{hust@string}{RGB}{227,17,108}
+
+\lstdefinestyle{huststyle}{
+    basicstyle=\small\ttfamily,
+    keywordstyle=\bfseries\color{hust@keyword},
+    commentstyle=\itshape\color{hust@comment},
+    stringstyle=\color{hust@string},
+    numbers=left,
+    breaklines=true,
+    keepspaces=true
+}
+\end{verbatim}
+
+\subsection{tcolorbox Integration (Lines 814-855)}
+
+Mac-style code block with traffic lights:
+
+\begin{verbatim}
+\tcbset{
+    hustcodestyle/.style={
+        enhanced, breakable,
+        colback=hust@codeback,
+        title={\textbf{Code \thehustcode:}#1},
+        % Mac-style decoration
+        overlay unbroken and first={
+            \draw[fill=red!70!white] 
+                ([xshift=6mm,yshift=-1.5mm]frame.north west) 
+                circle (2.5pt);
+            \draw[fill=yellow!70!white] 
+                ([xshift=11mm,yshift=-1.5mm]frame.north west) 
+                circle (2.5pt);
+            \draw[fill=green!70!white] 
+                ([xshift=16mm,yshift=-1.5mm]frame.north west) 
+                circle (2.5pt);
+        }
+    }
+}
+\end{verbatim}
+
+% =========================================================
+% Chapter 10: Module 13-16 - Abstract, Algorithm, Notice
+% =========================================================
+\newpage
+\section{Module 13-16: Abstract, Algorithm, and Notice Environments}
+
+\subsection{English Abstract (Lines 872-887)}
+
+\begin{verbatim}
+\newenvironment{enabstract}[1]{
+    \def\@enkeyword{#1}
+    \clearpage
+    \addcontentsline{toc}{section}{Abstract}
+    \begin{center}\bfseries\zihao{4} Abstract \end{center}
+    \linespread{1.5}\selectfont
+    \zihao{-4}
+}{
+    \par\vspace{2ex}
+    \noindent\textbf{Keywords: } \@enkeyword
+    \newpage
+}
+\end{verbatim}
+
+\subsection{Algorithm Localization (Lines 892-904)}
+
+\begin{verbatim}
+\RequirePackage{algorithm}
+\RequirePackage{algorithmicx}
+\RequirePackage{algpseudocode}
+
+\floatname{algorithm}{Algorithm}
+\renewcommand{\algorithmicrequire}{\textbf{Input:}}
+\renewcommand{\algorithmicensure}{\textbf{Output:}}
+\algrenewcommand\algorithmicindent{2.0em}
+\end{verbatim}
+
+\subsection{Notice Boxes (Lines 928-957)}
+
+Three themed boxes using tcolorbox:
+
+\begin{verbatim}
+% Notice box (blue theme)
+\newtcolorbox{notice}[1]{
+    commonbox,
+    colback=Azure1, colframe=DodgerBlue3,
+    title={[Notice] #1}
+}
+
+% Definition box (green theme)
+\newtcolorbox{definition}[1]{
+    commonbox,
+    colback=Honeydew1, colframe=ForestGreen,
+    title={[Definition] #1}
+}
+
+% Conclusion box (red theme)
+\newtcolorbox{conclusion}[1]{
+    commonbox,
+    colback=LavenderBlush1, colframe=Crimson,
+    title={[Conclusion] #1}
+}
+\end{verbatim}
+
+\subsection{Acknowledgement Environment (Lines 962-970)}
+
+\begin{verbatim}
+\newenvironment{acknowledgement}{
+    \clearpage
+    \addcontentsline{toc}{section}{Acknowledgement}
+    \section*{Acknowledgement}
+    \zihao{-4}\songti\linespread{1.5}\selectfont
+}{
+    \par
+}
+\end{verbatim}
+
+% =========================================================
+% Chapter 11: Module 17 - List Customization
+% =========================================================
+\newpage
+\section{Module 17: Professional List Customization}
+
+\subsection{Custom TikZ Bullet Markers (Lines 981-1005)}
+
+\begin{verbatim}
+% Level 1: Solid square
+\newcommand{\hust@item@square}{%
+    \tikz[baseline=-0.6ex] 
+    \node[fill=black, shape=rectangle, 
+          inner sep=0pt, minimum size=0.5em] {};%
+}
+
+% Level 2: Gray circle
+\newcommand{\hust@item@circle}{%
+    \tikz[baseline=-0.6ex] 
+    \node[fill=darkgray, shape=circle, 
+          inner sep=0pt, minimum size=0.35em] {};%
+}
+
+% Level 3: Dash line
+\newcommand{\hust@item@dash}{%
+    \tikz[baseline=-0.6ex] 
+    \draw[line width=0.8pt] (0,0) -- (0.5em,0);%
+}
+\end{verbatim}
+
+\subsection{Itemize Configuration (Lines 1018-1031)}
+
+\begin{verbatim}
+\setlist[itemize,1]{
+    label=\protect\hust@item@square,
+    leftmargin=2.0em, labelsep=0.6em
+}
+\setlist[itemize,2]{
+    label=\protect\hust@item@circle,
+    leftmargin=1.8em, labelsep=0.6em
+}
+\setlist[itemize,3]{
+    label=\protect\hust@item@dash,
+    leftmargin=1.8em, labelsep=0.6em
+}
+\end{verbatim}
+
+\subsection{Custom Enumerate Styles (Lines 1045-1070)}
+
+\begin{verbatim}
+% Parenthesized: (1), (2), (3)
+\newlist{enumpar}{enumerate}{1}
+\setlist[enumpar]{label=(\arabic*)}
+
+% Half-parenthesized: 1), 2), 3)
+\newlist{enumbra}{enumerate}{1}
+\setlist[enumbra]{label=\arabic*)}
+
+% Circled numbers
+\newlist{enumcircled}{enumerate}{1}
+\setlist[enumcircled]{
+    label=\protect\hust@circled{\arabic*}
+}
+\end{verbatim}
+
+% =========================================================
+% Chapter 12: Module 18-19 - Utilities and Review System
+% =========================================================
+\newpage
+\section{Module 18-19: Utilities and Review System}
+
+\subsection{Directory Tree Display (Lines 1077-1078)}
+
+\begin{verbatim}
+\RequirePackage{dirtree}
+\renewcommand{\DTstyle}{\ttfamily\small}
+\end{verbatim}
+
+\subsection{Todo/Fixme/Note Commands (Lines 1100-1139)}
+
+Breakable note boxes:
+
+\begin{verbatim}
+\newcommand{\todo}[1]{%
+    \begin{tcolorbox}[
+        hust@todostyle,
+        colback=orange!5,
+        colframe=orange!80!black,
+        title={TODO (Pending)}
+    ]
+    #1
+    \end{tcolorbox}%
+}
+\end{verbatim}
+
+\subsection{PDF Metadata Injection (Lines 1142-1149)}
+
+\begin{verbatim}
+\AtBeginDocument{
+    \hypersetup{
+        pdftitle={\@title},
+        pdfauthor={\@author},
+        pdfsubject={HUST Report/Thesis},
+        pdfcreator={HUST Report LaTeX Class}
+    }
+}
+\end{verbatim}
+
+\subsection{Review System (Lines 1166-1284)}
+
+Using \texttt{pgfkeys} for option parsing:
+
+\begin{verbatim}
+\pgfkeys{
+    /hustreview/.is family, /hustreview,
+    style/.store in  = \hust@review@style,
+    color/.store in  = \hust@review@color,
+    side/.store in   = \hust@review@side,
+    offset/.store in = \hust@review@offset
+}
+
+\NewDocumentCommand{\review}{ O{} m +m }{%
+    \pgfkeys{/hustreview, #1}%
+    % Render mark based on style (underline/wave/etc.)
+    % Draw side note using TikZ overlay
+}
+\end{verbatim}
+
+% =========================================================
+% Chapter 13: Module 20 - Tutorial Documentation
+% =========================================================
+\newpage
+\section{Module 20: Tutorial Documentation Environments}
+
+\subsection{democode: Side-by-Side Display (Lines 1327-1351)}
+
+\begin{verbatim}
+\newtcblisting{democode}[1]{
+    enhanced, breakable,
+    title={#1},
+    listing engine=listings,
+    sidebyside,
+    sidebyside align=top,
+    lefthand ratio=0.5,
+    bicolor,
+    colbacklower=hust@demo@resultbg
+}
+\end{verbatim}
+
+\subsection{demovert: Vertical Display (Lines 1356-1377)}
+
+\begin{verbatim}
+\newtcblisting{demovert}[1]{
+    enhanced, breakable,
+    listing engine=listings,
+    listing and text,  % Code above, result below
+    bicolor,
+    colbacklower=hust@demo@resultbg
+}
+\end{verbatim}
+
+\subsection{API Reference Card (Lines 1400-1418)}
+
+\begin{verbatim}
+\newcommand{\apibox}[3]{%
+    \begin{tcolorbox}[
+        colback=hust@api@bg,
+        colframe=hust@api@frame,
+        title={\textbackslash #1}
+    ]
+    \textbf{Parameters:} \texttt{#2} \\
+    \textbf{Description:} #3
+    \end{tcolorbox}
+}
+\end{verbatim}
+
+\subsection{Inline Code Helpers (Lines 1438-1440)}
+
+\begin{verbatim}
+\newcommand{\cmd}[1]{\texttt{\textbackslash #1}}
+\newcommand{\env}[1]{\texttt{#1}}
+\newcommand{\opt}[1]{\texttt{[#1]}}
+\end{verbatim}
+
+% =========================================================
+% Summary
+% =========================================================
+\newpage
+\section*{Summary}
+\addcontentsline{toc}{section}{Summary}
+
+This document has provided a comprehensive analysis of the \texttt{hustreport.cls} class file, covering all 20 functional modules:
+
+\begin{enumerate}
+    \item Version declaration and class options
+    \item Package loading organized by function
+    \item User information interface
+    \item Smart font configuration with fallback chain
+    \item Conditional page layout (report vs. thesis)
+    \item Section title and TOC styling
+    \item Float optimization and caption formatting
+    \item PDF properties and hyperlinks
+    \item Special environments (abstract, bibliography, appendix)
+    \item Cover and task book generation with TikZ
+    \item Advanced text-figure layouts
+    \item Professional code blocks with syntax highlighting
+    \item English abstract environment
+    \item Algorithm environment localization
+    \item Themed notice/definition/conclusion boxes
+    \item Acknowledgement environment
+    \item Custom list markers with TikZ
+    \item Utility features (dirtree, todo, metadata)
+    \item Advanced review and annotation system
+    \item Tutorial documentation environments
+\end{enumerate}
+
+\vspace{2cm}
+\begin{center}
+    \rule{0.4\textwidth}{0.5pt}\\[5pt]
+    {\small Document generated with hustreport.cls v3.0}\\
+    {\small \today}
+\end{center}
+
+\end{document}

@@ -1,0 +1,71 @@
+\begin{table}[htbp]
+	\centering
+	% 标题
+	\caption*{\zihao{3}\bfseries\heiti 社会调查报告评分表}
+	
+	% 参数设置
+	\renewcommand{\arraystretch}{1.5} % 1.5倍行高
+	\setlength{\tabcolsep}{4pt}       % 略微减小列间距以节省空间
+	
+	% 关键配置：让表格内容垂直居中
+	\renewcommand{\tabularxcolumn}[1]{m{#1}}
+	
+	% 表格定义
+	\begin{xltabular}{\textwidth}{| >{\centering\arraybackslash}m{3.5em} | X | >{\centering\arraybackslash}m{3em} | >{\centering\arraybackslash}m{3em} |}
+		\hline
+		
+		% === 表头 ===
+		\multirow{2}{=}{\centering\textbf{序号}} & 
+		\multirow{2}{=}{\centering\textbf{评\quad 价\quad 项\quad 目}} & 
+		\multicolumn{2}{c|}{\textbf{评\quad 分}} \\
+		\cline{3-4} 
+		& & \textbf{满分} & \textbf{得分} \\
+		\hline
+		
+		% === 内容行 ===
+		1 & 
+		\raggedright % 内容左对齐，阅读更自然
+		能较好地理解调查任务，选题能够体现理论与实践结合的综合训练要求，实施方案难易度适宜，合理可行，能按时完成社会调查工作 & 
+		15 & 
+		\\
+		\hline
+		
+		2 & 
+		\raggedright
+		能够自主查阅文献资料，从事调查研究，具有收集、整理、加工各种信息及获取新知识的能力，能熟练掌握和运用所学专业基本理论、基本知识和基本技能分析解决实际问题，数据真实可靠，论证充分，工作量饱满 & 
+		15 & 
+		\\
+		\hline
+		
+		3 & 
+		\raggedright
+		数据计算结果准确，分析详实，建议合理，立足专业基础理论方法，充分结合调查背景，能够体现出一定的专业素养和创新意识 & 
+		10 & 
+		\\
+		\hline
+		
+		4 & 
+		\raggedright
+		报告表述得当，层次清晰，格式规范，公式、图表准确、美观 & 
+		10 & 
+		\\
+		\hline
+		
+		% === 总分行 ===
+		\multicolumn{2}{|c|}{\textbf{总分}} & 
+		50 & 
+		\\
+		\hline
+		
+		% === 签名行 (已修正) ===
+		% 修改点：将原来的 |c| 改为 |@{}c@{}|，消除了导致断开的间距。
+		\multicolumn{4}{|@{}c@{}|}{
+			\begin{tabular}{@{} >{\centering\arraybackslash}m{5em} | m{15em} | >{\centering\arraybackslash}m{3.4em} | m{7.6em} @{}}
+				% \rule{0pt}{3.5em} 用于撑开行高
+				\rule{0pt}{0.5em} \textbf{教师签名} &  & \textbf{日期} &  \\
+			\end{tabular}
+		} \\
+		\hline
+		
+	\end{xltabular}
+\end{table}
