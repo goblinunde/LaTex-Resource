@@ -1,0 +1,246 @@
+% LaTeX template for AAGI Short/Interim Reports
+% Date last modified: 10/11/2025
+
+\documentclass[12pt]{article}
+
+%% Configuration %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% (Modify these if you have a need to do so, or if you have additional
+% packages that you need to load. Otherwise this configuration should 
+% be left as-is.)
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage[paper=a4paper,top=22mm,left=12mm,right=12mm,bottom=22mm]{geometry}
+\usepackage{adjustbox}
+\usepackage[title]{appendix}
+\usepackage{parskip}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{titlesec}
+\usepackage{fancyhdr}
+\usepackage{fancyvrb}
+\usepackage{rotating}
+\renewcommand{\familydefault}{\sfdefault}
+
+% AAGI colours
+\usepackage[dvipsnames]{xcolor}
+\usepackage{graphicx}
+\definecolor{aagiteal}{HTML}{00808b}
+\definecolor{aagigreen}{HTML}{b6d438}
+\definecolor{aagiblack}{HTML}{414042}
+
+% Command definitions and settings copied over from the old AAGI.sty
+\newcommand{\HRule}{\hspace{-25mm}\rule{160mm}{0.6mm}}
+\setlength{\parindent}{0cm}
+\setlength{\headheight}{2pt}
+\setlength{\parskip}{2.5ex}
+\setlength{\emergencystretch}{3em}
+\DeclareOldFontCommand{\sbf}{\normalfont\bfseries\sffamily}{\mathsf}
+\DeclareOldFontCommand{\tbf}{\normalfont\bfseries\ttfamily}{\mathtt}
+\pagestyle{fancy}
+\renewcommand{\sectionmark}[1]{\markboth{\thesection\hspace{2.5mm} #1}{}}
+\fancyhf{}
+\fancyhead[L]{\sffamily\leftmark}
+\fancyfoot[C]{\sffamily \thepage}
+\fancypagestyle{bibliography}{\fancyhead[L]{\sffamily References}}
+
+% Different Header/Footer on first page
+\usepackage{afterpage}
+\fancypagestyle{firstpage}{%
+  \fancyhf{}
+  \fancyhead[R]{%
+    \noindent\makebox[\textwidth][r]{%
+      \includegraphics[height=2.3cm]{assets/AAGI_logo.pdf}\hspace*{-0.5cm}}}
+  \fancyfoot[C]{%
+    \rule{\textwidth}{0.4pt}\\[-10pt]
+    \noindent\makebox[\textwidth]{%
+      \includegraphics[width=\paperwidth]{assets/Partners.pdf}}}
+  \renewcommand{\headrulewidth}{0pt}}
+\fancypagestyle{otherpages}{%
+  \fancyhf{}
+  \rhead{{\sf {\myshorttitle}}}
+  \fancyfoot[C]{%
+    \rule{\textwidth}{0.4pt}\\[-2pt]
+    {\sf Correspondence email: \texttt{\href{mailto:{\myemail}}{\myemail}}}
+    \hfill
+    {\sf \thepage}}}
+
+% No section numbering by default
+\setcounter{secnumdepth}{0}
+
+% Colour tables + long tables
+\usepackage{colortbl}
+
+\usepackage{longtable}
+\setlength{\LTcapwidth}{\textwidth}
+
+% Figures configuration
+\usepackage{caption}
+\captionsetup{font={sf}}
+\setlength{\fboxsep}{0pt}
+
+% URL styling
+\usepackage{url}
+
+% FontAwesome icons
+\usepackage{fontawesome5}
+
+% Tikzpictures/PGFplots (if desired)
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=newest}
+
+% Listings for code (if desired)
+%\usepackage{inconsolata}
+\usepackage{listings}
+\lstset{%
+  basicstyle=\footnotesize\ttfamily,
+  keywordstyle=\footnotesize\ttfamily,
+  language=R}
+
+% Bibliography (bibtex, natbib)
+\usepackage{natbib}
+
+
+% A fancy coloured box for notes/warnings
+\usepackage[most]{tcolorbox}
+\newtcolorbox{note}[1][]{%
+  colback=aagiteal!7, colframe=aagiteal!7, notitle, sharp corners,
+  borderline west={2pt}{0pt}{aagiteal}, borderline east={2pt}{0pt}{aagiteal},
+  enhanced, breakable}
+
+% Hyperref for links/cross-referencing
+\usepackage{hyperref}
+\hypersetup{%
+  colorlinks=true, linkcolor=aagiteal, urlcolor=aagiteal, citecolor=aagiteal}
+\def\sectionautorefname{Section}
+\def\subsectionautorefname{Subsection}
+\def\appendixautorefname{Appendix}
+\def\figureautorefname{Figure}
+\def\tableautorefname{Table}
+
+
+%% Document %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%EDIT these parameters for your project here
+\newcommand{\myuniversity}{University Name}
+\newcommand{\myaaginode}{AAGI-XX}
+\newcommand{\myshorttitle}{Short title for report, e.g., AAGI/GRDC Project code}
+
+\begin{document}
+  \pagestyle{otherpages}
+
+  % Logo and SP footer only appears on first page  
+  \thispagestyle{firstpage}
+  \newgeometry{left=12mm, right=12mm, top=17mm, bottom=24mm, includefoot}
+  \afterpage{\aftergroup\restoregeometry}
+  
+  \vspace*{0.6cm}
+  {\Large\sbf%
+    Informative title for interim report  %EDIT your report title here
+  }\\[2pt]
+  {\large%
+    Optional subtitle here  %EDIT your report subtitle here
+  }
+  
+  %EDIT your report audience/writers here
+  Prepared for: Client 1, Client 2 (Organisation)\\[2pt]  
+  Prepared by: Author 1, Author 2 ({\myuniversity}, {\myaaginode})\\[-20pt]
+  
+  %EDIT your email here
+  \newcommand{\myemail}{your.email@example.edu.au}
+  Correspondence email: \texttt{\href{mailto:{\myemail}}{\myemail}}\\[-20pt]
+  
+  Last updated: \today
+  
+  % Table of contents
+  % (Omit if the document is short enough to not benefit from having a ToC)
+  \setcounter{page}{1}
+  \tableofcontents
+
+  % Report body text (break up into as many sections as needed)  
+  \section{Section 1}
+  
+  Report text goes here. This template is designed for smaller summary/interim
+  reports, typically less than 10 pages or so. The AAGI logo and partners footer
+  appear only on this first page to maximise space for the body text. Feel free
+  to remove the Table of Contents if the report is short enough to not need one.
+  
+  Use the AAGI theme colours for emphasis if you like (\verb|\color{aagiteal}|
+  for {\color{aagiteal}AAGI teal}, \verb|\color{aagigreen}| for
+  {\color{aagigreen}AAGI green}, and \verb|\color{aagiblack}| for
+  {\color{aagiblack}AAGI black}).
+  
+  \subsection{This is a subsection heading}
+  
+  Example R code (using the basic \texttt{lstlisting} environment):
+
+\begin{lstlisting}
+plot(pressure)
+\end{lstlisting}
+
+  Use \verb|\citep{blah}| for parenthetical
+  citations: \citep{blah}. Use \verb|\citet{blah}| for text citations, e.g.
+  \citet{blah}. References should be entered in bibtex format in the
+  \texttt{references.bib} file.
+  
+  A simple AAGI-themed table could be done as in \autoref{tab:aagi}.
+  \begin{table}[h]
+    \caption{An AAGI-themed table.}\label{tab:aagi}
+    \centering
+    \begin{tabular}{| l | r r |}
+    \rowcolor{aagiteal} {\color{white}Table Heading} & %
+    {\color{white}Next Heading} & {\color{white}Another Heading} \\
+    \hline
+    blah & 2 & 3 \\
+    \hline
+    \end{tabular}
+  \end{table}
+  
+  \subsubsection{This is a subsubsection heading}
+  
+  And so on, etc.
+  
+  Use \verb|\begin{note} ... \end{note}| for emphatic notes throughout
+  the report if you like. You can use \verb|\faIcon{...}| to add 
+  FontAwesome icons
+  for decoration, as shown below.
+  
+  \begin{note}
+    {\sbf\color{aagiteal!75!black} \faIcon{exclamation-triangle} NOTE}\quad
+    This is an example of a note.
+  \end{note}
+  
+  \vspace*{0.7cm}
+  
+  Insert graphics (JPEGs, PNGs, PDFs, tikzpictures, or whatever) as you like,
+  and add captions as necessary.
+  
+  \begin{figure}[h]
+    \centering
+    \begin{tikzpicture}
+      \begin{axis}[width=0.85\textwidth, height=8cm, 
+          axis lines=middle, xlabel=$x$, ylabel=$y$,
+          xmin=-5, xmax=5, ymin=-1, ymax=25, samples=40]
+        \addplot[domain=-5:5, blue, thick]{x^2};
+        \node at (axis cs: 3.9,23) {$y=x^2$};
+      \end{axis}
+    \end{tikzpicture}
+    \caption{A graph of a quadratic.}
+  \end{figure}
+  
+  \section{Next Section}
+  
+  Add as many sections as needed.
+  
+  Note that on page 2 and beyond, the header and footer have changed to contain
+  a short title in the top-right (e.g., project code), and the correspondence
+  email across the bottom. Make sure that you update these (via the
+  \verb|\myshorttitle| and \verb|\myemail| command definitions) to whatever
+  you need.  
+  
+  % Bibliography (as the last section)
+  \phantomsection
+  \addcontentsline{toc}{section}{References}
+  \bibliographystyle{assets/biom}
+  \bibliography{references.bib}  
+  
+\end{document}
