@@ -1,0 +1,34 @@
+\documentclass{suesthesis}
+% 定义论文的中文封面信息
+\begin{document}
+    % 论文中文封面
+    \input{chapters/cover}
+    % 从这里开始生成目录部分页码
+    \pagestyle{ContentStyle}
+    %插入目录
+    \tableofcontents
+    \newpage
+    \pagestyle{plain}
+    % 中文摘要和英文摘要
+    \input{chapters/abstract}
+    % 从这里开始生成文章部分页码
+    \makeTitle
+    % 第一章
+    \input{chapters/ch01}
+    % 第二章
+    \input{chapters/ch02}
+    % 第三章
+    \input{chapters/ch03}
+    % 第四章
+    \input{chapters/ch04}
+    % 第五章
+    \input{chapters/ch05}
+    % 第六章
+    \input{chapters/ch06}
+    % 参考文献
+    \input{chapters/refs}
+    \appendix
+    \input{chapters/appendix}
+    % 致谢
+    \input{chapters/thanks}
+\end{document}

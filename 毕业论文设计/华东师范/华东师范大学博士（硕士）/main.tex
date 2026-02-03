@@ -1,0 +1,109 @@
+% 华东师范大学博士（硕士）论文主格式，请修改前三行以保证格式符合要求。
+
+%==============格式配置开始==============%
+\def \degree {master} % phd, master
+\def \year {2025}
+\def \draftfigure {off} % on,off
+\def \docstyle {normal} % normal,tmlc,anonymous
+\def \refstyle {auto} % auto,manual
+
+% student id
+\def \stu{学生名}
+\def \stuID {xxxxxxxxxxx}
+% title
+\def\thesisTitle{
+毕业论文\\标题}
+\def\thesisTitleNoWrap{毕业论文标题（无换行）
+}
+\def\thesisETitle{
+    Title in English
+}
+%==============格式配置结束==============%
+\input{format/settings}
+\addbibresource{C1_References/zotero_better-bibtex_auto-update.bib}
+
+\begin{document}
+\input{A_Preliminary Section/1_inner-cover}
+\cleardoublepage
+\input{A_Preliminary Section/2_inner-cover-en}
+\cleardoublepage
+
+\ifnotanonymous %非盲审，也就是查重版，不显示原创性+名单；终版全要
+    \iftmlc
+    \else
+        \input{A_Preliminary Section/3_copyright}
+        \cleardoublepage
+        \input{A_Preliminary Section/4_member-list}
+        \cleardoublepage
+    \fi
+\else %盲审仅显示原创性，不要名单
+    \input{A_Preliminary Section/3_copyright} %查重不显示
+    % \cleardoublepage %查重不显示
+\fi
+
+\setlength{\baselineskip}{25pt}  %正文设为25磅行间距
+\newpage
+\pagenumbering{roman}
+\pagestyle{plain}
+
+% ======================摘要和目录=================================================
+\input{A_Preliminary Section/5_abstract}
+% \cleardoublepage
+\input{A_Preliminary Section/6_abstract-en}
+% \cleardoublepage
+\setlength{\baselineskip}{10pt}  %目录设为12磅行间距
+\input{A_Preliminary Section/7_graphic}
+\setlength{\baselineskip}{25pt}  %正文设为25磅行间距
+
+% ========================正文===============================================
+\raggedbottom
+ \setlength{\parskip}{0.5em}
+\input{B_Main Body/chapter1_Introduction}
+% \input{B_Main Body/chapter1_Research framework}
+\input{B_Main Body/chapter2_Study1}
+\input{B_Main Body/chapter3_Study2}
+\input{B_Main Body/chapter4_Study3}
+\input{B_Main Body/chapter5_Discussion}
+\input{B_Main Body/chapter6_Conclusion}
+
+% \cleardoublepage
+
+% 两种文献导入方式。如果开启bst自动模式，在format.cls中bibcontrol部分无效
+\ifx \refstyle \auto
+    \addcontentsline{toc}{chapter}{参考文献}
+    \printbibliography[title = 参考文献]
+    
+    % bst自动
+    % \bibliographystyle{C1_References/gbt7714-2005}
+    % \bibliography{C1_References/zotero_better-bibtex_auto-update.bib}
+\else
+    % bib手动
+    \begin{thebibliography}{999}  
+    \addcontentsline{toc}{chapter}{参考文献}
+    \input{C1_References/zotero_better-bibtex_auto-update.bib}
+    \end{thebibliography}
+\fi
+
+\cleardoublepage
+
+\appendix
+
+\input{C2_Appendix/chapter7_Appendix}
+\cleardoublepage
+
+\ifnotanonymous %非盲审，查重：不要致谢，终稿要
+    \iftmlc
+    \else
+        \input{C3_Acknowledgement/acknowledgement}  %查重不显示
+        \addcontentsline{toc}{chapter}{致谢} %查重不显示
+        % \cleardoublepage %查重不显示
+    \fi
+\else %盲审，需要短的致谢
+    \input{C3_Acknowledgement/acknowledgement-tmlc}
+    \addcontentsline{toc}{chapter}{致谢}
+    % \cleardoublepage
+\fi
+
+% % \cleardoublepage
+\printindex
+\end{document}

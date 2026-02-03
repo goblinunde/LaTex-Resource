@@ -1,0 +1,63 @@
+
+\def \dc {on}
+\ifx \draftfigure \dc
+\documentclass[12pt,a4paper,fancyhdr,openany,twoside,draft]{ctexbook}
+\else
+\documentclass[12pt,a4paper,fancyhdr,openany,twoside]{ctexbook}
+\fi
+
+\def \phd {phd}
+\ifx \degree \phd
+    \def\degreeCN{博士}
+    \def\degreeENs{Doctoral}
+\else
+    \def\degreeCN{硕士}
+    \def\degreeENs{Master's}
+\fi
+
+\input{format/format}
+
+\def \dd {anonymous}
+\def \de {tmlc}
+\ifx \docstyle \dd
+    \notanonymousfalse % 开启该行则为盲审版本，注释该行则为非盲审版本（即查重或终稿版本）
+\else
+    \ifx \docstyle \de
+        \tmlctrue % 开启该行则为查重版本，注释该行则为终稿版本（仅在上一行在注释状态下有效）
+    \fi
+\fi
+
+
+
+\usepackage{emptypage}
+\usepackage{xeCJK} % 声明包
+\usepackage{booktabs}
+\usepackage[table,xcdraw]{xcolor} 
+\usepackage{colortbl} 
+\usepackage{rotating}
+\usepackage{multirow}
+\usepackage{longtable}
+\usepackage{graphicx} % For rotate box
+\usepackage{pdflscape} % or {lscape}
+\usepackage{float}
+\usepackage[table,xcdraw]{xcolor}
+
+
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, arrows, positioning}
+
+
+\newcommand{\nestedtabular}[1]{%
+  \begin{tabular}[t]{@{}p{\linewidth}l@{}p{\linewidth}}
+    #1
+  \end{tabular} 
+}
+
+\newcommand{\figurenote}[1]{%
+  \raggedright\footnotesize{\textit{注：}#1}%
+}
+
+\newcommand{\tablenote}[1]{%
+    \vspace{-2em}
+    \raggedright\footnotesize{\textit{注：}#1}%
+}
