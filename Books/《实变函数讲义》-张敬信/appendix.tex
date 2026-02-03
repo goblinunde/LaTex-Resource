@@ -1,0 +1,632 @@
+\chapter*{附 \ \ 录}
+\addcontentsline{toc}{chapter}{\protect\numberline{附 \ \ 录}{}}
+\markboth{附 \ \ 录}{附 \ \ 录}
+
+\setcounter{chapter}{7}
+\setcounter{Theorem}{0}
+\setcounter{Definition}{0}
+\setcounter{Proposition}{0}
+\setcounter{Corollary}{0}
+\setcounter{Remark}{0}
+\setcounter{Lemma}{0}
+
+\bigskip
+
+\bigskip
+
+
+\section*{斯蒂尔杰斯积分简介}
+
+\setcounter{section}{1}
+
+\bigskip
+
+\subsection*{一、引言}
+
+\qquad 对于连续函数~$g(x)$~的积分
+\[
+\int_0^1 g(x) \mathrm{d} x
+\]
+可以看作是~$g(x)$~在~$[0,\,1]$~上的平均值. 在某些情形下, 考虑~$g$~的不同的平均也是重要的, 它反映了~$g$~在~$[0,\,1]$~内各个地方的不同作用与影响. 例如考虑
+\[
+\int_0^1 g(x) x^2 \mathrm{d} x
+\]
+也是~$g$~的一种平均, 但此时在~$[0,\,1]$~中接近~$1$~的点与接近~$0$~的点上, 对~$g$~求平均的份量是不同的. 这种``偏重''的平均一般用一个``权''函数
+\[
+w:\:[0,\,1] \rightarrow [0,\,+\infty]
+\]
+来描述, 即~$g$~在~$[0,\,1]$~上的加权~$w$~平均为
+\[
+\int_0^1 g(x)w(x) \mathrm{d} x \Big/ \int_0^1 w(x) \mathrm{d} x
+\]
+有时我们还要考虑取平均时, 其权仅集中在某些点上, 如~$g(1/4)2 + g(3/4)2$.
+这种情况相当于区间~$[0,\,1/4)$, $(1/4,\,3/4)$~以及~$(3/4,\,1]$~对积分没有贡献, 也可以说类似于某种零测集.
+一般这一问题可描述为
+\[
+\sum_{n=1}^\infty p_n g(a_n), \quad a_n \in [0,\,1], \quad n=1,\,2,\,\cdots
+\]
+其中, $p_n \geqslant 0,\,\forall~n \in \N$~且~$\sum\limits_{n=1}^\infty p_n=1$.
+
+下面我们来建立一种叫作斯蒂尔杰斯积分的理论, 在这一理论中, 上述种种情况将是
+这一理论的特殊情形.
+
+\medskip
+
+\subsection*{二、黎曼\raisebox{0.5mm}{--}斯蒂尔杰斯积分}
+
+\begin{Definition}
+设~$g(x),\,f(x)$~为定义在~$[a,\,b]$~上的实值函数, 对于~$[a,\,b]$~的分割~$\mathrm{d}elta:\: a=x_0 < x_1 < \cdots < x_n =b$, 记
+\[
+\|\mathrm{d}elta\|=\max\{|x_i-x_{i-1}|: \: 1 \leqslant i \leqslant n\}
+\]
+任取~$\xi_i \in [x_{i-1},\,x_i], \, i=1,\,\cdots,\,n$, 若极限
+\[
+\lim_{\|\mathrm{d}elta\| \to 0} \sum_{i=1}^n g(\xi_i)[f(x_i)-f(x_{i-1})]
+\]
+存在, 记为~$I$, 则称该极限为~$g$~关于~$f$~在~$[a,\,b]$~上的黎曼\raisebox{0.5mm}{--}斯蒂尔杰斯积分\index{黎曼\raisebox{0.5mm}{--}斯蒂尔切斯积分}, 简称~R-S~积分, 记为
+\[
+I = \int_a^b g(x) \mathrm{d} f(x)
+\]
+\end{Definition}
+
+注意, 要保证~$\int_a^b g(x) \mathrm{d} f(x)$~存在, 必须要求~$f$~与~$g$~在~$[a,\,b]$~上不能有公共不连续点(证明可参考文献~\cite{zhou}).
+
+\begin{Remark}
+(i) 若取~$f(x)=x$, 则~R-S~积分即为~R-积分;
+
+(ii) 若~$f(x)$~是绝对连续的单调递增函数, 则~$\int_a^b \mathrm{d} f(x) = \int_a^b f'(x) \mathrm{d} \mu$, 故~R-S~积分变为~L-积分.
+\end{Remark}
+
+\begin{Proposition}
+R-S~积分满足下列性质:
+
+(i) 若~$\int_a^b g(x) \mathrm{d} f(x)$~存在, $c$~是常数, 则~$\int_a^b cg(x) \mathrm{d} f(x)$~与~$\int_a^b g(x) \mathrm{d} \big(cf(x)\big)$~存在, 且
+\[
+\int_a^b cg(x) \mathrm{d} f(x) = \int_a^b g(x) \mathrm{d} \big(cf(x)\big) = c\int_a^b g(x) \mathrm{d} f(x)
+\]
+
+(ii) 若~$\int_a^b g_1(x) \mathrm{d} f(x), \,\int_a^b g_2(x) \mathrm{d} f(x)$~存在, 则~$\int_a^b [g_1(x) + g_2(x)] \mathrm{d} f(x)$~存在, 且
+\[
+\int_a^b [g_1(x) + g_2(x)] \mathrm{d} f(x) = \int_a^b g_1(x) \mathrm{d} f(x) + \int_a^b g_2(x) \mathrm{d} f(x)
+\]
+
+(iii) 若~$\int_a^b g(x) \mathrm{d} f_1(x), \,\int_a^b g(x) \mathrm{d} f_2(x)$~存在, 则~$\int_a^b g(x) \mathrm{d} [f_1(x)+f_2(x)]$~存在, 且
+\[
+\int_a^b g(x) \mathrm{d} [f_1(x)+f_2(x)] = \int_a^b g(x) \mathrm{d} f_1(x) + \int_a^b g(x) \mathrm{d} f_2(x)
+\]
+\end{Proposition}
+
+\begin{Proposition}
+设~$\int_a^b g(x) \mathrm{d} f(x)$~存在, $c \in (a,\,b)$, 则~$\int_a^c g(x) \mathrm{d} f(x)$~与~$\int_c^b g(x) \mathrm{d} f(x)$~都存在, 且
+\[
+\int_a^b g(x) \mathrm{d} f(x) = \int_a^c g(x) \mathrm{d} f(x) + \int_c^b g(x) \mathrm{d} f(x)
+\]
+\end{Proposition}
+
+\begin{Remark}
+设~$f(x),\,g(x)$~为定义在~$[a,\,b]$~上的实值函数, 若对于~$c \in (a,\,b)$, 已知~$\int_a^c g(x) \mathrm{d} f(x), \, \int_c^b g(x) \mathrm{d} f(x)$~存在, 并不能推出~$\int_a^b g(x) \mathrm{d} f(x)$~存在.
+
+例如, 令
+\[
+g(x)=\chi_{[0,1]}(x), \quad f(x)= \chi_{[0,1]}(x)
+\]
+易知
+\[
+\int_0^1 g(x) \mathrm{d} f(x) = 0, \quad \int_{-1}^0 g(x) \mathrm{d} f(x) = 0
+\]
+但积分~$\int_{-1}^1 g(x) \mathrm{d} f(x)$~并不存在. 不过下面结论成立:
+
+\smallskip
+
+若~$f(x)$~为~$[a,\,b]$~上的有界函数, 设~$c \in (a,\,b)$, $g(x)$~在~$x=c$~处连续, 则当~$\int_a^c g(x) \mathrm{d} f(x), \, \int_c^b g(x) \mathrm{d} f(x)$~存在时, 有积分~$\int_a^b g(x) \mathrm{d} f(x)$~存在.
+\end{Remark}
+
+在~R-S~积分定义中, 记
+\[
+S_\mathrm{d}elta = \sum_{i=1}^n g(\xi_i)[f(x_i)-f(x_{i-1})]
+\]
+称为关于分割~$\mathrm{d}elta$~的黎曼\raisebox{0.5mm}{--}斯蒂尔杰斯和式, 简称~R-S~和式.
+
+\begin{Theorem} \label{thm711}
+R-S~积分~$\int_a^b g(x) \mathrm{d} f(x)$~存在的充要条件是, 对~$\forall~\varepsilon > 0$, 存在~$\mathrm{d}elta > 0$, 使得当任意两个分割~$\mathrm{d}elta'$~与~$\mathrm{d}elta''$~满足~$\|\mathrm{d}elta'\|<\mathrm{d}elta,\,\|\mathrm{d}elta''\|<\mathrm{d}elta$~时, 都有
+\[
+|S_{\mathrm{d}elta'} - S_{\mathrm{d}elta''}| < \varepsilon
+\]
+\end{Theorem}
+
+\begin{Theorem}
+设~$\int_a^b g(x) \mathrm{d} f(x)$~存在, 则~$\int_a^b f(x) \mathrm{d} g(x)$~也存在, 且
+\begin{equation} \label{eq711}
+\int_a^b g(x) \mathrm{d} f(x) = [g(b)f(b)-g(a)f(a)]-\int_a^b f(x) \mathrm{d} g(x)
+\end{equation}
+\end{Theorem}
+
+\begin{proof}
+对于分割~$\mathrm{d}elta:\: a=x_0 < x_1 <\cdots < x_n =b$, 以及任意的~$\xi_i \in [x_{i-1},\,x_i], \, i=1,\,\cdots,\,n$, 有
+\begin{eqnarray*}
+S_\mathrm{d}elta &=& \sum_{i=1}^n g(\xi_i)[f(x_i)-f(x_{i-1})] \\
+&=& \sum_{i=1}^n g(\xi_i)f(x_i) - \sum_{i=1}^n g(\xi_i)f(x_{i-1}) \\
+&=& - \sum_{i=1}^n f(x_i) [g(\xi_{i+1})-g(\xi_i)] + g(\xi_n)f(b)-g(\xi_1)f(a) \\
+&=& -T_{\mathrm{d}elta} + [g(b)f(b)-g(a)f(a)]
+\end{eqnarray*}
+其中
+\[
+T_\mathrm{d}elta=\sum_{i=1}^n f(x_i) [g(\xi_{i+1})-g(\xi_i)]+f(a)[g(\xi_1)-g(a)]+f(b)[g(b)-g(\xi_n)]
+\]
+是~$f(x)$~关于~$g(x)$~在~$[a,\,b]$~上的~R-S~和式. 由于分割~$\mathrm{d}elta$~是任意的, 令~$\|\mathrm{d}elta\| \to 0$~可得, $\int_a^b f(x) \mathrm{d} g(x)$~存在, 且式~\eqref{eq711}~成立.
+\end{proof}
+
+R-S~积分~$\int_a^b g(x) \mathrm{d} f(x)$~的一个最重要的特例是~$f(x)$~为单调函数或有界变差函数的情形.
+
+设~$g(x)$~为~$[a,\,b]$~上的有界实值函数, $f(x)$~为~$[a,\,b]$~上的单调递增函数, 对于分割~$\mathrm{d}elta: \:  a=x_0 < x_1 <\cdots < x_n =b$, 记
+\[
+m_i=\inf\{g(x):\: x_{i-1} \leqslant x \leqslant x_i\}, \, \quad M_i = \sup\{g(x): \: x_{i-1} \leqslant x \leqslant x_i\}
+\]
+\[
+L_\mathrm{d}elta = \sum_{i=1}^n m_i [f(x_i)-f(x_{i-1})], \quad U_\mathrm{d}elta = \sum_{i=1}^n M_i [f(x_i)-f(x_{i-1})]
+\]
+则显然有~$L_\mathrm{d}elta \leqslant S_\mathrm{d}elta \leqslant U_\mathrm{d}elta$, 且易证:
+
+(i) 若~$\mathrm{d}elta'$~是~$\mathrm{d}elta$~的加细, 则~$L_{\mathrm{d}elta'} \geqslant L_\mathrm{d}elta,\, U_{\mathrm{d}elta'} \leqslant U_\mathrm{d}elta$;
+
+(ii) 若~$\mathrm{d}elta',\,\mathrm{d}elta''$~是任意两个分割, 则~$L_{\mathrm{d}elta'} \leqslant U_{\mathrm{d}elta''}$, 且~R-S~积分存在当且仅当
+\[
+\lim_{\|\mathrm{d}elta\| \to 0} L_\mathrm{d}elta = \lim_{\|\mathrm{d}elta\| \to 0} S_\mathrm{d}elta = \lim_{\|\mathrm{d}elta\| \to 0} U_\mathrm{d}elta ~(~= I~)
+\]
+
+\begin{Theorem}
+设~$g(x)$~为~$[a,\,b]$~上的连续函数, $f(x)$~是~$[a,\,b]$~上的有界变差函数, 则~$\int_a^b g(x) \mathrm{d} f(x)$~存在, 且
+\begin{equation} \label{eq712}
+\Big| \int_a^b g(x) \mathrm{d} f(x) \Big| \leqslant \sup_{x \in [a,b]} \big| g(x) \big| \cdot \biancha\limits_a^b(f)
+\end{equation}
+\end{Theorem}
+
+\begin{proof}
+先证明积分~$\int_a^b g(x) \mathrm{d} f(x)$~的存在性, 不妨假设~$f(x)$~是单调递增函数, 由定理~\ref{thm711}~只需证明极限~
+$\lim\limits_{\|\mathrm{d}elta\| \to 0} L_\mathrm{d}elta$~和~$\lim\limits_{\|\mathrm{d}elta\| \to 0} U_\mathrm{d}elta$~存在且相等.
+
+若~$f(x)$~是常数函数, 则结论显然成立. 否则, 由~$g(x)$~的连续性知, 对任给的~$\varepsilon > 0$, 存在~$\mathrm{d}elta > 0$, 只要分割~$\mathrm{d}elta$~满足~$\|\mathrm{d}elta\| < \mathrm{d}elta$, 就有
+\[
+M_i-m_i < \frac{\varepsilon}{f(b)-f(a)}
+\]
+于是, 当~$\|\mathrm{d}elta\| < \mathrm{d}elta$~时, 有
+\[
+U_\mathrm{d}elta - L_\mathrm{d}elta = \sum_{i=1}^n (M_i-m_i) [f(x_i)-f(x_{i-1})] < \varepsilon
+\]
+这说明
+\begin{equation} \label{eq713}
+\lim_{\|\mathrm{d}elta\| \to 0} (U_\mathrm{d}elta-L_\mathrm{d}elta) = 0
+\end{equation}
+下面证明~$\lim\limits_{\|\mathrm{d}elta\| \to 0} U_\mathrm{d}elta$~存在. 若不然, 则存在~$\varepsilon_0 > 0$~以及分割列~$\{\mathrm{d}elta_k'\}$~与~$\{\mathrm{d}elta_k''\}$, 满足~$\|\mathrm{d}elta_k'\|$~与~$\|\mathrm{d}elta_k''\| \to 0, \, k \to \infty$, 且
+\[
+U_{\mathrm{d}elta_k'} - U_{\mathrm{d}elta_k''} > \varepsilon_0
+\]
+从而由式~\eqref{eq713}~知, 当~$k$~足够大时有
+\[
+L_{\mathrm{d}elta_k'}-U_{\mathrm{d}elta_k''} > \frac{\varepsilon}{2} > 0
+\]
+这与分割的性质~$L_{\mathrm{d}elta'} \leqslant U_{\mathrm{d}elta''}$~矛盾.
+
+最后, 由于对任意的分割~$\mathrm{d}elta$, 都有
+\begin{eqnarray*}
+S_\mathrm{d}elta \leqslant U_\mathrm{d}elta &=& \sum_{i=1}^n M_i [f(x_i)-f(x_{i-1})] \\
+&\leqslant& \sup_{x \in [a,b]} \big| g(x) \big| \sum_{i=1}^n \big|f(x_i)-f(x_{i-1})\big|
+\end{eqnarray*}
+两边关于~$\mathrm{d}elta$~取极限可得不等式~\eqref{eq712}.
+\end{proof}
+
+\begin{Example}
+设~$f(x)$~在~$\R^n$~的一个球层~$a \leqslant \|x\| \leqslant b$~上是可积的, $g\big(\|x\|\big)=g(r)$~是~$a \leqslant r \leqslant b$~上的连续函数, 其中~$0 \leqslant a < b < +\infty$. 若令
+\[
+F(r)=\int_{a\leqslant \|x\| \leqslant r} f(x) \mathrm{d} x, \quad a \leqslant r \leqslant b
+\]
+则有
+\[
+\int_{a \leqslant \|x\| \leqslant b} f(x) g\big(\|x\|\big) \mathrm{d} x = \int_a^b g(r) \mathrm{d} F(r)
+\]
+\end{Example}
+
+\begin{proof}
+先证上式右端的积分存在. 不妨设~$f(x) \geqslant 0$, 并记上式左端为~$I$. 作区间~$[a,\,b]$~的分割~$\mathrm{d}elta: \: a=r_0 < r_1 < \cdots < r_k = b$. 则有
+\[
+I = \sum_{i=1}^k \int_{r_{i-1} \leqslant \|x\| \leqslant r_i} f(x) g\big(\|x\|\big) \mathrm{d} x
+\]
+对每个~$i=1,\,\cdots,\,k$, 令
+\[
+m_i=\inf\{g(r):\: r_{i-1} \leqslant r \leqslant r_i\}, \quad M_i=\sup\{g(r):\: r_{i-1} \leqslant r \leqslant r_i\}
+\]
+则由~$f \geqslant 0$~可知
+\[
+\sum_{i=1}^k m_i \int_{r_{i-1} \leqslant \|x\| \leqslant r_i} f(x) \mathrm{d} x \leqslant I \leqslant \sum_{i=1}^k m_i \int_{r_{i-1} \leqslant \|x\| \leqslant r_i} f(x) \mathrm{d} x
+\]
+从而
+\[
+\sum_{i=1}^k m_i \big[ F(r_i)-F(r_{i-1}) \big] \leqslant I \leqslant \sum_{i=1}^k M_i \big[ F(r_i)-F(r_{i-1}) \big]
+\]
+由~R-S~积分的定义, 当~$\|\mathrm{d}elta\| \to 0$~时, 上式两端都趋于~$\int_a^b g(x) \mathrm{d} F(r)$. 因此, $I = \int_a^b g(r) \mathrm{d} F(r)$.
+\end{proof}
+
+\subsection*{三、勒贝格\raisebox{0.5mm}{--}斯蒂尔杰斯测度与积分}
+
+\qquad 下面在~$\R$~上建立一种新的测度、积分理论\raisebox{0.5mm}{-----}勒贝格\raisebox{0.5mm}{--}斯蒂尔杰斯测度、积分理论, 它在概率论中有着非常重要的应用, 本书正文中所讲的勒贝格测度、积分是它的一种特殊情形.
+
+我们还将讨论这种勒贝格\raisebox{0.5mm}{--}斯蒂尔杰斯积分与黎曼\raisebox{0.5mm}{--}斯蒂尔杰斯积分的关系, 并从
+勒贝格\raisebox{0.5mm}{--}斯蒂尔杰斯测度的角度给出一个函数是黎曼\raisebox{0.5mm}{--}斯蒂尔杰斯可积的充要条件.
+
+\begin{Definition}
+设~$f(x)$~为~$\R$~上单调递增的实值函数, 对~$\R$~中非空子集~$E$, 令
+\[
+\mu_f^*(E)=\inf\Big\{ \sum_k [f(b_k)-f(a_k)]: \: E \subset \medcup_k(a_k,\,b_k] \Big\}
+\]
+并规定~$\mu_f^*(\emptyset)=0$. 下列事实成立:
+
+(i)(\textbf{非负性}) $\mu_f^*(E) \geqslant 0$;
+
+(ii)(\textbf{单调性}) 若~$E_1 \subset E_2$, 则~$\mu_f^*(E_1) \leqslant \mu_f^*(E_2)$;
+
+(iii)(\textbf{次可加性}) $\mu_f^*\big(\smallcup\limits_{n=1}^\infty E_n \big) \leqslant \sum\limits_{n=1}^\infty \mu_f^*(E_n)$.
+
+\smallskip
+
+这说明~$\mu_f^*(\cdot)$~是定义在~$\R$~上的外测度, 称为相应于~$f$~的
+勒贝格--斯蒂尔杰斯外测度\index{勒贝格--斯蒂尔杰斯外测度}, 简称~L-S~外测度.
+\end{Definition}
+
+若取~$f(x)=x$, L-S~外测度就是勒贝格外测度.
+
+\begin{Theorem} \label{thm714}
+设~$E_1,\,E_2$~为~$\R$~中的点集, 若~$d(E_1,\,E_2) > 0$, 则
+\[
+\mu_f^*(E_1) + \mu_f^*(E_2) = \mu_f^*\big(E_1 \medcup E_2\big)
+\]
+\end{Theorem}
+
+\begin{proof}
+注意到, 若~$a = a_0 < a_1 < \cdots < a_n =b$, 则有
+\[
+f(b)-f(a) = \sum_{i=1}^n [f(a_i)-f(a_{i-1})]
+\]
+故在~$\mu_f^*$~的定义中, 可以使每个覆盖子区间~$(a_k,\,b_k]$~取的充分小, 从而对任意的~$\varepsilon > 0$, 我们选取~$\big\{(a_k,\,b_k]\big\}$, 其中每个~$(a_k,\,b_k]$~的长度小于~$d(E_1,\,E_2)$, 使得~$E_1 \smallcup E_2 \subset \mathop{\textstyle{\smallcup}}\limits_k(a_k,\,b_k]$, 且
+\[
+\sum_k [f(b_k)-f(a_k)] \leqslant \mu_f^*\big( E_1 \medcup E_2 \big) + \varepsilon
+\]
+于是再把~$\big\{(a_k,\,b_k]\big\}$~分为两个覆盖族, 其一覆盖~$E_1$, 其二覆盖~$E_2$, 就可以得到
+\[
+\mu_f^*(E_1)+\mu_f^*(E_2) \leqslant \sum_k [f(b_k)-f(a_k)] \leqslant \mu_f^* \big(E_1 \medcup E_2 \big) + \varepsilon
+\]
+由~$\varepsilon$~的任意性可知
+\[
+\mu_f^*(E_1)+\mu_f^*(E_2) \leqslant \mu_f^*\big(E_1 \medcup E_2 \big)
+\]
+而相反的不等式可由~L-S~外测度的次可加性得到.
+\end{proof}
+
+有了~L-S~外测度, 再借助卡拉西尔德瑞条件就可以定义~L-S~可测集.
+
+\begin{Definition}
+若对任意的点集~$T \subset \R$, 都有
+\[
+\mu_f^*(T)=\mu_f^*\big(T \medcap E\big) + \mu_f^*\big(T \medcap E^c\big)
+\]
+则称~$E$~为~$\R$~中的~$\mu_f$~可测集\index{勒贝格\raisebox{0.5mm}{--}斯蒂尔切斯可测集}, 此时其测度称为勒贝格--斯蒂尔杰斯测度\index{勒贝格\raisebox{0.5mm}{--}斯蒂尔切斯测度}, 简称~L-S~测度, 记为~$\mu_f(E)$.
+\end{Definition}
+
+$\R$~中的可测集也构成一个~$\sigma$-代数. 由此可知, 为了证明~$\R$~中的波雷尔集都是~L-S~可测集, 只需证明~$\R$~中的区间是~L-S~可测集即可, 而~$\mu_f$~继承自~$\mu_f^*$~的距离外测度性质
+(定理~\ref{thm714})可以保证这点.
+
+\begin{Theorem}
+设~$E \subset \R$, 则存在波雷尔集~$B: \: B \supset E$, 使得~$\mu_f^*(E)=\mu_f(B)$.
+\end{Theorem}
+
+\begin{proof}
+对每个~$n \in \N$, 选取~$\big\{ (a_k^{(n)},\,b_k^{(n)}] \big\}$~满足
+\[
+E \subset \mathop{\textstyle{\medcup}}_k (a_k^{(n)},\,b_k^{(n)}], \quad
+\sum_k \big[ f(b_k^{(n)})-f(a_k^{(n)}) \big] \leqslant \mu_f^*(E) + \frac{1}{n}
+\]
+令
+\[
+B_n = \mathop{\textstyle{\medcup}}_k (a_k^{(n)},\,b_k^{(n)}], \quad B =  \mathop{\textstyle{\medcap}}_n B_n
+\]
+则~$E \subset B$, 且~$B$~是波雷尔集. 从而
+\[
+\mu_f(B) \leqslant \mu_f(B_n) \leqslant \sum_k \big[ f(b_k^{(n)})-f(a_k^{(n)}) \big] \leqslant \mu_f^*(E) + \frac{1}{n}
+\]
+令~$n \to \infty$~得~$\mu_f(B) \leqslant \mu_f^*(E)$. 而相反的不等式是显然的.
+\end{proof}
+
+\begin{Proposition}
+若~$f(x)$~为~$\R$~上单调递增的右连续函数, 则
+\[
+\mu_f\big( (a,\,b] \big) = f(b)-f(a)
+\]
+特别地, $\mu_f\big( \{a\} \big) = f(a) - f(a-0)$.
+\end{Proposition}
+
+\begin{proof}
+由于~$(a,\,b]$~是其自身的一个覆盖, 故总有
+\[
+\mu_f\big( (a,\,b] \big) \leqslant f(b)-f(a)
+\]
+另一方面, 设~$(a,\,b] \subset \smallcup\limits_k (a_k,\,b_k]$, 对任意的~$\varepsilon > 0$, 由于~$f$~的右连续性, 故可选取~$\{b_k'\}$~使得
+\[
+b_k < b_k', \quad f(b_k) > f(b_k') - \frac{\varepsilon}{2^k}
+\]
+若~$a'$~满足~$a < a' < b$, 则~$\big\{(a_k,\,b_k')\big\}$~覆盖~$[a',\,b]$, 从而存在有限子覆盖, 不妨设
+\[
+[a',\,b] \subset \medcup_{k=1}^m (a_k,\,b_k')
+\]
+可以假定~$a_{k+1} < b_k', \, k=1,\,\cdots,\,m-1$ (必要时剔除一部分区间), 且~$a_1 < a',\, b < b_m'$. 从而
+\[
+f(a_1) \leqslant f(a'), \quad f(b) \leqslant f(b_m')
+\]
+\begin{eqnarray*}
+\sum_k \big[ f(b_k)-f(a_k)\big] &\geqslant& \sum_{k=1}^m \big[ f(b_k)-f(a_k)\big] \\
+&=& f(b_m)-f(a_1) + \sum_{k=1}^{m-1} \big[ f(b_k)-f(a_{k+1})\big]
+\end{eqnarray*}
+注意到
+\begin{eqnarray*}
+f(b_m)-f(a_1) &=& \big[f(b_m)-f(b_m')\big] + \big[f(b_m')-f(a_1)\big] \\
+&\geqslant& -\varepsilon + \big[f(b)-f(a')\big]
+\end{eqnarray*}
+\[
+f(b_k')-f(a_{k+1}) \geqslant 0, \quad k=1,\,\cdots,\,m-1
+\]
+于是
+\begin{eqnarray*}
+\sum_{k=1}^{m-1} \big[ f(b_k)-f(a_{k+1})\big] &=& \sum_{k=1}^{m-1} \big[ f(b_k)-f(b_k')\big] + \sum_{k=1}^{m-1} \big[ f(b_k')-f(a_{k+1})\big] \\
+&\geqslant& \sum_{k=1}^{m-1} \frac{-\varepsilon}{2^k} \geqslant -\varepsilon
+\end{eqnarray*}
+因此
+\[
+\sum_k \big[ f(b_k)-f(a_k)\big] \geqslant -2 \varepsilon + \big[ f(b)-f(a') \big]
+\]
+令~$\varepsilon \to 0, \, a' \to a$~可得
+\[
+\sum_k \big[ f(b_k)-f(a_k)\big] \geqslant f(b)-f(a)
+\]
+即~$\mu_f\big( (a,\,b] \big) = f(b)-f(a)$.
+
+\smallskip
+
+第二部分的结论, 只要应用上述过程于~$(a-1/k,\,a],\ k=1,\,2,\,\cdots$~即可.
+\end{proof}
+
+\begin{Remark}
+在~L-S~外测度的定义中, 若采用开区间代替半开半闭区间, 即令
+\[
+\mu_f^*(E)=\inf\Big\{ \sum_k [f(b_k)-f(a_k)]: \: E \subset \medcup_k(a_k,\,b_k) \Big\}
+\]
+则不难证明~$\mu_f^*$~是~$\R$~上的距离外测度, 且有
+
+\noindent(i) $\mu_f^*(E) = \inf\big\{ \mu_f^*(G): \: G \supset E,\, G \mbox{~开} \big\}$;
+
+\noindent(ii) 下列关系成立
+ \[
+ \mu_f^*\big( \{a\} \big) = f(a+0)-f(a-0)
+ \]
+ \[
+ \mu_f^*\big( [a,\,b] \big) = f(b+0)-f(a-0)
+ \]
+ \[
+ \mu_f^*\big( (a,\,b] \big) = f(b+0)-f(a+0)
+ \]
+ \[
+ \mu_f^*\big( [a,\,b) \big) = f(b-0)-f(a-0)
+ \]
+ \[
+ \mu_f^*\big( (a,\,b) \big) = f(b-0)-f(a+0)
+ \]
+易知, 在~$f(x)$~右连续的情形下, 两者所导出的外测度是相同的.
+
+\end{Remark}
+
+\begin{Remark}
+若~$\nu$~是~$\R$~上波雷尔集类上的有限测度(若~$K$~是紧集, 则~$\nu(K)<+\infty$), 定义函数
+\[
+f_\nu(x)=\nu\big( (-\infty,\,x] \big), \quad x \in(-\infty,\, +\infty)
+\]
+则~$f_\nu$~为~$\R$~上的单调递增函数, 且
+\[
+\nu\big( (a,\,b]\big) = f_\nu(b)-f_\nu(a)
+\]
+可以证明, 由~$f_\nu(x)$~导出的~L-S~测度~$\mu_f$(看成是~$\R$~上波雷尔集类上的测度)与测度~$\nu$~是一致的(其中, $f_\nu(x)$~的右连续性扮演着重要的角色).
+这说明每一个~$\R$~上波雷尔集类上的有限测度都是~L-S~测度.
+\end{Remark}
+
+\begin{Example}
+对给定的点列~$\{x_n\}$~与正数列~$\{h_n\}$, 且~$\sum\limits_n h_n < +\infty$, 定义函数
+\[
+h(x)=\sum_{x_n \leqslant x} h_n
+\]
+称为跃阶函数, 它是~$\R$~上单调递增的右连续函数, 并在不连续点~$x_n$~处有跃阶值~$h_n$.
+设与~$h(x)$~相应的~L-S~测度为~$\mu_h$, 则任一点集~$E$~都是~$\mu_h$~可测的, 且其测度为
+\[
+\mu_h(E)=\sum_{x_n \in E} h_n
+\]
+称相应于跃阶函数的~L-S~测度为离散测度\index{离散测度}.
+\end{Example}
+
+\begin{proof}
+单点集~$\{x_n\}$~的测度为~$h_n$, 而点集~$\{x_1,\,\cdots,\,x_n\}$~的补集的测度为零, 从而由~$\mu_h$~的可数可加性推知上式是成立的.
+\end{proof}
+
+\begin{Example}
+设~$f(x)$~为~$[a,\,b]$~上单调递增的绝对连续函数, 记相应于~$f$~的~L-S~测度为~$\mu_f$
+(限于区间~$[a,\,b]$), 则~$[a,\,b]$~上任一个~L-可测集~$E$~都是~$\mu_f$-可测的, 且
+\[
+\mu_f(E)=\int_E f'(x) \mathrm{d} x
+\]
+\end{Example}
+
+\begin{proof}
+注意到对于区间~$(\alpha,\,\beta]$~有
+\[
+\mu_f\big( (\alpha,\,\beta] \big) = f(\beta)-f(\alpha) = \int_\alpha^\beta f'(x) \mathrm{d} x
+\]
+再利用通常的方法(通过开集)就可将上式推广到可测集.
+\end{proof}
+
+\begin{Example}
+设~$f(x)$~为~$[a,\,b]$~上单调递增的绝对连续函数, 若~$E \subset [a,\,b]$~是~$\mu_f$-可测集, 则~$E-\{x \in E: \: f'(x) = 0\}$~是勒贝格可测集.
+\end{Example}
+
+在给定~L-S~测度的基础上, 利用第三章的方法就可以定义~$\mu_f$-可测函数\index{勒贝格\raisebox{0.5mm}{--}斯蒂尔切斯可测函数}.
+
+\begin{Definition}
+设~$E$~为~$\mu_f$-可测集, $f: \: E \to \mathbb{R} \cup \{\pm \infty\}$~为实值函数, 若对~$\forall~a \in \mathbb{R}$, 都有~$\{x \in E: \: f(x) > a\}$~是~$\mu_f$-可测集, 则称~$f$~为~$\mu_f$-可测函数.
+\end{Definition}
+
+易知, 若~$f(x)$~为单调递增的绝对连续函数, $g(x)$~为~L-可测函数, 则~$g(x)$~是~$\mu_f$-可测函数.
+
+\begin{Definition}
+对于~$\mu_f$-可测集~$E$~上的~$\mu_f$-可测函数~$g(x)$, 可以利用第四章的方法定义~$g$~关于~$\mu_f$~的积分, 并记为
+\[
+\int_E g(x) \mathrm{d} \mu_f
+\]
+称为~$g$~关于单调递增函数~$f$~的勒贝格\raisebox{0.5mm}{--}斯蒂尔杰斯积分\index{勒贝格\raisebox{0.5mm}{--}斯蒂尔切斯积分}, 简称为~L-S~积分. 若~$\int_E g(x) \mathrm{d} \mu_f$~是有限值, 则称~$g$~关于~$f$~是~L-S~可积的.
+\end{Definition}
+
+\begin{Example}
+设~$f(x)$~为~$\R$~上单调递增的右连续函数, $E \subset \R$~为有界波雷尔集, 若~$g(x)$~是~$E$~上有界的波雷尔可测函数, 则~$g$~关于~$f$~的~L-S~积分存在.
+\end{Example}
+
+\begin{Example}
+设~$h(x)$~为~$\R$~上的跃阶函数
+\[
+h(x) = \sum_{x_n \leqslant x} h_n
+\]
+从而~$\mu_h$~为离散测度, 且实值函数~$g(x)$~关于~$h$~的~L-S~积分为
+\[
+\int_\R g(x) \mathrm{d} \mu_h = \sum_n g(x_n) h_n
+\]
+\end{Example}
+
+L-S~积分也具有若干类似于~L-积分的性质. 例如:
+
+\begin{Theorem}
+(\textbf{控制收敛定理}) 设~$f(x)$~为~$E$~上的单调递增函数, $\{g_n(x)\}$~为~$\mu_f$-可测集~$E$~上的
+~$\mu_f$-可测函数列, 满足
+\[
+\lim_{n \to \infty} g_n(x) = g(x), \quad \mathrm{~a.e.~} x \in E
+\]
+且存在非负~L-S~可积函数~$G(x)$~使得
+\[
+|g_n(x)| \leqslant G(x), \quad \mathrm{~a.e.~} x \in E, \, \forall~n \in \mathbb{N}
+\]
+则~$g(x)$~在~$E$~上关于~$f$~的~L-S~积分存在, 且
+\[
+\int_E g(x) \mathrm{d} \mu_f = \lim_{n \to \infty} \int_E g_n(x) \mathrm{d} \mu_f
+\]
+\end{Theorem}
+
+\begin{Theorem}
+(\textbf{逐项积分定理}) 设~$f(x)$~为~$E$~上的单调递增函数, $\{g_n(x)\}$~为~$\mu_f$-可测集~$E$~上的
+~$\mu_f$-可测函数列, 若
+\[
+\sum_{n=1}^\infty \int_E \big| g_n(x) \big| \mathrm{d} \mu_f < + \infty
+\]
+则有
+\[
+\int_E \sum_{n=1}^\infty \int_E g_n(x) \mathrm{d} \mu_f = \sum_{n=1}^\infty \int_E g_n(x) \mathrm{d} \mu_f
+\]
+\end{Theorem}
+
+\begin{Example}
+设~$f(x)$~为~$[a,\,b]$~上的单调递增函数, 若~$g(x)$~关于~$f$~的~L-S~积分存在, 或者~$g(x)\cdot f'(x)$~的~L-积分存在, 则有
+\[
+\int_a^b g(x) \mathrm{d} \mu_f = \int_a^b g(x) f'(x) \mathrm{d} x
+\]
+\end{Example}
+
+最后, 我们来讨论~R-S~积分与~L-S~测度、积分之间的关系. 为叙述简明起见, 以下总假定~$f(x)$~为
+~$[a,\,b]$~上单调递增的右连续函数.
+
+设~$g(x)$~为~$[a,\,b]$~上的有界函数, 对~$[a,\,b]$~作逐步细化的分割列~$\{\mathrm{d}elta_k\}$~满足
+~$\mathrm{d}elta_{k+1} \subset \mathrm{d}elta_k$, 且当~$k \to \infty$~时~$\|\mathrm{d}elta_k\| \to 0$. 记
+\[
+M_i^{(k)} = \sup \big\{ g(x): \: x \in [x_{i-1}^{(k)},\,x_i^{(k)}]  \big\}
+\]
+\[
+m_i^{(k)} = \inf \big\{ g(x): \: x \in [x_{i-1}^{(k)},\,x_i^{(k)}]  \big\}
+\]
+其中~$i=1,\,\cdots,\,n_k$. 对~$k=1,\,\cdots,\,n_k$, 作函数列
+\[
+\varphi_k(x)=\sum_{i=1}^{n_k} M_i^{(k)} \chi_{(x_{i-1},x_i]}(x), \quad
+\psi_k(x)=\sum_{i=1}^{n_k} m_i^{(k)} \chi_{(x_{i-1},x_i]}(x)
+\]
+沿用前文的记号, 我们有
+\[
+U_{\mathrm{d}elta_k} = \int_a^b \varphi_k(x) \mathrm{d} \mu_f, \quad L_{\mathrm{d}elta_k} = \int_a^b \psi_k(x) \mathrm{d} \mu_f
+\]
+显然有
+\[
+\varphi_k(x) \geqslant \varphi_{k+1}(x) \geqslant \cdots \geqslant g(x) \geqslant \cdots \geqslant \psi_{k+1}(x) \geqslant \psi_k(x)
+\]
+若令
+\[
+\lim_{k \to \infty} \varphi_k(x) = \varphi(x), \quad \lim_{k \to \infty} \psi_k(x) = \psi(x)
+\]
+则由控制收敛定理可得
+\[
+\int_a^b \varphi(x) \mathrm{d} \mu_f = \lim_{k \to \infty} \int_a^b \varphi_k(x) \mathrm{d} \mu_f \geqslant \lim_{k \to \infty} \int_a^b \psi_k(x) \mathrm{d} \mu_f = \int_a^b \psi(x) \mathrm{d} \mu_f
+\]
+
+从这一角度出发, 我们可将~R-S~积分的定义重述如下: 若积分
+\[
+\int_a^b \varphi(x) \mathrm{d} \mu_f \quad \mbox{与} \quad \int_a^b \psi(x) \mathrm{d} \mu_f
+\]
+(不依赖于分割列的选取)相同且等于~$I$, 则称~$g(x)$~关于~$f(x)$~在区间~$[a,\,b]$~上是~R-S~可积的, 记为
+\[
+\int_a^b g(x) \mathrm{d} f(x) = I
+\]
+
+\begin{Theorem}
+设~$g(x)$~为~$[a,\,b]$~上的有界函数, $f(x)$~为~$[a,\,b]$~上单调递增的右连续函数, 则~$g(x)$~关于~$f(x)$~在~$[a,\,b]$~上~R-S~可积的充要条件是: $g(x)$~在~$[a,\,b]$~上
+关于~$\mu_f$~几乎处处连续.
+\end{Theorem}
+
+\begin{proof}
+假设~$\int_a^b g(x) \mathrm{d} f(x)$~存在, 考虑前面的分割列~$\{\mathrm{d}elta_k\}$~以及~$\{\varphi_k(x)\}, \, \{\psi_k(x)\}$, 则有
+\[
+\int_a^b \big[\varphi(x) - \psi(x) \big] \mathrm{d} \mu_f = 0
+\]
+从而
+\[
+\varphi(x)=\psi(x), \quad \mbox{~a.e.~} x \in [a,\,b] \quad \mbox{(关于~$\mu_f$)}
+\]
+设~$x \in [a,\,b]$~且~$x$~不属于一切分割~$\mathrm{d}elta_k$~的分点, 且~$\varphi(x)=g(x)=\psi(x)$. 则对任意的~$\varepsilon > 0$, 存在~$k \in \N$~使得
+\[
+\varphi_k(x) - \psi_k(x) < \varepsilon
+\]
+由于~$x$~是某一个区间~$\big( x_{i-1}^{(k)},\,x_i^{(k)} \big)$~的内点, 故存在~$\mathrm{d}elta > 0$, 使得~$(x-\mathrm{d}elta,\,x+\mathrm{d}elta) \subset \big( x_{i-1}^{(k)},\,x_i^{(k)} \big]$. 于是当~$|x-y| < \mathrm{d}elta$~时, 有
+\[
+\big| g(x) - g(y) \big| \leqslant \varphi_k(x) - \psi_k(x) < \varepsilon
+\]
+这说明~$g(x)$~在~$x$~处连续. 由于分割~$\{\mathrm{d}elta_k\}$~的分点全体为~$\mu_f$-零测集, 故~$g(x)$~在~$[a,\,b]$~上关于~$\mu_f$~是几乎处处连续的.
+
+反过来, 设~$g(x)$~在~$[a,\,b]$~上关于~$\mu_f$~几乎处处连续. 若~$x \neq a$~是~$g(x)$~的连续点, 则对任意的~$\varepsilon > 0$, 存在~$\mathrm{d}elta > 0$, 使得
+\[
+\sup_{y \in (x-\mathrm{d}elta,x+\mathrm{d}elta)} g(y) - \inf_{y \in (x-\mathrm{d}elta,x+\mathrm{d}elta)} g(y) > \varepsilon
+\]
+考虑分割列~$\{\mathrm{d}elta_k\}$, 则对某个~$k$, 存在~$\mathrm{d}elta_k$~的分点~$x_{i-1},\,x_i$, 使得
+\[
+x \in (x_{i-1},\,x_i] \subset (x-\mathrm{d}elta,\,x+\mathrm{d}elta)
+\]
+于是
+\[
+\varphi(x) - \psi(x) \leqslant \varphi_k(x) - \psi_k(x) < \varepsilon
+\]
+由~$\varepsilon$~的任意性知
+\[
+\varphi(x)=g(x)=\psi(x), \quad \mbox{~a.e.~} x \in [a,\,b] \quad \mbox{(关于~$\mu_f$)}
+\]
+这说明~$g(x)$~是~$\mu_f$-可测的, 且~$\int_a^b g(x) \mathrm{d} \mu_f$~存在.
+\end{proof}
+
+\begin{Theorem}
+若~$g(x)$~关于~$f(x)$~在~$[a,\,b]$~上~R-S~可积, 则~$g(x)$~关于~$f(x)$~的~L-S~积分存在, 且
+\[
+\int_a^b g(x) \mathrm{d} f(x) = \int_a^b g(x) \mathrm{d} \mu_f
+\]
+\end{Theorem}

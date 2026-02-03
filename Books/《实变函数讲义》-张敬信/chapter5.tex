@@ -1,0 +1,966 @@
+\chapter{微分与不定积分}
+
+数学分析中讲到, 微分与积分具有密切的联系:
+
+\begin{theorem}[微积分学基本定理]
+设~$f(x)$~在~$[a,\,b]$~上连续, 则
+\[
+\frac{\mathrm{d}}{\mathrm{d} x} \int_a^x f(t) \mathrm{d} t = f(x), \quad x \in [a,\,b]
+\]
+\end{theorem}
+
+\begin{theorem}[微积分学基本公式, 牛顿\raisebox{0.5mm}{--}莱布尼茨公式]
+设~$f(x)$~在~$[a,\,b]$~上连续, $F(x)$~为~$f(x)$~的任一原函数, 则
+\[
+\int_a^b f(x) \mathrm{d} x = F(b)-F(a)
+\]
+\end{theorem}
+
+本章将利用勒贝格积分理论证明对一类更一般的函数得到相应的结果.
+
+\section{单调函数的可微性}
+
+\subsection{单调函数}
+
+单调函数是最简单的函数之一, 它具有一系列良好的性质. 单调函数是~L-可积的并且几乎处处可导(可微). 维它利覆盖定理不仅是证明单调函数的可微性定理的基础, 它本身也是一个重要的结果.
+
+\begin{definition}
+设~$f(x)$~为定义在~$I \subset \R$~上的实值函数, 若对~$\forall~x_1,\,x_2 \in I$, 当~$x_1 < x_2$~时, 总有
+\[
+f(x_1) \leqslant f(x_2) \quad \big(~f(x_1) \geqslant f(x_2)~\big)
+\]
+则称~$f(x)$~在~$I$~上是单调递增(单调递减)函数\footnote{~若定义中的~``$\leqslant$''~或~``$\geqslant$''~
+换成~``$<$''~或~``$>$'', 则称为严格单调递增或递减函数. }. 单调递增函数和单调递减函数, 统称为单调函数\index{单调函数}.
+\end{definition}
+
+设~$f(x)$~为~$I$~上的单调函数, 则由单调有界原理易知, 对~$\forall~x_0 \in I$, $f$~在~$x_0$~点的左右极限都存在, 因此, 单调函数的间断点一定是第一类间断点.
+
+\begin{theorem} \label{thm511}
+设~$f(x)$~为~$[a,\,b]$~上的单调函数, 则~$f(x)$~的不连续点的全体至多是可列集.
+(见第一章~\S~1.3~例~1.3.5)
+\end{theorem}
+
+\begin{corollary}
+设~$f(x)$~为~$[a,\,b]$~上的单调函数, 则~$f(x)$~在~$[a,\,b]$~上~L-可积.
+\end{corollary}
+
+\begin{proof}
+由定理~\ref{thm511}, $f(x)$~的不连续点集是零测集, 再由定理~\ref{thm442}, $f(x)$~在~$[a,\,b]$~上~R-可积, 从而~L-可积.
+\end{proof}
+
+\subsection{维它利覆盖定理}
+
+\begin{definition}
+设~$E \subset \R, \, \mathcal{F} = \{I_\alpha\}_{\alpha \in \mathnormal{\Gamma}}$~为区间族(开、闭、半开半闭均可, 但不能是单点集). 若对~$\forall~\varepsilon > 0$, 及~$x \in E$, 都存在~$I_{\alpha_0} \in \mathcal{F}$, 使得
+\[
+x \in I_{\alpha_0}, \quad \big|I_{\alpha_0}\big| < \varepsilon
+\]
+或等价地, 对~$\forall~\varepsilon > 0$, 都存在一列区间~$\{I_n\}$~使得
+\[
+x \in I_n,\quad \forall~n \in \N \quad \mbox{~且~} \quad \lim_{n \to \infty} \big|I_n\big| = 0
+\]
+则称~$\mathcal{F}$~是~$E$~的一个维它利覆盖\index{维它利覆盖}.
+\end{definition}
+
+\begin{example}
+设~$E = [a,\,b]$, 记~$\{r_n\}$~为~$[a,\,b]$~中有理数的全体, 令
+\[
+I_{n,m}=\Big[r_n -\frac{1}{m},\,r_n +\frac{1}{m}\Big]
+\]
+则~$\mathcal{F} = \{I_{n,m}\}_{n,m=1}^\infty$~是~$E$~的维它利覆盖.
+\end{example}
+
+\begin{proof}
+任取~$x \in [a,\,b]$, 对~$\forall~\varepsilon > 0$, $\exists~m_0 \in \N$~使得~$1/m_0 < \varepsilon/2$. 对于~$1/m_0 > 0$, 由有理数的稠密性, 存在有理数~$r_{n_0} \in [a,\,b]$~使得
+\[
+\big|x-r_{n_0}\big| < \frac{1}{m_0} < \frac{\varepsilon}{2}
+\]
+从而
+\[
+x \in \Big[ r_{n_0} - \frac{1}{m_0}, \, r_{n_0} + \frac{1}{m_0} \Big] \subset \Big( r_{n_0} - \frac{\varepsilon}{2}, \, r_{n_0} + \frac{\varepsilon}{2} \Big)
+\]
+记~$I_{n_0,m_0} = \big[ r_{n_0} - 1/m_0, \, r_{n_0} + 1/m_0 \big]$, 则~$x \in I_{n_0,m_0}$~且~$\big| I_{n_0,m_0} \big| < \varepsilon$.
+\end{proof}
+
+\begin{theorem}[维它利覆盖定理\index{维它利覆盖定理}]
+设~$E \subset \R$, $m^*(E) < +\infty$, $\mathcal{F}$~是~$E$~的一个~维它利覆盖, 则对~$\forall~\varepsilon > 0$, 都存在有限个互不相交的区间~$I_1,\,\cdots,\,I_n \in \mathcal{F}$, 使得
+\[
+m^*\Big(E- \medcup\limits_{k=1}^n I_k \Big) < \varepsilon
+\]
+\end{theorem}
+
+\begin{proof}
+由于对任意的~$I_1,\,\cdots,\,I_n \in \mathcal{F}$, 它们端点的全体是零测集, 故不妨设~$\mathcal{F}$~中的每个区间都是闭集.
+
+由于~$m^*(E) < +\infty$, 由外测度定义, 存在开集~$G \supset E$~使得~$m(G) < +\infty$. 不妨设~$\mathcal{F}$~中的每个区间均包含在~$G$~中(否则用~$\mathcal{F}'=\{I: \: I \in \mathcal{F} \mbox{~且~} I \subset G\}$~代替~$\mathcal{F}$~即可).
+
+(i) 若存在有限个区间~$I_1,\,\cdots,\,I_n \in \mathcal{F}$, 使得~$E \subset \mathop{\cup}\limits_{i=1}^n I_i$, 则~$m^*\Big(E- \mathop{\cup}\limits_{i=1}^n I_n \Big) = 0$. 定理结论成立.
+
+(ii) 若对任意的~$I_1,\,\cdots,\,I_n \in \mathcal{F}$, 都有
+~$E \nsubseteq \mathop{\cup}\limits_{i=1}^n I_i$. 在~$\mathcal{F}$~中任取一个区间记为~$I_1$, 假设已选定互不相交的区间~$I_1,\,\cdots,\,I_k$, 由于~$E - \mathop{\cup}\limits_{i=1}^k I_i \neq \emptyset$, 注意到~$\mathop{\cup}\limits_{i=1}^k I_i$~是闭集以及~$\mathcal{F}$~是~维它利覆盖, 故至少存在一个~$I \in \mathcal{F}$, 使得~$I$~与~$I_1,\,\cdots,\,I_k$~都互不相交. 令
+\[
+\lambda_k = \sup\big\{ |I|: \: I \in \mathcal{F}, \, I \cap I_i = \emptyset, \, i=1,\cdots,k \big\}
+\]
+注意到~$\mathcal{F}$~中每个~$I$~都含于~$G$~中, 故~$\lambda_k \leqslant m(G) < +\infty$. 在~$\mathcal{F}$~中选取区间~$I_{k+1}$, 使得
+\begin{equation} \label{eq51}
+\big| I_{k+1} \big| > \frac{\lambda_k}{2}, \, \quad I_{k+1} \cap I_i = \emptyset, \quad i = 1,\cdots,k
+\end{equation}
+继续这一个过程, 可得到~$G$~中一列互不相交的区间~$\{I_n\}$, 使得对每个~$k \in \N$~都满足式~\eqref{eq51}. 由于~$\mathop{\cup}\limits_{k=1}^\infty I_k \subset G$, 故
+\begin{equation} \label{eq52}
+\sum_{k=1}^\infty \big|I_k\big| \leqslant m(G) < +\infty
+\end{equation}
+于是, 对~$\forall~\varepsilon > 0$, 存在~$n \in \N$~使得~$\sum\limits_{k=n+1}^\infty \big|I_k\big| < \varepsilon/5$. 令~$A = E - \mathop{\cup}\limits_{k=1}^n I_k$, 下面证~$m^*(A) < \varepsilon$.
+
+设~$x \in A$, 由于~$\mathop{\cup}\limits_{k=1}^n I_k$~是闭集且~$x \notin \mathop{\cup}\limits_{k=1}^n I_k
+$. 又~$\mathcal{F}$~是~维它利覆盖, 故存在~$I \in \F$, 使得~$I$~包含~$x$~且与~$I_1,\,\cdots,\,I_n$~都不相交. 若进一步, $I$~与~$\{I_k\}_{k > n}$~中的每个区间都不相交, 则对任意的~$k > n$, 都有
+\[
+|I| \leqslant \lambda_k < 2\big|I_{k+1}\big|
+\]
+再由式~\eqref{eq52}~知, 当~$k \to \infty$~时有~$|I_k| \to 0$, 从而~$|I|=0$, 于是~$I$~是单点集, 矛盾. 因此~$I$~必与~$\{I_k\}_{k > n}$~中的某个区间相交.
+令~$k_0 = \min\{k:\: I \cap I_k \neq \emptyset\}$, 则~$k_0 > n$, 且~$|I| \leqslant \lambda_{k_0-1} < 2 \big|I_{k_0}\big|$. 记~$I_{k_0}$~的中心为~$x_{k_0}$, 半径为~$r_{k_0}$. 由于~$x \in I$~
+且~$I \cap I_{k_0} \neq \emptyset$, 故
+\[
+\big|x-x_{k_0}\big| \leqslant |I| + \frac{|I_{k_0}|}{2} < 2\big|I_{k_0}\big| + \frac{|I_{k_0}|}{2} = \frac{5}{2}\big|I_{k_0}\big|
+\]
+于是记~$J_{k_0} = \big[ x_{k_0}-5r_{k_0}, \, x_{k_0}+5r_{k_0} \big]$, 则~$x \in J_{k_0}$.
+对每个~$I_k \in \{I_k\}_{k > n}$, 令~$J_k$~为与~$I_k$~具有相同中心且长度为~$I_k$~的~$5$~倍的区间, 则由前面的证明可知, $A \subset \mathop{\cup}\limits_{k=n}^\infty J_k$. 因此
+\[
+m^*(A) \leqslant \sum_{k=n+1}^\infty \big|J_k\big| = 5 \sum_{k=n+1}^\infty \big|I_k\big| < \varepsilon
+\]
+\end{proof}
+
+\begin{remark}
+维它利覆盖定理表明选出可列个互不相交的区间不一定能覆盖~$E$, 但覆盖不住的点集为一零测集.
+\end{remark}
+
+\subsection{单调函数的可微(可导)性}
+
+我们知道, $\R$~上的函数在某一点处可导(可微), 则在该点一定连续, 反之不一定. 19~世纪初期, 许多数学家都以为连续函数在其定义域内的大多数点处都存在导数, 并试图严格证明这一点, 但没有成功.
+
+1872~年, 德国数学家维尔斯特拉斯给出了一个著名的反例\raisebox{0.5mm}{-----}处处连续的函数可以处处不可导
+\[
+f(x) = \sum_{n=0}^\infty a^n \cos\big(b^n \pi x\big)
+\]
+其中, $0<a<1$, $b$~为正奇数满足: $ab > 1 + 3\pi/2$.
+
+然而, 单调函数情况会不同. 下面先把导数的概念加以推广以便处理导数可能不存在的情形.
+
+\begin{definition}
+设~$f(x)$~为~$\R$~上的实值函数且在~$x_0$~的某邻域有定义, 令
+\[
+D^-f(x_0) = \limsup_{h \to 0^-} \frac{f(x_0 + h) - f(x_0)}{h}
+\]
+\[
+D^+f(x_0) = \limsup_{h \to 0^+} \frac{f(x_0 + h) - f(x_0)}{h}
+\]
+\[
+D_-f(x_0) = \liminf_{h \to 0^-} \frac{f(x_0 + h) - f(x_0)}{h}
+\]
+\[
+D_+f(x_0) = \liminf_{h \to 0^+} \frac{f(x_0 + h) - f(x_0)}{h}
+\]
+(上述极限可以是~$\pm \infty$)分别称为~$f(x)$~在点~$x_0$~的左上导数、右上导数、左下导数、右下导数.
+\end{definition}
+
+由定义易知,
+
+(i) $D^+f(x_0) \geqslant D_+f(x_0), \, D^-f(x_0) \geqslant D_-f(x_0)$;
+
+(ii) $f$~在点~$x_0$~可导, 当且仅当
+\[
+D^+f(x_0) = D_+f(x_0) = D^-f(x_0) = D_-f(x_0) \neq \pm \infty
+\]
+
+\begin{theorem}[勒贝格定理, 单调函数可微性定理\index{单调函数可微性定理}] \label{thm513}
+设~$f(x)$~为定义在~$[a,\,b]$~上的单调递增的实值函数, 则~$f(x)$~在~$[a,\,b]$~上几乎处处可导(可微), 且其导函数在~$[a,\,b]$~上~L-可积, 并满足
+\begin{equation} \label{eq510}
+\int_a^b f'(x) \mathrm{d} \mu \leqslant f(b) - f(a)
+\end{equation}
+\end{theorem}
+
+\begin{proof}
+先证明在~$[a,\,b]$~上几乎处处成立
+\begin{equation} \label{eq513}
+D^+f(x) = D_+f(x) = D^-f(x) = D_-f(x)
+\end{equation}
+令~$E_1 = \big\{x \in (a,\,b):\: D^+f(x) > D_-f(x)\big\}$, 则
+\[
+E_1 = \medcup_{r,s \in \Q} \big\{x \in (a,\,b):\: D^+f(x) > r > s >  D_-f(x)\big\}
+\]
+下面证明~$m^*(E_1) = 0$, 为此只需证明:对~$\forall~r,\,s \in \Q$, 都有
+\[
+m^*\big( \{x \in (a,\,b):\: D^+f(x) > r > s >  D_-f(x)\} \big) = 0
+\]
+
+记
+\[
+A = \{x \in (a,\,b):\: D^+f(x) > r > s >  D_-f(x)\}
+\]
+对任意的~$\varepsilon > 0$, 存在开集~$G \supset A$, 使得~$m(G) < m^*(A) + \varepsilon$. 对任意的~$x \in A$, 由于~$D^-f(x) < s$, 故存在~$h > 0$~使得~$[x-h,\,x] \subset G$, 并且
+\begin{equation} \label{eq514}
+f(x) - f(x-h) < sh
+\end{equation}
+所有这样的区间~$[x-h,\,x]$~构成了~$A$~的一个维它利覆盖. 由维它利覆盖定理, 存在有限个互不相交的
+区间~$I_i = [x_i-h_i,\,x_i], \, i=1,\,\cdots,\,n$, 使得~$m^*\big( A- \mathop{\smallcup}\limits_{i=1}^n I_i \big) < \varepsilon$. 令~$B = A \cap \smallcup\limits_{i=1}^n I_i^\circ$, 则
+\begin{equation} \label{eq515}
+m^*(A) \leqslant m^*\Big( A \medcap \medcup_{i=1}^n I_i^\circ \Big) + m^*\Big( A - \medcup_{i=1}^n I_i^\circ \Big) < m^*(B) + \varepsilon
+\end{equation}
+由式~\eqref{eq514}, 我们有
+\begin{equation} \label{eq516}
+\sum_{i=1}^n \big( f(x_i)-f(x_i-h_i) \big) < s \sum_{i=1}^n h_i < s m(G) < s\big( m^*(A)+\varepsilon \big)
+\end{equation}
+对每个~$y \in B$, 由于~$D^+f(y) > r$, 故存在~$k > 0$, 使得区间~$[y,\,y+k]$~包含在某个区间~$I_i^\circ$~内, 并且
+\begin{equation} \label{eq517}
+f(y+k) - f(y) >rk
+\end{equation}
+所有这样的区间~$[y,\,y+k]$~构成了~$B$~的一个维它利覆盖. 再由维它利覆盖定理, 存在有限个互不相交的
+区间~$J_j = [y_j,\,y_j+k_j], \, j=1,\,\cdots,\,m$, 使得~$m^*\big( B- \mathop{\cup}\limits_{j=1}^m J_j \big) < \varepsilon$. 利用式~\eqref{eq515}~得
+\begin{eqnarray*}
+m^*(A) < m^*(B) + \varepsilon &\leqslant& m^*\Big( B \medcap \medcup_{j=1}^m J_j^\circ \Big) + m^*\Big( B - \medcup_{j=1}^m J_j^\circ \Big) + \varepsilon \\
+&\leqslant& m\big( \medcup_{j=1}^m J_j \big) + 2\varepsilon = \sum_{j=1}^m k_j + 2\varepsilon
+\end{eqnarray*}
+因此, $\sum\limits_{j=1}^m k_j > m^*(A) - 2\varepsilon$. 再由式~\eqref{eq517}, 我们有
+\begin{equation} \label{eq518}
+\sum_{j=1}^m \big( f(y_j+k_j) -f(y_j) \big) > r \sum_{j=1}^m k_j > r\big( m^*(A) -2\varepsilon \big)
+\end{equation}
+由于~$f(x)$~是单调递增函数, 并且每个~$J_j$~包含在某个~$I_i$~中, 于是
+\begin{equation} \label{eq519}
+\sum_{i=1}^n \big( f(x_i)-f(x_i-h_i) \big) \geqslant \sum_{j=1}^m \big( f(y_j+k_j) -f(y_j) \big)
+\end{equation}
+结合式~\eqref{eq516},~\eqref{eq518}~和~\eqref{eq519}, 可得
+\[
+r \big( m^*(A) -2\varepsilon \big) < s \big( m^*(A) + \varepsilon \big)
+\]
+由~$\varepsilon$~的任意性得~$r m^*(A) \leqslant s m^*(A)$. 由于~$r>s$, 故必有~$m^*(A) = 0$. 由此得到~$m^*(E_1)=0$. 类似地, 若令
+\[
+E_2 = \big\{x \in (a,\,b):\: D^-f(x) > D_+f(x)\big\}
+\]
+则可以证明~$m^*(E_2) = 0$, 令~$E = E_1 \cup E_2$, 则~$m^*(E) = 0$. 在~$(a,\,b) - E$~上, 我们有
+\[
+D_+f(x) \leqslant D^+f(x) \leqslant D_-f(x) \leqslant D^-f(x) \leqslant D_+f(x)
+\]
+因此, 在~$(a,\,b) - E$~上式~\eqref{eq513}~成立. 这表明极限
+\[
+g(x) = \lim_{h \to 0} \frac{f(x+h)-f(x)}{h}
+\]
+几乎处处存在(有限或~$\pm\infty$). 当~$g(x)$~有限时, $f$~在点~$x$~可导. 令
+\[
+g_n(x) = n \big[ f\big(x+ \frac{1}{n}\big) - f(x)\big], \quad n =1, \, 2,\,\cdots
+\]
+其中定义当~$x>b$~时, $f(x)=f(b)$, 则~$g_n \xrightarrow{\mathrm{a.e.}} g$, 从而~$g$~可测. 又~$f$~单调递增, 故~$g_n$~非负. 于是
+\begin{eqnarray*}
+\int_a^b g_n(x) \mathrm{d} \mu &=& n \int_a^b \big[f\big(x+ \frac{1}{n}\big) - f(x)\big] \mathrm{d} \mu \\
+&=& n \int_{a+\frac{1}{n}}^{b+\frac{1}{n}} f(x) \mathrm{d} \mu - n \int_a^b f(x) \mathrm{d} \mu \\
+&=& n \int_b^{b+\frac{1}{n}} f(x) \mathrm{d} \mu - n \int_a^{a+\frac{1}{n}} f(x) \mathrm{d} \mu \\
+&=& f(b) - n \int_a^{a+\frac{1}{n}} f(x) \mathrm{d} \mu
+\end{eqnarray*}
+因此, 由法都引理可得
+\begin{eqnarray} \label{eq5110}
+\int_a^b g(x) \mathrm{d} \mu &\leqslant& \liminf_{n \to \infty} \int_a^b g_n(x) \mathrm{d} \mu \nonumber \\
+&=& \liminf_{n \to \infty} \Big( f(b) - n \int_a^{a+\frac{1}{n}} f(x) \mathrm{d} \mu \Big) \\
+&\leqslant& f(b) - f(a) \nonumber
+\end{eqnarray}
+这表明~$g(x)$~是~L-可积的, 因此~$g(x)$~几乎处处有限. 于是, $f$~几乎处处可导. 由于~$f'(x) = g(x), \, \mathrm{a.e.~} x \in [a,\,b]$, 故式~\eqref{eq5110}~表明式~\eqref{eq510}~成立.
+\end{proof}
+
+若~$f(x)$~为单调递减的实值函数, 对~$-f$~应用定理~\ref{thm513}~可得单调递减的实值函数也是几乎处处可导(可微)的. 下例说明单调函数几乎处处可导这一结论一般是不能改进的.
+
+\begin{example}
+设~$E$~为~$(a,\,b)$~中的零测集, 对每个~$n \in \N$, 取开集~$G \supset E$~满足~$m(G_n) < 1/2^n$. 令
+\[
+f_n(x) = m\big( (a,\,x) \medcap G_n \big), \quad x \in (a,\,b), \quad n = 1,\,2,\,\cdots
+\]
+显然, $f_n(x)$~单调递增, 非负, 且满足~$|f_n| \leqslant 1/2^n$. 又对~$\forall~x \in (a,\,b)$, 当~$a+h \in (a,\,b)$~时
+\[
+f(x+h) - f(x) \leqslant |h|
+\]
+故~$f_n(x)$~是~$(a,\,b)$~上的连续函数.
+
+令~$f(x) = \sum\limits_{n=1}^\infty f_n(x)$, 则~$f(x)$~为单调递增的非负连续函数. 现设~$x \in E$, 对~$\forall~n \in \N$, 当~$|h|$~充分小时, 有~$[x,\,x+h] \subset G_i \cap (a,\,b), \, i=1,\,\cdots,\,n$.
+由~$f_n$~的定义, 此时有
+\[
+\frac{f_i(x+h)-f_i(x)}{h} = 1, \quad i=1,\cdots,n
+\]
+于是
+\[
+\frac{f(x+h)-f(x)}{h} \geqslant \sum_{i=1}^n \frac{f_i(x+h)-f_i(x)}{h} = n
+\]
+因此, $f'(x) = +\infty$. 这表明~$f(x)$~在~$E$~上处处不可导.
+\end{example}
+
+\begin{theorem}[富比尼定理, 单调函数逐项求导定理\index{单调函数逐项求导定理}] \label{thm514}
+设~$\{f_n(x)\}$~为~$[a,\,b]$~上的一列单调递增的实值函数, 且函数项级数~$\sum\limits_{n=1}^\infty f_n(x)$~在~$[a,\,b]$~上处处收敛于~$f(x)$, 则
+\[
+f'(x) = \Big[\sum\limits_{n=1}^\infty f_n(x)\Big]' = \sum\limits_{n=1}^\infty f'_n(x), \quad \mathrm{~a.e.~} x \in [a,\,b]
+\]
+\end{theorem}
+
+\begin{proof}
+不妨设~$f_n(a) =0, \, \forall~n \in \N$. 由于~$f(x),\,f_n(x)$~都是单调递增函数, 故至多去掉一个零测集~$E_0$~之外, $f'(x),\,f_n'(x)$~都存在.
+
+记~$s_n(x) = \sum\limits_{k=1}^n f_k(x)$. 对每个~$n \in \N$, 由于~$s_n(x) - s_{n-1}(x) = f(x)$~和~$f(x) - s_n(x)$~都是单调递增的, 故它们的导数都非负, 从而
+\[
+s_{n-1}'(x) \leqslant s_n'(x) \leqslant f'(x), \quad \mathrm{~a.e.~ }x \in [a,\,b]
+\]
+因此, 级数~$\sum\limits_{k=1}^\infty f_n'(x)$~在~$[a,\,b]$~上几乎处处收敛. 由于~$\lim\limits_{n \to \infty} s_n(b) = f(b)$, 故存在~$\{s_n(b)\}$~的子列~$\{s_{n_k}(b)\}$~使得
+\[
+f(b) - s_{n_k}(b) < \frac{1}{2^k}, \quad k = 1,\,2,\,\cdots
+\]
+于是对~$\forall~x \in [a,\,b]$, 我们有
+\[
+0 \leqslant \sum_{k=1}^\infty \big( f(x) - s_{n_k}(x) \big) \leqslant \sum_{k=1}^\infty \big( f(b) - s_{n_k}(b) \big) < \sum_{k=1}^\infty \frac{1}{2^k} = 1
+\]
+这表明级数~$\sum\limits_{k=1}^\infty \big( f(x) - s_{n_k}(x) \big)$~处处收敛. 注意到该级数的每一项~$f(x) - s_{n_k}(x)$~也是单调递增函数, 将前面证明中关于级数~$\sum\limits_{n=1}^\infty f_n(x)$~的结论, 应用到级数~$\sum\limits_{n=1}^\infty \big( f(x) - s_{n_k}(x) \big)$~上, 可得级数~$\sum\limits_{n=1}^\infty \big( f'(x) - s_{n_k}'(x) \big)$~在~$[a,\,b]$~上几乎处处收敛. 由于收敛级数的通项必收敛于~$0$, 故
+\[
+\lim_{k \to \infty} \big( f'(x) - s_{n_k}'(x) \big) =0, \quad \mathrm{~a.e.~ }x \in [a,\,b]
+\]
+即~$\lim\limits_{k \to \infty} s_{n_k}'(x) = f'(x), \mathrm{~a.e.~ }x \in [a,\,b]$. 因此
+\[
+\lim\limits_{n \to \infty} s_n'(x) = f'(x), \mathrm{~a.e.~ }x \in [a,\,b]
+\]
+故定理结论成立.
+\end{proof}
+
+最后, 利用定理~\ref{thm514}~构造一个实例来说明一般情形下, 单调函数可微性定理中的不等式
+~\eqref{eq510}~不能成为等式.
+
+\begin{example}
+记~$[0,\,1]$~中的有理数全体为~$\{r_n\}$, 定义
+\[
+f_n(x) = \left\{
+\begin{array}{ll}
+0, & 0 \leqslant x < r_n \\[0.2cm]
+\dfrac{1}{2^n}, & r_n \leqslant x \leqslant 1
+\end{array}
+\right.
+\]
+其中~$n = 1,\,2,\,\cdots$, 则~$f(x)$~在~$[0,\,1]$~上单调递增, 显然~$f_n'(x) = 0, \mathrm{~a.e.~} x \in [0,\,1]$. 令
+\[
+f(x) = \sum_{n=1}^\infty f_n(x), \, \quad  x \in [0,\,1]
+\]
+注意到
+\[
+f(x) = \sum\limits_{r_n \leqslant x} 1/2^n, \quad 0<x<1
+\]
+易知~$f(x)$~在~$[0,\,1]$~上严格递增, 由定理~5.1.4~得, $f'(x) = \sum\limits_{n=1}^\infty f_n'(x) = 0, \mathrm{~a.e.~} x \in [0,\,1]$. 于是
+\[
+\int_0^1 f'(x) \mathrm{d} \mu = 0 < f(1) - f(0)
+\]
+(其中~$f(1) = 1$). 这说明, 一般情形下不等式~\eqref{eq510}~不能成为等式.
+\end{example}
+
+\section{有界变差函数}
+
+本节介绍有界变差函数的概念及性质, 并证明有界变差函数的约当分解定理.
+
+\begin{definition}
+设~$f(x)$~为~$[a,\,b]$~上的实值函数, 对~$[a,\,b]$~的任一分割~$\Delta = \{x_0,\,x_1,\,\cdots,\,x_n\}$, 其中~$a=x_0 < x_1 < \cdots < x_n = b$, 则和式
+\[
+{\textstyle{\bigvee}}_f(x_0,\cdots,x_n) = \sum_{i=1}^n \big| f(x_i)-f(x_{i-1}) \big|
+\]
+称为函数~$f$~关于分割~$\Delta$~的变差\index{变差}
+\[
+\biancha_a^b(f) = \sup\big\{ \textstyle{\bigvee}_f(x_0,\cdots,x_n): \{x_0,\cdots,x_n\} \mbox{~是~} [a,\,b] \mbox{~上的分割~} \big\}
+\]
+称为~$f(x)$~在~$[a,\,b]$~上的全变差\index{全变差}. 若~$\bigvee\limits_a^b(f) < +\infty$, 则称~$f(x)$~是~$[a,\,b]$~上的有界变差函数\index{有界变差函数}. 用~$BV[a,b]$~表示~$[a,\,b]$~上的有界变差函数的全体.
+\end{definition}
+
+\begin{example} \label{ex521}
+$[a,\,b]$~上的单调函数是有界变差函数.
+\end{example}
+
+\begin{proof}
+不妨设~$f(x)$~在~$[a,\,b]$~上单调递增, 则对~$[a,\,b]$~的任一分割~$\Delta = \{x_0,\,x_1,\,\cdots,\,x_n\}$, 有
+\begin{eqnarray*}
+\textstyle{\bigvee}_f(x_0,\cdots,x_n) &=& \sum_{i=1}^n \big| f(x_i)-f(x_{i-1}) \big| \\
+&=& \sum_{i=1}^n \big[ f(x_i)-f(x_{i-1}) \big] \\
+&=& f(b)-f(a)
+\end{eqnarray*}
+从而~$\bigvee\limits_a^b(f) = f(b)-f(a)$. 因此, $f \in BV[a,b]$.
+\end{proof}
+
+\begin{example}
+若~$f(x)$~在~$[a,\,b]$~上满足利普希兹条件\index{利普希兹条件}
+\[
+|f(x) - f(x')| \leqslant L |x - x'|, \quad \forall~x,\,x' \in [a,\,b]
+\]
+其中, $L \geqslant 0$~为常数, 则~$f(x)$~是有界变差函数.
+\end{example}
+
+\begin{proof}
+对~$[a,\,b]$~的任一分割~$\Delta = \{x_0,\,x_1,\,\cdots,\,x_n\}$, 有
+\begin{eqnarray*}
+\textstyle{\bigvee}_f(x_0,\cdots,x_n) &=& \sum_{i=1}^n \big| f(x_i)-f(x_{i-1}) \big| \\
+&\leqslant& \sum_{i=1}^n L |x_i - x_{i-1}| \\
+&=& L(b-a)
+\end{eqnarray*}
+从而~$\bigvee\limits_a^b(f) = L(b-a)$. 因此, $f \in BV[a,b]$.
+\end{proof}
+
+\begin{example}
+设~$f(x)$~在~$[a,\,b]$~上处处可导, 且导数一致有界:$\exists~M > 0$, 使得
+\[
+|f'(x)| \leqslant M, \quad \forall~x \in [a,\,b]
+\]
+则~$f(x)$~是有界变差函数.
+\end{example}
+
+\begin{proof}
+对~$[a,\,b]$~的任一分割~$\Delta = \{x_0,\,x_1,\,\cdots,\,x_n\}$, 有
+\[
+{\textstyle{\bigvee}}_f(x_0,\cdots,x_n) = \sum_{i=1}^n \big| f(x_i)-f(x_{i-1}) \big|
+\]
+由微分中值定理, $f(x_i)-f(x_{i-1}) = f'(\xi_i)(x_i - x_{i-1}), \, \exists~\xi_i \in (x_{i-1},\,x_i)$. 从而
+\begin{eqnarray*}
+\textstyle{\bigvee}_f(x_0,\cdots,x_n) &\leqslant& \sum_{i=1}^n |f'(\xi_i)||x_i - x_{i-1}| \\
+&\leqslant& \sum_{i=1}^n M |x_i - x_{i-1}| \\
+&=& M(b-a)
+\end{eqnarray*}
+从而~$\bigvee\limits_a^b(f) = M(b-a)$. 因此, $f \in BV[a,b]$.
+\end{proof}
+
+下面的例子表明连续函数不一定是有界变差函数.
+
+\begin{example}
+设
+\[
+f(x) = \left\{\!\!
+\begin{array}{cl}
+x \cos \dfrac{\pi}{x}, & x \in (0,\,1] \\[0.3cm]
+0, & x = 0
+\end{array}
+\right.
+\]
+则~$f(x)$~显然在~$[0,\,1]$~上连续, 但不是有界变差函数.
+\end{example}
+
+\begin{proof}
+对~$[0,\,1]$~作如下分割
+\[
+\Delta = \{x_0,\,x_1,\,\cdots,\,x_n\} = \Big\{0,\,\frac{1}{n},\,\frac{1}{n-1},\,\cdots,\,\frac{1}{2},\,1 \Big\}
+\]
+则
+\[
+f\big( \frac{1}{k} \big) = \frac{1}{k} \cos k \pi = (-1)^k \frac{1}{k}, \quad k=1,\,\cdots,\,n
+\]
+从而
+\begin{eqnarray*}
+&&\textstyle{\bigvee}_f(x_0,\cdots,x_n) \\
+&=& \Big| f\big( \frac{1}{n} \big)-f(0) \Big| + \Big| f\big( \frac{1}{n-1} \big) - f\big( \frac{1}{n} \big) \Big| + \cdots + \Big| f(1) - f\big( \frac{1}{2} \big)\Big| \\
+&=& \frac{1}{n} + \Big( \frac{1}{n-1} + \frac{1}{n} \Big) + \Big( \frac{1}{n-2} + \frac{1}{n-1} \Big) + \cdots + \Big(1 + \frac{1}{2} \Big) \\
+&=& 2 \sum_{k=1}^n \frac{1}{k} -1
+\end{eqnarray*}
+令~$n \to \infty$, 得~$\bigvee\limits_a^b(f) = +\infty$. 故~$f \notin BV[a,b]$.
+\end{proof}
+
+\begin{proposition} \label{prop521}
+有界变差函数具有如下性质:
+
+(i) 设~$f \in BV[a,b]$, 则~$f$~是有界函数;
+
+(ii) 设~$f \in BV[a,b], \, k \in \R$, 则~$kf \in BV[a,b]$, 且~$\bigvee\limits_a^b(kf) \leqslant |k| \bigvee\limits_a^b(f)$;
+
+(iii) 设~$f,\,g \in BV[a,b]$, 则~$f+g \in BV[a,b]$, 且~$\bigvee\limits_a^b(f+g) \leqslant \bigvee\limits_a^b(f) + \bigvee\limits_a^b(g)$;
+
+(iv) 设~$f,\,g \in BV[a,b]$, 则~$fg \in BV[a,b]$;
+
+(v) 设~$f \in BV[a,b]$, 则对~$\forall~c \in [a,\,b]$~都有~$\bigvee\limits_a^b(f) = \bigvee\limits_a^c(f) + \bigvee\limits_c^b(f)$.
+\end{proposition}
+
+\begin{proof}
+(i) 假设~$f$~无界, 则存在~$\{x_n\} \subset [a,\,b]$~使得~$|f(x_n)| \to +\infty$. 由于~$f \in BV[a,b]$, 故~$\bigvee\limits_a^b(f) < +\infty$. 对~$\forall~n \in \N$, 作分割~$\Delta_n=\{a,\,x_n,\,b\}$. 则
+\begin{eqnarray*}
+\textstyle{\bigvee}_f(a,x_n,b) &=& |f(x_n) - f(a)| + |f(b) - f(x_n)| \\
+&\geqslant& 2|f(x_n)| - |f(a)| - |f(b)|
+\end{eqnarray*}
+从而, 对任意的~$n \in \N$~有
+\begin{eqnarray*}
+|f(x_n)| &\leqslant& \frac{1}{2} \big[\textstyle{\bigvee}_f(a,x_n,b) + |f(a)| + |f(b)| \big]\\
+&\leqslant& \frac{1}{2} \big[\biancha\limits_a^b(f) + |f(a)| + |f(b)|\big] < +\infty
+\end{eqnarray*}
+矛盾.
+
+(ii), (iii) 容易验证(略).
+
+(iv) $f,\,g \in BV[a,b]$, 由~(i)~知, $f,\,g$~有界, 故存在~$M_1,\,M_2 > 0$, 使得
+\[
+|f(x)| \leqslant M_1, \quad |g(x)| \leqslant M_2, \quad \forall~x \in [a,\,b]
+\]
+对~$[a,\,b]$~的任一分割~$\Delta = \{x_0,\,\cdots,\,x_n\}$, 有
+\begin{eqnarray*}
+&&\textstyle{\bigvee}_{fg}(x_0,\cdots,x_n) = \sum\limits_{i=1}^n \big| (fg)(x_i)-(fg)(x_{i-1}) \big| \\
+&=& \sum_{i=1}^n |f(x_i)g(x_i) - f(x_{i-1})g(x_{i-1})| \\
+&\leqslant& \sum_{i=1}^n \big[\big| f(x_i)g(x_i) - f(x_i)g(x_{i-1}) \big| + \big| f(x_i)g(x_{i-1}) - f(x_{i-1})g(x_{i-1}) \big|\big] \\
+&\leqslant& M_1 \sum_{i=1}^n \big|g(x_i) - g(x_{i-1})\big| + M_2 \sum_{i=1}^n \big|f(x_i) - f(x_{i-1})\big| \\
+&\leqslant& M_1 \biancha\limits_a^b(g) + M_2 \biancha\limits_a^b(f)
+\end{eqnarray*}
+从而~$\bigvee\limits_a^b(fg) \leqslant M_1 \bigvee\limits_a^b(g) + M_2 \bigvee\limits_a^b(f)$.
+
+\medskip
+
+(v) 对~$[a,\,c]$~的任一分割~$\{x_0,\,\cdots,\,x_n\}$, 以及~$[c,\,b]$~的任一分割~$\{x'_0,\,\cdots,\,x'_m\}$, 都可合并为~$[a,\,b]$~的一个分割
+\[
+a = x_0 < x_1 < \cdots < x_n = c = x'_0 < x'_1 < \cdots < x'_m = b
+\]
+则
+\begin{eqnarray*}
+&&\textstyle{\bigvee}_{f}(x_0,\cdots,x_n) + \textstyle{\bigvee}_{f}(x'_0,\cdots,x'_m) \\
+&=& \sum_{i=1}^n \big|f(x_i)-f(x_{i-1})\big| + \sum_{j=1}^m \big|f(x'_j)-f(x'_{j-1})\big| \\
+&=& \textstyle{\bigvee}_{f}(x_0,\cdots,x_n,x'_1,\cdots,x'_m) \\
+&\leqslant& \biancha\limits_a^b(f)
+\end{eqnarray*}
+对左端所有分割取~``$\sup$'', 得~$\bigvee\limits_a^c(f) + \bigvee\limits_c^b(f) \leqslant \bigvee\limits_a^b(f)$.
+
+另一方面, 对~$\forall~\varepsilon > 0$, 存在~$[a,\,b]$~的一个分割~$\{x_0,\, \cdots,\,x_n\}$~使得
+\[
+\textstyle{\bigvee}_{f}(x_0,\cdots,x_n) > \biancha\limits_a^b(f) - \varepsilon
+\]
+设~$c \in (x_{k-1},\,x_k]$, 则~$\{x_0,\, \cdots,\,x_{k-1},\,c\}$~和~$\{c,\, x_k,\, \cdots,\,x_n\}$~分别是~$[a,\,c]$~和~$[c,\,b]$~的分割. 注意到, 对分割增加分点后, 新的变差不会减小, 故
+\begin{eqnarray*}
+\textstyle{\bigvee}_{f}(x_0,\cdots,x_n) &\leqslant& \textstyle{\bigvee}_{f}(x_0,\cdots,x_{k-1},c,x_k,\cdots,x_n) \\
+&=& \textstyle{\bigvee}_{f}(x_0,\cdots,x_{k-1},c) + \textstyle{\bigvee}_{f}(c,x_k,\cdots,x_n) \\
+&\leqslant& \biancha\limits_a^c(f) + \biancha\limits_c^b(f)
+\end{eqnarray*}
+从而~$\biancha\limits_a^b(f) - \varepsilon \leqslant \biancha\limits_a^c(f) + \biancha\limits_c^b(f)$, 再由~$\varepsilon$~的任意性, $\biancha\limits_a^b(f) \leqslant \biancha\limits_a^c(f) + \biancha\limits_c^b(f)$.
+\end{proof}
+
+\begin{definition}
+设~$f(x)$~为~$[a,\,b]$~上的有界变差函数, 则对每一个~$x \in [a,\,b]$, 由命题~5.2.1~(v)~知, $f$~在~$[a,\,x]$~上也是有界变差的, 从而~$\biancha\limits_a^x(f)$~
+是~$[a,\,b]$~上的实值函数, 称~$f$~的变差函数.
+\end{definition}
+
+显然, $\biancha\limits_a^x(f)$~是单调递增函数.
+
+\begin{theorem}[约当分解定理\index{约当分解定理}]
+$f(x)$~是~$[a,\,b]$~上的有界变差函数, 当且仅当
+\[
+f(x) = g(x) - h(x)
+\]
+其中, $g(x),\,h(x)$~为~$[a,\,b]$~上的单调递增函数.
+\end{theorem}
+
+\begin{proof}
+``$\Leftarrow$''. 由例~\ref{ex521}~和有界变差函数的性质~(iii), 可得.
+
+``$\Rightarrow$''. $f \in BV[a,b]$, 令\footnote{~若取~$g(x) = \frac{1}{2}\big( \biancha\limits_a^x(f) + f(x) - f(a) \big), \, h(x) = \frac{1}{2}\big( \biancha\limits_a^x(f) - f(x) + f(a)\big)$, 则称为标准约当分解. }
+\[
+g(x) = \frac{1}{2}\big( \biancha\limits_a^x(f) + f(x)\big), \quad h(x) = \frac{1}{2}\big( \biancha\limits_a^x(f) - f(x)\big)
+\]
+则~$f(x) = g(x) - h(x)$. 下面证~$f$~单调递增. 设~$x_1 < x_2$, 由有界变差函数的性质~(v)
+\[
+f(x_1) - f(x_2) \leqslant \textstyle{\bigvee}_f(x_1,x_2) \leqslant \biancha\limits_{x_1}^{x_2}(f) =
+\biancha\limits_{a}^{x_2}(f) - \biancha\limits_{a}^{x_1}(f)
+\]
+从而, $\biancha\limits_{a}^{x_1}(f) + f(x_1) \leqslant \biancha\limits_{a}^{x_2}(f) + f(x_2)$, 于是~$g(x_1) \leqslant g(x_2)$. 类似可证, $h$~也单调递增.
+\end{proof}
+
+\begin{corollary}
+设~$f(x)$~为~$[a,\,b]$~上的有界变差函数, 则
+
+(i) $f(x)$~不连续点的全体至多是可列集;
+
+(ii) $f(x)$~在~$[a,\,b]$~上~R-可积, 从而~L-可积;
+
+(iii) $f(x)$~在~$[a,\,b]$~上几乎处处可导, 且~$f'(x)$~是~L-可积的.
+\end{corollary}
+
+\begin{theorem}
+设~$f(x)$~是~$[a,\,b]$~上的有界变差函数, 则
+\[
+\biancha\limits_{a}^{x}(f) \mbox{~在~} [a,\,b] \mbox{~上右连续(左连续)} \Longleftrightarrow f(x) \mbox{~在~} [a,\,b] \mbox{~上右连续(左连续)~}
+\]
+\end{theorem}
+
+\begin{proof}
+``$\Rightarrow$''. 设~$\biancha\limits_{a}^{x}(f)$~在~$[a,\,b]$~上右连续, 任取~$x_0 \in [a,\,b)$, 对~$\forall~x \in (x_0,\,b]$, 有
+\[
+\big| f(x) - f(x_0) \big| = \textstyle{\bigvee}_f(x_0,x) \leqslant \biancha\limits_{x_0}^{x}(f) =
+\biancha\limits_{a}^{x}(f) - \biancha\limits_{a}^{x_0}(f)
+\]
+从而, $\biancha\limits_{a}^{x}(f)$~右连续~$\Rightarrow$~$f(x)$~右连续.
+
+``$\Leftarrow$''. 设~$f(x)$~在~$[a,\,b]$~上右连续, 任取~$x_0 \in [a,\,b)$, 则对~$\forall~\varepsilon > 0$, $\exists~\delta > 0~(\delta \leqslant b-x_0)$, 当~$x \in (x_0,\,x_0+\delta)$~时, 有
+\[
+\big| f(x) - f(x_0) \big| < \frac{\varepsilon}{2}
+\]
+取~$[x_0,\,x_0+\delta]$~的一个分割~$\Delta = \{t_0,\,\cdots,\,t_n\}$, 其中
+\[
+x_0 = t_0 < t_1 < \cdots < t_n = x_0 + \delta
+\]
+使得
+\begin{equation} \label{eq521}
+\sum_{i=1}^n \big| f(t_i) - f(t_{i-1}) \big| > \bigvee_{x_0}^{x_0 + \delta}(f) - \frac{\varepsilon}{2}
+\end{equation}
+又~$\Delta_1 = \{t_1, \, \cdots,\,t_n\}$~是~$[t_1,\, x_0+\delta]$~的一个分割, 故
+\begin{equation} \label{eq522}
+\sum_{i=2}^n \big| f(t_i) - f(t_{i-1}) \big| \leqslant \bigvee_{t_1}^{x_0 + \delta}(f)
+\end{equation}
+由式~\eqref{eq521}~和~\eqref{eq522}~得
+\begin{eqnarray*}
+\bigvee\limits_{x_0}^{t_1}(f) &=& \bigvee_{x_0}^{x_0 + \delta}(f) - \bigvee_{t_1}^{x_0 + \delta}(f) \\
+&\leqslant& \sum_{i=1}^n \big| f(t_i) - f(t_{i-1}) \big| + \frac{\varepsilon}{2} - \sum_{i=2}^n \big| f(t_i) - f(t_{i-1}) \big| \\
+&=& \big| f(t_1) - f(t_0) \big| + \frac{\varepsilon}{2} \\
+&<& \varepsilon
+\end{eqnarray*}
+从而, 当~$x \in [x_0,\,t_1]$~时, 有
+\[
+\biancha\limits_{a}^{x}(f) - \biancha\limits_{a}^{x_0}(f) = \biancha\limits_{x_0}^{x}(f) \leqslant \biancha\limits_{x_0}^{t_1}(f) < \varepsilon
+\]
+因此, $\biancha\limits_{a}^{x}(f)$~在点~$x_0$~右连续.
+\end{proof}
+
+
+\section{绝对连续函数与不定积分}
+
+本节介绍绝对连续函数概念及性质, 并证明联系微分与积分的牛顿\raisebox{0.5mm}{--}莱布尼茨公式.
+
+\begin{definition}
+设~$f(x)$~为~$[a,\,b]$~上的实值函数, 若对~$\forall~\varepsilon > 0$, 存在~$\delta > 0$, 使得对~$[a,\,b]$~上任意有限个互不相交的开区间~$\big\{(a_i,\,b_i)\big\}_{i=1}^n$, 当~$\sum\limits_{i=1}^n (b_i-a_i) < \delta$~时, 有
+\[
+\sum_{i=1}^n \big| f(b_i)-f(a_i) \big| < \varepsilon
+\]
+则称~$f(x)$~在~$[a,\,b]$~上绝对连续\index{绝对连续函数}.
+\end{definition}
+
+易知, 绝对连续函数是连续函数. 若~$f(x),\,g(x)$~绝对连续, $k \in \R$, 则~$kf(x)$~和~$f(x)+g(x)$~都是绝对连续的.
+
+\begin{proposition}[绝对连续函数与利普希兹条件的同型描述]
+设~$f(x)$~为~$[a,\,b]$~的实值函数, 则~$f(x)$~在~$[a,\,b]$~上绝对连续的充要条件是: 对任意的~$\varepsilon > 0$, 存在~$M > 0$, 使得对~$[a,\,b]$~中任意有限个互不相交的区间~$\big\{(c_i,\,d_i)\big\}_{i=1}^n$, 有
+\[
+\sum_{i=1}^n \big| f(d_i)-f(c_i)\big| \leqslant M \sum_{i=1}^n |d_i - c_i| + \varepsilon
+\]
+\end{proposition}
+
+\begin{proof}
+``$\Rightarrow$''. 根据绝对连续函数的定义, 对~$\forall~\varepsilon > 0$, 存在~$\delta > 0$, 使得对~$[a,\,b]$~上任意有限个互不相交的开区间~$\big\{(a_i,\,b_i)\big\}_{i=1}^n$, 当~$\sum\limits_{i=1}^n (b_i-a_i) < \delta$~时, 都有
+\[
+\sum_{i=1}^n \big| f(b_i)-f(a_i) \big| < \varepsilon
+\]
+现在对互不相交的区间族~$[c_i,\,d_i]~(i=1,\,\cdots,\,n)$~来说, 必存在自然数~$N$, 使得
+\[
+(N-1)\delta \leqslant \sum_{i=1}^n (d_i - c_i) < N \delta
+\]
+再把每个~$[c_i,\,d_i]$~作~$N$~等分
+\[
+[c_i,\,d_i] = \medcup_{j=1}^N [\alpha_{i,j},\,\alpha_{i,j+1}], \quad \alpha_{i,1}=c_i, \, \alpha_{i,N+1}=d_i
+\]
+\[
+(\alpha_{i,j+1}-\alpha_{i,j})=\frac{d_i-c_i}{N}, \quad i=1,\,\cdots,\,n
+\]
+易知
+\[
+\sum_{i=1}^n |\alpha_{i,j}-\alpha_{i,j+1}| < \delta, \quad j=1,\,\cdots,\,N
+\]
+从而
+\[
+\sum_{i=1}^n \big| f(\alpha_{i,j+1})-f(\alpha_{i,j})\big| < \varepsilon, \quad j=1,\,\cdots,\,N
+\]
+因此, 我们有
+\begin{eqnarray*}
+\sum_{i=1}^n \big|f(d_i)-f(c_i)\big| &\leqslant& \sum_{j=1}^N \sum_{i=1}^n \big| f(\alpha_{i,j+1})-f(\alpha_{i,j})\big| \\
+&<& N \varepsilon \leqslant \Big( \sum_{i=1}^n \frac{|d_i-c_i|}{\delta}+1 \Big) \varepsilon \\
+&=& \frac{\varepsilon}{\delta}\sum_{i=1}^n |d_i-c_i| + \varepsilon
+\end{eqnarray*}
+于是取~$M = \varepsilon/\delta$, 即得所证.
+
+``$\Leftarrow$''. 显然.
+\end{proof}
+
+\begin{example} \label{ex531}
+设~$f(x)$~为~$[a,\,b]$~上~L-可积函数, 则~$f(x)$~的不定积分\index{勒贝格不定积分}
+\[
+F(x) = \int_a^x f(t) \mathrm{d} \mu + C
+\]
+是~$[a,\,b]$~上的绝对连续函数($C$~为任意常数).
+\end{example}
+
+\begin{proof}
+由~L-积分的绝对连续性, 对~$\forall~\varepsilon > 0$, $\exists~\delta >0$~使得对任意的~$e \subset [a,\,b]$, $m(e) < \delta$, 都有
+\[
+\int_e \big|f(t)\big| \mathrm{d} \mu < \varepsilon
+\]
+从而, 对~$[a,\,b]$~上任意有限个互不相交的开区间~$\big\{(a_i,\,b_i)\big\}_{i=1}^n$, 当~$\sum\limits_{i=1}^n (b_i-a_i) < \delta$~时, 令~$e = \mathop{\cup}\limits_{i=1}^n (a_i,\,b_i)$, 则~$m(e)=\sum\limits_{i=1}^n (b_i - a_i) < \delta$. 于是
+\begin{eqnarray*}
+\sum_{i=1}^n \big| F(b_i)-F(a_i) \big| &=& \sum_{i=1}^n \Big| \int_{a_i}^{b_i} f(t) \mathrm{d} \mu \Big| \\
+&\leqslant& \sum_{i=1}^n \int_{a_i}^{b_i} \big| f(t) \big| \mathrm{d} \mu  = \int_e \big|f(t)\big| \mathrm{d} \mu < \varepsilon
+\end{eqnarray*}
+故~$F(x)$~在~$[a,\,b]$~上绝对连续.
+\end{proof}
+
+\begin{example}
+设~$f(x)$~在~$[a,\,b]$~上满足利普希兹条件, 则~$f(x)$~在~$[a,\,b]$~上绝对连续.
+\end{example}
+
+\begin{proof}
+设利普希兹常数为~$L$. 对~$\forall~\varepsilon > 0$, 令~$\delta = \varepsilon / L$. 则当对~$[a,\,b]$~上任意有限个互不相交的开区间~$\big\{(a_i,\,b_i)\big\}_{i=1}^n$, 当~$\sum\limits_{i=1}^n (b_i-a_i) < \delta$~时, 有
+\[
+\sum_{i=1}^n \big| f(b_i)-f(a_i) \big| \leqslant L \sum_{i=1}^n (b_i - a_i) < L \delta = \varepsilon
+\]
+故~$f(x)$~在~$[a,\,b]$~上绝对连续.
+\end{proof}
+
+\begin{theorem} \label{thm531}
+绝对连续函数是有界变差函数.
+\end{theorem}
+
+\begin{proof}
+设~$f(x)$~为~$[a,\,b]$~上的绝对连续函数, 则对~$\varepsilon = 1$, 存在~$\delta > 0$, 使得对~$[a,\,b]$~上任意有限个互不相交的开区间~$\big\{(a_i,\,b_i)\big\}_{i=1}^n$, 当~$\sum\limits_{i=1}^n (b_i-a_i) < \delta$~时, 有
+\[
+\sum_{i=1}^n \big| f(b_i)-f(a_i) \big| < 1
+\]
+取~$k \in \N$~满足~$(b-a)/k < \delta$. 将~$[a,\,b]$~等分为~$k$~等份, 记为~$[x_{i-1},\,x_i]$,
+$i=1,\,\cdots,\,k$, 则~$x_i - x_{i-1} = (b-a)/k$.
+
+对~$[x_{i-1},\,x_i]$~的任一分割~$\Delta = \{t_0,\,t_1,\,\cdots,\,t_m\}$, 其中
+\[
+x_{i-1} = t_0 < t_1 < \cdots < t_m = x_i
+\]
+由于~$\sum\limits_{j=1}^m (t_j - t_{j-1}) = x_i - x_{i-1} = (b-a)/k < \delta$, 故
+\[
+{\textstyle{\bigvee}}_{f}(t_0,\cdots,t_m) = \sum_{j=1}^m \big| f(t_j) - f(t_{j-1}) \big| < 1
+\]
+从而~$\biancha\limits_{x_{i-1}}^{x_i}(f) \leqslant 1$, $i = 1,\,\cdots,\,k$. 再由有界变差函数的性质~(v)
+\[
+\biancha_a^b(f) = \sum_{i=1}^k \biancha_{x_{i-1}}^{x_i}(f) \leqslant k
+\]
+因此, $f(x)$~是~$[a,\,b]$~上的有界变差函数.
+\end{proof}
+
+\begin{corollary} \label{cor531}
+设~$f(x)$~为~$[a,\,b]$~上的绝对连续函数, 则~$f(x)$~在~$[a,\,b]$~上几乎处处可导, 且~$f'(x)$~是~L-可积的.
+\end{corollary}
+
+\begin{theorem}
+设~$f(x)$~为~$[a,\,b]$~上的绝对连续函数, 则~$f$~的变差函数~$\biancha\limits_a^x(f)$~也是绝对连续函数.
+\end{theorem}
+
+\begin{proof}
+$f(x)$~是~$[a,\,b]$~上的绝对连续函数, 由定理~\ref{thm531}, $f(x)$~是~$[a,\,b]$~上的有界变差函数, 故~$\biancha\limits_a^x(f)$~有意义. 再由~$f$~的绝对连续性, 对~$\forall~\varepsilon>0$, 存在~$\delta > 0$, 使得对有限个互不相交的开区间~$\big\{(a_i,\,b_i)\big\}_{i=1}^n$, 当~$\sum\limits_{i=1}^n (b_i-a_i) < \delta$~时, 有
+\[
+\sum_{i=1}^n \big| f(b_i)-f(a_i) \big| < \varepsilon
+\]
+对每个~$i = 1, \, 2,\, \cdots,\, n$, 考虑~$(a_i,\,b_i)$~的任一分割~$\Delta=\big\{x_0^{(i)},\,x_1^{(i)},\,\cdots,\,x_{k_i}^{(i)}\big\}$
+\[
+a_i = x_0^{(i)} <  x_1^{(i)} < \cdots <  x_{k_i}^{(i)} = b_i
+\]
+则~$\big\{ \big( x_{j-1}^{(i)},\, x_j^{(i)} \big) \big\}_{{j=1,\cdots,k_i} \atop {i=1,\cdots,n}}$~是~$[a,\,b]$~上有限个互不相交的开区间, 且长度和为
+\[
+\sum_{i=1}^n \sum_{j=1}^{k_i} \big( x_j^{(i)} - x_{j-1}^{(i)} \big) = \sum_{i=1}^n (b_i - a_i) < \delta
+\]
+从而
+\[
+\sum_{i=1}^n {\textstyle{\bigvee}}_{f} \big( x_0^{(i)},\cdots,x_{k_i}^{(i)} \big) = \sum_{i=1}^n \sum_{j=1}^{k_i} \big| f\big(x_j^{(i)}\big) - f\big(x_{j-1}^{(i)}\big) \big| < \varepsilon
+\]
+对~$(a_i,\,b_i)$~的所有分割取~``$\sup$''~得~$\sum\limits_{i=1}^n \biancha\limits_{a_i}^{b_i}(f) \leqslant \varepsilon$. 于是
+\[
+\sum_{i=1}^n \Big| \biancha_a^{b_i}(f) - \biancha_a^{a_i}(f) \Big| = \sum_{i=1}^n \biancha_{a_i}^{b_i}(f) \leqslant \varepsilon
+\]
+因此, $\biancha\limits_a^x(f)$~在~$[a,\,b]$~上绝对连续.
+\end{proof}
+
+\begin{theorem}[微积分学基本定理\index{勒贝格积分的微积分学基本定理}] \label{thm533}
+设~$f(x)$~在~$[a,\,b]$~上~L-可积, 则~$f$~的不定积分
+\[
+F(x) = \int_a^x f(t) \mathrm{d} \mu + C
+\]
+在~$[a,\,b]$~上几乎处处可导, 且~$F'(x) = f(x), \mathrm{~a.e.~} x \in [a,\,b]$.
+\end{theorem}
+
+\begin{proof}
+由例~\ref{ex531}, $F(x)$~在~$[a,\,b]$~上绝对连续, 再由推论~\ref{cor531}, $F(x)$~在~$[a,\,b]$~上几乎处处可导. 下面证~$F'(x) = f(x), \mathrm{~a.e.~} x \in [a,\,b]$.
+
+先证明若~$\varphi(x)$~在~$[a,\,b]$~上~L-可积, 则有
+\begin{equation} \label{eq531}
+\int_a^b \Big| \Big( \int_a^x \varphi(t) \mathrm{d} \mu \Big)'_x \Big| \mathrm{d} \mu \leqslant \int_a^b \big| \varphi(x) \big| \mathrm{d} \mu
+\end{equation}
+
+注意到~$\int_a^x \varphi^+(t) \mathrm{d} \mu$~和~$\int_a^x \varphi^-(t) \mathrm{d} \mu$~都是单调递增函数, 由单调函数可微性定理, 有
+\[
+\int_a^b \Big( \int_a^x \varphi^+(t) \mathrm{d} \mu \Big)' \mathrm{d} \mu \leqslant \int_a^b \varphi^+(t) \mathrm{d} \mu - \int_a^a \varphi^+(t) \mathrm{d} \mu = \int_a^b \varphi^+(t) \mathrm{d} \mu
+\]
+\[
+\int_a^b \Big( \int_a^x \varphi^-(t) \mathrm{d} \mu \Big)' \mathrm{d} \mu \leqslant \int_a^b \varphi^-(t) \mathrm{d} \mu - \int_a^a \varphi^-(t) \mathrm{d} \mu = \int_a^b \varphi^-(t) \mathrm{d} \mu
+\]
+从而
+\begin{eqnarray*}
+\int_a^b \Big| \Big( \int_a^x \varphi(t) \mathrm{d} \mu \Big)' \Big| \mathrm{d} \mu &\leqslant& \int_a^b \Big( \int_a^x \varphi^+(t) \mathrm{d} \mu \Big)' \mathrm{d} \mu + \int_a^b \Big( \int_a^x \varphi^-(t) \mathrm{d} \mu \Big)' \mathrm{d} \mu \\
+&\leqslant& \int_a^b \varphi^+(t) \mathrm{d} \mu + \int_a^b \varphi^-(t) \mathrm{d} \mu \\
+&=& \int_a^b \big| \varphi(x) \big| \mathrm{d} \mu
+\end{eqnarray*}
+故式~\eqref{eq531}~成立.
+
+$f(x)$~在~$[a,\,b]$~上~L-可积, 由~L-可积函数的平均逼近定理, 对~$\forall~\varepsilon > 0$, 存在~$[a,\,b]$~上的连续函数~$g(x)$, 使得
+\[
+\int_a^b \big|f(t)-g(t)\big| \mathrm{d} \mu < \frac{\varepsilon}{2}
+\]
+而对连续函数~$g(x)$, 有~$\big( \int_a^x g(t) \mathrm{d} \mu \big)' = g(x), \, x \in [a,\,b]$. 于是
+\begin{eqnarray*}
+&&\int_a^b \Big| \Big( \int_a^x f(t) \mathrm{d} \mu \Big)' - f(x) \Big| \mathrm{d} \mu \\
+&=& \int_a^b \Big| \Big( \int_a^x \big[f(t) - g(t)\big] \mathrm{d} \mu \Big)' + g(x) - f(x) \Big| \mathrm{d} \mu \\
+&\leqslant& \int_a^b \Big| \Big( \int_a^x \big[f(t) - g(t)\big] \mathrm{d} \mu \Big)' \Big| \mathrm{d} \mu + \int_a^b \big|g(x) - f(x)\big| \mathrm{d} \mu \\
+&\leqslant& 2\int_a^b \big| f(x)-g(x) \big| \mathrm{d} \mu < \varepsilon
+\end{eqnarray*}
+由~$\varepsilon$~的任意性, $\int_a^b \big|\big( \int_a^x f(t) \mathrm{d} \mu \big)' - f(x) \big| \mathrm{d} \mu = 0$. 因此
+\[
+\Big( \int_a^x f(t) \mathrm{d} \mu \Big)' - f(x) = 0, \quad \mathrm{~a.e.~} x \in [a,\,b]
+\]
+即~$F'(x) = f(x), \mathrm{~a.e.~} x \in [a,\,b]$.
+\end{proof}
+
+\begin{theorem} \label{thm534}
+设~$f(x)$~在~$[a,\,b]$~上绝对连续, 且~$f'(x) =0, \mathrm{~a.e.~} x \in [a,\,b]$, 则~$f(x) \equiv C, \, x \in [a,\,b]$.
+\end{theorem}
+
+\begin{theorem}[微积分学基本公式\index{勒贝格积分的微积分学基本公式}] \label{thm535}
+设~$F(x)$~为~$[a,\,b]$~上的实值函数, 则牛顿\raisebox{0.5mm}{--}莱布尼茨公式
+\[
+F(x) - F(a) = \int_a^x F'(t) \mathrm{d} \mu, \quad x \in [a,\,b]
+\]
+成立, 当且仅当~$F(x)$~绝对连续.
+\end{theorem}
+
+\begin{proof}
+由例~\ref{ex531}, 必要性成立.
+
+``$\Leftarrow$''. $F(x)$~在~$[a,\,b]$~上绝对连续, 由推论~\ref{cor531}, $F(x)$~在~$[a,\,b]$~上几乎处处可导, 且~$F'(x)$~L-可积. 令
+\begin{equation} \label{eq532}
+\mathnormal{\Phi}(x) = F(x) - \int_a^x F'(t) \mathrm{d} \mu, \quad x \in [a,\,b]
+\end{equation}
+由定理~\ref{thm533}, $\mathnormal{\Phi}'(x) = 0, \mathrm{~a.e.~} x \in [a,\,b]$. 再由定理~\ref{thm534}~知, $\mathnormal{\Phi}(x) \equiv C, \, x \in [a,\,b]$. 从而, $\mathnormal{\Phi}(x) = \mathnormal{\Phi}(a) = F(a)$, 代入式~\eqref{eq532}, 可得.
+\end{proof}
+
+\begin{corollary}[分部积分公式\index{勒贝格积分的分部积分公式}]
+设~$f(x),\,g(x)$~在~$[a,\,b]$~上绝对连续, 则
+\[
+\int_a^b f(x)g'(x) \mathrm{d} \mu = f(x)g(x)\big|_a^b - \int_a^b g(x)f'(x) \mathrm{d} \mu
+\]
+\end{corollary}
+
+\begin{proof}
+$f(x),\,g(x)$~在~$[a,\,b]$~上绝对连续, 由定理~\ref{thm535}
+\begin{eqnarray*}
+f(b)g(b)-f(a)g(a) &=& \int_a^b \big(f(x)g(x)\big)' \mathrm{d} \mu \\
+&=& \int_a^b f(x)g'(x) \mathrm{d} \mu + \int_a^b g(x)f'(x) \mathrm{d} \mu
+\end{eqnarray*}
+故定理结论成立.
+\end{proof}
+
+\begin{theorem}[勒贝格积分中值定理\index{勒贝格积分中值定理}]
+设~$f(x)$~为~$[a,\,b]$~上的连续函数, $g(x)$~为~$[a,\,b]$~上非负~L-可积函数, 则存在~$\xi \in [a,\,b]$, 使得
+\[
+\int_a^b f(x)g(x) \mathrm{d} \mu = f(\xi) \int_a^b g(x) \mathrm{d} \mu
+\]
+\end{theorem}
+
+\begin{proof}
+记~$f\big([a,\,b]\big) = [m,\,M]$, 则有
+\[
+mg(x) \leqslant f(x)g(x) \leqslant Mg(x), \quad \mathrm{~a.e.~} x \in [a,\,b]
+\]
+上式两端同时积分得
+\[
+m\int_a^b g(x) \mathrm{d} \mu \leqslant \int_a^b f(x)g(x) \mathrm{d} \mu \leqslant M \int_a^b g(x) \mathrm{d} \mu
+\]
+若~$I=\int_a^b g(x) \mathrm{d} \mu > 0$, 则用它来除上式两端可得
+\[
+m \leqslant \frac{\int_a^b f(x)g(x) \mathrm{d} \mu}{I} \leqslant M
+\]
+再由~$f$~的连续性可知, 存在~$\xi \in [a,\,b]$, 使得
+\[
+f(\xi)=\frac{\int_a^b f(x)g(x) \mathrm{d} \mu}{\int_a^b g(x) \mathrm{d} \mu}
+\]
+故定理结论成立. 若~$I=0$, 则~$g(x)=0,\,\mathrm{a.e.~} x\in [a,\,b]$. 从而定理结论也成立.
+\end{proof}
+
+由于绝对连续函数的引进, 微积分基本定理成功地推广到勒贝格积分. 这使得勒贝格积分理论更加完善,  同时这也是新的积分理论成功的一个有力例证.
+
+\newpage
+\begin{problemset}
+
+  \item 设~$\{x_n\} \subset [a,\,b]$, 试作~$[a,\,b]$~上的单调递增函数, 使其不连续点恰为~$x_n$.
+
+  \item 设~$f(x)$~为~$[a,\,b]$~上的单调递增函数, 其值域在~$[f(a),\,f(b)]$~中稠密,       则~$f(x)$~为~$[a,\,b]$~上的连续函数.
+
+  \item 设~$\{f_n(x)\}$~为~$[a,\,b]$~上的单调递增的函数列, 且处处收敛于~$f(x)$, 则~$f_n \rightrightarrows f$.
+
+  \item 设~$f(x)$~为~$[a,\,b]$~上的单调函数, 当把它的不连续点的值修改为右连续(或左连续)时,       所得的函数记为~$\tilde{f}(x)$, 证明~$f(x),\,\tilde{f}(x)$~具有相同的可导点(具有有限导数的点).
+
+  \item 设函数~$f(x)$~在~$[a,\,b]$~上几乎处处有有限导数, 证明对任意的~$\delta > 0$, 必存在可测集~$E_\delta \subset [a,\,b], \, m\big( [a,\,b]-E_\delta\big) <\delta$, 使得对~$\forall~\varepsilon > 0$, 都存在~$\eta > 0$, 对一切~$x \in E_\delta$, $x' \in [a,\,b]$, 当~$|x-x'| < \eta$~时, 有下式成立
+      \[
+      \Big| \frac{f(x)-f(x')}{x-x'} -f'(x) \Big| < \varepsilon
+      \]
+
+  \item 设~$f(x)$~为~$(a,\,b)$~上的单调递增函数, $E \subset (a,\,b)$, 若对~$\forall~\varepsilon > 0$, 都存在~$(a_i,\,b_i) \subset (a,\,b)~(i=1,\,2,\,\cdots)$, 使得
+      \[
+      \medcup_i \big(a_i,\,b_i\big) \supset E, \quad \sum_i \big[ f(b_i)-f(a_i) \big] < \varepsilon
+      \]
+      试证明~$f'(x)=0,\,\mathrm{a.e.~} x \in E$.
+
+  \item 试在~$[0,\,1]$~上作一严格单调递增函数~$f(x)$, 使得~$f'(x)=0,\,\mathrm{a.e.~} x \in [0,\,1]$.
+
+  \item 设~$f(x)$~为~$[a,\,b]$~上的有界变差函数, 且~$f(x) \leqslant c \, (c  > 0)$~在~$[a,\,b]$~上处处成立, 则~$1/f(x)$~也是~$[a,\,b]$~上的有界变差函数.
+
+  \item 设~$f(x)$~为~$[0,\,a]$~上的有界变差函数, 证明函数
+  \[
+  F(x) = \frac{1}{x}\int_0^x f(t) \mathrm{d} \mu, \quad F(0)=0
+  \]
+  是~$[0,\,a]$~上的有界变差函数.
+
+  \item 设~$f \in BV[a,b]$, 证明存在~$M > 0$, 使得当~$|h|$~充分小时, 有
+  \[
+  \frac{1}{|h|}\int_a^b \big| f(x+h)-f(x) \big| \mathrm{d} \mu \leqslant M
+  \]
+
+  \item 设~$\{f_n(x)\}$~为~$[a,\,b]$~上的有界变差函数列, 且~$\lim\limits_{n \to \infty} f_n(x) = f(x)$, $f(x)$~为~$[a,\,b]$~上的有限函数, 若
+      \[
+      \biancha_a^b (f_n) \leqslant K, \quad n =1,\,2,\,\cdots
+      \]
+      则~$f(x)$~也为~$[a,\,b]$~上的有界变差函数.
+
+  \item 试证函数~$f(x)$~在~$[a,\,b]$~上为有界变差函数的充要条件是, 存在一个单调递增函数~$\varphi(x)$, 使得对任意的~$a \leqslant x_1 < x_2 \leqslant b$~有如下不等式成立
+      \[
+      \big| f(x_2) - f(x_1) \big| \leqslant \varphi(x_2) - \varphi(x_1)
+      \]
+
+  \item 设~$\alpha \in \R$, 函数
+  \[
+  f(x) = \left\{\!\!
+  \begin{array}{cl}
+  x^\alpha \sin \dfrac{1}{x}, & 0 < x \leqslant 1 \\[0.2cm]
+  0, & x=0
+  \end{array}
+  \right.
+  \]
+  当~$\alpha$~取什么值时, $f(x)$~是~$[0,\,1]$~上的有界变差函数.
+
+  \item 证明函数
+  \[
+  f(x) = \left\{\!\!
+  \begin{array}{cl}
+  x^2 \sin \dfrac{1}{x^2}, & x \neq 0 \\[0.2cm]
+  0, & x=0
+  \end{array}
+  \right.
+  \]
+  在~$[-1,\,1]$~上处处可微, 但~$f(x)$~不绝对连续.
+
+  \item 设~$f(x)$~为~$[a,\,b]$~上的有界变差函数, 则
+  \[
+  \frac{\mathrm{d}}{\mathrm{d} x} \biancha_a^x(f) = \big| f'(x) \big|, \quad  \mathrm{~a.e.~} x \in [a,\,b]
+  \]
+
+  \item 设~$f(x)$~是~$[a,\,b]$~上的全连续函数, 证明
+  \[
+  \int_a^b \big| f'(x) \big| \mathrm{d} \mu = \biancha_a^b(f)
+  \]
+
+  \item 若~$f(x)$~为~$[a,\,b]$~上的绝对连续函数, 且几乎处处存在非负导数, 则~$f(x)$~为单调递增函数.
+
+  \item 证明定义在~$[a,\,b]$~上的函数~$f(x)$~满足利普希兹条件, 等价于~$f(x)$~为有界可测函数的不定积分. 
+
+  \item 对于可测集~$E$, 定义
+  \[
+  \lim_{\delta \to 0} \frac{m\big(E \cap (x_0-\delta,\,x_0+\delta) \big)} {2\delta}
+  \]
+  为~$E$~在~$x_0$~处的密度, 试证明对几乎所有的~$x \in E$, $E$~的密度为~$1$; 对几乎所有的~$x \notin E$, $E$~的密度为~$0$.
+\end{problemset}
