@@ -1,0 +1,291 @@
+\documentclass[aspectratio=43]{ctexbeamer} 
+% 使用 ctexbeamer 文档类，设置宽屏比例 16:9
+% ctexbeamer 是支持中文的 beamer 类
+\usepackage{fontawesome5}% fontawesome 字体，很多有趣的图标
+\usepackage{tikz}
+% 导入 tikz 绘图包，用于绘制复杂的图形和装饰元素
+
+% 定义颜色方案
+% 第一组蓝色系配色方案
+\definecolor{darkblue}{RGB}{0,100,166}   % 深蓝
+\definecolor{lightblue}{RGB}{100,195,213} % 浅蓝
+\definecolor{mediumblue}{RGB}{30,130,186}  % 中蓝
+\definecolor{brightblue}{RGB}{40,185,218}  % 亮蓝
+\definecolor{lightestblue}{RGB}{150,203,226} % 淡蓝
+\definecolor{black}{RGB}{0,0,0}        % 黑色
+\definecolor{white}{RGB}{255,255,255}  % 白色
+
+% 第二组配色方案
+% \definecolor{darkblue}{RGB}{0,100,166}
+% \definecolor{lightblue}{RGB}{255,162,0}
+% \definecolor{mediumblue}{RGB}{0,160, 62}
+% \definecolor{color4}{RGB}{36,168,172}
+% \definecolor{lightestblue}{RGB}{0,135,203}
+% \definecolor{black}{RGB}{0,0,0}
+% \definecolor{white}{RGB}{255,255,255}
+
+
+% 自定义标题页模板
+\setbeamertemplate{title page}
+{%
+	\begin{tikzpicture}[remember picture,overlay]
+		% 左上角元素
+		\node[text=darkblue,anchor=south west,font=\bfseries,text width=.5\paperwidth] 
+		at ([xshift=0.05\paperwidth,yshift=-0.15\paperheight]current page.north west)
+		(左上角装饰)
+		{\raggedright \faBook\hspace{0.25cm}高~等~代~数\qquad \faCalendar*\hspace{0.25cm}2025年~秋}; 
+		
+		% 在右上角添加半透明公式层
+		\filldraw[lightblue!20, rounded corners=10pt] 
+		([xshift=-0.1cm,yshift=-0.1cm]current page.north east) rectangle 
+		([xshift=-0.25\paperwidth, yshift=-0.2\paperheight]current page.north east);
+		
+		\node[anchor=center,text=red!50, font=\small, align=center, opacity=0.8] 
+		at ([xshift=-0.125\paperwidth, yshift=-0.1\paperheight]current page.north east) {
+			$V=V_1\oplus V_2$
+		};
+		% 标题背景色块（大蓝色区域）
+		\coordinate (A) at ([yshift=-0.25\paperheight]current page.north west);
+		\coordinate (B) at ([yshift=-0.75\paperheight]current page.north west);
+		\coordinate (C) at ([xshift=-0.25\paperwidth,yshift=-0.75\paperheight]current page.north east);
+		\coordinate (D) at ([xshift=-0.25\paperwidth,yshift=-0.25\paperheight]current page.north east);
+		
+		\filldraw[darkblue]
+		(A) -- (B) [rounded corners=20pt]-- (C) -- (D)[rounded corners=20pt]--(A);
+		
+		% 标题文本节点
+		\node[text=white,anchor=west,font=\bfseries\Huge,text width=.68\paperwidth] 
+		at ([xshift=0.1cm,yshift=0.5cm]current page.west)
+		(title)
+		{\raggedright\inserttitle};  
+		
+		% 副标题文本节点
+		\node[text=white,anchor=west,font=\bfseries\Large,text width=.68\paperwidth] 
+		at ([xshift=4cm,yshift=-1cm]current page.west)
+		(subtitle)
+		{\raggedright\insertsubtitle}; 
+		
+		
+		% 从上往下绘制四个彩色小方块（装饰元素）
+		\filldraw[lightblue,rounded corners=5pt] % 第一个方块
+		([xshift=-0.25\paperwidth+0.5cm,yshift=-0.25\paperheight]current page.north east) rectangle
+		([xshift=-0.05\paperwidth,yshift=-0.3\paperheight]current page.north east)
+		;
+		
+		\filldraw[mediumblue,rounded corners=5pt] % 第二个方块
+		([xshift=-0.25\paperwidth+0.5cm,yshift=-0.4\paperheight]current page.north east) rectangle
+		([xshift=-0.05\paperwidth,yshift=-0.45\paperheight]current page.north east)
+		;
+		
+		\filldraw[brightblue,rounded corners=5pt] % 第三个方块
+		([xshift=-0.25\paperwidth+0.5cm,yshift=-0.55\paperheight]current page.north east) rectangle
+		([xshift=-0.05\paperwidth,yshift=-0.6\paperheight]current page.north east)
+		;
+		
+		\filldraw[lightblue,rounded corners=5pt] % 第四个方块
+		([xshift=-0.25\paperwidth+0.5cm,yshift=-0.7\paperheight]current page.north east) rectangle
+		([xshift=-0.05\paperwidth,yshift=-0.75\paperheight]current page.north east)
+		;
+		
+		% 左下角作者节点（在日期上方）
+		\node[text=darkblue,font=\large\bfseries,anchor=south west]
+		at ([xshift=2cm,yshift=0.15\paperheight]current page.south west)
+		(author)
+		{\insertauthor};
+		
+		
+		% 左下角日期节点
+		\node[text=black,font=\large\sffamily,anchor=south west]
+		at ([xshift=1cm,yshift=0.05\paperheight]current page.south west)
+		(date)
+		{\insertdate};
+		
+		% 右下角名言+装饰组合
+		\node[text=darkblue!70, font=\footnotesize\itshape, align=right, text width=3.5cm] 
+		at ([xshift=-2.5cm, yshift=1.2cm]current page.south east) 
+		{线性空间\\是高等代数的舞台};
+		
+		\filldraw[lightblue] 
+		([xshift=-4cm, yshift=0.5cm]current page.south east) rectangle +(3.5cm,0.1cm);
+	\end{tikzpicture}%
+}
+
+
+% 设置页脚模板,显示 作者 标题 时间 页码(各占25%)
+\setbeamertemplate{footline}{%
+	\begin{tikzpicture}[remember picture,overlay]
+		% 设置基准点（左下角）
+		\coordinate (footline base) at (current page.south west);
+		
+		% 绘制作者背景以及添加作者节点（左侧25%宽度）
+		\fill[lightblue] (footline base) rectangle ++(0.25\paperwidth,0.5cm);
+		
+		\node[anchor=center,text=white,font=\tiny] 
+		at ([xshift=0.125\paperwidth,yshift=0.25cm]footline base) {\makebox[0pt][c]{\insertauthor}};
+		
+		% 绘制标题背景以及添加标题节点（左侧25%宽度）
+		\fill[mediumblue] ([xshift=0.25\paperwidth]footline base) rectangle ++(0.25\paperwidth,0.5cm);
+		
+		\node[anchor=center,font=\tiny,color=white,text width=0.2\paperwidth,align=center] 
+		at ([xshift=0.375\paperwidth,yshift=0.25cm]footline base) {\insertshorttitle};
+		
+		% 绘制日期背景（中间25%宽度）
+		\fill[brightblue] ([xshift=0.5\paperwidth]footline base) rectangle ++(0.25\paperwidth,0.5cm);
+		
+		\node[anchor=center,font=\tiny] 
+		at ([xshift=0.625\paperwidth,yshift=0.25cm]footline base) {\insertshortdate};
+		
+		% 绘制页码背景及页码节点（右侧25%宽度）
+		\fill[lightestblue] ([xshift=0.75\paperwidth]footline base) rectangle ++(0.25\paperwidth,0.5cm);
+		\node[anchor=center] 
+		at ([xshift=0.875\paperwidth,yshift=0.25cm]footline base) 
+		{第~\insertframenumber~页(共~\inserttotalframenumber~页)};
+	\end{tikzpicture}%
+}
+% 设置页眉导航栏模板（TikZ版本）
+%\insertsectionnavigationhorizontal{⟨宽度⟩}{⟨左侧填充⟩}{⟨右侧填充⟩}
+
+%insertsectionnavigationhorizontal 命令用于在 Beamer 幻灯片中创建一个水平的节导航栏，该导航栏会显示当前文档中各个节的链接，用户可以通过点击这些链接快速跳转到相应的节。
+
+%⟨宽度⟩：指定导航栏的总宽度，可以使用常见的长度单位，如 cm、pt 等。
+%⟨左侧填充⟩：在导航栏左侧添加的额外内容，通常用于添加空白或其他元素。
+%⟨右侧填充⟩：在导航栏右侧添加的额外内容，通常用于添加空白或其他元素。
+
+\setbeamertemplate{headline}{%
+	\begin{tikzpicture}[remember picture,overlay]
+		% 导航栏背景
+		\fill[darkblue!80] (current page.north west) rectangle ++(\paperwidth,-0.5cm);
+		
+		% 节导航
+		\node[anchor=center,font=\small\bfseries] 
+		at ([yshift=-0.25cm]current page.north) 
+		{\insertsectionnavigationhorizontal{0.9\paperwidth}{\textcolor{red}{\faFingerprint}}{\faFingerprint}};
+		
+		% 在导航栏下方添加装饰线条
+		\fill[lightblue] ([yshift=-0.6cm]current page.north west) rectangle ++(\paperwidth/4,-0.15cm);
+		\fill[mediumblue] ([xshift=\paperwidth/4,yshift=-0.6cm]current page.north west) rectangle ++(\paperwidth/4,-0.15cm);
+		\fill[brightblue] ([xshift=\paperwidth/2,yshift=-0.6cm]current page.north west) rectangle ++(\paperwidth/4,-0.15cm);
+		\fill[lightestblue] ([xshift=3*\paperwidth/4,yshift=-0.6cm]current page.north west) rectangle ++(\paperwidth/4,-0.15cm);
+	\end{tikzpicture}
+}
+
+% 移除导航按钮
+\setbeamertemplate{navigation symbols}{}
+
+% 自定义项目符号样式
+% 设置 Beamer 颜色主题
+\setbeamercolor{title}{fg=black,bg=white}       % 标题颜色（前景黑色，背景白色）
+\setbeamercolor{date}{fg=gray,bg=white}        % 日期颜色
+\setbeamercolor{frametitle}{fg=darkblue,bg=white} % 帧标题颜色
+
+
+% 设置导航栏章节标题颜色为白色
+\setbeamercolor{section in head/foot}{fg=white}
+
+
+\setbeamertemplate{itemize item}[circle] % 圆形项目符号
+\setbeamercolor{itemize item}{fg=mediumblue,bg=white} % 一级项目颜色
+\setbeamercolor{itemize subitem}{fg=brightblue,bg=white} % 二级项目颜色
+\setbeamercolor{itemize subsubitem}{fg=lightblue,bg=white} % 三级项目颜色
+
+
+
+% 文档信息
+\title[蓝色主题]{一个蓝色的主题} % [短标题]{完整标题}
+\subtitle{测试}
+\author{作者}
+\date{\today}
+
+\begin{document}
+	% 标题页
+	\begin{frame}[plain] % plain 表示无页眉页脚
+		\maketitle
+	\end{frame}
+	
+	%%%%%% 目录页
+	\setbeamertemplate{section in toc}{%
+		\leavevmode\par % 确保正确换行
+		\vspace{0.8em}% 增加section之间的间距
+		\large\color{darkblue}% 设置字体大小和颜色
+		\inserttocsectionnumber.~\inserttocsection% 显示带编号的标题
+		\par\normalsize% 恢复默认字号
+		\vspace{-0.25cm}% 标题与下划线之间的间距
+		{\color{lightblue}\rule{0.95\linewidth}{1pt}\par}% 添加装饰性下划线
+	}
+	
+	\begin{frame}
+		% 标题设计
+		\begin{center}
+			\begin{tikzpicture}[remember picture,overlay]
+				\node[anchor=center,color=darkblue!80] at ([yshift=-1.5cm]current page.north) (toctitle) {\bfseries\Large
+					\faMapMarker*~~内容提要~~\faMapMarker*};
+				
+				\draw[line width=2pt, darkblue!30]([xshift=-3cm,yshift=-1cm]toctitle.north) -- ++(6,0);
+			\end{tikzpicture}
+		\end{center}
+		
+		\vfill
+		
+		%% 目录内容
+		
+		\begin{center}
+			\begin{minipage}{0.65\paperwidth}
+				\setlength{\parskip}{0.25em} % 段落间距
+				\setcounter{tocdepth}{1}
+				\bfseries\tableofcontents
+			\end{minipage}
+		\end{center}
+		
+		%%  底部装饰
+		%\vfill
+		%\centering
+		%\begin{tikzpicture}
+		%	\foreach \i in {1,...,22} {
+			%		\filldraw[lightblue!70,line width=1pt] ([yshift=1.5cm,xshift=\i*0.5cm]current page.south) circle (0.1cm);
+			%	}
+		%\end{tikzpicture}
+	\end{frame}
+	
+	
+	
+	
+	\section{测试1}
+	% 内容幻灯片1
+	\begin{frame}
+		列表
+		
+		\begin{itemize}
+			\item item1
+			\item item2
+			\begin{itemize}
+				\item subitem1
+				\item subitem2
+			\end{itemize}
+			\item item3
+		\end{itemize}
+	\end{frame}
+	
+	% 内容幻灯片2
+	\section{测试2}
+	\begin{frame}
+		\begin{example}
+			测试$x^2+1=0.$
+		\end{example}
+	\end{frame}
+	
+	\section{测试3}
+	\begin{frame}
+		\begin{theorem}
+			测试$x^2+1=0.$
+		\end{theorem}
+	\end{frame}
+	
+	\section{结束}
+	% 结束页
+	\begin{frame}
+		\begin{center}
+			\LARGE 谢谢
+		\end{center}
+	\end{frame}
+	
+\end{document}

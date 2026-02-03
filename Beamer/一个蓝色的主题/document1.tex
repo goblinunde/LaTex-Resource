@@ -1,0 +1,208 @@
+% !TeX program = xelatex
+\documentclass[UTF8]{ctexart}
+
+% -----------------------------------------------------------
+% 1. 引入宏包
+% -----------------------------------------------------------
+\usepackage[a4paper, margin=1.9cm]{geometry}
+\usepackage{tcolorbox}
+\usepackage{amsmath, amssymb, amsfonts}
+\usepackage{booktabs}
+% 引入 skins 库以支持高级皮肤和绘图，引入 xcolor 自定义颜色
+\tcbuselibrary{listings, skins, breakable}
+\usepackage{xcolor}
+
+% -----------------------------------------------------------
+% 2. 定义深色主题颜色
+% -----------------------------------------------------------
+\definecolor{editorDark}{RGB}{40, 44, 52}     % 代码背景深灰色
+\definecolor{editorFrame}{RGB}{33, 37, 43}    % 边框更深
+\definecolor{editorTitle}{RGB}{171, 178, 191} % 标题文字灰白色
+\definecolor{keywordBlue}{RGB}{97, 175, 239}  % 关键字亮蓝
+\definecolor{cmdPurple}{RGB}{198, 120, 221}   % 命令亮紫
+\definecolor{strGreen}{RGB}{152, 195, 121}    % 字符串亮绿
+
+% -----------------------------------------------------------
+% 3. 配置深色模式代码高亮 (Dark Mode Syntax Highlighting)
+% -----------------------------------------------------------
+\lstdefinestyle{darkstyle}{
+	language={[LaTeX]TeX},
+	basicstyle=\ttfamily\small\color{white},
+	keywordstyle=\color{keywordBlue}\bfseries,
+	commentstyle=\color{gray!60}\itshape,
+	texcsstyle=*\color{cmdPurple},
+	morekeywords={begin, end, section, subsection, textbf, textit, underline, mathbb, mathcal},
+	numbers=left,
+	numberstyle=\tiny\color{gray!50},
+	frame=none,
+	breaklines=true,
+	columns=flexible,
+	keepspaces=true,
+	tabsize=6,
+	showtabs=false
+}
+
+% -----------------------------------------------------------
+% 4. 设计 macOS 窗口风格的盒子
+% -----------------------------------------------------------
+\tcbset{
+	macos-editor/.style={
+		skin=bicolor,
+		colframe=editorFrame,
+		colback=editorDark,
+		colbacklower=white,
+		coltitle=editorTitle,
+		fonttitle=\sffamily\bfseries\small,
+		arc=6pt,
+		boxrule=1pt,
+		drop fuzzy shadow,
+		title style={opacity=0},
+		top=16pt, bottom=10pt,
+		overlay={
+			\fill[editorFrame] (frame.north west) rectangle ([yshift=-24pt]frame.north east);
+			\fill[red!60] ([xshift=15pt, yshift=-12pt]frame.north west) circle (3pt);
+			\fill[orange!60] ([xshift=28pt, yshift=-12pt]frame.north west) circle (3pt);
+			\fill[green!60] ([xshift=41pt, yshift=-12pt]frame.north west) circle (3pt);
+		},
+		attach boxed title to top center,
+		boxed title style={empty},
+	}
+}
+
+% -----------------------------------------------------------
+% 5. 定义环境：左代码，右结果 (Dark Mode)
+% -----------------------------------------------------------
+\newtcblisting{code-left}[2][]{
+	macos-editor,
+	listing style=darkstyle,
+	sidebyside,
+	listing and text,
+	lefthand width=0.45\textwidth,
+	valign=center,
+	title={#2},
+	#1
+}
+
+% -----------------------------------------------------------
+% 6. 定义环境：上代码，下结果 (Dark Mode)
+% -----------------------------------------------------------
+\newtcblisting{code-top}[2][]{
+	macos-editor,
+	listing style=darkstyle,
+	title={#2},
+	#1
+}
+
+% -----------------------------------------------------------
+% 正文开始
+% -----------------------------------------------------------
+\begin{document}
+	
+	\begin{center}
+		{\Huge \bfseries LaTeX 极简教程} \\
+		\vspace{0.3cm}
+		{\large Dark Mode Edition (macOS Style)}
+	\end{center}
+	
+	\tableofcontents
+	\newpage
+	
+	% ==================================================
+	\section{文本格式 (Text Formatting)}
+	% ==================================================
+	
+	\begin{code-left}{字体样式演示}
+% 常用字体命令
+\textbf{Bold (加粗)} \\
+\textit{Italic (斜体)} \\
+\underline{Underline (下划线)} \\
+\texttt{Monospace (等宽)} \\
+\textsc{Small Caps (小型大写)}
+	\end{code-left}
+	
+	\begin{code-left}{字号大小对比}
+{\tiny tiny (极小)} \\
+{\footnotesize footnote (脚注)} \\
+{\small small (小号)} \\
+{\normalsize normal (正常)} \\
+{\Large Large (大号)} \\
+{\huge huge (巨大)}
+
+ $ \big( \Big( \bigg( \Bigg($
+	\end{code-left}
+	
+	% ==================================================
+	\section{数学公式 (Mathematics)}
+	% ==================================================
+	
+	\subsection{基础公式}
+	
+	\begin{code-left}{行内与行间公式}
+% 行内公式使用 $...$
+
+质能方程：$E = mc^2$\\
+行间公式使用 \[...\]
+薛定谔方程：
+\[
+i\hbar\frac{\partial}{\partial t}\Psi = \hat{H}\Psi
+\]
+	\end{code-left}
+	
+	\subsection{复杂结构}
+	
+	% 使用 code-top 展示较长的代码
+\begin{code-top}{分段函数 (Cases)}
+% 需要 amsmath 宏包
+定义符号函数：
+\[
+f(x) = 
+\begin{cases} 
+-1 & \text{if } x < 0 \\
+0  & \text{if } x = 0 \\
+1  & \text{if } x > 0
+\end{cases}
+\]
+	\end{code-top}
+	
+	\begin{code-left}[lefthand width=0.68\textwidth]{矩阵示例}
+% 各种矩阵括号
+Pmatrix: $\begin{pmatrix} a & b \\ c & d \end{pmatrix}$ \\[5pt]
+Bmatrix: $\begin{bmatrix} 1 & 2 \\ 3 & 4 \end{bmatrix}$ \\[5pt]
+Vmatrix: $\begin{vmatrix} x & y \\ z & w \end{vmatrix}$
+	\end{code-left}
+	
+	% ==================================================
+	\section{表格与列表}
+	% ==================================================
+	
+	\begin{code-top}{三线表示例 (Booktabs)}
+% 专业的学术表格
+\begin{tabular}{llr}
+\toprule
+Name & Role & Salary \\
+\midrule
+Alice & Engineer & \$80k \\
+Bob   & Manager  & \$100k \\
+\bottomrule
+\end{tabular}
+\\
+% \f is defined as #1f(#2) using the macro
+$f\relax(x) = \int_{-\infty}^\infty
+f\hat\xi\,e^{2 \pi i \xi x}
+\,\mathrm{d}\xi $
+
+$\boxed{\pi=\frac c d}$
+\end{code-top}
+
+
+\begin{code-left}
+
+$\tilde{a}$
+
+$\widetilde{ac}, a', \overrightarrow{AB} $
+
+
+\end{code-left}
+
+	
+\end{document}

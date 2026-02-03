@@ -1,0 +1,113 @@
+% !TeX program = xelatex
+\documentclass[UTF8]{ctexart}
+
+% -----------------------------------------------------------
+% 1. 引入必要的宏包
+% -----------------------------------------------------------
+\usepackage[a4paper, margin=2.5cm]{geometry}
+\usepackage{tcolorbox}
+\tcbuselibrary{listings, skins, breakable}
+
+% -----------------------------------------------------------
+% 2. 配置代码高亮样式 (已修复 ^^I 问题)
+% -----------------------------------------------------------
+\lstdefinestyle{mystyle}{
+	language={[LaTeX]TeX},
+	basicstyle=\ttfamily\small,
+	keywordstyle=\color{blue}\bfseries,
+	commentstyle=\color{green!60!black},
+	texcsstyle=*\color{red!70!black},
+	numbers=none,
+	frame=none,
+	breaklines=true,
+	columns=flexible,
+	keepspaces=true,
+	tabsize=4,              % 【关键修复】将 Tab 转化为4个空格，消除 ^^I
+	showtabs=false          % 不显示 Tab 标记
+}
+
+% -----------------------------------------------------------
+% 3. 定义通用外观设置
+% -----------------------------------------------------------
+\tcbset{
+	myboxstyle/.style={
+		skin=bicolor,
+		colframe=blue!70!black,
+		colback=white,          % 结果区域背景色 (右侧)
+		colbacklower=gray!5,    % 代码区域背景色 (左侧)
+		listing style=mystyle,
+		fonttitle=\bfseries,
+		arc=3pt,
+		boxrule=1pt
+	}
+}
+
+% -----------------------------------------------------------
+% 4. 环境一：左边源码，右边结果
+% -----------------------------------------------------------
+\newtcblisting{code-left}[2][]{
+	myboxstyle,
+	sidebyside,                 % 并排显示
+	listing and text,           % 【关键修正】代码在左，结果在右
+	lefthand width=0.55\textwidth, % 左侧(代码)宽度比例
+	title={#2},
+	#1
+}
+
+% -----------------------------------------------------------
+% 5. 环境二：上边源码，下边结果
+% -----------------------------------------------------------
+\newtcblisting{code-top}[2][]{
+	myboxstyle,
+	% 默认就是 listing outside text (源码在上，结果在下)
+	colbacktitle=blue!70!black,
+	title={#2},
+	#1
+}
+
+% -----------------------------------------------------------
+% 正文开始
+% -----------------------------------------------------------
+\begin{document}
+	
+	\section*{LaTeX 教程示例演示}
+	
+	% 使用场景 1：左右结构
+	\begin{code-left}{数学公式示例}
+在 \LaTeX 中，我们可以轻松输入行内公式
+$E=mc^2$ 或者行间公式：
+\[
+\int_{0}^{\infty} e^{-x^2} dx = \frac{\sqrt{\pi}}{2}
+\]
+支持中文注释哦。
+	\end{code-left}
+	
+	\vspace{1cm}
+	
+	% 使用场景 2：上下结构
+	\begin{code-top}{文本段落与列表示例}
+		\subsection*{关于列表}
+		这是一个无序列表的示例：
+		\begin{itemize}
+			\item 第一点：\textbf{加粗}字体
+			\item 第二点：\textit{斜体}字体
+			\item 第三点：中文测试
+		\end{itemize}
+		
+		我们还可以插入表格环境等复杂的结构，
+		这时候上下布局会比左右布局更合适。
+	\end{code-top}
+	
+	% 使用场景 3：自定义参数 (例如调整宽度比例)
+	\vspace{1cm}
+	\begin{code-left}[lefthand width=0.4\textwidth]{调整比例：代码窄，结果宽}
+		\begin{tabular}{|c|c|}
+			\hline
+			A & B \\
+			\hline
+			1 & 2 \\
+			\hline
+		\end{tabular}
+	\end{code-left}
+	
+\end{document}

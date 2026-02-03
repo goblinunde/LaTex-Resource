@@ -1,0 +1,9 @@
+^^I^^I% 专业的学术表格
+^^I^^I\begin{tabular}{llr}
+^^I^^I^^I\toprule
+^^I^^I^^IName & Role & Salary \\
+^^I^^I^^I\midrule
+^^I^^I^^IAlice & Engineer & \$80k \\
+^^I^^I^^IBob   & Manager  & \$100k \\
+^^I^^I^^I\bottomrule
+^^I^^I\end{tabular}
