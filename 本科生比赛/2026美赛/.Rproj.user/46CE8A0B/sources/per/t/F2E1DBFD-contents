@@ -1,0 +1,74 @@
+library(tinytex)
+
+pdflatex("mcmthesis-demo.tex")
+
+# 带bib参考文献
+# pdflatex("mcmthesis-demo.tex", bib_engine = "biber") 
+
+# 三线表
+# 方法一: 适合简单表
+library(xtable)
+xtable(mtcars[1:10, 1:6]) |> 
+  print(include.rownames = FALSE, booktabs = TRUE)
+
+# 方法二: 适合复杂表
+library(gt)
+gt(mtcars[1:10, 1:6]) |> 
+  as_latex() |> cat()
+
+# 复杂表模板
+library(gt)
+library(dplyr)
+
+# 将车型名称从行名转换为列(用于行标签)
+library(tidyverse)
+library(gt)
+set.seed(123)
+df = mtcars |>
+  rownames_to_column(var = "model") |> 
+  slice_sample(n = 3, by = cyl) |> 
+  select(1:8) 
+
+mtcars_gt = df |> 
+  mutate(cyl = paste(cyl, "缸"))     # 行分组变量
+
+mtcars_gt |>
+  gt(rowname_col = "model",          # 使用车型作为行标签
+     groupname_col = "cyl") |>       # 按气缸数分组(可选分组)
+  # 1. 表头：标题 + 副标题
+  tab_header(
+    title = md("**汽车性能数据**"),
+    subtitle = "9 款车型的油耗与动力指标") |>
+  # 2. 行标签区：行头标题
+  tab_stubhead(label = "车型") |>    # 行标签区标题
+  summary_rows(                      # 添加汇总行
+    groups = everything(),
+    columns = where(is.numeric),
+    fns = list(平均值 = ~ mean(.), 最大值 = ~ max(.)),
+    fmt = list(~ fmt_number(., decimals = 2))) |> 
+  # 3. 列标签：重命名列名 + 跨列标签
+  cols_label(mpg = "油耗 (mpg)", hp = "马力 (hp)") |>   # 重命名列
+  tab_spanner(
+    label = "核心性能指标",           # 跨列标签
+    columns = c(mpg, hp)) |>        # 覆盖的列
+  # 4. 表体格式：数值格式 + 条件高亮
+  fmt_number(
+    columns = c(mpg, hp),           # 格式化数值列
+    decimals = 1) |>                # 保留1位小数
+  tab_style(
+    style = cell_fill(color = "yellow"),
+    locations = cells_body(
+      columns = hp,                 # 高亮马力列
+      rows = hp > 150)) |>          # 马力>200的单元格
+  # 5. 表尾：脚注 + 数据来源
+  tab_footnote(
+    footnote = "油耗数据为标准化值",
+    locations = cells_column_labels(columns = mpg)) |>  # 标注在油耗列
+  tab_source_note(
+    source_note = md("数据来源: *Motor Trend 杂志* (1974)")) |>
+  # 6. 主题调整
+  tab_options(
+    table.font.size = "14px",           # 字体大小
+    stub.background.color = "#F5F5F5")  # 行标签区背景色
+
+
