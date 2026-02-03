@@ -1,0 +1,281 @@
+\usepackage{etex,tabularx}
+\newcolumntype{Y}{>{\centering\arraybackslash}X}
+\usepackage{fontspec}
+\IfFontExistsTF{FZShuSong-Z01}{
+  \PassOptionsToPackage{fontset=founder}{ctex}
+}{}
+\usepackage{xeCJK}
+\defaultCJKfontfeatures{Mapping=fullwidth-stop}
+\usepackage[heading]{ctex}
+\usepackage{manfnt,zhlineskip}
+\usepackage{indentfirst}
+
+\usepackage[T1]{fontenc}
+\renewcommand\rmdefault{ptm}
+\usepackage[centering,
+           top=2.54cm,bottom=2.54cm,right=2.9cm,left=2.9cm,
+           headsep=25pt,headheight=20pt]{geometry}
+\IfFileExists{mtpro2.sty}{
+  \usepackage[zswash,amsbb,straightbraces]{mtpro2}
+}{\usepackage{amssymb}}
+
+\usepackage{amsmath,mathrsfs}
+\usepackage{caption}
+\usepackage[perpage]{footmisc}
+\usepackage{extarrows}
+\usepackage{graphicx}
+
+\setmainfont{Times New Roman}
+
+\usepackage{pifont}
+\usepackage{imakeidx}
+\makeindex[
+title={名词索引},
+intoc=true,
+columns=2,
+columnsep=1cm,
+columnseprule=true,
+program=makeindex,
+options={-s mkind.ist},
+noautomatic=false
+]
+\indexsetup{
+toclevel=chapter,
+headers={名词索引}{名词索引},
+othercode={
+\renewcommand{\indexspace}{\smallskip}
+}
+}
+
+\usepackage[hyperindex]{hyperref}
+\hypersetup{bookmarksopen=true,bookmarksopenlevel=1,bookmarksnumbered=true,
+  pdftitle={复变函数-史济怀},pdfauthor={史济怀 \& 刘太顺（向禹重排）},linktoc=all,CJKbookmarks=true,unicode,
+  colorlinks,linkcolor=blue,citecolor=red,urlcolor=blue,anchorcolor=green}
+\usepackage[Symbol]{upgreek}
+\renewcommand{\pi}{\uppi}
+
+\DeclareSymbolFont{ugmL}{OMX}{yhex}{m}{n}
+\DeclareMathAccent{\wideparen}{\mathord}{ugmL}{"F3}
+
+\IfFontExistsTF{FZShuSong-Z01}{
+  \setCJKmainfont[BoldFont={FZHei-B01},ItalicFont={FZKai-Z03}]{FZShuSong-Z01}
+}{}
+\IfFontExistsTF{Microsoft YaHei}{
+  \newCJKfontfamily\wryh{Microsoft YaHei}
+}{
+  \let\wryh\sffamily
+}
+\IfFontExistsTF{汉仪大宋简}{
+  \newCJKfontfamily\hyds{汉仪大宋简}
+}{
+  \let\hyds\rmfamily
+}
+
+\defaultfontfeatures{Mapping=tex-text}
+\XeTeXlinebreaklocale ”zh”
+\XeTeXlinebreakskip = 0pt plus 1pt
+
+
+
+\usepackage{tasks}
+\settasks{
+label = (\arabic*),
+item-indent = 1.7em,
+label-width = 0.5em,
+label-offset = 1.2em,
+column-sep=10pt,
+label-align=left,
+after-item-skip=0pt
+}
+\usepackage{multicol}
+
+\everymath{\displaystyle}
+\lineskiplimit=2.5pt
+\lineskip=2.5pt plus .5pt
+
+\renewcommand{\le}{\leqslant}
+\renewcommand{\ge}{\geqslant}
+
+\allowdisplaybreaks[4]
+
+
+\newcommand\OR{\overrightarrow}
+
+
+
+\usepackage{fancyhdr}
+\usepackage{tkz-euclide}
+\usetikzlibrary{shapes.callouts,arrows.meta,calc,shadings,patterns}
+\renewcommand{\Re}{\operatorname{Re}}
+\renewcommand{\Im}{\operatorname{Im}}
+\newcommand{\ii}{\mathrm i}
+\ctexset{punct=kaiming}
+\renewcommand\thempfootnote{\ding{45}}
+\newenvironment{note}{\par\CJKfamily{note}\noindent{\makebox[0pt][r]{\scriptsize\color{red!90}
+\textdbend\quad}\textbf{提示:}}}{\par}
+
+
+
+\usepackage{tocloft}
+\renewcommand\cftchapfont{\hyds}
+\renewcommand{\cftchapleader}{\cftdotfill{\cftdotsep}}
+\ctexset {
+  chapter = {
+  beforeskip = 0pt,
+  fixskip = true,
+  format = \Huge\hyds,
+  nameformat = \rule{\linewidth}{1bp}\par\bigskip\hfill\label{chap\thechapter}\chapternamebox,
+  number = \arabic{chapter},
+  aftername = \par\medskip,
+  aftertitle = \par\bigskip\nointerlineskip\rule{\linewidth}{2bp}\par
+},
+  section = {
+    titleformat+  = \hyds\label{sec\thesection}\raggedright
+  },
+  subsection = {
+    titleformat+  = \hyds
+  },
+  subsubsection = {
+    titleformat+  = \hyds
+  },
+  contentsname = \hyds{目 录}
+}
+\newcommand\chapternamebox[1]{%
+\parbox{\ccwd}{\linespread{1}\selectfont\centering #1}}
+
+
+
+\usepackage{enumitem}
+\newenvironment{enum}{\begin{enumerate}[label=\textbf{\arabic*.},ref=\arabic*,left=0cm]}
+{
+\end{enumerate}}
+\DeclareMathOperator{\ee}{\!\!\;\mathrm e}
+\newcommand{\MR}{\mathbb R}
+\newcommand{\MC}{\mathbb C}
+\newcommand{\MF}{\mathbb F}
+\newcommand{\MZ}{\mathbb Z}
+\newcommand{\MN}{\mathbb N}
+\newcommand{\MCF}{\mathscr F}
+
+\newenvironment{eenum}{\begin{enumerate}[label=(\arabic*),left=0.85cm]}
+{
+\end{enumerate}}
+\newenvironment{enuma}{\begin{enumerate}[label=(\arabic*),leftmargin=0.71cm]}
+{
+\end{enumerate}}
+\newcommand\quan[1]{
+\tikz[baseline=(a.base)]\node(a)[inner sep=0.5pt,draw,circle]{$#1$};
+}
+\newcommand\closure[1]{%
+{}\mkern1mu\overline{\mkern-1mu#1}
+}
+\renewcommand\bar{\closure}
+
+
+
+\newcounter{definition}
+\counterwithin{definition}{section}
+\newcommand{\defname}{定义}
+\newenvironment{definition}{\par%
+  \refstepcounter{definition}%
+  \textbf{\defname\thedefinition}\quad
+}{\par}
+
+\newcommand{\theoremname}{定理}
+\newenvironment{theorem}[1][]{\par%
+  \refstepcounter{definition}%
+  \textbf{\theoremname\thedefinition}#1\quad
+}{\par}
+
+\newcommand{\propname}{命题}
+\newenvironment{prop}{\par%
+  \refstepcounter{definition}%
+  \textbf{\propname\thedefinition}\quad
+}{\par}
+
+%\newcounter{example}
+%\counterwithin{example}{section}
+\newcommand{\examplename}{例}
+\newenvironment{example}{\par%
+  \refstepcounter{definition}%
+  \textbf{\examplename\thedefinition}\quad
+}{\par}
+
+\newcommand{\lemmaname}{引理}
+\newenvironment{lemma}[1][]{\par%
+  \refstepcounter{definition}%
+  \textbf{\lemmaname\thedefinition}#1\quad
+}{\par}
+
+\newcommand{\corname}{推论}
+\newenvironment{corollary}{\par%
+  \refstepcounter{definition}%
+  \textbf{\corname\thedefinition}\quad
+}{\par}
+
+\newenvironment{xiti}{\par%
+\centerline{\textbf{习\quad 题\quad \thesection}}
+\begin{enum}
+}{\end{enum}}
+
+%\usepackage[amsmath,thmmarks]{ntheorem}
+%{
+%\theoremstyle{nonumberplain}
+%\theoremheaderfont{\bfseries}
+%\theorembodyfont{\normalfont}
+%\theoremsymbol{\mbox{$\Box$}}
+%\newtheorem{proof}{\indent 证\,}
+%\newtheorem{solution}{\indent 解\,}
+%}
+\usepackage{amsthm}
+\makeatletter
+\renewenvironment{proof}[1][{\bfseries 证\,}]{\par
+\pushQED{\qed}%
+\normalfont
+\trivlist
+\item\relax
+{\vspace*{-3mm}\hspace*{\parindent}#1}\hspace\labelsep\ignorespaces
+}{%
+\popQED\endtrivlist\@endpefalse
+}
+\newenvironment{solution}[1][{\bfseries 解\,}]{\par
+\pushQED{\qed}%
+\normalfont
+\trivlist
+\item\relax
+{\vspace*{-3mm}\hspace*{\parindent}#1}\hspace\labelsep\ignorespaces
+}{%
+\popQED\endtrivlist\@endpefalse
+}
+\makeatother
+
+
+\setlist{itemsep=0pt}
+
+
+
+\newcommand\pp[2]{\frac{\partial #1}{\partial #2}}
+\newcommand\ppp[2]{\frac{\partial^2 #1}{\partial #2^2}}
+\newcommand\pppp[3]{\frac{\partial^2 #1}{\partial #2\partial #3}}
+\newcommand\dd[2]{\frac{\mathop{}\!\mathrm d#1}{\mathop{}\!\mathrm d#2}}
+\newcommand\ddd[2]{\frac{\mathop{}\!\mathrm d^2#1}{\mathop{}\!\mathrm d#2^2}}
+\newcommand\dx{\mathop{}\!\mathrm dx}
+\newcommand\dy{\mathop{}\!\mathrm dy}
+\newcommand\dz{\mathop{}\!\mathrm dz}
+\newcommand{\dif}{\mathop{}\!\mathrm{d}}
+\newcommand\dzz{\mathop{}\!\mathrm d\bar z}
+\usepackage[subrefformat=parens]{subcaption}
+\DeclareMathOperator{\Arg}{Arg}
+\usepackage{tkz-euclide}
+
+\catcode`\;=\active
+\newcommand{;}{\text{；}}
+\numberwithin{equation}{section}
+\DeclareMathOperator\diam{diam}
+\DeclareMathOperator{\Log}{Log}
+\DeclareMathOperator{\supp}{supp}
+\DeclareMathOperator{\Aut}{Aut}
+\DeclareMathOperator{\SL}{SL}
+\DeclareMathOperator*{\Res}{Res}
+\newcommand\DD{\mathrm D}
+\renewcommand\thefootnote{\ding{\numexpr171+\value{footnote}}}
