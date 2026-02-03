@@ -1,0 +1,47 @@
+\documentclass{scrbook}
+\KOMAoptions{paper=a4, fontsize=12pt, chapterprefix=true, twoside=semi, DIV=classic, parskip=half, captions=besidetop}
+\linespread{1.25}
+
+% Packages and Definitions in mymacros.sty
+\usepackage{mymacros} 
+\KOMAoptions{headsepline=on, DIV=last}
+
+% References
+\usepackage[style=ieee]{biblatex}
+\addbibresource{references.bib}
+\nocite{*}
+
+\usepackage{graphicx}
+\usepackage[svgnames, dvipsnames]{xcolor}
+
+\setfootnoterule{0.8\textwidth}
+\title{How to Reproduce this Book Exactly with \LaTeX}
+\subtitle{A Self-contained Tutorial on Writing Mathematical Notes}
+\author{C.~L.~Loi}
+\lowertitleback{"How to Reproduce this Book Exactly with \LaTeX"\\
+Copyright ©, C.~L.~Loi, 2025. All rights reserved.}
+
+\allowdisplaybreaks
+
+\begin{document}
+
+\frontmatter
+\include{front_matter}
+
+\mainmatter
+\include{ch0_install}
+\include{ch1_basic_structure}
+\include{ch2_text_format}
+\include{ch3_maths_writing}
+\include{ch4_list_figure}
+\include{ch5_commands_envs}
+\include{ch6_design_layout}
+\include{ch7_thm_ex}
+\include{ch8_tikz_plot}
+\include{ch9_more_tikz}
+\include{ch10_misc}
+
+\backmatter
+\include{back_matter}
+
+\end{document}
