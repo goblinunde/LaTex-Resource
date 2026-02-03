@@ -1,0 +1,20 @@
+import matplotlib.pyplot as plt
+
+def compute_error(u_num, u_exact):
+    """计算最大范数误差"""
+    return np.max(np.abs(u_num - u_exact))
+
+# 参数设置
+L, T, alpha = 1.0, 0.1, 0.01
+nx, nt = 101, 1001
+
+# 数值解
+u_num = heat_ftcs(L, T, nx, nt, alpha)
+
+# 精确解
+x = np.linspace(0, L, nx)
+u_exact = np.exp(-alpha * (np.pi/L)**2 * T) * np.sin(np.pi * x / L)
+
+# 误差
+error = compute_error(u_num, u_exact)
+print(f"Max error: {error:.6e}")

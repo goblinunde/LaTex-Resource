@@ -1,0 +1,139 @@
+% report_use.tex — Complete usage template for hustreport.cls
+% Compile with XeLaTeX (or LuaLaTeX)
+
+\documentclass[linux]{hustreport} % options: win | mac | linux | fonts | thesis
+
+% -----------------------------------------------------------------
+% Basic metadata (used by cover and PDF metadata)
+% -----------------------------------------------------------------
+\title{社会调查报告题目}
+\author{张三}
+\date{\today}
+
+\dept{管理学院}
+\major{信息管理与信息系统 2022 级}
+\advisor{李四}
+\team{王五、赵六}
+\studentID{2022000000}
+\reportID{报告编号：HUST-2026-001}
+
+% -----------------------------------------------------------------
+% Task book content (optional)
+% -----------------------------------------------------------------
+\renewcommand{\taskTargetText}{调查目标内容……}
+\renewcommand{\taskContentText}{方案设计内容……（可很长，会自动跨页）}
+\renewcommand{\taskExpectedText}{预期成果内容……}
+\renewcommand{\taskScheduleText}{计划进度内容……}
+
+\begin{document}
+
+% ----------------------------
+% Cover + Task Book
+% ----------------------------
+\makecover
+\maketaskbook
+
+% ----------------------------
+% Abstracts (optional)
+% ----------------------------
+\begin{cnabstract}{关键词1；关键词2；关键词3}
+这里写中文摘要……
+\end{cnabstract}
+
+\begin{enabstract}{keyword1; keyword2; keyword3}
+Write English abstract here…
+\end{enabstract}
+
+% ----------------------------
+% Table of Contents
+% ----------------------------
+\tableofcontents
+\newpage
+
+% ----------------------------
+% Main content
+% ----------------------------
+\section{引言}
+本节介绍研究背景与意义。
+
+\section{方法}
+\subsection{数据采集}
+描述数据来源与采集方法。
+
+\subsection{分析方法}
+说明分析框架与指标体系。
+
+\section{结果}
+\subsection{关键发现}
+呈现主要调查结果。
+
+\section{结论}
+总结与建议。
+
+% ----------------------------
+% Figures and tables examples
+% ----------------------------
+\begin{figurerow}{不同指标对比}[2]
+    \figitem{figure/py2.png}{指标 A}
+    \figitem{figure/py3.png}{指标 B}
+\end{figurerow}
+
+\begin{table}[H]
+    \centering
+    \caption{示例表格}
+    \begin{tabular}{ccc}
+        \toprule
+        项目 & 数值 & 备注 \\
+        \midrule
+        A & 1.23 & 示例 \\
+        B & 4.56 & 示例 \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+% ----------------------------
+% Code block examples
+% ----------------------------
+\begin{codeblock}[python]{示例代码}
+print("hello")
+\end{codeblock}
+
+% \filecode[python]{外部代码示例}{path/to/code.py}
+
+% ----------------------------
+% Notes / review examples (optional)
+% ----------------------------
+\todo{待补充：完善调研样本的描述}
+\fixme{此处数据需核对}
+\note{这是备注}
+
+\review{需要标注的文本}{侧边批注内容}
+\review[style=highlight,color=blue,side=below]{高亮文本}{行间批注}
+
+% ----------------------------
+% Appendix (optional)
+% ----------------------------
+\begin{appendixblock}
+\section{附录标题}
+附录内容……
+\end{appendixblock}
+
+% ----------------------------
+% Bibliography
+% ----------------------------
+% Method A: use .bib file
+% \MyBibliography{refs}
+
+% Method B: manual bibliography
+\begin{thebibliography}{99}
+\bibitem{ref1} 作者. 标题. 期刊, 年份.
+\end{thebibliography}
+
+% ----------------------------
+% Acknowledgement (optional)
+% ----------------------------
+\begin{acknowledgement}
+感谢……
+\end{acknowledgement}
+
+\end{document}

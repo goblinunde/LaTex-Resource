@@ -1,0 +1,7 @@
+\begin{theoremnew}{定理名称}
+    定理内容...
+\end{theoremnew}
+
+\begin{proofnew}
+    证明过程...
+\end{proofnew}

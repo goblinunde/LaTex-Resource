@@ -1,0 +1,293 @@
+% ╔═══════════════════════════════════════════════════════════════════════════╗
+% ║                        MindFlow 功能演示文档                               ║
+% ║                       Report 模式 + 审稿 + 水印                            ║
+% ╠═══════════════════════════════════════════════════════════════════════════╣
+% ║  文件: mathreport.tex                                                      ║
+% ║  说明: 演示 review 审稿模式、水印功能、批注系统                            ║
+% ║  编译: xelatex mathreport.tex                                              ║
+% ╚═══════════════════════════════════════════════════════════════════════════╝
+\documentclass[linux, report,review]{mindflow}
+%
+% ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+% ┃                           📋 类选项完整参考                               ┃
+% ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+%
+% ┌─────────────────────────────────────────────────────────────────────────┐
+% │ 【文档模式】三选一                                                       │
+% ├─────────────────────────────────────────────────────────────────────────┤
+% │  note   │ 基于 ctexart  │ 笔记模式，\section 为顶层                     │
+% │  book   │ 基于 ctexbook │ 书籍模式，支持 \chapter                       │
+% │  report │ 基于 ctexrep  │ 报告模式 ✓，\section 呈现大标题样式           │
+% └─────────────────────────────────────────────────────────────────────────┘
+%
+% ┌─────────────────────────────────────────────────────────────────────────┐
+% │ 【平台适配】linux ✓ / mac / win                                          │
+% │ 【审稿模式】review ✓ → 启用行号显示，方便批注定位                        │
+% └─────────────────────────────────────────────────────────────────────────┘
+%
+% ┌─────────────────────────────────────────────────────────────────────────┐
+% │ 【Section 样式】十选一                                                   │
+% ├───────────────────────┬─────────────────────────────────────────────────┤
+% │  secstyle-classic     │  蓝色编号块 + 浅蓝背景 (默认)                   │
+% │  secstyle-modern      │  大号编号 + 渐变底边线                          │
+% │  secstyle-minimal     │  极简：左侧竖线 + 纯文本                        │
+% │  secstyle-boxed       │  边框卡片 + 阴影                                │
+% │  secstyle-neon        │  🟢 霓虹发光 (赛博朋克)                         │
+% │  secstyle-terminal    │  🖥️ 终端风格 (Hacker)                           │
+% │  secstyle-gradient    │  🌈 渐变背景 (科技感)                           │
+% │  secstyle-elegant     │  ✨ 金色装饰 (学术典雅)                         │
+% │  secstyle-blueprint   │  📐 蓝图网格 (工程师)                           │
+% │  secstyle-ribbon      │  🎗️ 折叠丝带 (精致卡片)                         │
+% └───────────────────────┴─────────────────────────────────────────────────┘
+%
+% ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+% ┃                            💧 水印功能详解                                ┃
+% ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+%
+% 【文本水印】 \mfWatermarkText[颜色][缩放]{文字}
+%   参数: 颜色(可选，默认gray!25) | 缩放(可选，默认4) | 文字(必需)
+%
+%   示例:
+%     \mfWatermarkText{DRAFT}              % 默认灰色草稿
+%     \mfWatermarkText[red!15]{绝密}       % 红色绝密
+%     \mfWatermarkText[blue!10][6]{内部}   % 蓝色大号
+%
+% 【图片水印】 \mfWatermarkImage{图片路径}
+%   示例: \mfWatermarkImage{figure/logo.png}
+%
+% 【默认】水印默认不显示，调用上述命令后才启用
+%
+% ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+% ┃                            📝 批注系统说明                                ┃
+% ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+%
+%   \todo{内容}     → 🟠 待办：橙色边框，标记未完成任务
+%   \fixme{内容}    → 🔴 修正：红色边框，标记错误或问题
+%   \notebox{内容}  → 🔵 备注：蓝色边框，补充说明
+%
+%   💡 配合 review 模式的行号，可精确定位批注位置
+%
+% ═══════════════════════════════════════════════════════════════════════════
+
+\title{实验报告：一维热方程的数值解法}
+\author{MindFlow 实验员}
+\date{\today}
+
+% 启用文本水印演示
+%\mfWatermarkText[gray!15][2.5]{CJX}
+
+\begin{document}
+
+\maketitle
+\mftableofcontents
+
+% =========================================================
+\section{实验目的}
+% =========================================================
+
+\todo{待补充：增加实验的工程意义和应用场景描述}
+
+本实验的目标：
+\begin{enumerate}
+    \item 理解抛物型 PDE 的差分格式原理
+    \item 实现显式欧拉格式 (FTCS) 与隐式格式 (Backward Euler)
+    \item 验证数值解的稳定性条件与收敛阶
+    \item 比较不同格式的计算效率
+\end{enumerate}
+
+% =========================================================
+\section{问题描述}
+% =========================================================
+
+求解如下一维热传导方程初边值问题：
+\begin{align}
+    \pd{u}{t} &= \alpha \pdd{u}{x}, \quad 0 < x < L, \quad t > 0 \\
+    u(x, 0) &= \sin(\pi x / L) \quad \text{(初始条件)} \\
+    u(0, t) &= u(L, t) = 0 \quad \text{(Dirichlet 边界条件)}
+\end{align}
+
+\begin{defnnew}{精确解}
+    利用分离变量法可得精确解：
+    \[
+        u(x, t) = e^{-\alpha (\pi/L)^2 t} \sin(\pi x / L)
+    \]
+    这是一个指数衰减的正弦波，衰减率由热扩散系数 $\alpha$ 决定。
+\end{defnnew}
+
+\fixme{第 2.1 节的推导过程需要补充完整的分离变量法步骤}
+
+\newpage
+% =========================================================
+\section{数值方法}
+% =========================================================
+
+\subsection{显式格式 (FTCS)}
+
+\begin{center}
+	\papyrus{%
+		\begin{minipage}{0.7\textwidth}
+			\textbf{麦克斯韦方程组}\\[0.3em]
+			$\nabla \cdot \vec{E} = \frac{\rho}{\varepsilon_0}$, \quad
+			$\nabla \cdot \vec{B} = 0$\\[0.2em]
+			$\nabla \times \vec{E} = -\frac{\partial \vec{B}}{\partial t}$, \quad
+			$\nabla \times \vec{B} = \mu_0 \vec{J} + \mu_0 \varepsilon_0 \frac{\partial \vec{E}}{\partial t}$
+		\end{minipage}
+	}
+\end{center}
+
+对时间采用向前差分，空间采用中心差分：
+\[
+    \frac{u_i^{n+1} - u_i^n}{\Delta t} = \alpha \frac{u_{i+1}^n - 2u_i^n + u_{i-1}^n}{\Delta x^2}
+\]
+
+令网格比 $r = \frac{\alpha \Delta t}{\Delta x^2}$，迭代公式为：
+\[
+    u_i^{n+1} = r u_{i+1}^n + (1 - 2r) u_i^n + r u_{i-1}^n
+\]
+
+\begin{warning}{稳定性条件}
+    FTCS 格式是条件稳定的，Von Neumann 稳定性分析表明必须满足：
+    \[
+        r = \frac{\alpha \Delta t}{\Delta x^2} \le \frac{1}{2}
+    \]
+    否则数值解将产生震荡并发散。这严格限制了时间步长的选取。
+\end{warning}
+
+\subsection{隐式格式 (Backward Euler)}
+
+\notebox{隐式格式无条件稳定，但需要求解线性方程组，计算量更大}
+
+对时间采用向后差分：
+\[
+    \frac{u_i^{n+1} - u_i^n}{\Delta t} = \alpha \frac{u_{i+1}^{n+1} - 2u_i^{n+1} + u_{i-1}^{n+1}}{\Delta x^2}
+\]
+
+整理得三对角方程组 $A \vect{u}^{n+1} = \vect{u}^n$，可用 Thomas 算法高效求解。
+
+% =========================================================
+\section{实验结果}
+% =========================================================
+
+\subsection{稳定性验证}
+
+选取参数 $L=1$, $\alpha=0.01$, $\Delta x = 0.1$，测试不同网格比的效果。
+
+\begin{figurerow}{不同网格比下的数值解}[2]
+    \figitem{figure/py2.png}{$r=0.4$ (稳定)}
+    \figitem{figure/py3.png}{$r=0.6$ (发散)}
+\end{figurerow}
+
+\subsection{误差分析}
+
+\begin{theoremnew}{截断误差}
+    FTCS 格式的局部截断误差为 $O(\Delta t) + O(\Delta x^2)$，即时间一阶、空间二阶精度。
+\end{theoremnew}
+
+下表记录了不同时空步长下的最大误差 $E_\infty = \max_{i} |u_i^N - u_{exact}(x_i)|$：
+
+\begin{table}[H]
+    \centering
+    \caption{误差收敛表}
+    \begin{tabular}{cccc}
+        \toprule
+        $\Delta x$ & $\Delta t$ & $E_\infty$ & 收敛阶 \\
+        \midrule
+        0.100 & 0.0010 & 1.23e-3 & - \\
+        0.050 & 0.00025 & 3.05e-4 & 2.01 \\
+        0.025 & 0.00006 & 7.61e-5 & 2.00 \\
+        0.0125 & 0.000015 & 1.90e-5 & 2.00 \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\begin{tip}{误差分析技巧}
+    收敛阶可用公式 $p = \log_2(E_h / E_{h/2})$ 计算。若结果接近 2，说明空间二阶精度得到验证。
+\end{tip}
+
+% =========================================================
+\section{结论与讨论}
+% =========================================================
+
+\begin{conclusion}{实验结论}
+    \begin{enumerate}
+        \item \textbf{FTCS 格式}：实现简单、计算高效，但受 $r \le 0.5$ 稳定性条件限制
+        \item \textbf{误差验证}：实验结果验证了 $O(\Delta x^2 + \Delta t)$ 的理论截断误差阶
+        \item \textbf{发散现象}：在网格比 $r > 0.5$ 时确实观察到数值发散，与理论分析一致
+        \item \textbf{隐式格式}：无条件稳定，适用于刚性问题，但计算成本更高
+    \end{enumerate}
+\end{conclusion}
+
+\todo{后续工作：实现 Crank-Nicolson 格式 (时间二阶精度) 并进行对比实验}
+
+% =========================================================
+\section{附录：核心代码}
+% =========================================================
+
+\begin{codeblock}[python]{FTCS 格式实现}
+import numpy as np
+
+def heat_ftcs(L, T, nx, nt, alpha):
+    """
+    使用 FTCS 格式求解一维热方程
+    
+    Parameters:
+        L: 空间域长度
+        T: 时间域长度  
+        nx: 空间网格点数
+        nt: 时间步数
+        alpha: 热扩散系数
+    
+    Returns:
+        u: 最终时刻的数值解
+    """
+    dx = L / (nx - 1)
+    dt = T / (nt - 1)
+    r = alpha * dt / dx**2
+    
+    # 稳定性检查
+    if r > 0.5:
+        print(f"Warning: r={r:.3f} > 0.5, 格式不稳定!")
+    
+    # 初始条件
+    x = np.linspace(0, L, nx)
+    u = np.sin(np.pi * x / L)
+    
+    # 时间推进
+    for n in range(1, nt):
+        u_new = u.copy()
+        u_new[1:-1] = r*u[2:] + (1-2*r)*u[1:-1] + r*u[:-2]
+        u = u_new
+    
+    return u
+\end{codeblock}
+
+\begin{codeblock}[python]{误差计算与可视化}
+import matplotlib.pyplot as plt
+
+def compute_error(u_num, u_exact):
+    """计算最大范数误差"""
+    return np.max(np.abs(u_num - u_exact))
+
+# 参数设置
+L, T, alpha = 1.0, 0.1, 0.01
+nx, nt = 101, 1001
+
+# 数值解
+u_num = heat_ftcs(L, T, nx, nt, alpha)
+
+# 精确解
+x = np.linspace(0, L, nx)
+u_exact = np.exp(-alpha * (np.pi/L)**2 * T) * np.sin(np.pi * x / L)
+
+# 误差
+error = compute_error(u_num, u_exact)
+print(f"Max error: {error:.6e}")
+\end{codeblock}
+
+% =========================================================
+% 演示：取消水印
+% =========================================================
+% 如果要取消水印，可在文档末尾添加以下命令：
+% \DraftwatermarkOptions{stamp=false}
+
+\end{document}
