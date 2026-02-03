@@ -1,0 +1,1598 @@
+\chapter{数项级数}
+
+\section{级数的敛散性}
+
+初等数学知识告诉我们,有限个实数 \({u}_{1},{u}_{2},\cdots ,{u}_{n}\) 相加,其和一定存在并且是一个实数,而无限个实数相加会出现什么结果呢? 例如,在第二章提到《庄子·天下篇》“一尺之棰,日取其半,万世不竭”的例中,把每天截下那一部分的长度“加”起来:
+\[
+\frac{1}{2} + \frac{1}{{2}^{2}} + \frac{1}{{2}^{3}} + \cdots  + \frac{1}{{2}^{n}} + \cdots ,
+\]
+这就是 “无限个数相加” 的一个例子. 从直观上可以看到, 它的和是 1 . 再如下面由 “无限个数相加”的表达式
+\[
+1 + \left( {-1}\right)  + 1 + \left( {-1}\right)  + \cdots
+\]
+中, 如果将它写作
+\[
+\left( {1 - 1}\right)  + \left( {1 - 1}\right)  + \left( {1 - 1}\right)  + \cdots  = 0 + 0 + 0 + \cdots ,
+\]
+其结果无疑是 0 , 如写作
+\[
+1 + \left\lbrack  {\cdot \left( {-1}\right)  + 1}\right\rbrack   + \left\lbrack  {\left( {-1}\right)  + 1}\right\rbrack   + \cdots  = 1 + 0 + 0 + 0 + \cdots ,
+\]
+其结果则是 1 , 因此两个结果完全不同. 由此提出这样的问题: “无限个数相加”是否存在“和”；如果存在,“和”等于什么？可见,我们对有限和的认识是无法完全移植到“无限和”的, 需要建立 “无限和” 自身的理论.
+
+%定义  1
+\begin{definition}{}{def:}
+
+\end{definition}
+给定一个数列 \(\left\{  {u}_{n}\right\}\) ,对它的各项依次用 “+” 号连接起来的表达式
+\[
+{u}_{1} + {u}_{2} + \cdots  + {u}_{n} + \cdots  \tag{1}
+\]
+称为常数项无穷级数或数项级数 (也常简称级数),其中 \({u}_{n}\) 称为数项级数 (1) 的通项或一般项.
+
+数项级数 (1) 也常写作 \(\mathop{\sum }\limits_{{n = 1}}^{\infty }{u}_{n}\) 或简单写作 \(\sum {u}_{n}\) .
+
+数项级数 (1) 的前 \(n\) 项之和,记为
+\[
+{S}_{n} = \mathop{\sum }\limits_{{k = 1}}^{n}{u}_{k} = {u}_{1} + {u}_{2} + \cdots  + {u}_{n}, \tag{2}
+\]
+称它为数项级数 (1) 的第 \(n\) 个部分和,也简称部分和.
+
+%定义  2
+\begin{definition}{}{def:}
+
+\end{definition}
+若数项级数 (1) 的部分和数列 \(\left\{  {S}_{n}\right\}\) 收敛于 \(S\) (即 \(\mathop{\lim }\limits_{{n \rightarrow  \infty }}{S}_{n} = S\) ),则称数项级
+
+数 (1) 收敛,称 \(S\) 为数项级数 (1) 的和,记作
+\[
+S = {u}_{1} + {u}_{2} + \cdots  + {u}_{n} + \cdots \text{ 或 }S = \sum {u}_{n}.
+\]
+若 \(\left\{  {S}_{n}\right\}\) 是发散数列,则称数项级数 (1) 发散.
+
+%例 1
+\begin{example}
+
+\end{example}
+讨论等比级数 (也称为几何级数)
+\[
+a + {aq} + a{q}^{2} + \cdots  + a{q}^{n} + \cdots  \tag{3}
+\]
+的敛散性 \(\left( {a \neq  0}\right)\) .
+
+%解
+\begin{solution}
+
+\end{solution}
+\(q \neq  1\) 时,级数 (3) 的第 \(n\) 个部分和
+\[
+{S}_{n} = a + {aq} + \cdots  + a{q}^{n - 1} = a \cdot  \frac{1 - {q}^{n}}{1 - q}.
+\]
+因此,
+
+(i) 当 \(\left| q\right|  < 1\) 时, \(\mathop{\lim }\limits_{{n \rightarrow  \infty }}{S}_{n} = \mathop{\lim }\limits_{{n \rightarrow  \infty }}a \cdot  \frac{1 - {q}^{n}}{1 - q} = \frac{a}{1 - q}\) . 此时级数 (3) 收敛,其和为 \(\frac{a}{1 - q}\) .
+
+(ii) 当 \(\left| q\right|  > 1\) 时, \(\mathop{\lim }\limits_{{n \rightarrow  \infty }}{S}_{n} = \infty\) ,级数 (3) 发散.
+
+(iii) 当 \(q = 1\) 时, \({S}_{n} = {na}\) ,级数发散.
+
+当 \(q =  - 1\) 时, \({S}_{2k} = 0,{S}_{{2k} + 1} = a,k = 0,1,2,\cdots\) ,级数发散.
+
+总之, \(\left| q\right|  < 1\) 时,级数 (3) 收敛； \(\left| q\right|  \geq  1\) 时,级数 (3) 发散.
+
+%例 2
+\begin{example}
+
+\end{example}
+讨论数项级数
+\[
+\frac{1}{1 \cdot  2} + \frac{1}{2 \cdot  3} + \cdots  + \frac{1}{n\left( {n + 1}\right) } + \cdots  \tag{4}
+\]
+的敛散性.
+
+%解
+\begin{solution}
+
+\end{solution}
+级数 (4) 的第 \(n\) 个部分和
+\[
+{S}_{n} = \frac{1}{1 \cdot  2} + \frac{1}{2 \cdot  3} + \cdots  + \frac{1}{n\left( {n + 1}\right) }
+\]
+\[
+= \left( {1 - \frac{1}{2}}\right)  + \left( {\frac{1}{2} - \frac{1}{3}}\right)  + \cdots  + \left( {\frac{1}{n} - \frac{1}{n + 1}}\right)
+\]
+\[
+= 1 - \frac{1}{n + 1}\text{ . }
+\]
+由于
+\[
+\mathop{\lim }\limits_{{n \rightarrow  \infty }}{S}_{n} = \mathop{\lim }\limits_{{n \rightarrow  \infty }}\left( {1 - \frac{1}{n + 1}}\right)  = 1,
+\]
+因此级数 (4) 收敛, 且
+\[
+\frac{1}{1 \cdot  2} + \frac{1}{2 \cdot  3} + \cdots  + \frac{1}{n\left( {n + 1}\right) } + \cdots  = 1.
+\]
+由于级数 (1) 的收敛或发散 (简称敛散性) 是由它的部分和数列 \(\left\{  {S}_{n}\right\}\) 来确定,因而也可把级数 (1) 作为数列 \(\left\{  {S}_{n}\right\}\) 的另一种表现形式. 反之,任给一个数列 \(\left\{  {a}_{n}\right\}\) ,如果把它看作某一数项级数的部分和数列, 则这个数项级数就是
+\[
+\mathop{\sum }\limits_{{n = 1}}^{\infty }{u}_{n} = {a}_{1} + \left( {{a}_{2} - {a}_{1}}\right)  + \left( {{a}_{3} - {a}_{2}}\right)  + \cdots  + \left( {{a}_{n} - {a}_{n - 1}}\right)  + \cdots . \tag{5}
+\]
+这时数列 \(\left\{  {a}_{n}\right\}\) 与级数 (5) 具有相同的敛散性,且当 \(\left\{  {a}_{n}\right\}\) 收敛时,其极限值就是级数 (5) 的和.
+
+基于级数与数列的这种关系, 读者不难根据数列极限的性质推出下面有关级数的一些定理.
+
+%定理 12.1
+\begin{theorem}{}{the:}
+
+\end{theorem}
+ (级数收敛的柯西准则) 级数 (1) 收敛的充要条件是: 任给正数 \(\varepsilon\) ,总存在正整数 \(N\) ,使得当 \(m > N\) 以及对任意的正整数 \(p\) ,都有
+\[
+\left| {{u}_{m + 1} + {u}_{m + 2} + \cdots  + {u}_{m + p}}\right|  < \varepsilon . \tag{6}
+\]
+根据定理 12.1,我们立刻可写出级数 (1) 发散的充要条件: 存在某正数 \({\varepsilon }_{0}\) ,对任何正整数 \(N\) ,总存在正整数 \({m}_{0}\left( { > N}\right)\) 和 \({p}_{0}\) ,有
+\[
+\left| {{u}_{{m}_{0} + 1} + {u}_{{m}_{0} + 2} + \cdots  + {u}_{{m}_{0} + {p}_{0}}}\right|  \geq  {\varepsilon }_{0}. \tag{7}
+\]
+由定理 12.1 立即可得如下推论, 它是级数收敛的一个必要条件.
+
+推论 若级数 (1) 收敛, 则
+\[
+\mathop{\lim }\limits_{{n \rightarrow  \infty }}{u}_{n} = 0.
+\]
+当一个级数 \(\mathop{\sum }\limits_{{n = 1}}^{\infty }{u}_{n}\) 的一般项 \({u}_{n}\) 不收敛于零时,由推论可知该级数发散. 因此,上述推论常用来判断级数的发散. 但推论只是级数收敛的必要条件, 不是充分条件, 即当一般项 \({u}_{n} \rightarrow  0\) 时,不能得出该级数收敛的结论. 请看下例.
+
+%例 3
+\begin{example}
+
+\end{example}
+证明调和级数
+\[
+1 + \frac{1}{2} + \frac{1}{3} + \cdots  + \frac{1}{n} + \cdots
+\]
+是发散的.
+
+%证
+\begin{proof}
+
+\end{proof}
+由
+\[
+\mathop{\lim }\limits_{{n \rightarrow  \infty }}{u}_{n} = \mathop{\lim }\limits_{{n \rightarrow  \infty }}\frac{1}{n} = 0,
+\]
+无法用推论推出调和级数发散. 但令 \(p = m\) 时,有
+\[
+\left| {{u}_{m + 1} + {u}_{m + 2} + \cdots  + {u}_{2m}}\right|  = \left| {\frac{1}{m + 1} + \frac{1}{m + 2} + \cdots  + \frac{1}{2m}}\right|
+\]
+\[
+\geq  \left| {\frac{1}{2m} + \frac{1}{2m} + \cdots  + \frac{1}{2m}}\right|
+\]
+\[
+= \frac{1}{2}\text{ , }
+\]
+因此由定理 12.1,取 \({\varepsilon }_{0} = \frac{1}{2}\) ,对任何正整数 \(N\) ,只要 \(m > N\) 和 \(p = m\) 就有 (7) 式成立,所以调和级数是发散的.
+
+%例 4
+\begin{example}
+
+\end{example}
+判别级数 \(\mathop{\sum }\limits_{{n = 1}}^{\infty }\frac{{\left( n + \frac{1}{n}\right) }^{n}}{{n}^{n + \frac{1}{n}}}\) 的敛散性.
+
+%解
+\begin{solution}
+
+\end{solution}
+因为 \(\mathop{\lim }\limits_{{n \rightarrow  \infty }}\frac{{\left( n + \frac{1}{n}\right) }^{n}}{{n}^{n + \frac{1}{n}}} = \mathop{\lim }\limits_{{n \rightarrow  \infty }}\frac{{\left( n + \frac{1}{n}\right) }^{n}}{{n}^{n}{n}^{\frac{1}{n}}} = \mathop{\lim }\limits_{{n \rightarrow  \infty }}\frac{{\left\lbrack  {\left( 1 + \frac{1}{{n}^{2}}\right) }^{{n}^{2}}\right\rbrack  }^{\frac{1}{n}}}{{n}^{\frac{1}{n}}} = 1 \neq  0\) ,
+
+所以由推论得知该级数发散.
+
+%例 5
+\begin{example}
+
+\end{example}
+应用级数收敛的柯西准则证明级数 \(\sum \frac{1}{{n}^{2}}\) 收敛.
+
+%证
+\begin{proof}
+
+\end{proof}
+由于
+\[
+{u}_{m + 1} + {u}_{m + 2} + \cdots  + {u}_{m + p}
+\]
+\[
+= \frac{1}{{\left( m + 1\right) }^{2}} + \frac{1}{{\left( m + 2\right) }^{2}} + \cdots  + \frac{1}{{\left( m + p\right) }^{2}}
+\]
+\[
+< \frac{1}{m\left( {m + 1}\right) } + \frac{1}{\left( {m + 1}\right) \left( {m + 2}\right) } + \cdots  + \frac{1}{\left( {m + p - 1}\right) \left( {m + p}\right) }
+\]
+\[
+= \frac{1}{m} - \frac{1}{m + p}
+\]
+\[
+< \frac{1}{m}\text{ , }
+\]
+因此,对任给正数 \(\varepsilon\) ,取 \(N = \left\lbrack  \frac{1}{\varepsilon }\right\rbrack\) ,使当 \(m > N\) 及对任意正整数 \(p\) ,由上式就有
+\[
+\left| {{u}_{m + 1} + {u}_{m + 2} + \cdots  + {u}_{m + p}}\right|  < \frac{1}{m} < \varepsilon .
+\]
+依定理 12.1 推得级数 \(\sum \frac{1}{{n}^{2}}\) 是收敛的.
+
+%定理 12.2
+\begin{theorem}{}{the:}
+
+\end{theorem}
+ 若级数 \(\sum {u}_{n}\) 与 \(\sum {v}_{n}\) 都收敛,则对任意常数 \(c,d\) ,级数 \(\sum \left( {c{u}_{n} + d{v}_{n}}\right)\) 亦收敛, 且
+\[
+\sum \left( {c{u}_{n} + d{v}_{n}}\right)  = c\sum {u}_{n} + d\sum {v}_{n}.
+\]
+由定理 12.1,级数 \(\sum {u}_{n}\) 的敛散性取决于: 对任给正数 \(\varepsilon\) ,是否存在充分大的正数 \(N\) ,使得当 \(n > N\) 及对任意正整数 \(p\) 恒有 (6) 式成立. 由此可见,一个级数是否收敛与级数前面有限项的取值无关. 从而我们可得到以下定理.
+
+%定理 12.3
+\begin{theorem}{}{the:}
+
+\end{theorem}
+ 去掉、增加或改变级数的有限个项并不改变级数的敛散性.
+
+由此定理知道,若级数 \(\mathop{\sum }\limits_{{n = 1}}^{\infty }{u}_{n}\) 收敛,其和为 \(S\) ,则级数
+\[
+{u}_{n + 1} + {u}_{n + 2} + \cdots  \tag{8}
+\]
+也收敛,且其和 \({R}_{n} = S - {S}_{n}\) . (8) 式称为级数 \(\sum {u}_{n}\) 的第 \(n\) 个余项 (或简称余项),它表示以部分和 \({S}_{n}\) 代替 \(S\) 时所产生的误差.
+
+%定理 12.4
+\begin{theorem}{}{the:}
+
+\end{theorem}
+ 在收敛级数的项中任意加括号, 既不改变级数的收敛性, 也不改变它的和.
+
+%证
+\begin{proof}
+
+\end{proof}
+设 \(\sum {u}_{n}\) 为收敛级数,其和为 \(S\) . 记
+\[
+{v}_{1} = {u}_{1} + \cdots  + {u}_{{n}_{1}},\;{v}_{2} = {u}_{{n}_{1} + 1} + \cdots  + {u}_{{n}_{2}},\cdots ,
+\]
+\[
+{v}_{k} = {u}_{{n}_{k - 1} + 1} + \cdots  + {u}_{{n}_{k}},\cdots .
+\]
+现在证明 \(\sum {u}_{n}\) 加括号后的级数 \(\mathop{\sum }\limits_{{k = 1}}^{\infty }\left( {{u}_{{n}_{k - 1} + 1} + \cdots  + {u}_{{n}_{k}}}\right)  = \mathop{\sum }\limits_{{k = 1}}^{\infty }{v}_{k}\) 也收敛,且其和也是 \(S\) . 事实上,设 \(\left\{  {S}_{n}\right\}\) 为收敛级数 \(\sum {u}_{n}\) 的部分和数列,则级数 \(\sum {v}_{k}\) 的部分和数列 \(\left\{  {S}_{{n}_{k}}\right\}\) 是 \(\left\{  {S}_{n}\right\}\) 的一个子列. 由于 \(\left\{  {S}_{n}\right\}\) 收敛,且 \(\mathop{\lim }\limits_{{n \rightarrow  \infty }}{S}_{n} = S\) . 故由子列性质, \(\left\{  {S}_{{n}_{k}}\right\}\) 也收敛,且 \(\mathop{\lim }\limits_{{k \rightarrow  \infty }}{S}_{{n}_{k}} = S\) ,即级数 \(\sum {v}_{k}\) 收敛,且它的和也等于 \(S\) .
+
+注意: 从级数加括号后的收敛, 不能推断它在加括号前也收敛. 例如
+\[
+\left( {1 - 1}\right)  + \left( {1 - 1}\right)  + \cdots  + \left( {1 - 1}\right)  + \cdots  = 0 + 0 + 0 + \cdots  = 0
+\]
+收敛, 但级数
+\[
+1 - 1 + 1 - 1 + \cdots
+\]
+却是发散的.
+
+%例 6
+\begin{example}
+
+\end{example}
+判别级数 \(\frac{1}{\sqrt{2} - 1} - \frac{1}{\sqrt{2} + 1} + \frac{1}{\sqrt{3} - 1} - \frac{1}{\sqrt{3} + 1} + \frac{1}{\sqrt{4} - 1} - \frac{1}{\sqrt{4} + 1} + \cdots\) 的敛散性.
+
+%解
+\begin{solution}
+
+\end{solution}
+考虑加了括号后的级数
+\[
+\left( {\frac{1}{\sqrt{2} - 1} - \frac{1}{\sqrt{2} + 1}}\right)  + \left( {\frac{1}{\sqrt{3} - 1} - \frac{1}{\sqrt{3} + 1}}\right)  + \left( {\frac{1}{\sqrt{4} - 1} - \frac{1}{\sqrt{4} + 1}}\right)  + \cdots ,
+\]
+其一般项 \({u}_{n} = \frac{1}{\sqrt{n} - 1} - \frac{1}{\sqrt{n} + 1} = \frac{2}{n - 1}\) . 由例 3 及定理 12.2 知道,级数 \(\mathop{\sum }\limits_{{n = 2}}^{\infty }{u}_{n} = 2\mathop{\sum }\limits_{{n = 2}}^{\infty }\frac{1}{n - 1} =\)  \(2\mathop{\sum }\limits_{{n = 1}}^{\infty }\frac{1}{n}\) 发散,从而根据定理 12.4,原级数发散.
+
+\subsection{习题 12.1}
+
+1. 证明下列级数收敛, 并求其和:
+
+( 1 ) \(\frac{1}{1 \cdot  6} + \frac{1}{6 \cdot  {11}} + \frac{1}{{11} \cdot  {16}} + \cdots  + \frac{1}{\left( {{5n} - 4}\right) \left( {{5n} + 1}\right) } + \cdots\) ;
+
+(2) \(\left( {\frac{1}{2} + \frac{1}{3}}\right)  + \left( {\frac{1}{{2}^{2}} + \frac{1}{{3}^{2}}}\right)  + \cdots  + \left( {\frac{1}{{2}^{n}} + \frac{1}{{3}^{n}}}\right)  + \cdots\) ;
+
+(3) \(\mathop{\sum }\limits_{{n = 1}}^{\infty }\frac{1}{n\left( {n + 1}\right) \left( {n + 2}\right) }\) ;
+
+(4) \(\mathop{\sum }\limits_{{n = 1}}^{\infty }\left( {\sqrt{n + 2} - 2\sqrt{n + 1} + \sqrt{n}}\right)\) ;
+
+(5) \(\mathop{\sum }\limits_{{n = 1}}^{\infty }\frac{{2n} - 1}{{2}^{n}}\) .
+
+2. 证明: 若级数 \(\sum {u}_{n}\) 发散, \(c \neq  0\) ,则 \(\sum c{u}_{n}\) 也发散.
+
+3. 设级数 \(\sum {u}_{n}\) 与 \(\sum {v}_{n}\) 都发散,试问 \(\sum \left( {{u}_{n} + {v}_{n}}\right)\) 一定发散吗? 又若 \({u}_{n}\) 与 \({v}_{n}\left( {n = 1,2,\cdots }\right)\) 都是非负数, 则能得出什么结论?
+
+4. 证明: 若数列 \(\left\{  {a}_{n}\right\}\) 收敛于 \(a\) ,则级数 \(\mathop{\sum }\limits_{{n = 1}}^{\infty }\left( {{a}_{n} - {a}_{n + 1}}\right)  = {a}_{1} - a\) .
+
+5. 证明: 若数列 \(\left\{  {b}_{n}\right\}\) 有 \(\mathop{\lim }\limits_{{n \rightarrow  \infty }}{b}_{n} = \infty\) ,则
+
+(1) 级数 \(\sum \left( {{b}_{n + 1} - {b}_{n}}\right)\) 发散；
+
+(2)当 \({b}_{n} \neq  0\) 时,级数 \(\sum \left( {\frac{1}{{b}_{n}} - \frac{1}{{b}_{n + 1}}}\right)  = \frac{1}{{b}_{1}}\) .
+
+6. 应用第 4,5 题的结果求下列级数的和:
+
+(1) \(\mathop{\sum }\limits_{{n = 1}}^{\infty }\frac{1}{\left( {a + n - 1}\right) \left( {a + n}\right) }\) ;
+
+(2) \(\mathop{\sum }\limits_{{n = 1}}^{\infty }{\left( -1\right) }^{n + 1}\frac{{2n} + 1}{n\left( {n + 1}\right) }\) ;
+
+(3) \(\mathop{\sum }\limits_{{n = 1}}^{\infty }\frac{{2n} + 1}{\left( {{n}^{2} + 1}\right) \left\lbrack  {{\left( n + 1\right) }^{2} + 1}\right\rbrack  }\) .
+
+7. 应用柯西准则判别下列级数的敛散性:
+
+(1) \(\sum \frac{\sin {2}^{n}}{{2}^{n}}\) ;
+
+(2) \(\sum \frac{{\left( -1\right) }^{n - 1}{n}^{2}}{2{n}^{2} + 1}\) ;
+
+(3) \(\sum \frac{{\left( -1\right) }^{n}}{n}\) ;
+
+(4) \(\sum \frac{1}{\sqrt{n + {n}^{2}}}\) .
+
+8. 证明级数 \(\sum {u}_{n}\) 收敛的充要条件是: 任给正数 \(\varepsilon\) ,存在某正整数 \(N\) ,对一切 \(n > N\) 总有
+\[
+\left| {{u}_{N} + {u}_{N + 1} + \cdots  + {u}_{n}}\right|  < \varepsilon .
+\]
+9. 举例说明: 若级数 \(\sum {u}_{n}\) 对每个固定的 \(p\) 满足条件
+\[
+\mathop{\lim }\limits_{{n \rightarrow  \infty }}\left( {{u}_{n + 1} + \cdots  + {u}_{n + p}}\right)  = 0,
+\]
+此级数仍可能不收敛.
+
+10. 设级数 \(\sum {u}_{n}\) 满足: 加括号后级数 \(\mathop{\sum }\limits_{{k = 1}}^{\infty }\left( {{u}_{{n}_{k} + 1} + {u}_{{n}_{k} + 2} + \cdots  + {u}_{{n}_{k + 1}}}\right)\) 收敛 \(\left( {{n}_{1} = 0}\right)\) ,且在同一括号中的 \({u}_{{n}_{k}} + 1,{u}_{{n}_{k}} + 2,\cdots ,{u}_{{n}_{k + 1}}\) 符号相同,证明 \(\sum {u}_{n}\) 亦收敛.
+
+\section{正 项 级 数}
+
+\subsection{正项级数敛散性的一般判别原则}
+
+若数项级数各项的符号都相同, 则称它为同号级数. 对于同号级数, 只需研究各项都是由非负数组成的级数——称为正项级数. 如果级数的各项都是非正数, 则它乘以 -1 后就得到一个正项级数, 它们具有相同的敛散性.
+
+%注
+\begin{remark}
+
+\end{remark}
+这样定义正项级数更一般,更便于讨论. 实际上 \({u}_{n} = 0\) 的项不影响级数的敛散性, 在判别正项级数敛散性时可自然排除.
+
+由于级数与其部分和数列具有相同的敛散性, 所以首先得到如下定理.
+
+%定理 12.5
+\begin{theorem}{}{the:}
+
+\end{theorem}
+ 正项级数 \(\sum {u}_{n}\) 收敛的充要条件是: 部分和数列 \(\left\{  {S}_{n}\right\}\) 有界,即存在某正数 \(M\) ,对一切正整数 \(n\) 有 \({S}_{n} < M\) .
+
+%证
+\begin{proof}
+
+\end{proof}
+由于 \({u}_{i} \geq  0\left( {i = 1,2,\cdots }\right)\) ,所以 \(\left\{  {S}_{n}\right\}\) 是递增数列. 而单调数列收敛的充要条件是该数列有界 (单调有界定理 (定理 2.9)). 这就证明了本定理的结论.
+
+%定理 12.6
+\begin{theorem}{}{the:}
+
+\end{theorem}
+ (比较原则) 设 \(\sum {u}_{n}\) 和 \(\sum {v}_{n}\) 是两个正项级数,如果存在某正数 \(N\) ,对一切 \(n > N\) 都有
+\[
+{u}_{n} \leq  {v}_{n}, \tag{1}
+\]
+则
+
+(i) 若级数 \(\sum {v}_{n}\) 收敛,则级数 \(\sum {u}_{n}\) 也收敛;
+
+(ii) 若级数 \(\sum {u}_{n}\) 发散,则级数 \(\sum {v}_{n}\) 也发散.
+
+%证
+\begin{proof}
+
+\end{proof}
+因为改变级数的有限项并不影响原有级数的敛散性, 因此不妨设不等式 (1) 对一切正整数都成立.
+
+现分别以 \({S}_{n}^{\prime }\) 和 \({S}_{n}^{\prime \prime }\) 记级数 \(\sum {u}_{n}\) 与 \(\sum {v}_{n}\) 的部分和. 由 (1) 式推得,对一切正整数 \(n\) , 都有
+\[
+{S}_{n}^{\prime } \leq  {S}_{n}^{\prime \prime }. \tag{2}
+\]
+若 \(\sum {v}_{n}\) 收敛,即 \(\mathop{\lim }\limits_{{n \rightarrow  \infty }}{S}_{n}^{\prime \prime }\) 存在,则由 (2) 式,对一切 \(n\) 有 \({S}_{n}^{\prime } \leq  \mathop{\lim }\limits_{{n \rightarrow  \infty }}{S}_{n}^{\prime \prime }\) ,即正项级数 \(\sum {u}_{n}\) 的部分和数列 \(\left\{  {S}_{n}^{\prime }\right\}\) 有界,由定理 12.5 知级数 \(\sum {u}_{n}\) 收敛. 这就证明了 (i); (ii) 为 (i) 的逆否命题, 自然成立. 例 1 考察 \(\sum \frac{1}{{n}^{2} - n + 1}\) 的敛散性.
+
+%解
+\begin{solution}
+
+\end{solution}
+由于当 \(n \geq  2\) 时,有
+\[
+\frac{1}{{n}^{2} - n + 1} \leq  \frac{1}{{n}^{2} - n} = \frac{1}{n\left( {n - 1}\right) } \leq  \frac{1}{{\left( n - 1\right) }^{2}}.
+\]
+因为正项级数 \(\mathop{\sum }\limits_{{n = 2}}^{\infty }\frac{1}{{\left( n - 1\right) }^{2}}\) 收敛 ( §1 例 5),故由定理 12.6,级数 \(\sum \frac{1}{{n}^{2} - n + 1}\) 也收敛.
+
+在实际使用上, 比较原则的下述极限形式有时更为方便.
+
+推论 设
+\[
+{u}_{1} + {u}_{2} + \cdots  + {u}_{n} + \cdots , \tag{3}
+\]
+\[
+{v}_{1} + {v}_{2} + \cdots  + {v}_{n} + \cdots  \tag{4}
+\]
+是两个正项级数, 若
+\[
+\mathop{\lim }\limits_{{n \rightarrow  \infty }}\frac{{u}_{n}}{{v}_{n}} = l \tag{5}
+\]
+则
+
+(i) 当 \(0 < l <  + \infty\) 时,级数 (3)、(4) 同时收敛或同时发散；
+
+(ii) 当 \(l = 0\) 且级数 (4) 收敛时,级数 (3) 也收敛;
+
+(iii) 当 \(l =  + \infty\) 且级数 (4) 发散时,级数 (3) 也发散.
+
+%证
+\begin{proof}
+
+\end{proof}
+对于 (i),当 \(0 < l <  + \infty\) 时,对任意正数 \(\varepsilon \left( {\varepsilon  < l}\right)\) ,存在某正数 \(N\) ,当 \(n > N\) 时, 恒有
+\[
+\left| {\frac{{u}_{n}}{{v}_{n}} - l}\right|  < \varepsilon
+\]
+或
+\[
+\left( {l - \varepsilon }\right) {v}_{n} < {u}_{n} < \left( {l + \varepsilon }\right) {v}_{n}. \tag{6}
+\]
+由定理 12.6 及 (6) 式可得级数 (3) 和 (4) 具有相同的敛散性.
+
+对于 (ii),当 \(l = 0\) 时,由 (6) 式右半部分及比较原则可得: 若级数 (4) 收敛,则级数 (3)也收敛.
+
+对于 (iii),若 \(l =  + \infty\) ,即对任给的正数 \(M\) ,存在相应的正数 \(N\) ,当 \(n > N\) 时,都有
+\[
+\frac{{u}_{n}}{{v}_{n}} > M
+\]
+或
+\[
+{u}_{n} > M{v}_{n}.
+\]
+于是由比较原则知道, 若级数 (4) 发散, 则级数 (3) 也发散.
+
+%例 2
+\begin{example}
+
+\end{example}
+级数
+\[
+\sum \frac{1}{{2}^{n} - n}
+\]
+是收敛的.
+
+因为
+\[
+\mathop{\lim }\limits_{{n \rightarrow  \infty }}\frac{\frac{1}{{2}^{n} - n}}{\frac{1}{{2}^{n}}} = \mathop{\lim }\limits_{{n \rightarrow  \infty }}\frac{{2}^{n}}{{2}^{n} - n} = \mathop{\lim }\limits_{{n \rightarrow  \infty }}\frac{1}{1 - \frac{n}{{2}^{n}}} = 1,
+\]
+以及等比级数 \(\sum \frac{1}{{2}^{n}}\) 收敛,所以根据推论,级数 \(\sum \frac{1}{{2}^{n} - n}\) 也收敛.
+
+%例 3
+\begin{example}
+
+\end{example}
+级数
+\[
+\sum \sin \frac{1}{n} = \sin 1 + \sin \frac{1}{2} + \cdots  + \sin \frac{1}{n} + \cdots
+\]
+是发散的.
+
+因为
+\[
+\mathop{\lim }\limits_{{n \rightarrow  \infty }}\frac{\sin \frac{1}{n}}{\frac{1}{n}} = 1,
+\]
+根据推论以及调和级数 \(\sum \frac{1}{n}\) 发散,所以级数 \(\sum \sin \frac{1}{n}\) 也发散.
+
+\subsection{比式判别法和根式判别法}
+
+根据比较原则, 可以利用已知收敛或者发散级数作为比较对象来判别其他级数的敛散性. 本段所介绍的两个方法是以等比级数作为比较对象而得到的.
+
+%定理 12.7
+\begin{theorem}{}{the:}
+
+\end{theorem}
+ (达朗贝尔判别法,或称比式判别法) 设 \(\sum {u}_{n}\) 为正项级数,且存在某正整数 \({N}_{0}\) 及常数 \(q\left( {0 < q < 1}\right)\) .
+
+(i) 若对一切 \(n > {N}_{0}\) ,成立不等式
+\[
+\frac{{u}_{n + 1}}{{u}_{n}} \leq  q, \tag{7}
+\]
+则级数 \(\sum {u}_{n}\) 收敛.
+
+(ii) 若对一切 \(n > {N}_{0}\) ,成立不等式
+\[
+\frac{{u}_{n + 1}}{{u}_{n}} \geq  1 \tag{8}
+\]
+则级数 \(\sum {u}_{n}\) 发散.
+
+%证
+\begin{proof}
+
+\end{proof}
+(i) 不妨设不等式 (7) 对一切 \(n \geq  1\) 成立,于是有
+\[
+\frac{{u}_{2}}{{u}_{1}} \leq  q,\;\frac{{u}_{3}}{{u}_{2}} \leq  q,\cdots ,\;\frac{{u}_{n}}{{u}_{n - 1}} \leq  q,\cdots .
+\]
+把前 \(n - 1\) 个不等式的左边及右边分别相乘后,得到
+\[
+\frac{{u}_{2}}{{u}_{1}} \cdot  \frac{{u}_{3}}{{u}_{2}} \cdot  \cdots  \cdot  \frac{{u}_{n}}{{u}_{n - 1}} \leq  {q}^{n - 1}
+\]
+或者
+\[
+{u}_{n} \leq  {u}_{1}{q}^{n - 1}.
+\]
+由于当 \(0 < q < 1\) 时,等比级数 \(\mathop{\sum }\limits_{{n = 1}}^{\infty }{q}^{n - 1}\) 收敛,根据比较原则可推知级数 \(\sum {u}_{n}\) 收敛.
+
+(ii) 由于 \(n > {N}_{0}\) 时成立不等式 (8),即有
+\[
+{u}_{n + 1} \geq  {u}_{n} \geq  {u}_{{N}_{0}}.
+\]
+于是当 \(n \rightarrow  \infty\) 时, \({u}_{n}\) 的极限不可能为零. 由定理 12.1 推论知级数 \(\sum {u}_{n}\) 是发散的.
+
+推论 1 (比式判别法的极限形式) 若 \(\sum {u}_{n}\) 为正项级数,且
+\[
+\mathop{\lim }\limits_{{n \rightarrow  \infty }}\frac{{u}_{n + 1}}{{u}_{n}} = q, \tag{9}
+\]
+则
+
+(i) 当 \(q < 1\) 时,级数 \(\sum {u}_{n}\) 收敛;
+
+(ii) 当 \(q > 1\) 或 \(q =  + \infty\) 时,级数 \(\sum {u}_{n}\) 发散.
+
+%证
+\begin{proof}
+
+\end{proof}
+由 (9) 式,对取定的正数 \(\varepsilon  = \frac{1}{2}\left| {1 - q}\right|\) ,存在正数 \(N\) ,当 \(n > N\) 时,都有
+\[
+q - \varepsilon  < \frac{{u}_{n + 1}}{{u}_{n}} < q + \varepsilon .
+\]
+当 \(q < 1\) 时, \(q + \varepsilon  = \frac{1}{2}\left( {1 + q}\right)  < 1\) ,由上述不等式的右半部分及定理 12.7 的 (i),推得级数 \(\sum {u}_{n}\) 是收敛的.
+
+当 \(q > 1\) 时, \(q - \varepsilon  = \frac{1}{2}\left( {1 + q}\right)  > 1\) ,由上述不等式的左半部分及定理 12.7 的 (ii),推得级数 \(\sum {u}_{n}\) 是发散的. 当 \(q =  + \infty\) 时,则存在 \(N\) ,当 \(n > N\) 时有
+\[
+\frac{{u}_{n + 1}}{{u}_{n}} > 1,
+\]
+从而 \(\mathop{\lim }\limits_{{n \rightarrow  \infty }}{u}_{n} \neq  0\) ,所以这时级数 \(\sum {u}_{n}\) 是发散的.
+
+%例 4
+\begin{example}
+
+\end{example}
+设级数
+\[
+\frac{2}{1} + \frac{2 \cdot  5}{1 \cdot  5} + \frac{2 \cdot  5 \cdot  8}{1 \cdot  5 \cdot  9} + \cdots  + \frac{2 \cdot  5 \cdot  8 \cdot  \cdots  \cdot  \left\lbrack  {2 + 3\left( {n - 1}\right) }\right\rbrack  }{1 \cdot  5 \cdot  9 \cdot  \cdots  \cdot  \left\lbrack  {1 + 4\left( {n - 1}\right) }\right\rbrack  } + \cdots .
+\]
+由于
+\[
+\mathop{\lim }\limits_{{n \rightarrow  \infty }}\frac{{u}_{n + 1}}{{u}_{n}} = \mathop{\lim }\limits_{{n \rightarrow  \infty }}\frac{2 + {3n}}{1 + {4n}} = \frac{3}{4} < 1,
+\]
+根据推论 1 , 上述级数是收敛的.
+
+%例 5
+\begin{example}
+
+\end{example}
+讨论级数 \(\sum n{x}^{n - 1}\left( {x > 0}\right)\) 的敛散性.
+
+%解
+\begin{solution}
+
+\end{solution}
+因为
+\[
+\frac{{u}_{n + 1}}{{u}_{n}} = \frac{\left( {n + 1}\right) {x}^{n}}{n{x}^{n - 1}} = x \cdot  \frac{n + 1}{n} \rightarrow  x\;\left( {n \rightarrow  \infty }\right) ,
+\]
+根据推论 1,当 \(0 < x < 1\) 时级数收敛; 当 \(x > 1\) 时级数发散; 而当 \(x = 1\) 时,所考察的级数是 \(\sum n\) ,它显然也是发散的.
+
+若 (9) 中 \(q = 1\) ,这时用比式判别法不能对级数的敛散性作出判断,因为它可能是收
+
+敛的,也可能是发散的. 例如级数 \(\sum \frac{1}{{n}^{2}}\) 和 \(\sum \frac{1}{n}\) ,它们的比式极限都是
+\[
+\frac{{u}_{n + 1}}{{u}_{n}} \rightarrow  1\;\left( {n \rightarrow  \infty }\right) ,
+\]
+但 \(\sum \frac{1}{{n}^{2}}\) 是收敛的 \(\left( {§1\text{ 例 5 }}\right)\) ,而 \(\sum \frac{1}{n}\) 却是发散的 \(\left( {§1\text{ 例 3 }}\right)\) .
+
+若某级数的 (9) 式的极限不存在, 则可应用上、下极限来判别.
+
+推论 2 设 \(\sum {u}_{n}\) 为正项级数.
+
+(i) 若 \(\mathop{\lim }\limits_{{n \rightarrow  \infty }}\frac{{u}_{n + 1}}{{u}_{n}} = q < 1\) ,则级数收敛;
+
+(ii) 若 \(\mathop{\lim }\limits_{{n \rightarrow  \infty }}\frac{{u}_{n + 1}}{{u}_{n}} = q > 1\) ,则级数发散.
+
+读者可仿照推论 1 的方法证明本推论.
+
+%例 6
+\begin{example}
+
+\end{example}
+讨论级数
+\[
+1 + b + {bc} + {b}^{2}c + {b}^{2}{c}^{2} + \cdots  + {b}^{n}{c}^{n - 1} + {b}^{n}{c}^{n} + \cdots  \tag{10}
+\]
+的敛散性,其中 \(0 < b < c\) .
+
+%解
+\begin{solution}
+
+\end{solution}
+由于
+\[
+\frac{{u}_{n + 1}}{{u}_{n}} = \left\{  \begin{array}{l} b,n\text{ 为奇数, } \\  c,n\text{ 为偶数, } \end{array}\right.
+\]
+故有
+\[
+\mathop{\lim }\limits_{{n \rightarrow  \infty }}\frac{{u}_{n + 1}}{{u}_{n}} = c,\;\mathop{\lim }\limits_{{n \rightarrow  \infty }}\frac{{u}_{n + 1}}{{u}_{n}} = b,
+\]
+于是,当 \(c < 1\) 时,级数 (10) 收敛; 当 \(b > 1\) 时,级数 (10) 发散; 但当 \(b < 1 < c\) 时,比式判别法无法判断级数 (10)的敛散性.
+
+%定理 12.8
+\begin{theorem}{}{the:}
+
+\end{theorem}
+ (柯西判别法,或称根式判别法) 设 \(\sum {u}_{n}\) 为正项级数,且存在某正数 \({N}_{0}\) 及正常数 \(l\) ,
+
+(i) 若对一切 \(n > {N}_{0}\) ,成立不等式
+\[
+\sqrt[n]{{u}_{n}} \leq  l < 1 \tag{11}
+\]
+则级数 \(\sum {u}_{n}\) 收敛;
+
+(ii) 若对一切 \(n > {N}_{0}\) ,成立不等式
+\[
+\sqrt[n]{{u}_{n}} \geq  1 \tag{12}
+\]
+则级数 \(\sum {u}_{n}\) 发散.
+
+%证
+\begin{proof}
+
+\end{proof}
+由 (11) 式有
+\[
+{u}_{n} \leq  {l}^{n}.
+\]
+因为等比级数 \(\sum {l}^{n}\) 当 \(0 < l < 1\) 时收敛,故由比较原则,这时级数 \(\sum {u}_{n}\) 也收敛,对于情形 (ii), 由 (12) 式可推得
+\[
+{u}_{n} \geq  {1}^{n} = 1\text{ . }
+\]
+当 \(n \rightarrow  \infty\) 时,显然 \({u}_{n}\) 不可能以零为极限,因而由级数收敛的必要条件可知,级数 \(\sum {u}_{n}\) 是发散的.
+
+推论 1 (根式判别法的极限形式) 设 \(\sum {u}_{n}\) 为正项级数,且
+\[
+\mathop{\lim }\limits_{{n \rightarrow  \infty }}\sqrt[n]{{u}_{n}} = l \tag{13}
+\]
+则 (i) 当 \(l < 1\) 时,级数 \(\sum {u}_{n}\) 收敛；
+
+(ii) 当 \(l > 1\) 时,级数 \(\sum {u}_{n}\) 发散.
+
+%证
+\begin{proof}
+
+\end{proof}
+由 (13) 式,当取 \(\varepsilon  < \left| {1 - l}\right|\) 时,存在某正数 \(N\) ,对一切 \(n > N\) ,有
+\[
+l - \varepsilon  < \sqrt[n]{{u}_{n}} < l + \varepsilon .
+\]
+于是由定理 12.8 就能得到这个推论所要证明的结论.
+
+%例 7
+\begin{example}
+
+\end{example}
+研究级数 \(\sum \frac{2 + {\left( -1\right) }^{n}}{{2}^{n}}\) 的敛散性.
+
+%解
+\begin{solution}
+
+\end{solution}
+由于
+\[
+\mathop{\lim }\limits_{{n \rightarrow  \infty }}\sqrt[n]{{u}_{n}} = \mathop{\lim }\limits_{{n \rightarrow  \infty }}\frac{\sqrt[n]{2 + {\left( -1\right) }^{n}}}{2} = \frac{1}{2},
+\]
+所以级数是收敛的.
+
+若在 (13) 式中 \(l = 1\) ,则根式判别法仍无法对级数的敛散性作出判断. 例如,对 \(\sum \frac{1}{{n}^{2}}\)
+
+和 \(\sum \frac{1}{n}\) ,都有
+\[
+\sqrt[n]{{u}_{n}} \rightarrow  1\;\left( {n \rightarrow  \infty }\right) .
+\]
+但 \(\sum \frac{1}{{n}^{2}}\) 是收敛的,而 \(\sum \frac{1}{n}\) 却是发散的.
+
+若 (13) 式的极限不存在,则可根据根式 \(\sqrt[n]{{u}_{n}}\) 的上极限来判断.
+
+推论 2 设 \(\sum {u}_{n}\) 为正项级数,且
+\[
+\mathop{\lim }\limits_{{n \rightarrow  \infty }}\sqrt[n]{{u}_{n}} = l
+\]
+则当
+
+(i) \(l < 1\) 时级数收敛;
+
+(ii) \(l > 1\) 时级数发散.
+
+本推论的证明可仿照推论 1 的证法进行.
+
+%例 8
+\begin{example}
+
+\end{example}
+考察级数
+\[
+b + c + {b}^{2} + {c}^{2} + \cdots  + {b}^{n} + {c}^{n} + \cdots
+\]
+的敛散性,其中 \(0 < b < c < 1\) .
+
+%解
+\begin{solution}
+
+\end{solution}
+由于
+\[
+\sqrt[n]{{u}_{n}} = \left\{  {\begin{array}{l} {\left( {c}^{m}\right) }^{\frac{1}{2m}} \rightarrow  \sqrt{c}, \\  {\left( {b}^{m + 1}\right) }^{\frac{1}{{2m} + 1}} \rightarrow  \sqrt{b} \end{array}\;\left( {m \rightarrow  \infty }\right) }\right.
+\]
+及
+\[
+\mathop{\lim }\limits_{{n \rightarrow  \infty }}\sqrt[n]{{u}_{n}} = \sqrt{c} < 1,
+\]
+因此级数是收敛的. 但若应用比式判别法, 则由于
+\[
+\mathop{\lim }\limits_{{n \rightarrow  \infty }}\frac{{u}_{n + 1}}{{u}_{n}} = \mathop{\lim }\limits_{{n \rightarrow  \infty }}\frac{{c}^{n}}{{b}^{n}} =  + \infty ,
+\]
+\[
+\mathop{\lim }\limits_{{n \rightarrow  \infty }}\frac{{u}_{n + 1}}{{u}_{n}} = \mathop{\lim }\limits_{{n \rightarrow  \infty }}\frac{{b}^{n + 1}}{{c}^{n}} = 0 < 1,
+\]
+则无法应用定理 12.7 推论 2 判断其敛散性.
+
+读者已从第二章总练习题 4(7) 知道, 若
+\[
+\mathop{\lim }\limits_{{n \rightarrow  \infty }}\frac{{u}_{n + 1}}{{u}_{n}} = q,
+\]
+则必有
+\[
+\mathop{\lim }\limits_{{n \rightarrow  \infty }}\sqrt[n]{{u}_{n}} = q
+\]
+这说明凡能由比式判别法鉴别收敛性的级数, 它也能由根式判别法来判断, 而且可以说,根式判别法较之比式判别法更有效. 例如,级数 \(\sum \frac{2 + {\left( -1\right) }^{n}}{{2}^{n}}\) . 由于
+\[
+\mathop{\lim }\limits_{{m \rightarrow  \infty }}\frac{{u}_{2m}}{{u}_{{2m} - 1}} = \mathop{\lim }\limits_{{m \rightarrow  \infty }}\frac{\frac{3}{{2}^{2m}}}{\frac{1}{{2}^{{2m} - 1}}} = \frac{3}{2},
+\]
+\[
+\mathop{\lim }\limits_{{m \rightarrow  \infty }}\frac{{u}_{{2m} + 1}}{{u}_{2m}} = \mathop{\lim }\limits_{{m \rightarrow  \infty }}\frac{\frac{1}{{2}^{{2m} + 1}}}{\frac{3}{{2}^{2m}}} = \frac{1}{6},
+\]
+故由比式判别法无法鉴别此级数的收敛性. 但应用根式判别法来考察这个级数 (例 7), 可知此级数是收敛的.
+
+%例 9
+\begin{example}
+
+\end{example}
+讨论级数 \(\mathop{\sum }\limits_{{n = 1}}^{\infty }\frac{{x}^{n}}{1 + {x}^{2n}}\) 的敛散性,其中 \(x > 0\) .
+
+%解
+\begin{solution}
+
+\end{solution}
+因为 \(\mathop{\lim }\limits_{{n \rightarrow  \infty }}\sqrt[n]{1 + {x}^{2n}} = \max \left\{  {1,{x}^{2}}\right\}\) ,所以
+\[
+\mathop{\lim }\limits_{{n \rightarrow  \infty }}\sqrt[n]{{u}_{n}} = \mathop{\lim }\limits_{{n \rightarrow  \infty }}\sqrt[n]{\frac{{x}^{n}}{1 + {x}^{2n}}} = \frac{x}{\max \left\{  {1,{x}^{2}}\right\}  }\left\{  \begin{array}{ll}  < 1, & x \neq  1, \\   = 1, & x = 1. \end{array}\right.
+\]
+于是,当 \(x \neq  1\) 时,原级数收敛,当 \(x = 1\) 时,原级数发散.
+
+%例 10
+\begin{example}
+
+\end{example}
+判别下列级数的敛散性:
+
+ (i) \(\mathop{\sum }\limits_{{n = 1}}^{\infty }\frac{{\left( n!\right) }^{2}}{\left( {2n}\right) !}\) ;
+
+(ii) \(\mathop{\sum }\limits_{{n = 1}}^{\infty }\frac{{n}^{2}}{{\left( 2 + \frac{1}{n}\right) }^{n}}\) .
+
+%解
+\begin{solution}
+
+\end{solution}
+(i) 因为
+\[
+\mathop{\lim }\limits_{{n \rightarrow  \infty }}\frac{{u}_{n + 1}}{{u}_{n}} = \mathop{\lim }\limits_{{n \rightarrow  \infty }}\frac{{\left\lbrack  \left( n + 1\right) !\right\rbrack  }^{2}}{\left\lbrack  {2\left( {n + 1}\right) }\right\rbrack  !} \cdot  \frac{\left( {2n}\right) !}{{\left( n!\right) }^{2}} = \mathop{\lim }\limits_{{n \rightarrow  \infty }}\frac{{\left( n + 1\right) }^{2}}{\left( {{2n} + 1}\right) \left( {{2n} + 2}\right) } = \frac{1}{4} < 1,
+\]
+所以由比式判别法, 该级数收敛.
+
+(ii) 因为
+\[
+\mathop{\lim }\limits_{{n \rightarrow  \infty }}\sqrt[n]{{u}_{n}} = \mathop{\lim }\limits_{{n \rightarrow  \infty }}\frac{\sqrt[n]{{n}^{2}}}{\sqrt[n]{{\left( 2 + \frac{1}{n}\right) }^{n}}} = \mathop{\lim }\limits_{{n \rightarrow  \infty }}\frac{\sqrt[n]{{n}^{2}}}{2 + \frac{1}{n}} = \frac{1}{2} < 1,
+\]
+所以由根式判别法, 该级数收敛.
+
+\subsection{积分判别法}
+
+积分判别法是利用非负函数的单调性和积分性质, 并以反常积分为比较对象来判断正项级数的敛散性.
+
+%定理 12.9
+\begin{theorem}{}{the:}
+
+\end{theorem}
+ 设 \(f\) 为 \(\lbrack 1, + \infty )\) 上的减函数,则级数 \(\mathop{\sum }\limits_{{n = 1}}^{\infty }f\left( n\right)\) 收敛的充分必要条件是反常积分 \({\int }_{1}^{+\infty }f\left( x\right) \mathrm{d}x\) 收敛.
+
+%证
+\begin{proof}
+
+\end{proof}
+设 \(\mathop{\sum }\limits_{{n = 1}}^{\infty }f\left( n\right)\) 收敛,其和为 \(S\) ,则 \(\mathop{\lim }\limits_{{n \rightarrow  \infty }}f\left( n\right)  = 0\) . 又因为 \(f\) 为 \(\lbrack 1, + \infty )\) 上的减函数, 所以 \(f\left( x\right)  \geq  0\) ,从而 \(f\) 是 \(\lbrack 1, + \infty )\) 上非负的减函数, \(\mathop{\sum }\limits_{{n = 1}}^{\infty }f\left( n\right)\) 为正项级数. 于是对任意正整数 \(m\) ,有
+\[
+{\int }_{1}^{m}f\left( x\right) \mathrm{d}x = \mathop{\sum }\limits_{{n = 2}}^{m}{\int }_{n - 1}^{n}f\left( x\right) \mathrm{d}x \leq  \mathop{\sum }\limits_{{n = 1}}^{{m - 1}}f\left( n\right)  \leq  \mathop{\sum }\limits_{{n = 1}}^{\infty }f\left( n\right)  = S.
+\]
+由 \(f\) 是 \(\lbrack 1, + \infty )\) 上非负的减函数,可得对任何正数 \(A\) ,都有
+\[
+0 \leq  {\int }_{1}^{A}f\left( x\right) \mathrm{d}x \leq  {\int }_{1}^{m + 1}f\left( x\right) \mathrm{d}x \leq  \mathop{\sum }\limits_{{n = 1}}^{m}f\left( n\right)  \leq  S,m < A \leq  m + 1.
+\]
+根据定理 11.2,知反常积分 \({\int }_{1}^{+\infty }f\left( x\right) \mathrm{d}x\) 收敛.
+
+反之,设反常积分 \({\int }_{1}^{+\infty }f\left( x\right) \mathrm{d}x\) 收敛,根据第十一章 §2 的例 5,知 \(\mathop{\lim }\limits_{{x \rightarrow   + \infty }}f\left( x\right)  = 0\) . 又 \(f\) 是 \(\lbrack 1, + \infty )\) 上的减函数,由此可得 \(f\) 为 \(\lbrack 1, + \infty )\) 上非负的减函数, \(\mathop{\sum }\limits_{{n = 1}}^{\infty }f\left( n\right)\) 是正项级数. 因此对任意正整数 \(m\) ,有
+\[
+\mathop{\sum }\limits_{{n = 1}}^{m}f\left( n\right)  = f\left( 1\right)  + \mathop{\sum }\limits_{{n = 2}}^{m}f\left( n\right)  \leq  f\left( 1\right)  + {\int }_{1}^{m}f\left( x\right) \mathrm{d}x \leq  f\left( 1\right)  + {\int }_{1}^{+\infty }f\left( x\right) \mathrm{d}x.
+\]
+根据定理 12.5 可得级数 \(\mathop{\sum }\limits_{{n = 1}}^{\infty }f\left( n\right)\) 收敛.
+
+%例 11
+\begin{example}
+
+\end{example}
+讨论 \(p\) 级数 \(\sum \frac{1}{{n}^{p}}\) 的敛散性.
+
+%解
+\begin{solution}
+
+\end{solution}
+函数 \(f\left( x\right)  = \frac{1}{{x}^{p}}\) ,当 \(p > 0\) 时在 \(\lbrack 1, + \infty )\) 上是非负减函数. 由第十一章 §1 例 3 知道反常积分 \({\int }_{1}^{+\infty }\frac{\mathrm{d}x}{{x}^{p}}\) 在 \(p > 1\) 时收敛, \(p \leq  1\) 时发散. 故由定理 12.9 得 \(\sum \frac{1}{{n}^{p}}\) 当 \(p > 1\) 时收敛, 当 \(0 < p \leq  1\) 时发散. 至于 \(p \leq  0\) 的情形,则可由定理 12.1 推论知道它也是发散的.
+
+%例 12
+\begin{example}
+
+\end{example}
+讨论下列级数
+
+(i) \(\mathop{\sum }\limits_{{n = 2}}^{\infty }\frac{1}{n{\left( \ln n\right) }^{p}}\) ;
+
+的敛散性.
+
+%解
+\begin{solution}
+
+\end{solution}
+研究反常积分 \({\int }_{2}^{+\infty }\frac{\mathrm{d}x}{x{\left( \ln x\right) }^{p}}\) ,由于
+\[
+{\int }_{2}^{+\infty }\frac{\mathrm{d}x}{x{\left( \ln x\right) }^{p}} = {\int }_{2}^{+\infty }\frac{\mathrm{d}\left( {\ln x}\right) }{{\left( \ln x\right) }^{p}} = {\int }_{\ln 2}^{+\infty }\frac{\mathrm{d}u}{{u}^{p}}
+\]
+当 \(p > 1\) 时收敛, \(p \leq  1\) 时发散. 根据定理 12.9 知级数 (i) 在 \(p > 1\) 时收敛, \(p \leq  1\) 时发散.
+
+对于(ii),考察反常积分 \({\int }_{3}^{\infty }\frac{\mathrm{d}x}{x\left( {\ln x}\right) {\left( \ln \ln x\right) }^{p}}\) ,同样可推得级数 (ii) 在 \(p > 1\) 时收敛,在 \(p \leq  1\) 时发散.
+
+\subsection{拉贝判别法}
+
+比式判别法和根式判别法是基于把所要判断的级数与某一等比级数相比较的想法而得到的, 也就是说, 只有那些级数的通项收敛于零的速度比某一等比级数收敛速度快的级数, 这两种方法才能鉴定出它的收敛性. 如果级数的通项收敛速度较慢, 它们就无能为力了. 因此为了获得判别范围更大的一类级数, 就必须寻找级数的通项收敛于零较慢的级数作为比较标准.
+
+以 \(p\) 级数为比较标准,得到拉贝 (Raabe) 判别法,现介绍如下:
+
+%定理 12.10
+\begin{theorem}{}{the:}
+
+\end{theorem}
+ (拉贝判别法) 设 \(\sum {u}_{n}\) 为正项级数,且存在某正整数 \({N}_{0}\) 及常数 \(r\) ,
+
+(i) 若对一切 \(n > {N}_{0}\) ,成立不等式
+\[
+n\left( {1 - \frac{{u}_{n + 1}}{{u}_{n}}}\right)  \geq  r > 1,
+\]
+则级数 \(\sum {u}_{n}\) 收敛;
+
+(ii) 若对一切 \(n > {N}_{0}\) ,成立不等式
+\[
+n\left( {1 - \frac{{u}_{n + 1}}{{u}_{n}}}\right)  \leq  1,
+\]
+则级数 \(\sum {u}_{n}\) 发散.
+
+%证
+\begin{proof}
+
+\end{proof}
+(i) 由 \(n\left( {1 - \frac{{u}_{n + 1}}{{u}_{n}}}\right)  \geq  r\) 可得 \(\frac{{u}_{n + 1}}{{u}_{n}} < 1 - \frac{r}{n}\) . 选 \(p\) 使 \(1 < p < r\) . 由于
+\[
+\mathop{\lim }\limits_{{n \rightarrow  \infty }}\frac{1 - {\left( 1 - \frac{1}{n}\right) }^{p}}{\frac{r}{n}} = \mathop{\lim }\limits_{{x \rightarrow  0}}\frac{1 - {\left( 1 - x\right) }^{p}}{rx} = \mathop{\lim }\limits_{{x \rightarrow  0}}\frac{p{\left( 1 - x\right) }^{p - 1}}{r} = \frac{p}{r} < 1,
+\]
+因此,存在正数 \(N\) ,使对任意 \(n > N\) ,
+\[
+\frac{r}{n} > 1 - {\left( 1 - \frac{1}{n}\right) }^{p}.
+\]
+这样
+\[
+\frac{{u}_{n + 1}}{{u}_{n}} < 1 - \left\lbrack  {1 - {\left( 1 - \frac{1}{n}\right) }^{p}}\right\rbrack   = {\left( 1 - \frac{1}{n}\right) }^{p} = {\left( \frac{n - 1}{n}\right) }^{p}.
+\]
+于是,当 \(n > N\) 时就有
+\[
+{u}_{n + 1} = \frac{{u}_{n + 1}}{{u}_{n}} \cdot  \frac{{u}_{n}}{{u}_{n - 1}} \cdot  \cdots  \cdot  \frac{{u}_{N + 1}}{{u}_{N}} \cdot  {u}_{N}
+\]
+\[
+\leq  {\left( \frac{n - 1}{n}\right) }^{p}{\left( \frac{n - 2}{n - 1}\right) }^{p} \cdot  \cdots  \cdot  {\left( \frac{N - 1}{N}\right) }^{p} \cdot  {u}_{N}
+\]
+\[
+= \frac{{\left( N - 1\right) }^{p}}{{n}^{p}} \cdot  {u}_{N}.
+\]
+当 \(p > 1\) 时, \(\sum \frac{1}{{n}^{p}}\) 收敛,故级数 \(\sum {u}_{n}\) 是收敛的.
+
+(ii) 由 \(n\left( {1 - \frac{{u}_{n + 1}}{{u}_{n}}}\right)  \leq  1\) 可得 \(\frac{{u}_{n + 1}}{{u}_{n}} \geq  1 - \frac{1}{n} = \frac{n - 1}{n}\) ,于是
+\[
+{u}_{n + 1} = \frac{{u}_{n + 1}}{{u}_{n}} \cdot  \frac{{u}_{n}}{{u}_{n - 1}} \cdot  \cdots  \cdot  \frac{{u}_{3}}{{u}_{2}} \cdot  {u}_{2}
+\]
+\[
+> \frac{n - 1}{n} \cdot  \frac{n - 2}{n - 1} \cdot  \cdots  \cdot  \frac{1}{2} \cdot  {u}_{2}
+\]
+\[
+= \frac{1}{n} \cdot  {u}_{2}\text{ . }
+\]
+因为 \(\sum \frac{1}{n}\) 发散,故 \(\sum {u}_{n}\) 是发散的.
+
+推论 (拉贝判别法的极限形式) 设 \(\sum {u}_{n}\) 为正项级数,且极限
+\[
+\mathop{\lim }\limits_{{n \rightarrow  \infty }}n\left( {1 - \frac{{u}_{n + 1}}{{u}_{n}}}\right)  = r
+\]
+存在, 则
+
+(i) 当 \(r > 1\) 时,级数 \(\sum {u}_{n}\) 收敛;
+
+(ii) 当 \(r < 1\) 时,级数 \(\sum {u}_{n}\) 发散.
+
+%例 13
+\begin{example}
+
+\end{example}
+讨论级数
+\[
+\sum {\left\lbrack  \frac{1 \cdot  3 \cdot  \cdots  \cdot  \left( {{2n} - 1}\right) }{2 \cdot  4 \cdot  \cdots  \cdot  \left( {2n}\right) }\right\rbrack  }^{s} \tag{14}
+\]
+当 \(s = 1,2,3\) 时的敛散性.
+
+%解
+\begin{solution}
+
+\end{solution}
+无论 \(s = 1,2,3\) 哪一值,对级数 (14) 的比式极限,都有
+\[
+\mathop{\lim }\limits_{{n \rightarrow  \infty }}\frac{{u}_{n + 1}}{{u}_{n}} = 1,
+\]
+所以用比式判别法无法判别级数 (14) 的敛散性. 现在应用拉贝判别法来讨论. 当 \(s = 1\) 时,由于
+\[
+n\left( {1 - \frac{{u}_{n + 1}}{{u}_{n}}}\right)  = n\left( {1 - \frac{{2n} + 1}{{2n} + 2}}\right)  = \frac{n}{{2n} + 2} \rightarrow  \frac{1}{2}\;\left( {n \rightarrow  \infty }\right) ,
+\]
+所以级数 (14) 是发散的. 当 \(s = 2\) 时,由于
+\[
+n\left( {1 - \frac{{u}_{n + 1}}{{u}_{n}}}\right)  = n\left\lbrack  {1 - {\left( \frac{{2n} + 1}{{2n} + 2}\right) }^{2}}\right\rbrack   = \frac{n\left( {{4n} + 3}\right) }{{\left( 2n + 2\right) }^{2}} < 1\;\left( {n \rightarrow  \infty }\right) ,
+\]
+由定理 12.10 拉贝判别法可知级数 (14) 发散. 当 \(s = 3\) 时,由于
+\[
+n\left( {1 - \frac{{u}_{n + 1}}{{u}_{n}}}\right)  = n\left\lbrack  {1 - {\left( \frac{{2n} + 1}{{2n} + 2}\right) }^{3}}\right\rbrack   = \frac{n\left( {{12}{n}^{2} + {18n} + 7}\right) }{{\left( 2n + 2\right) }^{3}} \rightarrow  \frac{3}{2}\;\left( {n \rightarrow  \infty }\right) ,
+\]
+所以级数 (14) 收敛.
+
+从上面看到,拉贝判别法虽然判别的范围比比式判别法或根式判别法更广泛,但当 \(r = 1\) 时仍无法判别. 而从例 12 应该可以得出这样的结论: 没有收敛得最慢的收敛级数. 因此任何判别法都只能解决一类级数的收敛问题, 而不能解决所有级数的收敛问题. 当然我们还可以建立比拉贝判别法更为精细有效的判别法, 但这个过程是无限的.
+
+\subsection{习题 12.2}
+
+1. 应用比较原则判别下列级数的敛散性:
+
+(1) \(\sum \frac{1}{{n}^{2} + {a}^{2}}\) ;
+
+(2) \(\sum {2}^{n}\sin \frac{\pi }{{3}^{n}}\) ;
+
+(3) \(\sum \frac{1}{\sqrt{1 + {n}^{2}}}\) ;
+
+(4) \(\mathop{\sum }\limits_{{n = 2}}^{\infty }\frac{1}{{\left( \ln n\right) }^{n}}\) ;
+
+(5) \(\sum \left( {1 - \cos \frac{1}{n}}\right)\) ;
+
+(6) \(\sum \frac{1}{n\sqrt[n]{n}}\) ;
+
+(7) \(\sum \left( {\sqrt[n]{a} - 1}\right) \left( {a > 1}\right)\) ;
+
+(8) \(\mathop{\sum }\limits_{{n = 2}}^{\infty }\frac{n}{{\left( \ln n\right) }^{\ln n}}\) ;
+
+(9) \(\sum \left( {{a}^{\frac{1}{n}} + {a}^{-\frac{1}{n}} - 2}\right) \left( {a > 0}\right)\) ； (10) \(\sum \frac{1}{{n}^{{2n}\sin \frac{1}{n}}}\) .  2. 用比式判别法或根式判别法讨论下列级数的敛散性: (1) \(\sum \frac{1 \cdot  3 \cdot  \cdots  \cdot  \left( {{2n} - 1}\right) }{n!}\) ;
+
+(2) \(\sum \frac{\left( {n + 1}\right) !}{{10}^{n}}\) ;
+
+(3) \(\sum {\left( \frac{n}{{2n} + 1}\right) }^{n}\) ;
+
+(4) \(\sum \frac{n!}{{n}^{n}}\) ;
+
+(5) \(\sum \frac{{n}^{2}}{{2}^{n}}\) ;
+
+(6) \(\sum {\left( \frac{b}{{a}_{n}}\right) }^{n}\;\left( {\text{ 其中 }{a}_{n} \rightarrow  a\;\left( {n \rightarrow  \infty }\right) ,{a}_{n},b,a > 0\text{ ,且 }a \neq  b}\right)\) .
+
+3. 设 \(\sum {u}_{n}\) 和 \(\sum {v}_{n}\) 为正项级数,且存在正数 \({N}_{0}\) ,对一切 \(n > {N}_{0}\) ,有
+\[
+\frac{{u}_{n + 1}}{{u}_{n}} \leq  \frac{{v}_{n + 1}}{{v}_{n}}.
+\]
+证明: 若级数 \(\sum {v}_{n}\) 收敛,则级数 \(\sum {u}_{n}\) 也收敛; 若 \(\sum {u}_{n}\) 发散,则 \(\sum {v}_{n}\) 也发散.
+
+4. 设正项级数 \(\sum {a}_{n}\) 收敛,证明 \(\sum {a}_{n}^{2}\) 亦收敛; 试问反之是否成立?
+
+5. 设 \({a}_{n} \geq  0,n = 1,2,\cdots\) . 且 \(\left\{  {n{a}_{n}}\right\}\) 有界,证明 \(\sum {a}_{n}^{2}\) 收敛.
+
+6. 设级数 \(\sum {a}_{n}^{2}\) 收敛,证明 \(\sum \frac{{a}_{n}}{n}\left( {{a}_{n} > 0}\right)\) 也收敛.
+
+7. 设正项级数 \(\sum {u}_{n}\) 收敛,证明级数 \(\sum \sqrt{{u}_{n}{u}_{n + 1}}\) 也收敛.
+
+8. 利用级数收敛的必要条件,证明下列等式:
+
+(1) \(\mathop{\lim }\limits_{{n \rightarrow  \infty }}\frac{{n}^{n}}{{\left( n!\right) }^{2}} = 0\) ;
+
+(2) \(\mathop{\lim }\limits_{{n \rightarrow  \infty }}\frac{\left( {2n}\right) !}{{a}^{n!}} = 0\;\left( {a > 1}\right)\) .
+
+9. 用积分判别法讨论下列级数的敛散性:
+
+(1) \(\sum \frac{1}{{n}^{2} + 1}\) ;
+
+(2) \(\sum \frac{n}{{n}^{2} + 1}\) ;
+
+(3) \(\mathop{\sum }\limits_{{n = 3}}^{\infty }\frac{1}{n\left( {\ln n}\right) \left( {\ln \ln n}\right) }\) ;
+
+(4) \(\mathop{\sum }\limits_{{n = 3}}^{\infty }\frac{1}{n{\left( \ln n\right) }^{p}{\left( \ln \ln n\right) }^{q}}\) .
+
+10. 判别下列级数的敛散性:
+
+(1) \(\sum \frac{n - \sqrt{n}}{{2n} - 1}\) ;
+
+(2) \(\sum \frac{1}{1 + {a}^{n}}\left( {a > 1}\right)\) ;
+
+(3) \(\sum \frac{n\ln n}{{2}^{n}}\) ;
+
+(4) \(\sum \frac{n!{2}^{n}}{{n}^{n}}\) ;
+
+(5) \(\sum \frac{n!{3}^{n}}{{n}^{n}}\) ;
+
+(6) \(\sum \frac{1}{{3}^{\ln n}}\) ;
+
+(7) \(\sum \frac{{x}^{n}}{\left( {1 + x}\right) \left( {1 + {x}^{2}}\right) \cdots \left( {1 + {x}^{n}}\right) }\left( {x > 0}\right)\) .
+
+11. 设 \(\left\{  {a}_{n}\right\}\) 为递减正项数列,证明: 级数 \(\mathop{\sum }\limits_{{n = 1}}^{\infty }{a}_{n}\) 与 \(\sum {2}^{m}{a}_{{2}^{m}}\) 同时收敛或同时发散.
+
+12. 用拉贝判别法判别下列级数的敛散性:
+
+(1) \(\sum \frac{1 \cdot  3 \cdot  \cdots  \cdot  \left( {{2n} - 1}\right) }{2 \cdot  4 \cdot  \cdots  \cdot  \left( {2n}\right) } \cdot  \frac{1}{{2n} + 1}\) ;
+
+(2) \(\sum \frac{n!}{\left( {x + 1}\right) \left( {x + 2}\right) \cdots \left( {x + n}\right) }\;\left( {x > 0}\right)\) .
+
+13. 用根式判别法证明级数 \(\sum {2}^{-n - {\left( -1\right) }^{n}}\) 收敛,并说明比式判别法对此级数无效.
+
+14. 求下列极限 (其中 \(p > 1\) ):
+
+(1) \(\mathop{\lim }\limits_{{n \rightarrow  \infty }}\left\lbrack  {\frac{1}{{\left( n + 1\right) }^{p}} + \frac{1}{{\left( n + 2\right) }^{p}} + \cdots  + \frac{1}{{\left( 2n\right) }^{p}}}\right\rbrack\) ;
+
+(2) \(\mathop{\lim }\limits_{{n \rightarrow  \infty }}\left( {\frac{1}{{p}^{n + 1}} + \frac{1}{{p}^{n + 2}} + \cdots  + \frac{1}{{p}^{2n}}}\right)\) .
+
+15. 设 \({a}_{n} > 0\) ,证明数列 \(\left\{  {\left( {1 + {a}_{1}}\right) \left( {1 + {a}_{2}}\right) \cdots \left( {1 + {a}_{n}}\right) }\right\}\) 与级数 \(\sum {a}_{n}\) 同时收敛或同时发散.
+
+\section{一般项级数}
+
+上节我们讨论了正项级数的收敛性问题, 关于一般数项级数的收敛性判别问题要比正项级数复杂, 本节只讨论某些特殊类型的级数的收敛性问题.
+
+\subsection{交错级数}
+
+若级数的各项符号正负相间, 即
+\[
+{u}_{1} - {u}_{2} + {u}_{3} - {u}_{4} + \cdots  + {\left( -1\right) }^{n + 1}{u}_{n} + \cdots \;\left( {{u}_{n} > 0,n = 1,2,\cdots }\right) , \tag{1}
+\]
+则称 (1) 为交错级数.
+
+对于交错级数, 有下面常用的判别法.
+
+%定理 12.11
+\begin{theorem}{}{the:}
+
+\end{theorem}
+(莱布尼茨判别法) 若交错级数 (1) 满足下述两个条件:
+
+(i) 数列 \(\left\{  {u}_{n}\right\}\) 单调递减;
+
+(ii) \(\mathop{\lim }\limits_{{n \rightarrow  \infty }}{u}_{n} = 0\) ,
+
+则级数 (1) 收敛.
+
+%证
+\begin{proof}
+
+\end{proof}
+考察交错级数 (1) 的部分和数列 \(\left\{  {S}_{n}\right\}\) ,它的奇数项和偶数项分别为
+\[
+{S}_{{2m} - 1} = {u}_{1} - \left( {{u}_{2} - {u}_{3}}\right)  - \cdots  - \left( {{u}_{{2m} - 2} - {u}_{{2m} - 1}}\right) ,
+\]
+\[
+{S}_{2m} = \left( {{u}_{1} - {u}_{2}}\right)  + \left( {{u}_{3} - {u}_{4}}\right)  + \cdots  + \left( {{u}_{{2m} - 1} - {u}_{2m}}\right) .
+\]
+由条件 (i),上述两式中各个括号内的数都是非负的,从而数列 \(\left\{  {S}_{{2m} - 1}\right\}\) 是递减的,而数列 \(\left\{  {S}_{2m}\right\}\) 是递增的. 又由条件 (ii) 知道
+\[
+0 < {S}_{{2m} - 1} - {S}_{2m} = {u}_{2m} \rightarrow  0\;\left( {m \rightarrow  \infty }\right) ,
+\]
+从而 \(\left\{  \left\lbrack  {{S}_{2m},{S}_{{2m} - 1}}\right\rbrack  \right\}\) 是一个区间套. 由区间套定理,存在惟一的一个数 \(S\) ,使得
+\[
+\mathop{\lim }\limits_{{m \rightarrow  \infty }}{S}_{{2m} - 1} = \mathop{\lim }\limits_{{m \rightarrow  \infty }}{S}_{2m} = S.
+\]
+所以数列 \(\left\{  {S}_{n}\right\}\) 收敛,即级数 (1) 收敛.
+
+推论 若级数 (1) 满足莱布尼茨判别法的条件, 则收敛级数 (1) 的余项估计式为
+\[
+\left| {R}_{n}\right|  \leq  {u}_{n + 1}.
+\]
+对下列交错级数应用莱布尼茨判别法检验, 容易检验它们都是收敛的.
+\[
+1 - \frac{1}{2} + \frac{1}{3} + \cdots  + {\left( -1\right) }^{n + 1}\frac{1}{n} + \cdots ; \tag{2}
+\]
+\[
+1 - \frac{1}{3!} + \frac{1}{5!} - \frac{1}{7!} + \cdots  + {\left( -1\right) }^{n + 1}\frac{1}{\left( {{2n} - 1}\right) !} + \cdots ; \tag{3}
+\]
+\[
+\frac{1}{10} - \frac{2}{{10}^{2}} + \frac{3}{{10}^{3}} - \frac{4}{{10}^{4}} + \cdots  + {\left( -1\right) }^{n + 1}\frac{n}{{10}^{n}} + \cdots . \tag{4}
+\]
+\subsection{绝对收敛级数及其性质}
+
+若级数
+\[
+{u}_{1} + {u}_{2} + \cdots  + {u}_{n} + \cdots  \tag{5}
+\]
+各项绝对值所组成的级数
+\[
+\left| {u}_{1}\right|  + \left| {u}_{2}\right|  + \cdots  + \left| {u}_{n}\right|  + \cdots  \tag{6}
+\]
+收敛,则称原级数 (5) 为绝对收敛级数.
+
+%定理 12.12
+\begin{theorem}{}{the:}
+
+\end{theorem}
+ 绝对收敛级数一定收敛.
+
+%证
+\begin{proof}
+
+\end{proof}
+由于级数 (6) 收敛,根据级数的柯西收敛准则,对任意正数 \(\varepsilon\) ,总存在正数 \(N\) , 使得对 \(m > N\) 和任意正整数 \(r\) ,有
+\[
+\left| {u}_{m + 1}\right|  + \left| {u}_{m + 2}\right|  + \cdots  + \left| {u}_{m + r}\right|  < \varepsilon .
+\]
+由于
+\[
+\left| {{u}_{m + 1} + {u}_{m + 2} + \cdots  + {u}_{m + r}}\right|  \leq  \left| {u}_{m + 1}\right|  + \left| {u}_{m + 2}\right|  + \cdots  + \left| {u}_{m + r}\right|  < \varepsilon ,
+\]
+因此由柯西收敛准则知级数 (5) 也收敛.
+
+对于级数 (5) 是否绝对收敛, 可引用正项级数的各种判别法对级数 (6) 进行考察.
+
+%例 1
+\begin{example}
+
+\end{example}
+级数
+\[
+\mathop{\sum }\limits_{{n = 1}}^{\infty }\frac{{\alpha }^{n}}{n!} = \alpha  + \frac{{\alpha }^{2}}{2!} + \cdots  + \frac{{\alpha }^{n}}{n!} + \cdots
+\]
+的各项绝对值所组成的级数是
+\[
+\sum \frac{{\left| \alpha \right| }^{n}}{n!} = \left| \alpha \right|  + \frac{{\left| \alpha \right| }^{2}}{2!} + \cdots  + \frac{{\left| \alpha \right| }^{n}}{n!} + \cdots .
+\]
+应用比式判别法,对于任何实数 \(\alpha\) 都有
+\[
+\mathop{\lim }\limits_{{n \rightarrow  \infty }}\frac{\left| {u}_{n + 1}\right| }{\left| {u}_{n}\right| } = \mathop{\lim }\limits_{{n \rightarrow  \infty }}\frac{\left| \alpha \right| }{n + 1} = 0,
+\]
+因此,所考察的级数对任何实数 \(\alpha\) 都绝对收敛.
+
+若级数 (5) 收敛, 但级数 (6) 不收敛, 则称级数 (5) 为条件收敛级数.
+
+例如级数 (2) 是条件收敛, 而级数 (3)、(4) 则是绝对收敛.
+
+全体收敛的级数可分为绝对收敛级数与条件收敛级数两大类.
+
+下面讨论绝对收敛级数的两个重要性质.
+
+1. 级数的重排
+
+我们把正整数列 \(\{ 1,2,\cdots ,n,\cdots \}\) 到它自身的一一映射 \(f : n \rightarrow  k\left( n\right)\) 称为正整数列的重排,相应地对于数列 \(\left\{  {u}_{n}\right\}\) 按映射 \(F : {u}_{n} \rightarrow  {u}_{k\left( n\right) }\) 所得到的数列 \(\left\{  {u}_{k\left( n\right) }\right\}\) 称为原数列的重排. 相应于此,我们也称级数 \(\mathop{\sum }\limits_{{n = 1}}^{\infty }{u}_{k\left( n\right) }\) 是级数 (5) 的重排. 为叙述上的方便,记 \({v}_{n} = {u}_{k\left( n\right) }\) , 即把级数 \(\mathop{\sum }\limits_{{n = 1}}^{\infty }{u}_{k\left( n\right) }\) 写作
+\[
+{v}_{1} + {v}_{2} + \cdots  + {v}_{n} + \cdots . \tag{7}
+\]
+%定理 12.13
+\begin{theorem}{}{the:}
+
+\end{theorem}
+ 设级数 (5) 绝对收敛,且其和等于 \(S\) ,则任意重排后所得到的级数 (7) 也绝对收敛, 且有相同的和数.
+
+%证
+\begin{proof}
+
+\end{proof}
+先假设级数 (5) 是正项级数,用 \({S}_{n}\) 表示它的第 \(n\) 个部分和. 现以
+\[
+{\sigma }_{m} = {v}_{1} + {v}_{2} + \cdots  + {v}_{m}
+\]
+表示级数 (7) 的第 \(m\) 个部分和. 因为级数 (7) 为级数 (5) 的重排,所以每一 \({v}_{k}\;\left( {1 \leq  k \leq  m}\right)\) 都等于某一 \({u}_{{i}_{k}}\left( {1 \leq  k \leq  m}\right)\) . 记
+\[
+n = \max \left\{  {{i}_{1},{i}_{2},\cdots ,{i}_{m}}\right\}  ,
+\]
+则对任何 \(m\) ,都存在 \(n\) ,使 \({\sigma }_{m} \leq  {S}_{n}\) .
+
+由于 \(\mathop{\lim }\limits_{{n \rightarrow  \infty }}{S}_{n} = S\) ,所以对任何正整数 \(m\) 都有 \({\sigma }_{m} \leq  S\) ,即得级数 (7) 收敛,且其和 \(\sigma  \leq  S\) .
+
+由于级数 (5) 也可看作级数 (7) 的重排,所以也有 \(S \leq  \sigma\) ,从而推得 \(\sigma  = S\) .
+
+若级数 (5) 是一般项级数且绝对收敛,则由级数 (6) 收敛及上述证明可推得级数 \(\sum \left| {v}_{n}\right|\) 也收敛, 即级数 (7) 是绝对收敛的.
+
+最后证明绝对收敛级数 (7) 的和也等于 \(S\) . 为此,令
+\[
+{p}_{n} = \frac{\left| {u}_{n}\right|  + {u}_{n}}{2},\;{q}_{n} = \frac{\left| {u}_{n}\right|  - {u}_{n}}{2}. \tag{8}
+\]
+当 \({u}_{n} \geq  0\) 时, \({p}_{n} = {u}_{n} \geq  0,{q}_{n} = 0\) ; 当 \({u}_{n} < 0\) 时, \({p}_{n} = 0,{q}_{n} = \left| {u}_{n}\right|  =  - {u}_{n} > 0\) . 从而有
+\[
+0 \leq  {p}_{n} \leq  \left| {u}_{n}\right| ,\;0 \leq  {q}_{n} \leq  \left| {u}_{n}\right| , \tag{9}
+\]
+\[
+{p}_{n} + {q}_{n} = \left| {u}_{n}\right| ,\;{p}_{n} - {q}_{n} = {u}_{n}. \tag{10}
+\]
+因为级数 (5) 绝对收敛,故由 (9) 知道 \(\sum {p}_{n},\sum {q}_{n}\) 都是正项的收敛级数. 再由定理 12.2 可得
+\[
+S = \sum {u}_{n} = \sum {p}_{n} - \sum {q}_{n}.
+\]
+对于级数 (5) 重排后所得到的级数 (7), 也可按 (8) 式的办法, 把它表示为两个收敛的正项级数之差
+\[
+\sum {v}_{n} = \sum {p}_{n}^{\prime } - \sum {q}_{n}^{\prime },
+\]
+其中 \(\sum {p}_{n}^{\prime },\sum {q}_{n}^{\prime }\) 分别是 \(\sum {p}_{n},\sum {q}_{n}\) 的重排,前面已经证明收敛的正项级数重排后,它的和不变,从而有
+\[
+\sum {v}_{n} = \sum {p}_{n}^{\prime } - \sum {q}_{n}^{\prime } = \sum {p}_{n} - \sum {q}_{n} = S.
+\]
+注意: 由条件收敛级数重排后所得到的新级数, 即使收敛, 也不一定收敛于原来的和数. 而且条件收敛级数适当重排后, 可得到发散级数, 或收敛于任何事先指定的数. 例如级数 (2) 是条件收敛的,设其和为 \(A\) ,即
+\[
+\mathop{\sum }\limits_{{n = 1}}^{\infty }{\left( -1\right) }^{n + 1}\frac{1}{n} = 1 - \frac{1}{2} + \frac{1}{3} - \frac{1}{4} + \frac{1}{5} - \frac{1}{6} + \frac{1}{7} - \frac{1}{8} + \cdots  = A.
+\]
+乘以常数 \(\frac{1}{2}\) 后,有
+\[
+\frac{1}{2}\sum {\left( -1\right) }^{n + 1}\frac{1}{n} = \frac{1}{2} - \frac{1}{4} + \frac{1}{6} - \frac{1}{8} + \cdots  = \frac{A}{2}.
+\]
+将上述两个级数相加, 就得到
+\[
+1 + \frac{1}{3} - \frac{1}{2} + \frac{1}{5} + \frac{1}{7} - \frac{1}{4} + \cdots  = \frac{3}{2}A.
+\]
+\section{2. 级数的乘积}
+
+由定理 12.2 知道,若 \(\sum {u}_{n}\) 为收敛级数, \(a\) 为常数,则
+\[
+a\sum {u}_{n} = \sum a{u}_{n},
+\]
+由此立刻可以推广到收敛级数 \(\mathop{\sum }\limits_{{n = 1}}^{\infty }{u}_{n}\) 与有限项和的乘积,即
+\[
+\left( {{a}_{1} + {a}_{2} + \cdots  + {a}_{m}}\right) \mathop{\sum }\limits_{{n = 1}}^{\infty }{u}_{n} = \mathop{\sum }\limits_{{n = 1}}^{\infty }\mathop{\sum }\limits_{{k = 1}}^{m}{a}_{k}{u}_{n},
+\]
+现在讨论在什么条件下能把它推广到无穷级数之间的乘积上去.
+
+设有收敛级数
+\[
+\sum {u}_{n} = {u}_{1} + {u}_{2} + \cdots  + {u}_{n} + \cdots  = A, \tag{11}
+\]
+\[
+\sum {v}_{n} = {v}_{1} + {v}_{2} + \cdots  + {v}_{n} + \cdots  = B. \tag{12}
+\]
+把级数 (11) 与 (12) 中每一项所有可能的乘积列成下表:(13)
+
+\begin{center}
+\adjustbox{max width=\textwidth}{
+\begin{tabular}{|c|c|c|c|c|c|}
+\hline
+\({u}_{1}{v}_{1}\) & \({u}_{1}{v}_{2}\) & \({u}_{1}{v}_{3}\) & ... & \({u}_{1}{v}_{n}\) & ... \\
+\cline{1-6}
+\({u}_{2}{v}_{1}\) & \({u}_{2}{v}_{2}\) & \({u}_{2}{v}_{3}\) & ... & \({u}_{2}{v}_{n}\) & ... \\
+\cline{1-6}
+\({u}_{3}{v}_{1}\) & \({u}_{3}{v}_{2}\) & \({u}_{3}{v}_{3}\) & ... & \({u}_{3}{v}_{n}\) & ... \\
+\cline{1-6}
+\(\vdots\) & \(\vdots\) & \(\vdots\) & \phantom{X} & \(\vdots\) & \phantom{X} \\
+\cline{1-6}
+\({u}_{n}{v}_{1}\) & \({u}_{n}{v}_{2}\) & \({u}_{n}{v}_{3}\) & ... & \({u}_{n}{v}_{n}\) & ... \\
+\cline{1-6}
+\(\vdots\) & \(\vdots\) & \(\vdots\) & \phantom{X} & \(\vdots\) & \phantom{X} \\
+\cline{1-6}
+\hline
+\end{tabular}
+}
+\end{center}
+
+这些乘积 \({u}_{i}{v}_{j}\) 可以按各种方法排成不同的级数,常用的有按正方形顺序或按对角线顺序 (图 12-1 所示) 依次相加, 于是分别有
+
+
+\[
+{u}_{1}{v}_{1} + {u}_{1}{v}_{2} + {u}_{2}{v}_{2} + {u}_{2}{v}_{1} + {u}_{1}{v}_{3} + {u}_{2}{v}_{3} + {u}_{3}{v}_{3} + {u}_{3}{v}_{2} + {u}_{3}{v}_{1} + \cdots
+\]
+
+
+(14)
+
+和
+\[
+{u}_{1}{v}_{1} + {u}_{1}{v}_{2} + {u}_{2}{v}_{1} + {u}_{1}{v}_{3} + {u}_{2}{v}_{2} + {u}_{3}{v}_{1} + \cdots . \tag{15}
+\]
+\[
+\begin{array}{l}  + {u}_{1}{v}_{1} + {u}_{2}{v}_{2} + {u}_{3}{v}_{3} \\  \end{array}
+\]
+\begin{figure}
+	\centering
+	\includegraphics[width=.3\textwidth]{images/P098.jpg}
+	\caption{图 $12-1$}
+	\label{fig:P098}
+\end{figure}
+
+%定理 12.14
+\begin{theorem}{}{the:}
+
+\end{theorem}
+ (柯西定理) 若级数 (11)、(12) 都绝对收敛,则对 (13) 中所有乘积 \({u}_{i}{v}_{j}\) 按任意顺序排列所得到的级数 \(\sum {w}_{n}\) 也绝对收敛,且其和等于 \({AB}\) .
+
+%证
+\begin{proof}
+
+\end{proof}
+以 \({S}_{n}\) 表示级数 \(\sum \left| {w}_{n}\right|\) 的部分和,即
+\[
+{S}_{n} = \left| {w}_{1}\right|  + \left| {w}_{2}\right|  + \cdots  + \left| {w}_{n}\right| ,
+\]
+其中 \({w}_{k} = {u}_{{i}_{k}}{v}_{{j}_{k}}\left( {k = 1,2,\cdots ,n}\right)\) ,记
+\[
+m = \max \left\{  {{i}_{1},{j}_{1},{i}_{2},{j}_{2},\cdots ,{i}_{n},{j}_{n}}\right\}  ,
+\]
+\[
+{A}_{m} = \left| {u}_{1}\right|  + \left| {u}_{2}\right|  + \cdots  + \left| {u}_{m}\right| ,
+\]
+\[
+{B}_{m} = \left| {v}_{1}\right|  + \left| {v}_{2}\right|  + \cdots  + \left| {v}_{m}\right| ,
+\]
+则必有
+\[
+{S}_{n} \leq  {A}_{m}{B}_{m}. \tag{16}
+\]
+由定理条件,级数 (11) 与 (12) 都绝对收敛,因而 \(\sum \left| {u}_{n}\right|\) 与 \(\sum \left| {v}_{n}\right|\) 的部分和数列 \(\left\{  {A}_{n}\right\}\) 和 \(\left\{  {B}_{n}\right\}\) 都是有界的. 于是由不等式 (16) 知 \(\left\{  {S}_{n}\right\}\) 是有界的,从而级数 \(\sum {w}_{n}\) 绝对收敛.
+
+由于绝对收敛级数具有可重排的性质, 也就是说级数的和与采用哪一种排列的次序无关. 为方便求和, 采取级数 (14) (按正方形顺序) 并对各被加项取括号, 即
+\[
+{u}_{1}{v}_{1} + \left( {{u}_{1}{v}_{2} + {u}_{2}{v}_{2} + {u}_{2}{v}_{1}}\right)  + \left( {{u}_{1}{v}_{3} + {u}_{2}{v}_{3} + {u}_{3}{v}_{3} + {u}_{3}{v}_{2} + {u}_{3}{v}_{1}}\right)  + \cdots ,
+\]
+把每一括号作为一项, 得新级数
+\[
+{p}_{1} + {p}_{2} + {p}_{3} + \cdots  + {p}_{n} + \cdots , \tag{17}
+\]
+它与级数 \(\sum {w}_{n}\) 同时收敛,且和数相同. 现以 \({P}_{n}\) 表示级数 (17) 的部分和,它与级数 (11),(12) 的部分和 \({A}_{n}\) 与 \({B}_{n}\) 有如下关系式:
+\[
+{P}_{n} = {A}_{n}{B}_{n}.
+\]
+从而有
+\[
+\mathop{\lim }\limits_{{n \rightarrow  \infty }}{P}_{n} = \mathop{\lim }\limits_{{n \rightarrow  \infty }}{A}_{n}{B}_{n} = \mathop{\lim }\limits_{{n \rightarrow  \infty }}{A}_{n}\mathop{\lim }\limits_{{n \rightarrow  \infty }}{B}_{n} = {AB}.
+\]
+例2 等比级数
+\[
+\frac{1}{1 - r} = 1 + r + {r}^{2} + \cdots  + {r}^{n} + \cdots ,\;\left| r\right|  < 1
+\]
+是绝对收敛的. 将 \({\left( \sum {r}^{n}\right) }^{2}\) 按 (15) 的顺序排列,则得到
+\[
+\frac{1}{{\left( 1 - r\right) }^{2}} = 1 + \left( {r + r}\right)  + \left( {{r}^{2} + {r}^{2} + {r}^{2}}\right)  + \cdots  + \left( \underset{n + 1\text{ 个 }}{\underbrace{{r}^{n} + \cdots  + {r}^{n}}}\right)  + \cdots
+\]
+\[
+= 1 + {2r} + 3{r}^{2} + \cdots  + \left( {n + 1}\right) {r}^{n} + \cdots .
+\]
+\subsection{阿贝尔判别法和狄利克雷判别法}
+
+本段介绍两个判别一般项级数收敛性的方法, 先引进一个公式:
+
+引理 (分部求和公式,也称阿贝尔变换) 设 \({\varepsilon }_{i},{v}_{i}\;\left( {i = 1,2,\cdots ,n}\right)\) 为两组实数, 若令
+\[
+{\sigma }_{k} = {v}_{1} + {v}_{2} + \cdots  + {v}_{k}\;\left( {k = 1,2,\cdots ,n}\right) ,
+\]
+则有如下分部求和公式成立:
+\[
+\mathop{\sum }\limits_{{i = 1}}^{n}{\varepsilon }_{i}{v}_{i} = \left( {{\varepsilon }_{1} - {\varepsilon }_{2}}\right) {\sigma }_{1} + \left( {{\varepsilon }_{2} - {\varepsilon }_{3}}\right) {\sigma }_{2} + \cdots  + \left( {{\varepsilon }_{n - 1} - {\varepsilon }_{n}}\right) {\sigma }_{n - 1} + {\varepsilon }_{n}{\sigma }_{n}. \tag{18}
+\]
+%证
+\begin{proof}
+
+\end{proof}
+以 \({v}_{1} = {\sigma }_{1},{v}_{k} = {\sigma }_{k} - {\sigma }_{k - 1}\left( {k = 2,3,\cdots ,n}\right)\) 分别乘 \({\varepsilon }_{k}\left( {k = 1,2,\cdots ,n}\right)\) ,整理后就得所要证的公式 (18).
+
+推论 (阿贝尔引理) 若
+
+(i) \({\varepsilon }_{1},{\varepsilon }_{2},\cdots ,{\varepsilon }_{n}\) 是单调数组;
+
+(ii) 对任一正整数 \(k\;\left( {1 \leq  k \leq  n}\right)\) 有 \(\left| {\sigma }_{k}\right|  \leq  A\) (这里 \({\sigma }_{k} = {v}_{1} + \cdots  + {v}_{k}\) ),则记 \(\varepsilon  =\)  \(\mathop{\max }\limits_{k}\left\{  \left| {\varepsilon }_{k}\right| \right\}\) ,有
+\[
+\left| {\mathop{\sum }\limits_{{k = 1}}^{n}{\varepsilon }_{k}{v}_{k}}\right|  \leq  {3\varepsilon A}. \tag{19}
+\]
+%证
+\begin{proof}
+
+\end{proof}
+由 (i) 知道
+\[
+{\varepsilon }_{1} - {\varepsilon }_{2},{\varepsilon }_{2} - {\varepsilon }_{3},\cdots ,{\varepsilon }_{n - 1} - {\varepsilon }_{n}
+\]
+都是同号的. 于是由分部求和公式及条件 (ii) 推得
+\[
+\left| {\mathop{\sum }\limits_{{k = 1}}^{n}{\varepsilon }_{k}{v}_{k}}\right|  = \left| {\left( {{\varepsilon }_{1} - {\varepsilon }_{2}}\right) {\sigma }_{1} + \left( {{\varepsilon }_{2} - {\varepsilon }_{3}}\right) {\sigma }_{2} + \cdots  + \left( {{\varepsilon }_{n - 1} - {\varepsilon }_{n}}\right) {\sigma }_{n - 1} + {\varepsilon }_{n}{\sigma }_{n}}\right|
+\]
+\[
+\leq  A\left| {\left( {{\varepsilon }_{1} - {\varepsilon }_{2}}\right)  + \left( {{\varepsilon }_{2} - {\varepsilon }_{3}}\right)  + \cdots  + \left( {{\varepsilon }_{n - 1} - {\varepsilon }_{n}}\right) }\right|  + A\left| {\varepsilon }_{n}\right|
+\]
+\[
+= A\left| {{\varepsilon }_{1} - {\varepsilon }_{n}}\right|  + A\left| {\varepsilon }_{n}\right|
+\]
+\[
+\leq  A\left( {\left| {\varepsilon }_{1}\right|  + 2\left| {\varepsilon }_{n}\right| }\right)
+\]
+\[
+\leq  {3\varepsilon A}\text{ . }
+\]
+现在讨论级数
+\[
+\sum {a}_{n}{b}_{n} = {a}_{1}{b}_{1} + {a}_{2}{b}_{2} + \cdots  + {a}_{n}{b}_{n} + \cdots  \tag{20}
+\]
+收敛性的判别法.
+
+%定理 12.15
+\begin{theorem}{}{the:}
+
+\end{theorem}
+ (阿贝尔判别法) 若 \(\left\{  {a}_{n}\right\}\) 为单调有界数列,且级数 \(\sum {b}_{n}\) 收敛,则级数 (20) 收敛.
+
+%证
+\begin{proof}
+
+\end{proof}
+由级数 \(\sum {b}_{n}\) 收敛,依柯西准则,对任给正数 \(\varepsilon\) ,存在正数 \(N\) ,使当 \(n > N\) 时对任一正整数 \(p\) ,都有
+\[
+\left| {\mathop{\sum }\limits_{{k = n + 1}}^{{n + p}}{b}_{k}}\right|  < \varepsilon
+\]
+又由于数列 \(\left\{  {a}_{n}\right\}\) 有界,所以存在 \(M > 0\) ,使 \(\left| {a}_{n}\right|  \leq  M\) ,应用 (19) 式结果可得到
+\[
+\left| {\mathop{\sum }\limits_{{k = n + 1}}^{{n + p}}{a}_{k}{b}_{k}}\right|  \leq  {3M\varepsilon }.
+\]
+这就说明级数 (20) 收敛.
+
+%定理 12.16
+\begin{theorem}{}{the:}
+
+\end{theorem}
+ (狄利克雷判别法) 若数列 \(\left\{  {a}_{n}\right\}\) 单调递减,且 \(\mathop{\lim }\limits_{{n \rightarrow  \infty }}{a}_{n} = 0\) ,又级数 \(\sum {b}_{n}\) 的部分和数列有界,则级数 (20) 收敛.
+
+证明方法类似于定理 12.15 , 请读者自证.
+
+由阿贝尔判别法知道,若级数 \(\sum {u}_{n}\) 收敛,则下述两个级数:
+\[
+\sum \frac{{u}_{n}}{{n}^{p}}\;\left( {p > 0}\right) ,\;\sum \frac{{u}_{n}}{\sqrt{n + 1}}
+\]
+都收敛.
+
+%例 3
+\begin{example}
+
+\end{example}
+若数列 \(\left\{  {a}_{n}\right\}\) 具有性质:
+\[
+{a}_{1} \geq  {a}_{2} \geq  \cdots  \geq  {a}_{n} \geq  \cdots ,\;\mathop{\lim }\limits_{{n \rightarrow  \infty }}{a}_{n} = 0,
+\]
+则级数 \(\sum {a}_{n}\sin {nx}\) 和 \(\sum {a}_{n}\cos {nx}\) 对任何 \(x \in  \left( {0,{2\pi }}\right)\) 都收敛.
+
+%解
+\begin{solution}
+
+\end{solution}
+因为
+\[
+2\sin \frac{x}{2}\left( {\frac{1}{2} + \mathop{\sum }\limits_{{k = 1}}^{n}\cos {kx}}\right)  = \sin \frac{x}{2} + \left( {\sin \frac{3}{2}x - \sin \frac{x}{2}}\right)  + \cdots  +
+\]
+\[
+\left\lbrack  {\sin \left( {n + \frac{1}{2}}\right) x - \sin \left( {n - \frac{1}{2}}\right) x}\right\rbrack
+\]
+\[
+= \sin \left( {n + \frac{1}{2}}\right) x,
+\]
+当 \(x \in  \left( {0,{2\pi }}\right)\) 时, \(\sin \frac{x}{2} \neq  0\) ,故得到
+\[
+\frac{1}{2} + \mathop{\sum }\limits_{{k = 1}}^{n}\cos {kx} = \frac{\sin \left( {n + \frac{1}{2}}\right) x}{2\sin \frac{x}{2}}. \tag{21}
+\]
+所以级数 \(\sum \cos {nx}\) 的部分和数列当 \(x \in  \left( {0,{2\pi }}\right)\) 时有界,由狄利克雷判别法推得级数 \(\sum {a}_{n}\cos {nx}\) 收敛. 同理可证级数 \(\sum {a}_{n}\sin {nx}\) 也是收敛的.
+
+作为例 3 的特殊情形, 我们知道级数
+\[
+\sum \frac{\sin {nx}}{n}\text{ 和 }\sum \frac{\cos {nx}}{n}
+\]
+对一切 \(x \in  \left( {0,{2\pi }}\right)\) 都收敛.
+
+\subsection{习题 12.3}
+
+1. 下列级数哪些是绝对收敛、条件收敛或发散的:
+
+(1) \(\sum \frac{\sin {nx}}{n!}\) ;
+
+(2) \(\sum {\left( -1\right) }^{n}\frac{n}{n + 1}\) ;
+
+(3) \(\sum \frac{{\left( -1\right) }^{n}}{{n}^{p + \frac{1}{n}}}\) ;
+
+(4) \(\sum {\left( -1\right) }^{n}\sin \frac{2}{n}\) ;
+
+(5) \(\sum \left( {\frac{{\left( -1\right) }^{n}}{\sqrt{n}} + \frac{1}{n}}\right)\) ;
+
+(6) \(\sum \frac{{\left( -1\right) }^{n}\ln \left( {n + 1}\right) }{n + 1}\) ;
+
+(7) \(\sum {\left( -1\right) }^{n}{\left( \frac{{2n} + {100}}{{3n} + 1}\right) }^{n}\) ;
+
+(8) \(\sum n!{\left( \frac{x}{n}\right) }^{n}\) ;
+
+(9) \(1 + \frac{1}{2} + \frac{1}{3} - \frac{1}{4} - \frac{1}{5} - \frac{1}{6} + \cdots\) ;
+
+(1) \(1 + \frac{1}{2} - \frac{1}{3} + \frac{1}{4} + \frac{1}{5} - \frac{1}{6} + \cdots\) .
+
+2. 应用阿贝尔判别法或狄利克雷判别法判断下列级数的敛散性:
+
+(1) \(\sum \frac{{\left( -1\right) }^{n}}{n}\frac{{x}^{n}}{1 + {x}^{n}}\;\left( {x > 0}\right)\) ;
+
+(2) \(\sum \frac{\sin {nx}}{{n}^{\alpha }},x \in  \left( {0,{2\pi }}\right) \;\left( {\alpha  > 0}\right)\) ；
+
+(3) \(\sum {\left( -1\right) }^{n}\frac{{\cos }^{2}n}{n}\) .
+
+3. 设 \({a}_{n} > 0,{a}_{n} > {a}_{n + 1}\left( {n = 1,2,\cdots }\right)\) 且 \(\mathop{\lim }\limits_{{n \rightarrow  \infty }}{a}_{n} = 0\) . 证明级数
+\[
+\sum {\left( -1\right) }^{n - 1}\frac{{a}_{1} + {a}_{2} + \cdots  + {a}_{n}}{n}
+\]
+是收敛的.
+
+4. 设 \({p}_{n},{q}_{n}\) 如 (8) 式所定义. 证明: 若 \(\sum {u}_{n}\) 条件收敛,则级数 \(\sum {p}_{n}\) 与 \(\sum {q}_{n}\) 都是发散的.
+
+5. 写出下列级数的乘积:
+
+(1) \(\left( {\mathop{\sum }\limits_{{n = 1}}^{\infty }n{x}^{n - 1}}\right) \left( {\mathop{\sum }\limits_{{n = 1}}^{\infty }{\left( -1\right) }^{n - 1}n{x}^{n - 1}}\right)\) ;
+
+(2) \(\left( {\mathop{\sum }\limits_{{n = 0}}^{\infty }\frac{1}{n!}}\right) \left( {\mathop{\sum }\limits_{{n = 0}}^{\infty }\frac{{\left( -1\right) }^{n}}{n!}}\right)\) .
+
+6. 证明级数 \(\mathop{\sum }\limits_{{n = 0}}^{\infty }\frac{{a}^{n}}{n!}\) 与 \(\mathop{\sum }\limits_{{n = 0}}^{\infty }\frac{{b}^{n}}{n!}\) 绝对收敛,且它们的乘积等于 \(\mathop{\sum }\limits_{{n = 0}}^{\infty }\frac{{\left( a + b\right) }^{n}}{n!}\) .
+
+7. 重排级数 \(\sum {\left( -1\right) }^{n + 1}\frac{1}{n}\) ,使它成为发散级数.
+
+8. 证明: 级数 \(\sum \frac{{\left( -1\right) }^{\left\lbrack  \sqrt{n}\right\rbrack  }}{n}\) 收敛.
+
+\section{总练习题}
+
+1. 证明: 若正项级数 \(\sum {u}_{n}\) 收敛,且数列 \(\left\{  {u}_{n}\right\}\) 单调,则 \(\mathop{\lim }\limits_{{n \rightarrow  \infty }}n{u}_{n} = 0\) .
+
+2. 若级数 \(\sum {a}_{n}\) 与 \(\sum {c}_{n}\) 都收敛,且成立不等式
+\[
+{a}_{n} \leq  {b}_{n} \leq  {c}_{n}\;\left( {n = 1,2,\cdots }\right) ,
+\]
+证明级数 \(\sum {b}_{n}\) 也收敛. 若 \(\sum {a}_{n},\sum {c}_{n}\) 都发散,试问 \(\sum {b}_{n}\) 一定发散吗?
+
+3. 讨论 \(\mathop{\sum }\limits_{{n = 1}}^{{+\infty }}\frac{\sin {nx}}{{n}^{p}}{\left( 1 + \frac{1}{n}\right) }^{n}\left( {0 < x < {2\pi },p > 0}\right)\) 的收敛性.
+
+4. 若 \(\mathop{\lim }\limits_{{n \rightarrow  \infty }}\frac{{a}_{n}}{{b}_{n}} = k \neq  0\) ,且级数 \(\sum {b}_{n}\) 绝对收敛,证明级数 \(\sum {a}_{n}\) 也收敛. 若上述条件中只知道 \(\sum {b}_{n}\) 收敛, 能推得 \(\sum {a}_{n}\) 收敛吗?
+
+5. (1) 设 \(\sum {u}_{n}\) 为正项级数,且 \(\frac{{u}_{n + 1}}{{u}_{n}} < 1\) ,能否断定 \(\sum {u}_{n}\) 收敛?
+
+(2)对于级数 \(\sum {u}_{n}\) 有 \(\left| \frac{{u}_{n + 1}}{{u}_{n}}\right|  \geq  1\) ,能否断定级数 \(\sum {u}_{n}\) 不绝对收敛,但可能条件收敛?
+
+(3)设 \(\sum {u}_{n}\) 为收敛的正项级数,能否存在一个正数 \(\varepsilon\) ,使得
+\[
+\mathop{\lim }\limits_{{n \rightarrow  \infty }}\frac{{u}_{n}}{\frac{1}{{n}^{1 + \varepsilon }}} = c > 0?
+\]
+6. 证明: 若级数 \(\sum {a}_{n}\) 收敛, \(\sum \left( {{b}_{n + 1} - {b}_{n}}\right)\) 绝对收敛,则级数 \(\sum {a}_{n}{b}_{n}\) 也收敛.
+
+7. 设 \({a}_{n} > 0\) ,证明级数
+\[
+\sum \frac{{a}_{n}}{\left( {1 + {a}_{1}}\right) \left( {1 + {a}_{2}}\right) \cdots \left( {1 + {a}_{n}}\right) }
+\]
+是收敛的.
+
+8. 证明: 若级数 \(\sum {a}_{n}^{2}\) 与 \(\sum {b}_{n}^{2}\) 收敛,则级数 \(\sum {a}_{n}{b}_{n}\) 和 \(\sum {\left( {a}_{n} + {b}_{n}\right) }^{2}\) 也收敛,且
+\[
+{\left( \sum {a}_{n}{b}_{n}\right) }^{2} \leq  \sum {a}_{n}^{2} \cdot  \sum {b}_{n}^{2},
+\]
+\[
+{\left( \sum {\left( {a}_{n} + {b}_{n}\right) }^{2}\right) }^{\frac{1}{2}} \leq  {\left( \sum {a}_{n}^{2}\right) }^{\frac{1}{2}} + {\left( \sum {b}_{n}^{2}\right) }^{\frac{1}{2}}.
+\]

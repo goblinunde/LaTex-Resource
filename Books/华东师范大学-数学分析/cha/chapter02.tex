@@ -1,0 +1,1347 @@
+\chapter{数列极限}
+
+\section{数列极限概念}
+
+若函数 \(f\) 的定义域为全体正整数集合 \({\mathbf{N}}_{ + }\) ,则称
+\[
+f : {\mathbf{N}}_{ + } \rightarrow  \mathbf{R}\text{ 或 }f\left( n\right) ,n \in  {\mathbf{N}}_{ + }
+\]
+为数列. 因正整数集 \({\mathbf{N}}_{ + }\) 的元素可按由小到大的顺序排列,故数列 \(f\left( n\right)\) 也可写作
+\[
+{a}_{1},{a}_{2},\cdots ,{a}_{n},\cdots ,
+\]
+或简单地记为 \(\left\{  {a}_{n}\right\}\) ,其中 \({a}_{n}\) 称为该数列的通项.
+
+关于数列极限, 先举一个我国古代有关数列的例子.
+
+%例 1
+\begin{example}
+古代哲学家庄周所著的《庄子·天下篇》引用过一句话:一尺之棰,日取其半, 万世不竭. 其含义是: 一根长为一尺的木棒, 每天截下一半, 这样的过程可以无限制地进行下去.
+
+把每天截下部分的长度列出如下 (单位为尺):
+
+第一天截下 \(\frac{1}{2}\) ,第二天截下 \(\frac{1}{{2}^{2}}\cdots \cdots\) 第 \(n\) 天截下 \(\frac{1}{{2}^{n}}\cdots \cdots\) 这样就得到一个数列
+\[
+\frac{1}{2},\frac{1}{{2}^{2}},\cdots ,\frac{1}{{2}^{n}},\cdots ,\text{ 或 }\left\{  \frac{1}{{2}^{n}}\right\}  .
+\]
+\end{example}
+
+不难看出,数列 \(\left\{  \frac{1}{{2}^{n}}\right\}\) 的通项 \(\frac{1}{{2}^{n}}\) 随着 \(n\) 的无限增大而无限地接近于 0 .一般地说,对于数列 \(\left\{  {a}_{n}\right\}\) ,若当 \(n\) 无限增大时, \({a}_{n}\) 能无限地接近某一个常数 \(a\) ,则称此数列为收敛数列,常数 \(a\) 称为它的极限. 不具有这种特性的数列就不是收敛数列.
+
+收敛数列的特性是 “随着 \(n\) 的无限增大, \({a}_{n}\) 无限地接近某一常数 \(a\) ”. 这就是说,当 \(n\) 充分大时,数列的通项 \({a}_{n}\) 与常数 \(a\) 之差的绝对值可以任意小. 下面我们给出收敛数列及其极限的精确定义.
+
+%定义  1
+\begin{definition}{极限}{def:极限}
+设 \(\left\{  {a}_{n}\right\}\) 为数列, \(a\) 为定数. 若对任给的正数 \(\varepsilon\) ,总存在正整数 \(N\) ,使得当 \(n > N\) 时,有
+\[
+\left| {{a}_{n} - a}\right|  < \varepsilon ,
+\]
+则称数列 \(\left\{  {a}_{n}\right\}\) 收敛于 \(a\) ,定数 \(a\) 称为数列 \(\left\{  {a}_{n}\right\}\) 的极限,并记作
+\[
+\mathop{\lim }\limits_{{n \rightarrow  \infty }}{a}_{n} = {a}\footnote{记号 \(\lim\) 是拉丁文 limes(极限)一词的前三个字母. 由于 \(n\) 限于取正整数,所以在表示数列极限的记号中把 \(n \rightarrow   + \infty\) 简单地写作 \(n \rightarrow  \infty\) .}\text{ ,或 }{a}_{n} \rightarrow  a\left( {n \rightarrow  \infty }\right) \text{ , }
+\]
+读作“当 \(n\) 趋于无穷大时, \(\left\{  {a}_{n}\right\}\) 的极限等于 \(a\) 或 \({a}_{n}\) 趋于 \(a\) ”.
+
+若数列 \(\left\{  {a}_{n}\right\}\) 没有极限,则称 \(\left\{  {a}_{n}\right\}\) 不收敛,或称 \(\left\{  {a}_{n}\right\}\) 为发散数列.
+\end{definition}
+
+
+定义 1 常称为数列极限的 \(\varepsilon  - N\) 定义. 下面举例说明如何根据 \(\varepsilon  - N\) 定义来验证数列极限.
+
+%例 2
+\begin{example}
+证明 \(\mathop{\lim }\limits_{{n \rightarrow  \infty }}\frac{1}{{n}^{\alpha }} = 0\) ,这里 \(\alpha\) 为正数.
+\end{example}
+
+
+%证
+\begin{proof}
+由于
+\[
+\left| {\frac{1}{{n}^{\alpha }} - 0}\right|  = \frac{1}{{n}^{\alpha }},
+\]
+故对任给的 \(\varepsilon  > 0\) ,只要取 \(N = \left\lbrack  \frac{1}{{\varepsilon }^{\frac{1}{\alpha }}}\right\rbrack   + 1\) ,则当 \(n > N\) 时,便有
+\[
+\frac{1}{{n}^{\alpha }} < \frac{1}{{N}^{\alpha }} < \varepsilon ,\;\text{ 即 }\left| {\frac{1}{{n}^{\alpha }} - 0}\right|  < \varepsilon .
+\]
+这就证明了 \(\mathop{\lim }\limits_{{n \rightarrow  \infty }}\frac{1}{{n}^{\alpha }} = 0\) .
+
+\end{proof}
+
+
+%例 3
+\begin{example}
+证明
+
+\[
+\mathop{\lim }\limits_{{n \rightarrow  \infty }}\frac{3{n}^{2}}{{n}^{2} - 3} = 3.
+\]
+\end{example}
+
+
+分析 由于
+
+\[
+\left| {\frac{3{n}^{2}}{{n}^{2} - 3} - 3}\right|  = \frac{9}{{n}^{2} - 3} \leq  \frac{9}{n}\;\left( {n \geq  3}\right) . \tag{1}
+\]
+
+因此,对任给的 \(\varepsilon  > 0\) ,只要 \(\frac{9}{n} < \varepsilon\) ,便有
+
+\[
+\left| {\frac{3{n}^{2}}{{n}^{2} - 3} - 3}\right|  < \varepsilon , \tag{2}
+\]
+
+即当 \(n > \frac{9}{\varepsilon }\) 时,(2) 式成立. 又由于 (1) 式是在 \(n \geq  3\) 的条件下成立的,故应取
+
+\[
+N = \max \left\{  {3,\frac{9}{\varepsilon }}\right\}  . \tag{3}
+\]
+
+%证
+\begin{proof}
+任给 \(\varepsilon  > 0\) ,取 \(N = \max \left\{  {3,\frac{9}{\varepsilon }}\right\}\) . 据分析,当 \(n > N\) 时 (2) 式成立. 于是本题得证.
+
+\end{proof}
+
+
+%注
+\begin{remark}
+本例在求 \(N\) 的过程中,(1) 式中运用了适当放大的方法,这样求 \(N\) 就比较方便. 但应注意这种放大必须 “适当”,以根据给定的 \(\varepsilon\) 能确定出 \(N\) . 又 (3) 式给出的 \(N\) 不一定是正整数.一般地,在定义 1 中 \(N\) 不一定限于正整数,而只要它是正数即可.
+\end{remark}
+
+
+%例 4
+\begin{example}
+证明 \(\mathop{\lim }\limits_{{n \rightarrow  \infty }}{q}^{n} = 0\) ,这里 \(\left| q\right|  < 1\) .
+\end{example}
+
+
+%证
+\begin{proof}
+若 \(q = 0\) ,则结果是显然的. 现设 \(0 < \left| q\right|  < 1\) . 记 \(h = \frac{1}{\left| q\right| } - 1\) ,则 \(h > 0\) . 我们有
+
+\[
+\left| {{q}^{n} - 0}\right|  = {\left| q\right| }^{n} = \frac{1}{{\left( 1 + h\right) }^{n}},
+\]
+
+并由 \({\left( 1 + h\right) }^{n} \geq  1 + {nh}\) 得到
+
+\[
+{\left| q\right| }^{n} \leq  \frac{1}{1 + {nh}} < \frac{1}{nh}. \tag{4}
+\]
+
+对任给的 \(\varepsilon  > 0\) ,只要取 \(N = \frac{1}{\varepsilon h}\) ,则当 \(n > N\) 时,由 (4) 式得 \(\left| {{q}^{n} - 0}\right|  < \varepsilon\) . 这就证明了 \(\mathop{\lim }\limits_{{n \rightarrow  \infty }}{q}^{n} = 0.\)
+
+当 \(q = \frac{1}{2}\) 时,就是前面例 1 的结果.
+
+\end{proof}
+
+
+%注
+\begin{remark}
+本例还可利用对数函数 \(y = \lg x\) 的严格增性来证明 (见第一章 §4 例 6 的注及 (2)式),简述如下:
+
+对任给的 \(\varepsilon  > 0\) (不妨设 \(\varepsilon  < 1\) ),为使 \(\left| {{q}^{n} - 0}\right|  = {\left| q\right| }^{n} < \varepsilon\) ,只要
+
+\[
+n\lg \left| q\right|  < \lg \varepsilon \text{ ,即 }n > \frac{\lg \varepsilon }{\lg \left| q\right| }\text{ (这里也假定 }0 < \left| q\right|  < 1\text{ ). }
+\]
+
+于是,只要取 \(N = \frac{\lg \varepsilon }{\lg \left| q\right| }\) 即可.
+\end{remark}
+
+
+%例 5
+\begin{example}
+证明 \(\mathop{\lim }\limits_{{n \rightarrow  \infty }}\sqrt[n]{a} = 1\) ,其中 \(a > 0\) .
+\end{example}
+
+
+%证
+\begin{proof}
+当 \(a = 1\) 时,结论显然成立. 现设 \(a > 1\) . 记 \({\alpha }_{n} = {a}^{\frac{1}{n}} - 1\) ,则 \({\alpha }_{n} > 0\) . 由
+
+\[
+a = {\left( 1 + {\alpha }_{n}\right) }^{n} \geq  1 + n{\alpha }_{n} = 1 + n\left( {{a}^{\frac{1}{n}} - 1}\right) ,
+\]
+
+得
+\[
+{a}^{\frac{1}{n}} - 1 \leq  \frac{a - 1}{n}. \tag{5}
+\]
+
+任给 \(\varepsilon  > 0\) ,由 (5) 式可见,当 \(n > \frac{a - 1}{\varepsilon } = N\) 时,就有 \({a}^{\frac{1}{n}} - 1 < \varepsilon\) ,即 \(\left| {{a}^{\frac{1}{n}} - 1}\right|  < \varepsilon\) . 所以 \(\mathop{\lim }\limits_{{n \rightarrow  \infty }}\sqrt[n]{a} = 1\) . 对于 \(0 < a < 1\) 的情形,其证明留给读者.
+
+\end{proof}
+
+
+%例 6
+\begin{example}
+证明 \(\mathop{\lim }\limits_{{n \rightarrow  \infty }}\frac{{a}^{n}}{n!} = 0\) .
+\end{example}
+
+
+%证
+\begin{proof}
+若 \(a = 0\) ,结论是显然的,现设 \(a \neq  0,k = \left\lbrack  \left| a\right| \right\rbrack   + 1\) ,有
+\[
+\left| {\frac{{a}^{n}}{n!} - 0}\right|  = \frac{{\left| a\right| }^{n}}{n!} = \frac{\left| a\right|  \cdot  \left| a\right|  \cdot  \cdots  \cdot  \left| a\right|  \cdot  \cdots  \cdot  \left| a\right| }{1 \cdot  2 \cdot  \cdots  \cdot  k \cdot  \cdots  \cdot  n} \leq  K\frac{\left| a\right| }{n},
+\]
+
+其中 \(K = \frac{\left| a\right|  \cdot  \left| a\right|  \cdot  \cdots  \cdot  \left| a\right| }{1 \cdot  2 \cdot  \cdots  \cdot  k}\) . 所以对于任给的 \(\varepsilon  > 0\) ,取 \(N = \max \left\{  {k,\frac{K\left| a\right| }{\varepsilon }}\right\}\) ,只要 \(n > N\) ,就有
+\[
+\left| {\frac{{a}^{n}}{n!} - 0}\right|  \leq  K\frac{\left| a\right| }{n} < \varepsilon ,
+\]
+
+这就证明了 \(\mathop{\lim }\limits_{{n \rightarrow  \infty }}\frac{{a}^{n}}{n!} = 0\) .
+
+\end{proof}
+
+
+关于数列极限的 \(\varepsilon  - N\) 定义,通过以上几个例子,读者已有了初步的认识. 对此还应着重注意下面几点:
+
+1. \(\varepsilon\) 的任意性 定义 1 中正数 \(\varepsilon\) 的作用在于衡量数列通项 \({a}_{n}\) 与定数 \(a\) 的接近程度, \(\varepsilon\) 愈小,表示接近得愈好; 而正数 \(\varepsilon\) 可以任意地小,说明 \({a}_{n}\) 与 \(a\) 可以接近到任何程度. 然而,尽管 \(\varepsilon\) 有其任意性,但一经给出,就暂时被确定下来,以便依靠它来求出 \(N\) . 又 \(\varepsilon\) 既是任意小的正数,那么 \(\frac{\varepsilon }{2},{3\varepsilon }\) 或 \({\varepsilon }^{2}\) 等同样也是任意小的正数,因此定义 1 中不等式 \(\left| {{a}_{n} - a}\right|  < \varepsilon\) 中的 \(\varepsilon\) 可用 \(\frac{\varepsilon }{2},{3\varepsilon }\) 或 \({\varepsilon }^{2}\) 等来代替. 同时,正由于 \(\varepsilon\) 是任意小正数,我们可限定 \(\varepsilon\) 小于一个确定的正数 (如在例 4 的注给出的证明方法中限定 \(\varepsilon  < 1\) ). 另外,定义 1 中的 \(\left| {{a}_{n} - a}\right|  < \varepsilon\) 也可改写成 \(\left| {{a}_{n} - a}\right|  \leq  \varepsilon\) .
+
+2. \(N\) 的相应性 一般说, \(N\) 随 \(\varepsilon\) 的变小而变大,由此常把 \(N\) 写作 \(N\left( \varepsilon \right)\) ,来强调 \(N\) 是依赖于 \(\varepsilon\) 的,但这并不意味着 \(N\) 是由 \(\varepsilon\) 所唯一确定的. 因为对给定的 \(\varepsilon\) ,比如当 \(N =100\) 时,能使得当 \(n > N\) 时有 \(\left| {{a}_{n} - a}\right|  < \varepsilon\) ,则 \(N = {101}\) 或更大时此不等式自然也成立. 这里重要的是 \(N\) 的存在性,而不在于它的值的大小. 另外,定义 1 中的 \(n > N\) 也可改写成 \(n \geq  N\) .
+
+3. 从几何意义上看,“当 \(n > N\) 时有 \(\left| {{a}_{n} - a}\right|  < \varepsilon\) ” 意味着: 所有下标大于 \(N\) 的项 \({a}_{n}\) 都落在邻域 \(U\left( {a;\varepsilon }\right)\) 内; 而在 \(U\left( {a;\varepsilon }\right)\) 之外,数列 \(\left\{  {a}_{n}\right\}\) 中的项至多只有 \(N\) 个 (有限个). 反之,任给 \(\varepsilon  > 0\) ,若在 \(U\left( {a;\varepsilon }\right)\) 之外数列 \(\left\{  {a}_{n}\right\}\) 中的项只有有限个,设这有限个项的最大下标为 \(N\) ,则当 \(n > N\) 时有 \({a}_{n} \in  U\left( {a;\varepsilon }\right)\) ,即当 \(n > N\) 时有 \(\left| {{a}_{n} - a}\right|  < \varepsilon\) . 由此,我们可写出数列极限的一种等价定义如下.
+
+定义 \({\mathbf{1}}^{\prime }\) 任给 \(\varepsilon  > 0\) ,若在 \(U\left( {a;\varepsilon }\right)\) 之外数列 \(\left\{  {a}_{n}\right\}\) 中的项至多只有有限个,则称数列 \(\left\{  {a}_{n}\right\}\) 收敛于极限 \(a\) .
+
+由定义 \({1}^{\prime }\) 可知,若存在某 \({\varepsilon }_{0} > 0\) ,使得数列 \(\left\{  {a}_{n}\right\}\) 中有无穷多个项落在 \(U\left( {a;{\varepsilon }_{0}}\right)\) 之外,则 \(\left\{  {a}_{n}\right\}\) 一定不以 \(a\) 为极限.
+
+%例 7
+\begin{example}
+证明 \(\left\{  {n}^{2}\right\}\) 和 \(\left\{  {\left( -1\right) }^{n}\right\}\) 都是发散数列.
+\end{example}
+
+
+%证
+\begin{proof}
+对任何 \(a \in  \mathbf{R}\) ,取 \({\varepsilon }_{0} = 1\) ,则数列 \(\left\{  {n}^{2}\right\}\) 中所有满足 \(n > a + 1\) 的项 (有无穷多个) 显然都落在 \(U\left( {a;{\varepsilon }_{0}}\right)\) 之外,故 \(\left\{  {n}^{2}\right\}\) 不以任何数 \(a\) 为极限,即 \(\left\{  {n}^{2}\right\}\) 为发散数列.
+
+至于数列 \(\left\{  {\left( -1\right) }^{n}\right\}\) ,当 \(a = 1\) 时取 \({\varepsilon }_{0} = 1\) ,则在 \(U\left( {a;{\varepsilon }_{0}}\right)\) 之外有 \(\left\{  {\left( -1\right) }^{n}\right\}\) 中的所有奇数项; 当 \(a \neq  1\) 时取 \({\varepsilon }_{0} = \frac{1}{2}\left| {a - 1}\right|\) ,则在 \(U\left( {a;{\varepsilon }_{0}}\right)\) 之外有 \(\left\{  {\left( -1\right) }^{n}\right\}\) 中的所有偶数项. 所以 \(\left\{  {\left( -1\right) }^{n}\right\}\) 不以任何数 \(a\) 为极限,即 \(\left\{  {\left( -1\right) }^{n}\right\}\) 为发散数列.
+\end{proof}
+
+%例 8
+\begin{example}
+设 \(\mathop{\lim }\limits_{{n \rightarrow  \infty }}{x}_{n} = a,\mathop{\lim }\limits_{{n \rightarrow  \infty }}{y}_{n} = b\) . 作数列 \(\left\{  {z}_{n}\right\}\) 为
+\[
+{x}_{1},{y}_{1},{x}_{2},{y}_{2},\cdots ,{x}_{n},{y}_{n},\cdots .
+\]
+
+求证:数列 \(\left\{  {z}_{n}\right\}\) 收敛的充分必要条件是 \(a = b\) .
+\end{example}
+
+
+%证
+\begin{proof}
+充分性 因为 \(a = b\) ,即 \(\mathop{\lim }\limits_{{n \rightarrow  \infty }}{x}_{n} = \mathop{\lim }\limits_{{n \rightarrow  \infty }}{y}_{n} = a\) ,所以对于任给的 \(\varepsilon  > 0\) ,数列 \(\left\{  {x}_{n}\right\}\) 和 \(\left\{  {y}_{n}\right\}\) 落在 \(U\left( {a;\varepsilon }\right)\) 之外的项至多只有有限个,从而数列 \(\left\{  {z}_{n}\right\}\) 落在 \(U\left( {a;\varepsilon }\right)\) 之外的项至多只有有限个。由定义 \({1}^{\prime }\) ,证得 \(\mathop{\lim }\limits_{{n \rightarrow  \infty }}{z}_{n} = a\) .
+
+必要性 设 \(\mathop{\lim }\limits_{{n \rightarrow  \infty }}{z}_{n} = A\) . 那么对于任给的 \(\varepsilon  > 0\) ,数列 \(\left\{  {z}_{n}\right\}\) 落在 \(U\left( {A;\varepsilon }\right)\) 之外的项至多只有有限个,从而数列 \(\left\{  {x}_{n}\right\}\) 和 \(\left\{  {y}_{n}\right\}\) 落在 \(U\left( {A;\varepsilon }\right)\) 之外的项也至多只有有限个。由定义 \({1}^{\prime }\) ,证得
+\[
+a = \mathop{\lim }\limits_{{n \rightarrow  \infty }}{x}_{n} = A = \mathop{\lim }\limits_{{n \rightarrow  \infty }}{y}_{n} = b.
+\]
+\end{proof}
+
+
+%例 9
+\begin{example}
+设 \(\left\{  {a}_{n}\right\}\) 为给定的数列, \(\left\{  {b}_{n}\right\}\) 为对 \(\left\{  {a}_{n}\right\}\) 增加、减少或改变有限项之后得到的数列. 证明: 数列 \(\left\{  {b}_{n}\right\}\) 与 \(\left\{  {a}_{n}\right\}\) 同时收敛或发散,且在收敛时两者的极限相等.
+\end{example}
+
+
+%证
+\begin{proof}
+设 \(\left\{  {a}_{n}\right\}\) 为收敛数列,且 \(\mathop{\lim }\limits_{{n \rightarrow  \infty }}{a}_{n} = a\) . 按定义 \({1}^{\prime }\) ,对任给的 \(\varepsilon  > 0\) ,数列 \(\left\{  {a}_{n}\right\}\) 中落在 \(U\left( {a;\varepsilon }\right)\) 之外的项至多只有有限个. 而数列 \(\left\{  {b}_{n}\right\}\) 是对 \(\left\{  {a}_{n}\right\}\) 增加、减少或改变有限项之后得到的,故从某一项开始, \(\left\{  {b}_{n}\right\}\) 中的每一项都是 \(\left\{  {a}_{n}\right\}\) 中确定的一项,所以 \(\left\{  {b}_{n}\right\}\) 中落在 \(U\left( {a;\varepsilon }\right)\) 之外的项也至多只有有限个. 这就证得 \(\mathop{\lim }\limits_{{n \rightarrow  \infty }}{b}_{n} = a\) .
+
+现设 \(\left\{  {a}_{n}\right\}\) 发散. 倘若 \(\left\{  {b}_{n}\right\}\) 收敛,则因 \(\left\{  {a}_{n}\right\}\) 可看成是对 \(\left\{  {b}_{n}\right\}\) 增加、减少或改变有限项之后得到的数列,故由刚才所证, \(\left\{  {a}_{n}\right\}\) 收敛,矛盾. 所以当 \(\left\{  {a}_{n}\right\}\) 发散时 \(\left\{  {b}_{n}\right\}\) 也发散.
+\end{proof}
+
+
+在所有收敛数列中, 有一类重要的数列, 称为无穷小数列, 其定义如下.
+
+%定义  2
+\begin{definition}{无穷小数列}{def:无穷小数列}
+若 \(\mathop{\lim }\limits_{{n \rightarrow  \infty }}{a}_{n} = 0\) ,则称 \(\left\{  {a}_{n}\right\}\) 为无穷小数列.
+\end{definition}
+
+
+前面例1,2,4,6中的数列都是无穷小数列. 由无穷小数列的定义,读者不难证明如下定理.
+
+%定理 2.1
+\begin{theorem}{数列收敛}{the:数列收敛}
+数列 \(\left\{  {a}_{n}\right\}\) 收敛于 \(a\) 的充要条件是: \(\left\{  {{a}_{n} - a}\right\}\) 为无穷小数列.
+\end{theorem}
+
+
+最后我们介绍一下无穷大数列的概念.
+
+%定义  3
+\begin{definition}{无穷大数列}{def:无穷大数列}
+若数列 \(\left\{  {a}_{n}\right\}\) 满足: 对任意正数 \(M > 0\) ,总存在正整数 \(N\) ,使得当 \(n > N\) 时,有
+\[
+\left| {a}_{n}\right|  > M,
+\]
+则称数列 \(\left\{  {a}_{n}\right\}\) 发散于无穷大,并记作
+\[
+\mathop{\lim }\limits_{{n \rightarrow  \infty }}{a}_{n} = \infty \text{ ,或 }{a}_{n} \rightarrow  \infty \text{ . }
+\]
+\end{definition}
+
+
+%注
+\begin{remark}
+\end{remark}
+若 \(\mathop{\lim }\limits_{{n \rightarrow  \infty }}{a}_{n} = \infty\) ,则称 \(\left\{  {a}_{n}\right\}\) 是一个无穷大数列或无穷大量.
+
+%定义  4
+\begin{definition}{数列发散}{def:数列发散}
+若数列 \(\left\{  {a}_{n}\right\}\) 满足: 对任意正数 \(M > 0\) ,存在正整数 \(N\) ,使得当 \(n > N\) 时,有
+\[
+{a}_{n} > M\;\left( {{a}_{n} <  - M}\right) ,
+\]
+则称数列 \(\left\{  {a}_{n}\right\}\) 发散于正 (负) 无穷大,并记作
+\[
+\mathop{\lim }\limits_{{n \rightarrow  \infty }}{a}_{n} =  + \infty \text{ ,或 }{a}_{n} \rightarrow   + \infty \;\left( {\mathop{\lim }\limits_{{n \rightarrow  \infty }}{a}_{n} =  - \infty \text{ ,或 }{a}_{n} \rightarrow   - \infty }\right) \text{ . }
+\]
+\end{definition}
+
+
+例如数列 \(\{ n\} ,\left\{  {{\left( -1\right) }^{n}\frac{{n}^{2} + 1}{n}}\right\}\) 均是无穷大量; 而数列 \(\left\{  {\left\lbrack  {1 + {\left( -1\right) }^{n}}\right\rbrack  n}\right\}\) 虽然是无界数列, 但却不是无穷大量.
+
+\subsection{习题 2.1}
+
+1. 设 \({a}_{n} = \frac{1 + {\left( -1\right) }^{n}}{n},n = 1,2,\cdots ,a = 0\) .
+
+(1) 对下列 \(\varepsilon\) 分别求出极限定义中相应的 \(N\) :
+\[
+{\varepsilon }_{1} = {0.1},\;{\varepsilon }_{2} = {0.01},\;{\varepsilon }_{3} = {0.001};
+\]
+
+(2)对 \({\varepsilon }_{1},{\varepsilon }_{2},{\varepsilon }_{3}\) 可找到相应的 \(N\) ,这是否证明了 \({a}_{n}\) 趋于 0？应该怎样做才对；
+
+(3)对给定的 \(\varepsilon\) 是否只能找到一个 \(N\) ？
+
+2. 按 \(\varepsilon  - N\) 定义证明:
+
+(1) \(\mathop{\lim }\limits_{{n \rightarrow  \infty }}\frac{n}{n + 1} = 1\) ; (2) \(\mathop{\lim }\limits_{{n \rightarrow  \infty }}\frac{3{n}^{2} + n}{2{n}^{2} - 1} = \frac{3}{2}\) ； (3) \(\mathop{\lim }\limits_{{n \rightarrow  \infty }}\frac{n!}{{n}^{n}} = 0\) ;
+
+(4) \(\mathop{\lim }\limits_{{n \rightarrow  \infty }}\sin \frac{\pi }{n} = 0\) ; (5) \(\mathop{\lim }\limits_{{n \rightarrow  \infty }}\frac{n}{{a}^{n}} = 0\;\left( {a > 1}\right)\) .
+
+3. 根据例 2 , 例 4 和例 5 的结果求出下列极限,并指出哪些是无穷小数列:
+
+(1) \(\mathop{\lim }\limits_{{n \rightarrow  \infty }}\frac{1}{\sqrt{n}};\)
+
+(2) \(\mathop{\lim }\limits_{{n \rightarrow  \infty }}\sqrt[n]{3};\)
+
+(3) \(\mathop{\lim }\limits_{{n \rightarrow  \infty }}\frac{1}{{n}^{3}};\)
+
+(4) \(\mathop{\lim }\limits_{{n \rightarrow  \infty }}\frac{1}{{3}^{n}};\)
+
+(5) \(\mathop{\lim }\limits_{{n \rightarrow  \infty }}\frac{1}{\sqrt{{2}^{n}}}\) ;
+
+(6) \(\mathop{\lim }\limits_{{n \rightarrow  \infty }}\sqrt[n]{10}\) ;
+
+(7) \(\mathop{\lim }\limits_{{n \rightarrow  \infty }}\frac{1}{\sqrt[n]{2}}\) .
+
+4. 证明: 若 \(\mathop{\lim }\limits_{{n \rightarrow  \infty }}{a}_{n} = a\) ,则对任一正整数 \(k\) ,有 \(\mathop{\lim }\limits_{{n \rightarrow  \infty }}{a}_{n + k} = a\) .
+
+5. 试用定义 1 ’ 证明:
+
+(1) 数列 \(\left\{  \frac{1}{n}\right\}\) 不以 1 为极限; (2) 数列 \(\left\{  {n}^{{\left( -1\right) }^{n}}\right\}\) 发散.
+
+6. 证明定理 2.1,并应用它证明数列 \(\left\{  {1 + \frac{{\left( -1\right) }^{n}}{n}}\right\}\) 的极限是 1 .
+
+7. 在下列数列中哪些数列是有界数列、无界数列以及无穷大数列:
+
+(1) \(\left\{  {\left\lbrack  {1 + {\left( -1\right) }^{n}}\right\rbrack  \sqrt{n}}\right\}\) ;
+
+(2) \(\{ \sin n\}\) ;
+
+(3) \(\left\{  \frac{{n}^{2}}{n - \sqrt{5}}\right\}\) ;
+
+(4) \(\left\{  {2}^{{\left( -1\right) }^{n}}\right\}\) .
+
+8. 证明: 若 \(\mathop{\lim }\limits_{{n \rightarrow  \infty }}{a}_{n} = a\) ,则 \(\mathop{\lim }\limits_{{n \rightarrow  \infty }}\left| {a}_{n}\right|  = \left| a\right|\) . 当且仅当 \(a\) 为何值时反之也成立?
+
+9. 按 \(\varepsilon  - N\) 定义证明:
+
+(1) \(\mathop{\lim }\limits_{{n \rightarrow  \infty }}\left( {\sqrt{n + 1} - \sqrt{n}}\right)  = 0\) ;
+
+(2) \(\mathop{\lim }\limits_{{n \rightarrow  \infty }}\frac{1 + 2 + 3 + \cdots  + n}{{n}^{3}} = 0\) ；
+
+(3) \(\mathop{\lim }\limits_{{n \rightarrow  \infty }}{a}_{n} = 1\) ,其中
+\[
+{a}_{n} = \left\{  \begin{array}{ll} \frac{n - 1}{n}, & n\text{ 为偶数, } \\  \frac{\sqrt{{n}^{2} + n}}{n}, & n\text{ 为奇数. } \end{array}\right.
+\]
+
+10. 设 \({a}_{n} \neq  0\) . 证明: \(\mathop{\lim }\limits_{{n \rightarrow  \infty }}{a}_{n} = 0\) 的充要条件是 \(\mathop{\lim }\limits_{{n \rightarrow  \infty }}\frac{1}{{a}_{n}} = \infty\) .
+
+\section{收敛数列的性质}
+
+收敛数列有如下一些重要性质.
+
+%定理 2.2
+\begin{theorem}{唯一性}{the:唯一性}
+若数列 \(\left\{  {a}_{n}\right\}\) 收敛,则它只有一个极限.
+\end{theorem}
+
+%证
+\begin{proof}
+设 \(a\) 是 \(\left\{  {a}_{n}\right\}\) 的一个极限. 我们证明: 对任何数 \(b \neq  a,b\) 不是 \(\left\{  {a}_{n}\right\}\) 的极限. 事实上,若取 \({\varepsilon }_{0} = \frac{1}{2}\left| {b - a}\right|\) ,则按定义 \({1}^{\prime }\) ,在 \(U\left( {a;{\varepsilon }_{0}}\right)\) 之外至多只有 \(\left\{  {a}_{n}\right\}\) 中有限个项,从而在 \(U\left( {b;{\varepsilon }_{0}}\right)\) 内至多只有 \(\left\{  {a}_{n}\right\}\) 中有限个项,所以 \(b\) 不是 \(\left\{  {a}_{n}\right\}\) 的极限. 这就证明了收敛数列只能有一个极限.
+\end{proof}
+
+
+一个收敛数列一般含有无穷多个数, 而它的极限只是一个数. 我们单凭这一个数就能精确地估计出几乎全体项的大小. 以下收敛数列的一些性质, 大都基于这一事实.
+
+%定理 2.3
+\begin{theorem}{有界性}{the:有界性}
+若数列 \(\left\{  {a}_{n}\right\}\) 收敛,则 \(\left\{  {a}_{n}\right\}\) 为有界数列,即存在正数 \(M\) ,使得对一切正整数 \(n\) ,都有
+\[
+\left| {a}_{n}\right|  \leq  M
+\]
+\end{theorem}
+
+
+%证
+\begin{proof}
+设 \(\mathop{\lim }\limits_{{n \rightarrow  \infty }}{a}_{n} = a\) . 取 \(\varepsilon  = 1\) ,存在正数 \(N\) ,对一切 \(n > N\) ,有
+\[
+\left| {{a}_{n} - a}\right|  < 1\text{ ,即 }a - 1 < {a}_{n} < a + 1\text{ . }
+\]
+记
+\[
+M = \max \left\{  {\left| {a}_{1}\right| ,\left| {a}_{2}\right| ,\cdots ,\left| {a}_{N}\right| ,\left| {a - 1}\right| ,\left| {a + 1}\right| }\right\}  ,
+\]
+则对一切正整数 \(n\) ,都有 \(\left| {a}_{n}\right|  \leq  M\) .
+\end{proof}
+
+
+%注
+\begin{remark}
+有界性只是数列收敛的必要条件,而非充分条件. 例如数列 \(\left\{  {\left( -1\right) }^{n}\right\}\) 有界,但它并不收敛 (见 §1 例 7).
+\end{remark}
+
+
+%定理 2.4
+\begin{theorem}{保号性}{the:保号性}
+若 \(\mathop{\lim }\limits_{{n \rightarrow  \infty }}{a}_{n} = a > 0\) (或 \(< 0\) ),则对任何 \({a}^{\prime } \in  \left( {0,a}\right)\) (或 \({a}^{\prime } \in  \left( {a,0}\right)\) ), 存在正数 \(N\) ,使得当 \(n > N\) 时,有 \({a}_{n} > {a}^{\prime }\) (或 \({a}_{n} < {a}^{\prime }\) ).
+\end{theorem}
+
+%证
+\begin{proof}
+设 \(a > 0\) . 取 \(\varepsilon  = a - {a}^{\prime }\left( { > 0}\right)\) ,则存在正数 \(N\) ,使得当 \(n > N\) 时,有 \({a}_{n} > a - \varepsilon  = {a}^{\prime }\) ,这就证得结果. 对于 \(a < 0\) 的情形,也可类似地证明.
+\end{proof}
+
+
+%注
+\begin{remark}
+在应用保号性时,经常取 \({a}^{\prime } = \frac{a}{2}\) .
+\end{remark}
+
+
+%推论
+\begin{corollary}{}{pro:}
+设 \(\mathop{\lim }\limits_{{n \rightarrow  \infty }}{a}_{n} = a,\mathop{\lim }\limits_{{n \rightarrow  \infty }}{b}_{n} = b,a < b\) ,则存在 \(N\) ,使得当 \(n > N\) 时,有
+\[
+{a}_{n} < {b}_{n}\text{ . }
+\]
+\end{corollary}
+
+%证
+\begin{proof}
+因为 \(\mathop{\lim }\limits_{{n \rightarrow  \infty }}{a}_{n} = a,\mathop{\lim }\limits_{{n \rightarrow  \infty }}{b}_{n} = b,a < \frac{a + b}{2} < b\) ,所以由保号性,存在 \({N}_{1}\) ,当 \(n > {N}_{1}\) 时,有
+\[
+{a}_{n} < \frac{a + b}{2}
+\]
+存在 \({N}_{2}\) ,当 \(n > {N}_{2}\) 时,有
+\[
+{b}_{n} > \frac{a + b}{2}.
+\]
+取 \(N = \max \left\{  {{N}_{1},{N}_{2}}\right\}\) ,那么当 \(n > N\) 时,有
+\[
+{a}_{n} < {b}_{n}\text{ . }
+\]
+\end{proof}
+
+
+%定理 2.5
+\begin{theorem}{保不等式性}{the:保不等式性}
+设 \(\left\{  {a}_{n}\right\}\) 与 \(\left\{  {b}_{n}\right\}\) 均为收敛数列. 若存在正数 \({N}_{0}\) ,使得当 \(n > {N}_{0}\) 时,有 \({a}_{n} \leq  {b}_{n}\) ,则 \(\mathop{\lim }\limits_{{n \rightarrow  \infty }}{a}_{n} \leq  \mathop{\lim }\limits_{{n \rightarrow  \infty }}{b}_{n}\) .
+\end{theorem}
+
+%证
+\begin{proof}
+设 \(\mathop{\lim }\limits_{{n \rightarrow  \infty }}{a}_{n} = a,\mathop{\lim }\limits_{{n \rightarrow  \infty }}{b}_{n} = b\) . 任给 \(\varepsilon  > 0\) ,分别存在正数 \({N}_{1}\) 与 \({N}_{2}\) ,使得当 \(n > {N}_{1}\) 时,有
+\[
+a - \varepsilon  < {a}_{n}, \tag{1}
+\]
+当 \(n > {N}_{2}\) 时,有
+\[
+{b}_{n} < b + \varepsilon . \tag{2}
+\]
+取 \(N = \max \left\{  {{N}_{0},{N}_{1},{N}_{2}}\right\}\) ,则当 \(n > N\) 时,按假设及不等式 (1) 和 (2),有
+
+\[
+a - \varepsilon  < {a}_{n} \leq  {b}_{n} < b + \varepsilon ,
+\]
+由此得到 \(a < b + {2\varepsilon }\) . 由 \(\varepsilon\) 的任意性推得 \(a \leq  b\) (参见第一章 §1 例 2 ),即 \(\mathop{\lim }\limits_{{n \rightarrow  \infty }}{a}_{n} \leq  \mathop{\lim }\limits_{{n \rightarrow  \infty }}{b}_{n}\) .
+\end{proof}
+
+
+请读者自行思考: 如果把定理 2.5 中的条件 \({a}_{n} \leq  {b}_{n}\) 换成严格不等式 \({a}_{n} < {b}_{n}\) ,那么能否把结论换成 \(\mathop{\lim }\limits_{{n \rightarrow  \infty }}{a}_{n} < \mathop{\lim }\limits_{{n \rightarrow  \infty }}{b}_{n}\) ?
+
+%例 1
+\begin{example}
+设 \({a}_{n} \geq  0\left( {n = 1,2,\cdots }\right)\) . 证明: 若 \(\mathop{\lim }\limits_{{n \rightarrow  \infty }}{a}_{n} = a\) ,则
+\[
+\mathop{\lim }\limits_{{n \rightarrow  \infty }}\sqrt{{a}_{n}} = \sqrt{a}. \tag{3}
+\]
+\end{example}
+
+
+%证
+\begin{proof}
+由定理 2.5 可得 \(a \geq  0\) .
+
+若 \(a = 0\) ,则由 \(\mathop{\lim }\limits_{{n \rightarrow  \infty }}{a}_{n} = 0\) ,任给 \(\varepsilon  > 0\) ,存在正数 \(N\) ,使得当 \(n > N\) 时,有 \({a}_{n} < {\varepsilon }^{2}\) ,从而 \(\sqrt{{a}_{n}} < \varepsilon\) ,即 \(\left| {\sqrt{{a}_{n}} - 0}\right|  < \varepsilon\) ,故有 \(\mathop{\lim }\limits_{{n \rightarrow  \infty }}\sqrt{{a}_{n}} = 0\) .
+
+若 \(a > 0\) ,则有
+
+\[
+\left| {\sqrt{{a}_{n}} - \sqrt{a}}\right|  = \frac{\left| {a}_{n} - a\right| }{\sqrt{{a}_{n}} + \sqrt{a}} \leq  \frac{\left| {a}_{n} - a\right| }{\sqrt{a}}.
+\]
+
+任给 \(\varepsilon  > 0\) ,由 \(\mathop{\lim }\limits_{{n \rightarrow  \infty }}{a}_{n} = a\) ,存在正数 \(N\) ,使得当 \(n > N\) 时,有
+\[
+\left| {{a}_{n} - a}\right|  < \sqrt{a}\varepsilon ,
+\]
+
+从而 \(\left| {\sqrt{{a}_{n}} - \sqrt{a}}\right|  < \varepsilon\) . (3) 式得证.
+
+\end{proof}
+
+
+%定理 2.6
+\begin{theorem}{迫敛性}{the:迫敛性}
+设收敛数列 \(\left\{  {a}_{n}\right\}  ,\left\{  {b}_{n}\right\}\) 都以 \(a\) 为极限,数列 \(\left\{  {c}_{n}\right\}\) 满足: 存在正数 \({N}_{0}\) ,当 \(n > {N}_{0}\) 时,有
+
+\[
+{a}_{n} \leq  {c}_{n} \leq  {b}_{n}, \tag{4}
+\]
+
+则数列 \(\left\{  {c}_{n}\right\}\) 收敛,且 \(\mathop{\lim }\limits_{{n \rightarrow  \infty }}{c}_{n} = a\) .
+\end{theorem}
+
+%证
+\begin{proof}
+任给 \(\varepsilon  > 0\) ,由 \(\mathop{\lim }\limits_{{n \rightarrow  \infty }}{a}_{n} = \mathop{\lim }\limits_{{n \rightarrow  \infty }}{b}_{n} = a\) ,分别存在正数 \({N}_{1}\) 与 \({N}_{2}\) ,使得当 \(n > {N}_{1}\) 时,有
+\[
+a - \varepsilon  < {a}_{n}; \tag{5}
+\]
+
+当 \(n > {N}_{2}\) 时,有
+\[
+{b}_{n} < a + \varepsilon . \tag{6}
+\]
+
+取 \(N = \max \left\{  {{N}_{0},{N}_{1},{N}_{2}}\right\}\) ,则当 \(n > N\) 时,不等式 (4)、(5)、(6) 同时成立,即有
+\[
+a - \varepsilon  < {a}_{n} \leq  {c}_{n} \leq  {b}_{n} < a + \varepsilon .
+\]
+
+从而有 \(\left| {{c}_{n} - a}\right|  < \varepsilon\) ,这就证得所要的结果.
+\end{proof}
+
+
+定理 2.6 不仅给出了判定数列收敛的一种方法, 而且提供了一个求极限的工具.
+
+%例 2
+\begin{example}
+求数列 \(\left\{  \sqrt[n]{n}\right\}\) 的极限.
+\end{example}
+
+
+%解
+\begin{solution}
+记 \({a}_{n} = \sqrt[n]{n} = 1 + {h}_{n}\) ,这里 \({h}_{n} > 0\left( {n > 1}\right)\) ,则有
+\[
+n = {\left( 1 + {h}_{n}\right) }^{n} > \frac{n\left( {n - 1}\right) }{2}{h}_{n}^{2}.
+\]
+
+由上式得 \(0 < {h}_{n} < \sqrt{\frac{2}{n - 1}}\left( {n > 1}\right)\) ,从而有
+\[
+1 \leq  {a}_{n} = 1 + {h}_{n} < 1 + \sqrt{\frac{2}{n - 1}}. \tag{7}
+\]
+
+数列 \(\left\{  {1 + \sqrt{\frac{2}{n - 1}}}\right\}\) 是收敛于 1 的,因对任给的 \(\varepsilon  > 0\) ,取 \(N = 1 + \frac{2}{{\varepsilon }^{2}}\) ,则当 \(n > N\) 时,有 \(\left| {1 + \sqrt{\frac{2}{n - 1}} - 1}\right|  < \varepsilon\) . 于是,不等式 (7) 的左右两边的极限皆为 1,故由迫敛性证得 \(\mathop{\lim }\limits_{{n \rightarrow  \infty }}\sqrt[n]{n} = 1\) .
+\end{solution}
+
+
+%例 3
+\begin{example}
+求证: \(\mathop{\lim }\limits_{{n \rightarrow  \infty }}\frac{1}{\sqrt[n]{n!}} = 0\) .
+\end{example}
+
+
+%证
+\begin{proof}
+对于任给的正数 \(\varepsilon\) ,因为 \(\mathop{\lim }\limits_{{n \rightarrow  \infty }}\frac{{\left( \frac{1}{\varepsilon }\right) }^{n}}{n!} = 0\) (本章 § 1 例 6),所以由极限的保号性定理及推论,存在 \(N,n > N\) 时,
+\[
+\frac{1}{\frac{{\varepsilon }^{n}}{n!}} < 1,
+\]
+
+从而 \(\frac{1}{\sqrt[n]{n!}} < \varepsilon\) ,即 \(\mathop{\lim }\limits_{{n \rightarrow  \infty }}\frac{1}{\sqrt[n]{n!}} = 0\) .
+
+\end{proof}
+
+
+在求数列极限时, 常需要使用极限的四则运算法则.
+
+%定理 2.7
+\begin{theorem}{四则运算法则}{the:四则运算法则}
+若 \(\left\{  {a}_{n}\right\}\) 与 \(\left\{  {b}_{n}\right\}\) 为收敛数列,则 \(\left\{  {{a}_{n} + {b}_{n}}\right\}  ,\left\{  {{a}_{n} - {b}_{n}}\right\}\) , \(\left\{  {{a}_{n} \cdot  {b}_{n}}\right\}\) 也都是收敛数列,且有
+\[
+\mathop{\lim }\limits_{{n \rightarrow  \infty }}\left( {{a}_{n} \pm  {b}_{n}}\right)  = \mathop{\lim }\limits_{{n \rightarrow  \infty }}{a}_{n} \pm  \mathop{\lim }\limits_{{n \rightarrow  \infty }}{b}_{n},
+\]
+\[
+\mathop{\lim }\limits_{{n \rightarrow  \infty }}\left( {{a}_{n} \cdot  {b}_{n}}\right)  = \mathop{\lim }\limits_{{n \rightarrow  \infty }}{a}_{n} \cdot  \mathop{\lim }\limits_{{n \rightarrow  \infty }}{b}_{n}.
+\]
+
+特别当 \({b}_{n}\) 为常数 \(c\) 时,有
+\[
+\mathop{\lim }\limits_{{n \rightarrow  \infty }}\left( {{a}_{n} + c}\right)  = \mathop{\lim }\limits_{{n \rightarrow  \infty }}{a}_{n} + c,\mathop{\lim }\limits_{{n \rightarrow  \infty }}c{a}_{n} = c\mathop{\lim }\limits_{{n \rightarrow  \infty }}{a}_{n}.
+\]
+
+若再假设 \({b}_{n} \neq  0\) 及 \(\mathop{\lim }\limits_{{n \rightarrow  \infty }}{b}_{n} \neq  0\) ,则 \(\left\{  \frac{{a}_{n}}{{b}_{n}}\right\}\) 也是收敛数列,且有
+\[
+\mathop{\lim }\limits_{{n \rightarrow  \infty }}\frac{{a}_{n}}{{b}_{n}} = \mathop{\lim }\limits_{{n \rightarrow  \infty }}{a}_{n}/\mathop{\lim }\limits_{{n \rightarrow  \infty }}{b}_{n}.
+\]
+\end{theorem}
+
+
+%证
+\begin{proof}
+由于 \({a}_{n} - {b}_{n} = {a}_{n} + \left( {-1}\right) {b}_{n}\) 及 \(\frac{{a}_{n}}{{b}_{n}} = {a}_{n} \cdot  \frac{1}{{b}_{n}}\) ,因此我们只需证明关于和、积与倒数运算的结论即可.
+
+设 \(\mathop{\lim }\limits_{{n \rightarrow  \infty }}{a}_{n} = a,\mathop{\lim }\limits_{{n \rightarrow  \infty }}{b}_{n} = b\) ,则对任给的 \(\varepsilon  > 0\) ,分别存在正数 \({N}_{1}\) 与 \({N}_{2}\) ,使得
+\[
+\left| {{a}_{n} - a}\right|  < \varepsilon \text{ ,当 }n > {N}_{1}\text{ , }
+\]
+\[
+\left| {{b}_{n} - b}\right|  < \varepsilon \text{ ,当 }n > {N}_{2}.
+\]
+
+取 \(N = \max \left\{  {{N}_{1},{N}_{2}}\right\}\) ,则当 \(n > N\) 时上述两不等式同时成立,从而有
+
+1. \(\left| {\left( {{a}_{n} + {b}_{n}}\right)  - \left( {a + b}\right) }\right|  \leq  \left| {{a}_{n} - a}\right|  + \left| {{b}_{n} - b}\right|  < {2\varepsilon } \Rightarrow  \mathop{\lim }\limits_{{n \rightarrow  \infty }}\left( {{a}_{n} + {b}_{n}}\right)  = a + b\) .
+
+2. \(\left| {{a}_{n}{b}_{n} - {ab}}\right|  = \left| {\left( {{a}_{n} - a}\right) {b}_{n} + a\left( {{b}_{n} - b}\right) }\right|  \leq  \left| {{a}_{n} - a}\right| \left| {b}_{n}\right|  + \left| a\right| \left| {{b}_{n} - b}\right|\) .(8)
+
+由收敛数列的有界性定理,存在正数 \(M\) ,对一切 \(n\) 有 \(\left| {b}_{n}\right|  < M\) . 于是,当 \(n > N\) 时,由 (8) 式可得
+\[
+\left| {{a}_{n}{b}_{n} - {ab}}\right|  < \left( {M + \left| a\right| }\right) \varepsilon .
+\]
+
+由 \(\varepsilon\) 的任意性,这就证得 \(\mathop{\lim }\limits_{{n \rightarrow  \infty }}{a}_{n}{b}_{n} = {ab}\) .
+
+3. 由于 \(\mathop{\lim }\limits_{{n \rightarrow  \infty }}{b}_{n} = b \neq  0\) ,根据收敛数列的保号性,存在正数 \({N}_{3}\) ,使得当 \(n > {N}_{3}\) 时,有 \(\left| {b}_{n}\right|  > \frac{1}{2}\left| b\right|\) . 取 \({N}^{\prime } = \max \left\{  {{N}_{2},{N}_{3}}\right\}\) ,则当 \(n > {N}^{\prime }\) 时,有
+\[
+\left| {\frac{1}{{b}_{n}} - \frac{1}{b}}\right|  = \frac{\left| {b}_{n} - b\right| }{\left| {b}_{n}b\right| } < \frac{2\left| {{b}_{n} - b}\right| }{{b}^{2}} < \frac{2\varepsilon }{{b}^{2}}.
+\]
+
+由 \(\varepsilon\) 的任意性,这就证得 \(\mathop{\lim }\limits_{{n \rightarrow  \infty }}\frac{1}{{b}_{n}} = \frac{1}{b}\) .
+\end{proof}
+
+
+%例 4
+\begin{example}
+求
+\[
+\mathop{\lim }\limits_{{n \rightarrow  \infty }}\frac{{a}_{m}{n}^{m} + {a}_{m - 1}{n}^{m - 1} + \cdots  + {a}_{1}n + {a}_{0}}{{b}_{k}{n}^{k} + {b}_{k - 1}{n}^{k - 1} + \cdots  + {b}_{1}n + {b}_{0}},
+\]
+
+其中 \(m \leq  k,{a}_{m} \neq  0,{b}_{k} \neq  0\) .
+
+\end{example}
+
+%解
+\begin{solution}
+以 \({n}^{-k}\) 同乘分子分母后,所求极限式化为
+\[
+\mathop{\lim }\limits_{{n \rightarrow  \infty }}\frac{{a}_{m}{n}^{m - k} + {a}_{m - 1}{n}^{m - 1 - k} + \cdots  + {a}_{1}{n}^{1 - k} + {a}_{0}{n}^{-k}}{{b}_{k} + {b}_{k - 1}{n}^{-1} + \cdots  + {b}_{1}{n}^{1 - k} + {b}_{0}{n}^{-k}}.
+\]
+
+由 §1 例 2 知,当 \(\alpha  > 0\) 时,有 \(\mathop{\lim }\limits_{{n \rightarrow  \infty }}{n}^{-\alpha } = 0\) . 于是,当 \(m = k\) 时,上式除了分子分母的第一项分别为 \({a}_{m}\) 与 \({b}_{k}\) 外,其余各项的极限皆为 0,故此时所求的极限等于 \(\frac{{a}_{m}}{{b}_{k}}\) ; 当 \(m < k\) 时,由于 \({n}^{m - k} \rightarrow  0\left( {n \rightarrow  \infty }\right)\) ,故此时所求的极限等于 0 . 综上所述,得到
+\[
+\mathop{\lim }\limits_{{n \rightarrow  \infty }}\frac{{a}_{m}{n}^{m} + {a}_{m - 1}{n}^{m - 1} + \cdots  + {a}_{1}n + {a}_{0}}{{b}_{k}{n}^{k} + {b}_{k - 1}{n}^{k - 1} + \cdots  + {b}_{1}n + {b}_{0}} = \left\{  \begin{array}{ll} \frac{{a}_{m}}{{b}_{m}}, & k = m, \\  0, & k > m. \end{array}\right.
+\]
+\end{solution}
+
+
+%例 5
+\begin{example}
+求 \(\mathop{\lim }\limits_{{n \rightarrow  \infty }}\frac{{a}^{n}}{{a}^{n} + 1}\) ,其中 \(a \neq   - 1\) .
+\end{example}
+
+
+%解
+\begin{solution}
+若 \(a = 1\) ,则显然有 \(\mathop{\lim }\limits_{{n \rightarrow  \infty }}\frac{{a}^{n}}{{a}^{n} + 1} = \frac{1}{2}\) ;
+
+若 \(\left| a\right|  < 1\) ,则由 \(\mathop{\lim }\limits_{{n \rightarrow  \infty }}{a}^{n} = 0\) 得
+\[
+\mathop{\lim }\limits_{{n \rightarrow  \infty }}\frac{{a}^{n}}{{a}^{n} + 1} = \mathop{\lim }\limits_{{n \rightarrow  \infty }}{a}^{n}/\left( {\mathop{\lim }\limits_{{n \rightarrow  \infty }}{a}^{n} + 1}\right)  = 0;
+\]
+
+若 \(\left| a\right|  > 1\) ,则
+\[
+\mathop{\lim }\limits_{{n \rightarrow  \infty }}\frac{{a}^{n}}{{a}^{n} + 1} = \mathop{\lim }\limits_{{n \rightarrow  \infty }}\frac{1}{1 + \frac{1}{{a}^{n}}} = \frac{1}{1 + 0} = 1.
+\]
+\end{solution}
+
+
+%例 6
+\begin{example}
+求 \(\mathop{\lim }\limits_{{n \rightarrow  \infty }}\sqrt{n}\left( {\sqrt{n + 1} - \sqrt{n}}\right)\) .
+\end{example}
+
+
+\begin{solution}
+\[
+\sqrt{n}\left( {\sqrt{n + 1} - \sqrt{n}}\right)  = \frac{\sqrt{n}}{\sqrt{n + 1} + \sqrt{n}} = \frac{1}{\sqrt{1 + \frac{1}{n}} + 1},
+\]
+
+由 \(1 + \frac{1}{n} \rightarrow  1\left( {n \rightarrow  \infty }\right)\) 及例 1 得
+\[
+\mathop{\lim }\limits_{{n \rightarrow  \infty }}\sqrt{n}\left( {\sqrt{n + 1} - \sqrt{n}}\right)  = \mathop{\lim }\limits_{{n \rightarrow  \infty }}\frac{1}{\sqrt{1 + \frac{1}{n}} + 1} = \frac{1}{2}.
+\]
+\end{solution}
+
+
+
+最后, 我们给出数列的子列概念和关于子列的一个重要定理.
+
+%定义  1
+\begin{definition}{子列}{def:子列}
+设 \(\left\{  {a}_{n}\right\}\) 为数列, \(\left\{  {n}_{k}\right\}\) 为正整数集 \({\mathbf{N}}_{ + }\) 的无限子集,且 \({n}_{1} < {n}_{2} < \cdots  < {n}_{k} < \cdots\) ,则数列
+\[
+{a}_{{n}_{1}},{a}_{{n}_{2}},\cdots ,{a}_{{n}_{k}},\cdots
+\]
+
+称为数列 \(\left\{  {a}_{n}\right\}\) 的一个子列,记为 \(\left\{  {a}_{{n}_{k}}\right\}\) .
+\end{definition}
+
+
+%注
+\begin{remark}
+1 由定义 1 可见, \(\left\{  {a}_{n}\right\}\) 的子列 \(\left\{  {a}_{{n}_{k}}\right\}\) 的各项都选自 \(\left\{  {a}_{n}\right\}\) ,且保持这些项在 \(\left\{  {a}_{n}\right\}\) 中的先后次序. \(\left\{  {a}_{{n}_{k}}\right\}\) 中的第 \(k\) 项是 \(\left\{  {a}_{n}\right\}\) 中的第 \({n}_{k}\) 项,故总有 \({n}_{k} \geq  k\) . 实际上 \(\left\{  {n}_{k}\right\}\) 本身也是正整数列 \(\{ n\}\) 的子列.
+\end{remark}
+
+例如,子列 \(\left\{  {a}_{2k}\right\}\) 由数列 \(\left\{  {a}_{n}\right\}\) 的所有偶数项所组成,而子列 \(\left\{  {a}_{{2k} - 1}\right\}\) 则由 \(\left\{  {a}_{n}\right\}\) 的所有奇数项所组成. 又 \(\left\{  {a}_{n}\right\}\) 本身也是 \(\left\{  {a}_{n}\right\}\) 的一个子列,此时 \({n}_{k} = k,k = 1,2,\cdots\) .
+
+%定理 2.8
+\begin{theorem}{收敛}{the:收敛}
+数列 \(\left\{  {a}_{n}\right\}\) 收敛的充要条件是: \(\left\{  {a}_{n}\right\}\) 的任何子列都收敛.
+\end{theorem}
+
+
+%证
+\begin{proof}
+充分性 因为 \(\left\{  {a}_{n}\right\}\) 也是自身的一个子列,所以结论是显然的.
+
+必要性 设 \(\mathop{\lim }\limits_{{n \rightarrow  \infty }}{a}_{n} = a,\left\{  {a}_{{n}_{k}}\right\}\) 是 \(\left\{  {a}_{n}\right\}\) 的任一个子列. 对任给的正数 \(\varepsilon\) ,存在正数 \(N\) ,当 \(k > N\) 时,有 \(\left| {{a}_{k} - a}\right|  < \varepsilon\) . 又因为 \({n}_{k} \geq  k\) ,所以当 \(k > N\) 时,有 \(\left| {{a}_{{n}_{k}} - a}\right|  < \varepsilon\) . 这就证明了 \(\left\{  {a}_{{n}_{k}}\right\}\) 收敛 (且与 \(\left\{  {a}_{n}\right\}\) 有相同的极限).
+\end{proof}
+
+
+由定理 2.8 的证明可见,若数列 \(\left\{  {a}_{n}\right\}\) 的任何子列都收敛,则所有这些子列与 \(\left\{  {a}_{n}\right\}\) 必收敛于同一个极限.于是,若数列 \(\left\{  {a}_{n}\right\}\) 有一个子列发散,或有两个子列收敛而极限不相等,则数列 \(\left\{  {a}_{n}\right\}\) 一定发散. 例如数列 \(\left\{  {\left( -1\right) }^{n}\right\}\) ,其偶数项组成的子列 \(\left\{  {\left( -1\right) }^{2k}\right\}\) 收敛于 1,而奇数项组成的子列 \(\left\{  {\left( -1\right) }^{{2k} - 1}\right\}\) 收敛于 -1,从而 \(\left\{  {\left( -1\right) }^{n}\right\}\) 发散. 再如数列 \(\left\{  {\sin \frac{n\pi }{2}}\right\}\) , 它的奇数项组成的子列 \(\left\{  {\sin \frac{{2k} - 1}{2}\pi }\right\}\) 即为 \(\left\{  {\left( -1\right) }^{k - 1}\right\}\) ,由于这个子列发散,故数列 \(\left\{  {\sin \frac{n\pi }{2}}\right\}\) 发散. 由此可见,定理 2.8 是判断数列发散的有力工具.
+
+这里应该注意: 若数列 \(\left\{  {a}_{n}\right\}\) 满足 \(\mathop{\lim }\limits_{{n \rightarrow  \infty }}{a}_{{2n} - 1} = \mathop{\lim }\limits_{{n \rightarrow  \infty }}{a}_{2n} = A\) ,由本章 §1 例 8 可知 \(\mathop{\lim }\limits_{{n \rightarrow  \infty }}{a}_{n} = A\) .
+
+\subsection{习题 2.2}
+
+1. 求下列极限:
+
+(1) \(\mathop{\lim }\limits_{{n \rightarrow  \infty }}\frac{{n}^{3} + 3{n}^{2} + 1}{4{n}^{3} + {2n} + 3}\) ;
+
+(2) \(\mathop{\lim }\limits_{{n \rightarrow  \infty }}\frac{1 + {2n}}{{n}^{2}}\) ;
+
+(3) \(\mathop{\lim }\limits_{{n \rightarrow  \infty }}\frac{{\left( -2\right) }^{n} + {3}^{n}}{{\left( -2\right) }^{n + 1} + {3}^{n + 1}}\) ;
+
+(4) \(\mathop{\lim }\limits_{{n \rightarrow  \infty }}\left( {\sqrt{{n}^{2} + n} - n}\right)\) ;
+
+(5) \(\mathop{\lim }\limits_{{n \rightarrow  \infty }}\left( {\sqrt[n]{1} + \sqrt[n]{2} + \cdots  + \sqrt[n]{10}}\right)\) ;
+
+(6) \(\mathop{\lim }\limits_{{n \rightarrow  \infty }}\frac{\frac{1}{2} + \frac{1}{{2}^{2}} + \cdots  + \frac{1}{{2}^{n}}}{\frac{1}{3} + \frac{1}{{3}^{2}} + \cdots  + \frac{1}{{3}^{n}}}\) .
+
+2. 设 \(\mathop{\lim }\limits_{{n \rightarrow  \infty }}{a}_{n} = a,\mathop{\lim }\limits_{{n \rightarrow  \infty }}{b}_{n} = b\) ,且 \(a < b\) . 证明: 存在正数 \(N\) ,使得当 \(n > N\) 时,有 \({a}_{n} < {b}_{n}\) .
+
+3. 设 \(\left\{  {a}_{n}\right\}\) 为无穷小数列, \(\left\{  {b}_{n}\right\}\) 为有界数列,证明: \(\left\{  {{a}_{n}{b}_{n}}\right\}\) 为无穷小数列.
+
+4. 求下列极限:
+
+(1) \(\mathop{\lim }\limits_{{n \rightarrow  \infty }}\left( {\frac{1}{1 \cdot  2} + \frac{1}{2 \cdot  3} + \cdots  + \frac{1}{n\left( {n + 1}\right) }}\right)\) ;
+
+(2) \(\mathop{\lim }\limits_{{n \rightarrow  \infty }}\left( {\sqrt{2}\sqrt[4]{2}\sqrt[8]{2}\cdots \sqrt[{2n}]{2}}\right)\) ;
+
+(3) \(\mathop{\lim }\limits_{{n \rightarrow  \infty }}\left( {\frac{1}{2} + \frac{3}{{2}^{2}} + \cdots  + \frac{{2n} - 1}{{2}^{n}}}\right)\) ;
+
+(4) \(\mathop{\lim }\limits_{{n \rightarrow  \infty }}\sqrt[n]{1 - \frac{1}{n}}\) ;
+
+(5) \(\mathop{\lim }\limits_{{n \rightarrow  \infty }}\left( {\frac{1}{{n}^{2}} + \frac{1}{{\left( n + 1\right) }^{2}} + \cdots  + \frac{1}{{\left( 2n\right) }^{2}}}\right)\) ;
+
+(6) \(\mathop{\lim }\limits_{{n \rightarrow  \infty }}\left( {\frac{1}{\sqrt{{n}^{2} + 1}} + \frac{1}{\sqrt{{n}^{2} + 2}} + \cdots  + \frac{1}{\sqrt{{n}^{2} + n}}}\right)\) .
+
+5. 设 \(\left\{  {a}_{n}\right\}\) 与 \(\left\{  {b}_{n}\right\}\) 中一个是收敛数列,另一个是发散数列. 证明 \(\left\{  {{a}_{n} \pm  {b}_{n}}\right\}\) 是发散数列. 又问 \(\left\{  {{a}_{n}{b}_{n}}\right\}\) 和 \(\left\{  \frac{{a}_{n}}{{b}_{n}}\right\}  \left( {{b}_{n} \neq  0}\right)\) 是否必为发散数列?
+
+6. 证明以下数列发散:
+
+(1) \(\left\{  {{\left( -1\right) }^{n}\frac{n}{n + 1}}\right\}\) ;
+
+(2) \(\left\{  {n}^{{\left( -1\right) }^{n}}\right\}\) ;
+
+(3) \(\left\{  {\cos \frac{n\pi }{4}}\right\}\) .
+
+7. 判断以下结论是否成立 (若成立,说明理由；若不成立,举出反例):
+
+(1) 若 \(\left\{  {a}_{{2k} - 1}\right\}\) 和 \(\left\{  {a}_{2k}\right\}\) 都收敛,则 \(\left\{  {a}_{n}\right\}\) 收敛;
+
+(2)若 \(\left\{  {a}_{{3k} - 2}\right\}  ,\left\{  {a}_{{3k} - 1}\right\}\) 和 \(\left\{  {a}_{3k}\right\}\) 都收敛,且有相同极限,则 \(\left\{  {a}_{n}\right\}\) 收敛.
+
+8. 求下列极限:
+
+(1) \(\mathop{\lim }\limits_{{n \rightarrow  \infty }}\frac{1}{2} \cdot  \frac{3}{4} \cdot  \cdots  \cdot  \frac{{2n} - 1}{2n}\) ;
+
+(2) \(\mathop{\lim }\limits_{{n \rightarrow  \infty }}\frac{\mathop{\sum }\limits_{{p = 1}}^{n}p!}{n!}\) ;
+
+(3) \(\mathop{\lim }\limits_{{n \rightarrow  \infty }}\left\lbrack  {{\left( n + 1\right) }^{\alpha } - {n}^{\alpha }}\right\rbrack  ,0 < \alpha  < 1\) ;
+
+(4) \(\mathop{\lim }\limits_{{n \rightarrow  \infty }}\left( {1 + \alpha }\right) \left( {1 + {\alpha }^{2}}\right) \cdots \left( {1 + {\alpha }^{{2}^{n}}}\right) ,\left| \alpha \right|  < 1\) .
+
+9. 设 \({a}_{1},{a}_{2},\cdots ,{a}_{m}\) 为 \(m\) 个正数,证明:
+\[
+\mathop{\lim }\limits_{{n \rightarrow  \infty }}\sqrt[n]{{a}_{1}^{n} + {a}_{2}^{n} + \cdots  + {a}_{m}^{n}} = \max \left\{  {{a}_{1},{a}_{2},\cdots ,{a}_{m}}\right\}  .
+\]
+
+10. 设 \(\mathop{\lim }\limits_{{n \rightarrow  \infty }}{a}_{n} = a\) . 证明:
+
+(1) \(\mathop{\lim }\limits_{{n \rightarrow  \infty }}\frac{\left\lbrack  n{a}_{n}\right\rbrack  }{n} = a\) ;
+
+(2)若 \(a > 0,{a}_{n} > 0\) ,则 \(\mathop{\lim }\limits_{{n \rightarrow  \infty }}\sqrt[n]{{a}_{n}} = 1\) .
+
+\section{数列极限存在的条件}
+
+在研究比较复杂的数列极限问题时, 通常先考察该数列是否有极限 (极限的存在性问题); 若有极限, 再考虑如何计算此极限 (极限值的计算问题). 这是极限理论的两个基本问题. 在实际应用中,解决了数列 \(\left\{  {a}_{n}\right\}\) 极限的存在性问题之后,即使极限值的计算较为困难,但由于当 \(n\) 充分大时, \({a}_{n}\) 能充分接近其极限 \(a\) ,故可用 \({a}_{n}\) 作为 \(a\) 的近似值. 本节将重点讨论极限的存在性问题.
+
+为了确定某个数列是否存在极限, 当然不可能将每个实数依定义一一验证, 根本的办法是直接从数列本身的特征来作出判断.
+
+首先讨论单调数列,其定义与单调函数相仿. 若数列 \(\left\{  {a}_{n}\right\}\) 的各项满足关系式
+
+\[
+{a}_{n} \leq  {a}_{n + 1}\;\left( {{a}_{n} \geq  {a}_{n + 1}}\right) ,
+\]
+
+则称 \(\left\{  {a}_{n}\right\}\) 为递增 (递减) 数列. 递增数列和递减数列统称为单调数列. 如 \(\left\{  \frac{1}{n}\right\}\) 为递减数列; \(\left\{  \frac{n}{n + 1}\right\}\) 与 \(\left\{  {n}^{2}\right\}\) 为递增数列; 而 \(\left\{  \frac{{\left( -1\right) }^{n}}{n}\right\}\) 则不是单调数列,但 \(\left\{  \frac{{\left( -1\right) }^{n}}{n}\right\}\) 的奇数项子列与偶数项子列分别是单调的.
+
+%定理 2.9
+\begin{theorem}{}{the:}
+
+\end{theorem}
+(单调有界定理) 在实数系中,有界的单调数列必有极限.
+
+%证
+\begin{proof}
+不妨设 \(\left\{  {a}_{n}\right\}\) 为有上界的递增数列. 由确界原理,数列 \(\left\{  {a}_{n}\right\}\) 有上确界,记 \(a = \sup \left\{  {a}_{n}\right\}\) . 下面证明 \(a\) 就是 \(\left\{  {a}_{n}\right\}\) 的极限. 事实上,任给 \(\varepsilon  > 0\) ,按上确界的定义,存在数列 \(\left\{  {a}_{n}\right\}\) 中某一项 \({a}_{N}\) ,使得 \(a - \varepsilon  < {a}_{N}\) . 又由 \(\left\{  {a}_{n}\right\}\) 的递增性,当 \(n \geq  N\) 时,有
+\[
+a - \varepsilon  < {a}_{N} \leq  {a}_{n}.
+\]
+另一方面,由于 \(a\) 是 \(\left\{  {a}_{n}\right\}\) 的一个上界,故对一切 \({a}_{n}\) ,都有 \({a}_{n} \leq  a < a + \varepsilon\) . 所以当 \(n \geq  N\) 时, 有
+\[
+a - \varepsilon  < {a}_{n} < a + \varepsilon ,
+\]
+这就证得 \(\mathop{\lim }\limits_{{n \rightarrow  \infty }}{a}_{n} = a\) . 同理可证有下界的递减数列必有极限,且其极限即为它的下确界.
+\end{proof}
+
+
+%例 1
+\begin{example}
+设 \({a}_{n} = 1 + \frac{1}{{2}^{\alpha }} + \cdots  + \frac{1}{{n}^{\alpha }},\alpha  > 1\) . 证明: \(\left\{  {a}_{n}\right\}\) 收敛.
+\end{example}
+
+
+%证
+\begin{proof}
+显然 \(\left\{  {a}_{n}\right\}\) 是递增数列. 因为当 \(n \geq  2\) 时,
+\[
+{a}_{2n} = 1 + \frac{1}{{2}^{\alpha }} + \cdots  + \frac{1}{{\left( 2n\right) }^{\alpha }} = \left( {1 + \frac{1}{{3}^{\alpha }} + \cdots  + \frac{1}{{\left( 2n - 1\right) }^{\alpha }}}\right)  + \left( {\frac{1}{{2}^{\alpha }} + \cdots  + \frac{1}{{\left( 2n\right) }^{\alpha }}}\right)
+\]
+\[
+< \left( {1 + \frac{1}{{3}^{\alpha }} + \cdots  + \frac{1}{{\left( 2n + 1\right) }^{\alpha }}}\right)  + \left( {\frac{1}{{2}^{\alpha }} + \cdots  + \frac{1}{{\left( 2n\right) }^{\alpha }}}\right)
+\]
+\[
+< 1 + 2\frac{{a}_{n}}{{2}^{\alpha }} = 1 + \frac{{a}_{n}}{{2}^{\alpha  - 1}},
+\]
+以及 \({a}_{n} < {a}_{2n}\) ,所以
+\[
+{a}_{n} < \frac{1}{1 - \frac{1}{{2}^{\alpha  - 1}}},
+\]
+故 \(\left\{  {a}_{n}\right\}\) 是有界的. 根据单调有界定理可知数列 \(\left\{  {a}_{n}\right\}\) 是收敛的.
+\end{proof}
+
+
+%例 2
+\begin{example}
+证明数列
+\[
+\sqrt{2},\sqrt{2 + \sqrt{2}},\cdots ,\underset{n\text{ 个根号 }}{\underbrace{\sqrt{2 + \sqrt{2 + \cdots  + \sqrt{2}}}}},\cdots
+\]
+收敛, 并求其极限.
+\end{example}
+
+
+%证
+\begin{proof}
+记 \({a}_{n} = \sqrt{2 + \sqrt{2 + \cdots  + \sqrt{2}}}\) ,易见数列 \(\left\{  {a}_{n}\right\}\) 是递增的. 现用数学归纳法来证明 \(\left\{  {a}_{n}\right\}\) 有上界.
+
+显然 \({a}_{1} = \sqrt{2} < 2\) . 假设 \({a}_{n} < 2\) ,则有 \({a}_{n + 1} = \sqrt{2 + {a}_{n}} < \sqrt{2 + 2} = 2\) ,从而对一切 \(n\) ,有 \({a}_{n} < 2\) , 即 \(\left\{  {a}_{n}\right\}\) 有上界.
+
+由单调有界定理,数列 \(\left\{  {a}_{n}\right\}\) 有极限,记为 \(a\) . 由于
+\[
+{a}_{n + 1}^{2} = 2 + {a}_{n},
+\]
+对上式两边取极限得 \({a}^{2} = 2 + a\) ,即有
+\[
+\left( {a + 1}\right) \left( {a - 2}\right)  = 0\text{ ,解得 }a =  - 1\text{ 或 }a = 2\text{ . }
+\]
+由数列极限的保不等式性, \(a =  - 1\) 是不可能的,故有
+\[
+\mathop{\lim }\limits_{{n \rightarrow  \infty }}\sqrt{2 + \sqrt{2 + \cdots  + \sqrt{2}}} = 2.
+\]
+\end{proof}
+
+
+%例 3
+\begin{example}
+设 \(S\) 为有界数集. 证明: 若 \(\sup S = a \notin  S\) ,则存在严格递增数列 \(\left\{  {x}_{n}\right\}   \subset  S\) ,使得 \(\mathop{\lim }\limits_{{n \rightarrow  \infty }}{x}_{n} = a.\)
+\end{example}
+
+
+%证
+\begin{proof}
+因 \(a\) 是 \(S\) 的上确界,故对任给的 \(\varepsilon  > 0\) ,存在 \(x \in  S\) ,使得 \(x > a - \varepsilon\) . 又因 \(a \notin  S\) ,故 \(x < a\) ,从而有
+\[
+a - \varepsilon  < x < a\text{ . }
+\]
+现取 \({\varepsilon }_{1} = 1\) ,则存在 \({x}_{1} \in  S\) ,使得
+\[
+a - {\varepsilon }_{1} < {x}_{1} < a\text{ . }
+\]
+再取 \({\varepsilon }_{2} = \min \left\{  {\frac{1}{2},a - {x}_{1}}\right\}   > 0\) ,则存在 \({x}_{2} \in  S\) ,使得
+\[
+a - {\varepsilon }_{2} < {x}_{2} < a,
+\]
+且有 \({x}_{2} > a - {\varepsilon }_{2} \geq  a - \left( {a - {x}_{1}}\right)  = {x}_{1}\) .
+
+一般地,按上述步骤得到 \({x}_{n - 1} \in  S\) 之后,取 \({\varepsilon }_{n} = \min \left\{  {\frac{1}{n},a - {x}_{n - 1}}\right\}\) ,则存在 \({x}_{n} \in  S\) ,使得
+\[
+a - {\varepsilon }_{n} < {x}_{n} < a,
+\]
+且有 \({x}_{n} > a - {\varepsilon }_{n} \geq  a - \left( {a - {x}_{n - 1}}\right)  = {x}_{n - 1}\) .
+
+上述过程无限地进行下去,得到数列 \(\left\{  {x}_{n}\right\}   \subset  S\) ,它是严格递增数列,且满足
+\[
+a - {\varepsilon }_{n} < {x}_{n} < a < a + {\varepsilon }_{n} \Rightarrow  \left| {{x}_{n} - a}\right|  < {\varepsilon }_{n} \leq  \frac{1}{n},n = 1,2,\cdots .
+\]
+
+这就证明了 \(\mathop{\lim }\limits_{{n \rightarrow  \infty }}{x}_{n} = a\) .
+\end{proof}
+
+
+%例 4
+\begin{example}
+证明极限 \(\mathop{\lim }\limits_{{n \rightarrow  \infty }}{\left( 1 + \frac{1}{n}\right) }^{n}\) 存在.
+
+\end{example}
+
+%证
+\begin{proof}
+设 \({a}_{n} = {\left( 1 + \frac{1}{n}\right) }^{n},n = 1,2,\cdots\) . 由二项式定理
+\[
+{a}_{n} = {\left( 1 + \frac{1}{n}\right) }^{n} = 1 + {\mathrm{C}}_{n}^{1}\frac{1}{n} + \cdots  + {\mathrm{C}}_{n}^{k}\frac{1}{{n}^{k}} + \cdots  + {\mathrm{C}}_{n}^{n}\frac{1}{{n}^{n}}
+\]
+\[
+= 1 + 1 + \frac{n\left( {n - 1}\right) }{2!}\frac{1}{{n}^{2}} + \cdots  + \frac{n\left( {n - 1}\right) \cdots \left( {n - k + 1}\right) }{k!}\frac{1}{{n}^{k}} + \cdots  + \frac{1}{{n}^{n}}
+\]
+\[
+= 2 + \frac{1}{2!}\left( {1 - \frac{1}{n}}\right)  + \cdots  + \frac{1}{k!}\left( {1 - \frac{1}{n}}\right) \left( {1 - \frac{2}{n}}\right) \cdots \left( {1 - \frac{k - 1}{n}}\right)  + \cdots  +
+\]
+\[
+\frac{1}{n!}\left( {1 - \frac{1}{n}}\right) \left( {1 - \frac{2}{n}}\right) \cdots \left( {1 - \frac{n - 1}{n}}\right)
+\]
+\[
+< 2 + \frac{1}{2!}\left( {1 - \frac{1}{n + 1}}\right)  + \cdots  + \frac{1}{k!}\left( {1 - \frac{1}{n + 1}}\right) \left( {1 - \frac{2}{n + 1}}\right) \cdots \left( {1 - \frac{k - 1}{n + 1}}\right)  + \cdots  +
+\]
+\[
+\frac{1}{\left( {n + 1}\right) !}\left( {1 - \frac{1}{n + 1}}\right) \left( {1 - \frac{2}{n + 1}}\right) \cdots \left( {1 - \frac{n}{n + 1}}\right)
+\]
+\[
+= {a}_{n + 1}\text{ , }
+\]
+
+故 \(\left\{  {a}_{n}\right\}\) 是严格递增的. 由上式可推得
+\[
+{a}_{n} < 2 + \frac{1}{2!} + \cdots  + \frac{1}{k!} + \cdots  + \frac{1}{n!} < 2 + \frac{1}{1 \cdot  2} + \cdots  + \frac{1}{\left( {k - 1}\right) k} + \cdots  + \frac{1}{\left( {n - 1}\right) n}
+\]
+\[
+< 2 + \left( {1 - \frac{1}{2}}\right)  + \cdots  + \left( {\frac{1}{k - 1} - \frac{1}{k}}\right)  + \cdots  + \left( {\frac{1}{n - 1} - \frac{1}{n}}\right)  = 3 - \frac{1}{n} < 3\text{ , }
+\]
+
+这表明 \(\left\{  {a}_{n}\right\}\) 又是有界的. 由单调有界定理推知 \(\mathop{\lim }\limits_{{n \rightarrow  \infty }}{\left( 1 + \frac{1}{n}\right) }^{n}\) 存在.
+\end{proof}
+
+
+通常用拉丁字母 \(\mathrm{e}\) 代表该数列的极限,即
+\[
+\mathop{\lim }\limits_{{n \rightarrow  \infty }}{\left( 1 + \frac{1}{n}\right) }^{n} = \mathrm{e},
+\]
+它是一个无理数 (待证), 其前十三位数字是
+\[
+\mathrm{e} \approx  {2.718281828459}.
+\]
+
+以 \(\mathrm{e}\) 为底的对数称为自然对数,通常记
+\[
+\ln x = {\log }_{\mathrm{e}}x\text{ . }
+\]
+
+%例 5
+\begin{example}
+任何数列都存在单调子列.
+\end{example}
+
+
+%证
+\begin{proof}
+设数列为 \(\left\{  {a}_{n}\right\}\) . 下面分两种情形来讨论:
+
+1. 若对任何正整数 \(k\) ,数列 \(\left\{  {a}_{k + n}\right\}\) 有最大项. 设 \(\left\{  {a}_{1 + n}\right\}\) 的最大项为 \({a}_{{n}_{1}}\) ,因 \(\left\{  {a}_{{n}_{1} + n}\right\}\) 亦有最大项,设其最大项为 \({a}_{{n}_{2}}\) ,显然有 \({n}_{2} > {n}_{1}\) ,且因 \(\left\{  {a}_{{n}_{1} + n}\right\}\) 是 \(\left\{  {a}_{1 + n}\right\}\) 的一个子列,故
+\[
+{a}_{{n}_{2}} \leq  {a}_{{n}_{1}};
+\]
+
+同理存在 \({n}_{3} > {n}_{2}\) ,使得
+\[
+{a}_{{n}_{3}} \leq  {a}_{{n}_{2}};
+\]
+............
+
+这样就得到一个单调递减的子列 \(\left\{  {a}_{{n}_{k}}\right\}\) .
+
+2. 至少存在某正整数 \(k\) ,数列 \(\left\{  {a}_{k + n}\right\}\) 没有最大项. 先取 \({n}_{1} = k + 1\) ,因 \(\left\{  {a}_{k + n}\right\}\) 没有最大项,故 \({a}_{{n}_{1}}\) 后面总存在项 \({a}_{{n}_{2}}\left( {{n}_{2} > {n}_{1}}\right)\) ,使得
+\[
+{a}_{{n}_{2}} > {a}_{{n}_{1}};
+\]
+同理存在 \({a}_{{n}_{2}}\) 后面的项 \({a}_{{n}_{3}}\left( {{n}_{3} > {n}_{2}}\right)\) ,使得
+\[
+{a}_{{n}_{3}} > {a}_{{n}_{2}};
+\]
+............
+
+这样就得到一个严格递增的子列 \(\left\{  {a}_{{n}_{k}}\right\}\) .
+\end{proof}
+
+
+%定理 2.10
+\begin{theorem}{致密性定理}{the:致密性定理}
+任何有界数列必定有收敛的子列.
+\end{theorem}
+
+%证
+\begin{proof}
+设数列 \(\left\{  {a}_{n}\right\}\) 有界,由例 5 可知: \(\left\{  {a}_{n}\right\}\) 存在单调且有界的子列 \(\left\{  {a}_{{n}_{k}}\right\}\) . 再由单调有界定理, 证得此子列是收敛的.
+\end{proof}
+
+
+%例 6
+\begin{example}
+设数列 \(\left\{  {a}_{n}\right\}\) 无上界,则存在 \(\left\{  {a}_{n}\right\}\) 的子列 \(\left\{  {a}_{{n}_{k}}\right\}  ,\mathop{\lim }\limits_{{k \rightarrow  \infty }}{a}_{{n}_{k}} =  + \infty\) .
+\end{example}
+
+
+%证
+\begin{proof}
+因为 \(\left\{  {a}_{n}\right\}\) 无上界,所以对于任意正数 \(M\) ,存在 \({a}_{{n}_{0}}\) ,使得 \({a}_{{n}_{0}} > M\) . 据此分别取
+
+\({M}_{1} = 1\) ,存在 \({a}_{{n}_{1}},{a}_{{n}_{1}} > 1\) ;
+
+\({M}_{2} = \max \left\{  {2,\left| {a}_{1}\right| ,\left| {a}_{2}\right| ,\cdots ,\left| {a}_{{n}_{1}}\right| }\right\}\) ,存在 \({a}_{{n}_{2}}\left( {{n}_{2} > {n}_{1}}\right)\) ,使得 \({a}_{{n}_{2}} > {M}_{2}\) ;
+
+............
+
+\({M}_{k} = \max \left\{  {k,\left| {a}_{1}\right| ,\left| {a}_{2}\right| ,\cdots ,\left| {a}_{{n}_{k - 1}}\right| }\right\}\) ,存在 \({a}_{{n}_{k}}\left( {{n}_{k} > {n}_{k - 1}}\right)\) ,使得 \({a}_{{n}_{k}} > {M}_{k}\) ;
+
+............
+
+由此得到 \(\left\{  {a}_{n}\right\}\) 的一个子列 \(\left\{  {a}_{{n}_{k}}\right\}\) ,满足 \({a}_{{n}_{k}} > {M}_{k} \geq  k\) ,推得
+\[
+\mathop{\lim }\limits_{{k \rightarrow  \infty }}{a}_{{n}_{k}} =  + \infty .
+\]
+\end{proof}
+
+
+单调有界定理只是数列收敛的充分条件. 下面给出在实数系中数列收敛的充分必要条件.
+
+%定理 2.11
+\begin{theorem}{柯西 (Cauchy) 收敛准则}{the:柯西收敛准则}
+数列 \(\left\{  {a}_{n}\right\}\) 收敛的充要条件是: 对任给的 \(\varepsilon  > 0\) ,存在正整数 \(N\) ,使得当 \(n,m > N\) 时,有
+\[
+\left| {{a}_{n} - {a}_{m}}\right|  < \varepsilon .
+\]
+\end{theorem}
+
+这个定理从理论上完全解决了数列极限的存在性问题.
+
+%证
+\begin{proof}
+必要性 设 \(\mathop{\lim }\limits_{{n \rightarrow  \infty }}{a}_{n} = A\) . 由数列极限定义,对任给的 \(\varepsilon  > 0\) ,存在 \(N > 0\) ,当 \(m,n > N\) 时, 有
+\[
+\left| {{a}_{m} - A}\right|  < \frac{\varepsilon }{2},\left| {{a}_{n} - A}\right|  < \frac{\varepsilon }{2},
+\]
+因而 \(\left| {{a}_{m} - {a}_{n}}\right|  \leq  \left| {{a}_{m} - A}\right|  + \left| {{a}_{n} - A}\right|  < \frac{\varepsilon }{2} + \frac{\varepsilon }{2} = \varepsilon\) .
+
+充分性 先证明该数列必定有界. 取 \({\varepsilon }_{0} = 1\) ,因为 \(\left\{  {a}_{n}\right\}\) 满足柯西条件,所以 \(\exists {N}_{0}\) , \(\forall n > {N}_{0}\) ,有
+\[
+\left| {{a}_{n} - {a}_{{N}_{0}}}\right|  < 1\text{ . }
+\]
+
+令 \(M = \max \left\{  {\left| {a}_{1}\right| ,\left| {a}_{2}\right| ,\cdots ,\left| {a}_{{N}_{0}}\right| ,\left| {a}_{{N}_{0} + 1}\right|  + 1}\right\}\) ,则对一切 \(n\) ,成立
+\[
+\left| {a}_{n}\right|  \leq  M.
+\]
+
+由致密性定理,在 \(\left\{  {a}_{n}\right\}\) 中必有收敛子列
+\[
+\mathop{\lim }\limits_{{k \rightarrow  \infty }}{a}_{{n}_{k}} = \xi .
+\]
+
+由条件, \(\forall \varepsilon  > 0,\exists N\) ,当 \(n,m > N\) 时,有
+\[
+\left| {{a}_{n} - {a}_{m}}\right|  < \frac{\varepsilon }{2}.
+\]
+
+在上式中取 \({a}_{m} = {a}_{{n}_{k}}\) ,其中 \(k\) 充分大,满足 \({n}_{k} > N\) ,并且令 \(k \rightarrow  \infty\) ,于是得到
+\[
+\left| {{a}_{n} - \xi }\right|  \leq  \frac{\varepsilon }{2} < \varepsilon ,
+\]
+
+即数列 \(\left\{  {a}_{n}\right\}\) 收敛.
+\end{proof}
+
+
+柯西收敛准则的条件称为柯西条件, 它反映这样的事实: 收敛数列各项的值愈到后面, 彼此愈是接近, 以至充分后面的任何两项之差的绝对值可小于预先给定的任意小正数. 或者形象地说, 收敛数列的各项越到后面越是 “挤” 在一起. 另外, 柯西收敛准则把 \(\varepsilon  - N\) 定义中 \({a}_{n}\) 与 \(a\) 的关系换成了 \({a}_{n}\) 与 \({a}_{m}\) 的关系,其好处在于无需借助数列以外的数 \(a\) ,只要根据数列本身的特征就可以鉴别其 (收) 敛 (发) 散性.
+
+%例 7
+\begin{example}
+证明: 任一无限十进小数 \(\alpha  = 0.{b}_{1}{b}_{2}\cdots {b}_{n}\cdots\) 的 \(n\) 位不足近似值 \(\left( {n = 1,2,\cdots }\right)\) 所组成的数列
+\[
+\frac{{b}_{1}}{10},\frac{{b}_{1}}{10} + \frac{{b}_{2}}{{10}^{2}},\cdots ,\frac{{b}_{1}}{10} + \frac{{b}_{2}}{{10}^{2}} + \cdots  + \frac{{b}_{n}}{{10}^{n}},\cdots  \tag{1}
+\]
+
+满足柯西条件 (从而必收敛),其中 \({b}_{k}\) 为 \(0,1,2,\cdots ,9\) 中的一个数, \(k = 1,2,\cdots\) .
+\end{example}
+
+
+%证
+\begin{proof}
+记 \({a}_{n} = \frac{{b}_{1}}{10} + \frac{{b}_{2}}{{10}^{2}} + \cdots  + \frac{{b}_{n}}{{10}^{n}}\) . 不妨设 \(n > m\) ,则有
+\[
+\left| {{a}_{n} - {a}_{m}}\right|  = \frac{{b}_{m + 1}}{{10}^{m + 1}} + \frac{{b}_{m + 2}}{{10}^{m + 2}} + \cdots  + \frac{{b}_{n}}{{10}^{n}}
+\]
+\[
+\leq  \frac{9}{{10}^{m + 1}}\left( {1 + \frac{1}{10} + \cdots  + \frac{1}{{10}^{n - m - 1}}}\right)
+\]
+\[
+= \frac{1}{{10}^{m}}\left( {1 - \frac{1}{{10}^{n - m}}}\right)  < \frac{1}{{10}^{m}} < \frac{1}{m}.
+\]
+
+对任给的 \(\varepsilon  > 0\) ,取 \(N = \frac{1}{\varepsilon }\) ,则对一切 \(n > m > N\) ,有
+\[
+\left| {{a}_{n} - {a}_{m}}\right|  < \varepsilon .
+\]
+
+这就证明了数列 (1) 满足柯西条件.
+\end{proof}
+
+
+循环小数 \(0.\dot{9}\) 的不足近似值组成的数列为
+\[
+{a}_{n} = \frac{9}{10} + \frac{9}{{10}^{2}} + \cdots  + \frac{9}{{10}^{n}},\;n = 1,2,\cdots .
+\]
+由 §1 例 4 可知 \(\mathop{\lim }\limits_{{n \rightarrow  \infty }}{a}_{n} = \mathop{\lim }\limits_{{n \rightarrow  \infty }}\frac{9}{10} \cdot  \frac{1 - {\left( \frac{1}{10}\right) }^{n}}{1 - \frac{1}{10}} = 1\) . 这就是为什么可以将无限小数 \(0.\dot{9}\) 表示为 1 的一个原因.
+
+\subsection{习题 2.3}
+
+1. 利用 \(\mathop{\lim }\limits_{{n \rightarrow  \infty }}{\left( 1 + \frac{1}{n}\right) }^{n} = \mathrm{e}\) 求下列极限:
+
+(1) \(\mathop{\lim }\limits_{{n \rightarrow  \infty }}{\left( 1 - \frac{1}{n}\right) }^{n}\) ;
+
+(2) \(\mathop{\lim }\limits_{{n \rightarrow  \infty }}{\left( 1 + \frac{1}{n}\right) }^{n + 1}\) ;
+
+(3) \(\mathop{\lim }\limits_{{n \rightarrow  \infty }}{\left( 1 + \frac{1}{n + 1}\right) }^{n}\) ;
+
+(4) \(\mathop{\lim }\limits_{{n \rightarrow  \infty }}{\left( 1 + \frac{1}{2n}\right) }^{n}\) ;
+
+(5) \(\mathop{\lim }\limits_{{n \rightarrow  \infty }}{\left( 1 + \frac{1}{{n}^{2}}\right) }^{n}\) .
+
+2. 试问下面的解题方法是否正确:
+
+求 \(\mathop{\lim }\limits_{{n \rightarrow  \infty }}{2}^{n}\) .
+
+%解
+\begin{solution}
+设 \({a}_{n} = {2}^{n}\) 及 \(\mathop{\lim }\limits_{{n \rightarrow  \infty }}{a}_{n} = a\) . 由于 \({a}_{n} = 2{a}_{n - 1}\) ,两边取极限 \(\left( {n \rightarrow  \infty }\right)\) 得 \(a = {2a}\) ,所以 \(a = 0\) .
+\end{solution}
+
+
+3. 证明下列数列极限存在并求其值:
+
+(1) 设 \({a}_{1} = \sqrt{2},{a}_{n + 1} = \sqrt{2{a}_{n}},n = 1,2,\cdots\) ;
+
+(2)设 \({a}_{1} = \sqrt{c}\left( {c > 0}\right) ,{a}_{n + 1} = \sqrt{c + {a}_{n}},n = 1,2,\cdots\) ;
+
+(3) \({a}_{n} = \frac{{c}^{n}}{n!}\left( {c > 0}\right) ,n = 1,2,\cdots\) .
+
+4. 利用 \(\left\{  {\left( 1 + \frac{1}{n}\right) }^{n}\right\}\) 为递增数列的结论,证明 \(\left\{  {\left( 1 + \frac{1}{n + 1}\right) }^{n}\right\}\) 为递增数列.
+
+5. 应用柯西收敛准则,证明以下数列 \(\left\{  {a}_{n}\right\}\) 收敛:
+
+(1) \({a}_{n} = \frac{\sin 1}{2} + \frac{\sin 2}{{2}^{2}} + \cdots  + \frac{\sin n}{{2}^{n}}\) ; (2) \({a}_{n} = 1 + \frac{1}{{2}^{2}} + \frac{1}{{3}^{2}} + \cdots  + \frac{1}{{n}^{2}}\) .
+
+6. 证明: 若单调数列 \(\left\{  {a}_{n}\right\}\) 含有一个收敛子列,则 \(\left\{  {a}_{n}\right\}\) 收敛.
+
+7. 证明: 若 \({a}_{n} > 0\) ,且 \(\mathop{\lim }\limits_{{n \rightarrow  \infty }}\frac{{a}_{n}}{{a}_{n + 1}} = l > 1\) ,则 \(\mathop{\lim }\limits_{{n \rightarrow  \infty }}{a}_{n} = 0\) .
+
+8. 证明: 若 \(\left\{  {a}_{n}\right\}\) 为递增 (递减) 有界数列,则
+\[
+\mathop{\lim }\limits_{{n \rightarrow  \infty }}{a}_{n} = \sup \left\{  {a}_{n}\right\}  \left( {\inf \left\{  {a}_{n}\right\}  }\right) .
+\]
+
+又问逆命题成立否?
+
+9. 利用不等式
+\[
+{b}^{n + 1} - {a}^{n + 1} > \left( {n + 1}\right) {a}^{n}\left( {b - a}\right) ,b > a > 0,
+\]
+
+证明: \(\left\{  {\left( 1 + \frac{1}{n}\right) }^{n + 1}\right\}\) 为递减数列,并由此推出 \(\left\{  {\left( 1 + \frac{1}{n}\right) }^{n}\right\}\) 为有界数列.
+
+10. 证明: \(\left| {\mathrm{e} - {\left( 1 + \frac{1}{n}\right) }^{n}}\right|  < \frac{3}{n}\) .
+
+提示: 利用上题可知 \(\mathrm{e} < {\left( 1 + \frac{1}{n}\right) }^{n + 1}\) ,又易证 \({\left( 1 + \frac{1}{n}\right) }^{n + 1} < \frac{3}{n} + {\left( 1 + \frac{1}{n}\right) }^{n}\) .
+
+11. 给定两正数 \({a}_{1}\) 与 \({b}_{1}\left( {{a}_{1} > {b}_{1}}\right)\) ,作出其等差中项 \({a}_{2} = \frac{{a}_{1} + {b}_{1}}{2}\) 与等比中项 \({b}_{2} = \sqrt{{a}_{1}{b}_{1}}\) ,一般地令
+\[
+{a}_{n + 1} = \frac{{a}_{n} + {b}_{n}}{2},{b}_{n + 1} = \sqrt{{a}_{n}{b}_{n}},n = 1,2,\cdots .
+\]
+
+证明: \(\mathop{\lim }\limits_{{n \rightarrow  \infty }}{a}_{n}\) 与 \(\mathop{\lim }\limits_{{n \rightarrow  \infty }}{b}_{n}\) 皆存在且相等.
+
+12. 设 \(\left\{  {a}_{n}\right\}\) 为有界数列,记
+\[
+{\bar{a}}_{n} = \sup \left\{  {{a}_{n},{a}_{n + 1},\cdots }\right\}  ,{\underline{a}}_{n} = \inf \left\{  {{a}_{n},{a}_{n + 1},\cdots }\right\}  .
+\]
+
+证明: (1) 对任何正整数 \(n,{\bar{a}}_{n} \geq  {\underline{a}}_{n}\) ;
+
+(2) \(\left\{  {\bar{a}}_{n}\right\}\) 为递减有界数列, \(\left\{  {\underline{a}}_{n}\right\}\) 为递增有界数列,且对任何正整数 \(n,m\) ,有 \({\bar{a}}_{n} \geq  {\underline{a}}_{m}\) ;
+
+(3) 设 \(\bar{a}\) 和 \(\underline{a}\) 分别是 \(\left\{  {\bar{a}}_{n}\right\}\) 和 \(\left\{  {\underline{a}}_{n}\right\}\) 的极限,则 \(\bar{a} \geq  \underline{a}\) ;
+
+(4) \(\left\{  {a}_{n}\right\}\) 收敛的充要条件是 \(\bar{a} = \underline{a}\) .
+
+\section{第二章总练习题}
+
+1. 求下列数列的极限:
+
+(1) \(\mathop{\lim }\limits_{{n \rightarrow  \infty }}\sqrt[n]{{n}^{3} + {3}^{n}}\) ;
+
+(2) \(\mathop{\lim }\limits_{{n \rightarrow  \infty }}\frac{{n}^{5}}{{\mathrm{e}}^{n}}\) ;
+
+(3) \(\mathop{\lim }\limits_{{n \rightarrow  \infty }}\left( {\sqrt{n + 2} - 2\sqrt{n + 1} + \sqrt{n}}\right)\) .
+
+2. 证明:
+
+(1) \(\mathop{\lim }\limits_{{n \rightarrow  \infty }}{n}^{2}{q}^{n} = 0\left( {\left| q\right|  < 1}\right)\) ;
+
+(2) \(\mathop{\lim }\limits_{{n \rightarrow  \infty }}\frac{\lg n}{{n}^{\alpha }} = 0\left( {\alpha  \geq  1}\right)\) .
+
+3. 设 \(\mathop{\lim }\limits_{{n \rightarrow  \infty }}{a}_{n} = a\) ,证明:
+
+(1) \(\mathop{\lim }\limits_{{n \rightarrow  \infty }}\frac{{a}_{1} + {a}_{2} + \cdots  + {a}_{n}}{n} = a\) (又问由此等式能否反过来推出 \(\mathop{\lim }\limits_{{n \rightarrow  \infty }}{a}_{n} = a\) );
+
+(2) 若 \({a}_{n} > 0\left( {n = 1,2,\cdots }\right)\) ,则 \(\mathop{\lim }\limits_{{n \rightarrow  \infty }}\sqrt[n]{{a}_{1}{a}_{2}\cdots {a}_{n}} = a\) .
+
+4. 应用上题的结论证明下列各题:
+
+(1) \(\mathop{\lim }\limits_{{n \rightarrow  \infty }}\frac{1 + \frac{1}{2} + \frac{1}{3} + \cdots  + \frac{1}{n}}{n} = 0\) ;
+
+(2) \(\mathop{\lim }\limits_{{n \rightarrow  \infty }}\sqrt[n]{a} = 1\left( {a > 0}\right)\) ;
+
+(3) \(\mathop{\lim }\limits_{{n \rightarrow  \infty }}\sqrt[n]{n} = 1\) ;
+
+(4) \(\mathop{\lim }\limits_{{n \rightarrow  \infty }}\frac{1}{\sqrt[n]{n!}} = 0\) ;
+
+(5) \(\mathop{\lim }\limits_{{n \rightarrow  \infty }}\frac{n}{\sqrt[n]{n!}} = \mathrm{e}\) ;
+
+(6) \(\mathop{\lim }\limits_{{n \rightarrow  \infty }}\frac{1 + \sqrt{2} + \sqrt[3]{3} + \cdots  + \sqrt[n]{n}}{n} = 1\) ;
+
+(7) 若 \(\mathop{\lim }\limits_{{n \rightarrow  \infty }}\frac{{b}_{n + 1}}{{b}_{n}} = a\left( {{b}_{n} > 0}\right)\) ,则 \(\mathop{\lim }\limits_{{n \rightarrow  \infty }}\sqrt[n]{{b}_{n}} = a\) ;
+
+(8) 若 \(\mathop{\lim }\limits_{{n \rightarrow  \infty }}\left( {{a}_{n} - {a}_{n - 1}}\right)  = d\) ,则 \(\mathop{\lim }\limits_{{n \rightarrow  \infty }}\frac{{a}_{n}}{n} = d\) .
+
+5. 证明: 若 \(\left\{  {a}_{n}\right\}\) 为递增数列, \(\left\{  {b}_{n}\right\}\) 为递减数列,且
+\[
+\mathop{\lim }\limits_{{n \rightarrow  \infty }}\left( {{a}_{n} - {b}_{n}}\right)  = 0,
+\]
+则 \(\mathop{\lim }\limits_{{n \rightarrow  \infty }}{a}_{n}\) 与 \(\mathop{\lim }\limits_{{n \rightarrow  \infty }}{b}_{n}\) 都存在且相等.
+
+6. 设数列 \(\left\{  {a}_{n}\right\}\) 满足: 存在正数 \(M\) ,对一切 \(n\) 有
+\[
+{A}_{n} = \left| {{a}_{2} - {a}_{1}}\right|  + \left| {{a}_{3} - {a}_{2}}\right|  + \cdots  + \left| {{a}_{n} - {a}_{n - 1}}\right|  \leq  M.
+\]
+
+证明: 数列 \(\left\{  {a}_{n}\right\}\) 与 \(\left\{  {A}_{n}\right\}\) 都收敛.
+
+7. 设 \(a > 0,\sigma  > 0,{a}_{1} = \frac{1}{2}\left( {a + \frac{\sigma }{a}}\right) ,{a}_{n + 1} = \frac{1}{2}\left( {{a}_{n} + \frac{\sigma }{{a}_{n}}}\right) ,n = 1,2,\cdots\) . 证明:数列 \(\left\{  {a}_{n}\right\}\) 收敛,且其极限为 \(\sqrt{\sigma }\) .
+
+8. 设 \({a}_{1} > {b}_{1} > 0\) ,记
+\[
+{a}_{n} = \frac{{a}_{n - 1} + {b}_{n - 1}}{2},\;{b}_{n} = \frac{2{a}_{n - 1}{b}_{n - 1}}{{a}_{n - 1} + {b}_{n - 1}},n = 2,3,\cdots .
+\]
+
+证明: 数列 \(\left\{  {a}_{n}\right\}\) 与 \(\left\{  {b}_{n}\right\}\) 的极限都存在且等于 \(\sqrt{{a}_{1}{b}_{1}}\) .
+
+9. 按柯西收敛准则叙述数列 \(\left\{  {a}_{n}\right\}\) 发散的充要条件,并用它证明下列数列 \(\left\{  {a}_{n}\right\}\) 是发散的:
+
+(1) \({a}_{n} = {\left( -1\right) }^{n}n\) ;
+
+(2) \({a}_{n} = \sin \frac{n\pi }{2}\) ;
+
+(3) \({a}_{n} = 1 + \frac{1}{2} + \cdots  + \frac{1}{n}\) .
+
+10. 设 \(\mathop{\lim }\limits_{{n \rightarrow  \infty }}{a}_{n} = a,\mathop{\lim }\limits_{{n \rightarrow  \infty }}{b}_{n} = b\) . 记
+\[
+{S}_{n} = \max \left\{  {{a}_{n},{b}_{n}}\right\}  ,{T}_{n} = \min \left\{  {{a}_{n},{b}_{n}}\right\}  ,n = 1,2,\cdots .
+\]
+
+证明: (1) \(\mathop{\lim }\limits_{{n \rightarrow  \infty }}{S}_{n} = \max \{ a,b\}\) ; (2) \(\mathop{\lim }\limits_{{n \rightarrow  \infty }}{T}_{n} = \min \{ a,b\}\) .
+
+提示: 参考第一章总练习题 1.
+
+11. 设 \(\left\{  {a}_{n}\right\}\) 是无界数列, \(\left\{  {b}_{n}\right\}\) 是无穷大数列. 证明: \(\left\{  {{a}_{n}{b}_{n}}\right\}\) 必为无界数列.
+
+12. 倘若 \(\left\{  {a}_{n}\right\}  ,\left\{  {b}_{n}\right\}\) 都是无界数列,试问 \(\left\{  {{a}_{n}{b}_{n}}\right\}\) 是否必为无界数列?
+
+(若是, 需作证明; 若否, 需给出反例.)
+

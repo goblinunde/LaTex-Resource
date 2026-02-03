@@ -1,0 +1,1431 @@
+\chapter{曲面积分}
+
+\section{第一型曲面积分}
+
+\subsection{第一型曲面积分的概念}
+
+类似于第一型曲线积分,当质量分布在某一曲面块 \(S\) (设密度函数 \(\rho \left( {x,y,z}\right)\) 在 \(S\) 上连续) 时,曲面块 \(S\) 的质量为
+\[
+\mathop{\lim }\limits_{{\parallel T\parallel  \rightarrow  0}}\mathop{\sum }\limits_{{i = 1}}^{n}\rho \left( {{\xi }_{i},{\eta }_{i},{\zeta }_{i}}\right) \Delta {S}_{i},
+\]
+其中 \(T = \left\{  {{S}_{1},{S}_{2},\cdots ,{S}_{n}}\right\}\) 为曲面块的分割, \(\Delta {S}_{i}\) 表示小曲面块 \({S}_{i}\) 的面积, \(\left( {{\xi }_{i},{\eta }_{i},{\zeta }_{i}}\right)\) 为 \({S}_{i}\) 中任意一点, \(\parallel T\parallel\) 为分割 \(T\) 的细度,即为诸 \({S}_{i}\) 中的直径的最大值.
+
+%定义  1
+\begin{definition}{}{def:}
+
+\end{definition}
+设 \(S\) 是空间中可求面积的曲面, \(f\left( {x,y,z}\right)\) 为定义在 \(S\) 上的函数. 对曲面 \(S\) 作分割 \(T\) ,它把 \(S\) 分成 \(n\) 个小曲面块 \({S}_{i}\left( {i = 1,2,\cdots ,n}\right)\) ,以 \(\Delta {S}_{i}\) 记小曲面块 \({S}_{i}\) 的面积, 分割 \(T\) 的细度 \(\parallel T\parallel  = \mathop{\max }\limits_{{1 \leq  i \leq  n}}\left\{  {S}_{i}\right\}\) 的直径 \(\}\) ,在 \({S}_{i}\) 上任取一点 \(\left( {{\xi }_{i},{\eta }_{i},{\zeta }_{i}}\right) \left( {i = 1,2,\cdots ,n}\right)\) , 若极限
+\[
+\mathop{\lim }\limits_{{\parallel T\parallel  \rightarrow  0}}\mathop{\sum }\limits_{{i = 1}}^{n}f\left( {{\xi }_{i},{\eta }_{i},{\zeta }_{i}}\right) \Delta {S}_{i}
+\]
+存在,且与分割 \(T\) 及 \(\left( {{\xi }_{i},{\eta }_{i},{\zeta }_{i}}\right) \left( {i = 1,2,\cdots ,n}\right)\) 的取法无关,则称此极限为 \(f\left( {x,y,z}\right)\) 在 \(S\) 上的第一型曲面积分, 记作
+\[
+{\iint }_{S}f\left( {x,y,z}\right) \mathrm{d}S. \tag{1}
+\]
+于是前面讲到的曲面块的质量可由第一型曲面积分 (1) 求得.
+
+特别地,当 \(f\left( {x,y,z}\right)  \equiv  1\) 时,曲面积分 \({\iint }_{S}\mathrm{\;d}S\) 就是曲面块 \(S\) 的面积.
+
+第一型曲面积分的性质完全类似于第一型曲线积分,读者可仿照第二十章 §1 自行写出.
+
+\subsection{第一型曲面积分的计算}
+
+第一型曲面积分可化为二重积分来计算.
+
+%定理 22.1
+\begin{theorem}{}{the:}
+
+\end{theorem}
+ 设有光滑曲面
+\[
+S : z = z\left( {x,y}\right) ,\left( {x,y}\right)  \in  D,
+\]
+\(f\left( {x,y,z}\right)\) 为 \(S\) 上的连续函数,则
+\[
+{\iint }_{S}f\left( {x,y,z}\right) \mathrm{d}S = {\iint }_{D}f\left( {x,y,z\left( {x,y}\right) }\right) \sqrt{1 + {z}_{x}^{2} + {z}_{y}^{2}}\mathrm{\;d}x\mathrm{\;d}y. \tag{2}
+\]
+%定理 22.1
+\begin{theorem}{}{the:}
+
+\end{theorem}
+ 的证明与第二十章定理 20.1 的证明相仿, 这里不再重复了.
+
+\begin{figure}
+	\centering
+	\includegraphics[width=.3\textwidth]{images/P201.jpg}
+	\caption{图 $22-1$}
+	\label{fig:P201}
+\end{figure}
+
+%例 1
+\begin{example}
+
+\end{example}
+计算 \({\iint }_{S}\frac{\mathrm{d}S}{z}\) ,其中 \(S\) 是球面 \({x}^{2} + {y}^{2} + {z}^{2} = {a}^{2}\) 被平面 \(z = h\left( {0 < h < a}\right)\) 所截的顶部 (图 22-1).
+
+%解
+\begin{solution}
+
+\end{solution}
+曲面 \(S\) 的方程为
+\[
+z = \sqrt{{a}^{2} - {x}^{2} - {y}^{2}},
+\]
+定义域 \(D\) 为圆域 \({x}^{2} + {y}^{2} \leq  {a}^{2} - {h}^{2}\) . 由于
+\[
+\sqrt{1 + {z}_{x}^{2} + {z}_{y}^{2}} = \frac{a}{\sqrt{{a}^{2} - {x}^{2} - {y}^{2}}},
+\]
+所以由公式 (2) 求得
+\[
+{\iint }_{S}\frac{\mathrm{d}S}{z} = {\iint }_{D}\frac{a}{{a}^{2} - {x}^{2} - {y}^{2}}\mathrm{\;d}x\mathrm{\;d}y = {\int }_{0}^{2\pi }\mathrm{d}\theta {\int }_{0}^{\sqrt{{a}^{2} - {h}^{2}}}\frac{a}{{a}^{2} - {r}^{2}}r\mathrm{\;d}r
+\]
+\[
+= {\left. 2\pi a{\int }_{0}^{\sqrt{{a}^{2} - {h}^{2}}}\frac{r}{{a}^{2} - {r}^{2}}\mathrm{\;d}r =  - \pi a\ln \left( {a}^{2} - {r}^{2}\right) \right| }_{0}^{\sqrt{{a}^{2} - {h}^{2}}}
+\]
+\[
+= {2\pi a}\ln \frac{a}{h}\text{ . }
+\]
+%例 2
+\begin{example}
+
+\end{example}
+计算 \({\iint }_{S}\left( {{x}^{2} + {y}^{2} + {z}^{2}}\right) \mathrm{d}S\) ,其中
+
+(1) \(S : {x}^{2} + {y}^{2} + {z}^{2} = {a}^{2};\;\) (2) \(S : {x}^{2} + {y}^{2} + {z}^{2} = {2az}\) .
+
+%解
+\begin{solution}
+
+\end{solution}
+(1) \({\iint }_{S}\left( {{x}^{2} + {y}^{2} + {z}^{2}}\right) \mathrm{d}S = {\iint }_{S}{a}^{2}\mathrm{\;d}S = {4\pi }{a}^{2} \cdot  {a}^{2} = {4\pi }{a}^{4}\) .
+
+(2) \({\iint }_{S}\left( {{x}^{2} + {y}^{2} + {z}^{2}}\right) \mathrm{d}S = {\iint }_{S}{2az}\mathrm{\;d}S = {\iint }_{{S}_{1}}{2az}\mathrm{\;d}S + {\iint }_{{S}_{2}}{2az}\mathrm{\;d}S\) ,
+
+其中
+\[
+{S}_{1} : {z}_{1} = a + \sqrt{{a}^{2} - \left( {{x}^{2} + {y}^{2}}\right) },\left( {x,y}\right)  \in  D,
+\]
+\[
+{S}_{2} : {z}_{2} = a - \sqrt{{a}^{2} - \left( {{x}^{2} + {y}^{2}}\right) },\left( {x,y}\right)  \in  D,
+\]
+\[
+D : {x}^{2} + {y}^{2} \leq  {a}^{2}.
+\]
+由于 \(\sqrt{1 + {\left( \frac{\partial {z}_{1}}{\partial x}\right) }^{2} + {\left( \frac{\partial {z}_{1}}{\partial y}\right) }^{2}} = \sqrt{1 + {\left( \frac{\partial {z}_{2}}{\partial x}\right) }^{2} + {\left( \frac{\partial {z}_{2}}{\partial y}\right) }^{2}} = \frac{a}{\sqrt{{a}^{2} - \left( {{x}^{2} + {y}^{2}}\right) }}\) ,因此
+\[
+{\iint }_{{S}_{1}}{2az}\mathrm{\;d}S = {\iint }_{D}{2a}\left( {a + \sqrt{{a}^{2} - \left( {{x}^{2} + {y}^{2}}\right) }}\right. \frac{a}{\sqrt{{a}^{2} - \left( {{x}^{2} + {y}^{2}}\right) }}\mathrm{d}x\mathrm{\;d}y,
+\]
+\[
+{\iint }_{{S}_{2}}{2az}\mathrm{\;d}S = {\iint }_{D}{2a}\left( {a - \sqrt{{a}^{2} - \left( {{x}^{2} + {y}^{2}}\right) }\frac{a}{\sqrt{{a}^{2} - \left( {{x}^{2} + {y}^{2}}\right) }}\mathrm{d}x\mathrm{\;d}y}\right. \text{ , }
+\]
+\[
+{\iint }_{S}\left( {{x}^{2} + {y}^{2} + {z}^{2}}\right) \mathrm{d}S = 4{\iint }_{D}\frac{{a}^{3}}{\sqrt{{a}^{2} - \left( {{x}^{2} + {y}^{2}}\right) }}\mathrm{d}x\mathrm{\;d}y
+\]
+\[
+= 4{a}^{3}{\int }_{0}^{2\pi }\mathrm{d}\theta {\int }_{0}^{a}\frac{r\mathrm{\;d}r}{\sqrt{{a}^{2} - {r}^{2}}} = {\left. 8{a}^{3}\pi \left( -\sqrt{{a}^{2} - {r}^{2}}\right) \right| }_{0}^{a} = 8{a}^{4}\pi ,
+\]
+对于由参量形式表示的光滑曲面
+\[
+S : \left\{  {\begin{array}{l} x = x\left( {u,v}\right) , \\  y = y\left( {u,v}\right) , \\  z = z\left( {u,v}\right) , \end{array}\;\left( {u,v}\right)  \in  D,}\right.
+\]
+则在 \(S\) 上第一型曲面积分的计算公式为
+\[
+{\iint }_{S}f\left( {x,y,z}\right) \mathrm{d}S = {\iint }_{D}f\left( {x\left( {u,v}\right) ,y\left( {u,v}\right) ,z\left( {u,v}\right) }\right) \sqrt{{EG} - {F}^{2}}\mathrm{\;d}u\mathrm{\;d}v, \tag{3}
+\]
+其中
+\[
+E = {x}_{u}^{2} + {y}_{u}^{2} + {z}_{u}^{2},
+\]
+\[
+F = {x}_{u}{x}_{v} + {y}_{u}{y}_{v} + {z}_{u}{z}_{v},
+\]
+\[
+G = {x}_{v}^{2} + {y}_{v}^{2} + {z}_{v}^{2}.
+\]
+这里还要求雅可比行列式 \(\frac{\partial \left( {x,y}\right) }{\partial \left( {u,v}\right) },\frac{\partial \left( {y,z}\right) }{\partial \left( {u,v}\right) },\frac{\partial \left( {z,x}\right) }{\partial \left( {u,v}\right) }\) 中至少有一个不等于零.
+
+%例 3
+\begin{example}
+
+\end{example}
+计算 \({\iint }_{S}z\mathrm{\;d}S\) ,其中 \(S\) 为螺旋面 (图 22-2) 的一部分
+\[
+S : \left\{  \begin{array}{l} x = u\cos v, \\  y = u\sin v,\;\left( {u,v}\right)  \in  D, \\  z = v, \end{array}\right.
+\]
+\[
+D : \left\{  \begin{array}{l} 0 \leq  u \leq  a, \\  0 \leq  v \leq  {2\pi }. \end{array}\right.
+\]
+%解
+\begin{solution}
+
+\end{solution}
+由于
+\[
+E = {x}_{u}^{2} + {y}_{u}^{2} + {z}_{u}^{2}
+\]
+\[
+= {\cos }^{2}v + {\sin }^{2}v = 1\text{ , }
+\]
+\[
+F = {x}_{u}{x}_{v} + {y}_{u}{y}_{v} + {z}_{u}{z}_{v}
+\]
+\begin{figure}
+	\centering
+	\includegraphics[width=.3\textwidth]{images/P202.jpg}
+	\caption{图 $22-2$}
+	\label{fig:P202}
+\end{figure}
+
+\(=  - u\sin v\cos v + u\sin v\cos v = 0\) ,
+\[
+G = {x}_{v}^{2} + {y}_{v}^{2} + {z}_{v}^{2}
+\]
+\[
+= {u}^{2}{\sin }^{2}v + {u}^{2}{\cos }^{2}v + 1 = 1 + {u}^{2}\text{ , }
+\]
+因此由公式 (3) 可以求得
+\[
+{\iint }_{S}z\mathrm{\;d}S = {\iint }_{D}v\sqrt{1 + {u}^{2}}\mathrm{\;d}u\mathrm{\;d}v = {\int }_{0}^{2\pi }v\mathrm{\;d}v{\int }_{0}^{a}\sqrt{1 + {u}^{2}}\mathrm{\;d}u
+\]
+\[
+= {\left. 2{\pi }^{2}\left\lbrack  \frac{u}{2}\sqrt{1 + {u}^{2}} + \frac{1}{2}\ln \left( u + \sqrt{1 + {u}^{2}}\right) \right\rbrack  \right| }_{0}^{a}
+\]
+\[
+= {\pi }^{2}\left\lbrack  {a\sqrt{1 + {a}^{2}} + \ln \left( {a + \sqrt{1 + {a}^{2}}}\right) }\right\rbrack  \text{ . }
+\]
+与重积分相同, 利用第一型曲面积分可以求曲面块的质心、转动惯量、引力等, 作为练习, 请读者自行写出这些公式, 这里不赘述了.
+
+\subsection{习题 22.1}
+
+1. 计算下列第一型曲面积分:
+
+(1) \({\iint }_{S}\left( {x + y + z}\right) \mathrm{d}S\) ,其中 \(S\) 为上半球面 \({x}^{2} + {y}^{2} + {z}^{2} = {a}^{2},z \geq  0\) ;
+
+( 2 ) \({\iint }_{S}\left( {{x}^{2} + {y}^{2}}\right) \mathrm{d}S\) ,其中 \(S\) 为立体 \(\sqrt{{x}^{2} + {y}^{2}} \leq  z \leq  1\) 的边界曲面；
+
+( 3 ) \({\iint }_{S}\frac{\mathrm{d}S}{{x}^{2} + {y}^{2}}\) ,其中 \(S\) 为柱面 \({x}^{2} + {y}^{2} = {R}^{2}\) 被平面 \(z = 0,z = H\) 所截取的部分；
+
+(4) \({\iint }_{S}{xyz}\mathrm{\;d}S\) ,其中 \(S\) 为平面 \(x + y + z = 1\) 在第一卦限中的部分.
+
+2. 求均匀曲面 \({x}^{2} + {y}^{2} + {z}^{2} = {a}^{2},x \geq  0,y \geq  0,z \geq  0\) 的质心.
+
+3. 求密度为 \(\rho\) 的均匀球面 \({x}^{2} + {y}^{2} + {z}^{2} = {a}^{2}\;\left( {z \geq  0}\right)\) 对于 \(z\) 轴的转动惯量.
+
+4. 计算 \({\iint }_{S}{z}^{2}\mathrm{\;d}S\) ,其中 \(S\) 为圆锥表面的一部分
+\[
+S : \left\{  {\begin{array}{l} x = r\cos \varphi \sin \theta , \\  y = r\sin \varphi \sin \theta , \\  z = r\cos \theta , \end{array}\;D : \left\{  \begin{array}{l} 0 \leq  r \leq  a, \\  0 \leq  \varphi  \leq  {2\pi }, \end{array}\right. }\right.
+\]
+这里 \(\theta\) 为常数 \(\left( {0 < \theta  < \frac{\pi }{2}}\right)\) .
+
+\section{第二型曲面积分}
+
+\subsection{曲面的侧}
+
+为了给曲面确定方向, 先要阐明曲面的侧的概念.
+
+设连通曲面 \(S\) 上到处都有连续变动的切平面 (或法线), \(M\) 为曲面 \(S\) 上的一点,曲面在 \(M\) 处的法线有两个方向: 当取定其中一个指向为正方向时,则另一个指向就是负方向. 设 \({M}_{0}\) 为 \(S\) 上任一点, \(L\) 为 \(S\) 上任一经过点 \({M}_{0}\) ,且不超出 \(S\) 边界的闭曲线. 又设 \(M\) 为动点,它在 \({M}_{0}\) 处与 \({M}_{0}\) 有相同的法线方向,且有如下特性: 当 \(M\) 从 \({M}_{0}\) 出发沿 \(L\) 连续移动,这时作为曲面上的点 \(M\) ,它的法线方向也连续地变动. 最后当 \(M\) 沿 \(L\) 回到 \({M}_{0}\) 时,若这时 \(M\) 的法线方向仍与 \({M}_{0}\) 的法线方向相一致,则说这曲面 \(S\) 是双侧曲面\footnote{事实上,可以证明,只需对 \(S\) 中某一点 \({M}_{0}\) ,对通过 \({M}_{0}\) 且又不超出 \(S\) 的边界的任何闭曲线 \(L\) 上具有上述特性,则 \(S\) 是双侧曲面.} ; 若与 \({M}_{0}\) 的法线方向相反,则说 \(S\) 是单侧曲面.
+
+我们通常碰到的曲面大多是双侧曲面. 单侧曲面的一个典型例子是默比乌斯 (Möbius) 带. 它的构造方法如下: 取一矩形长纸带 ABCD (如图 22-3(a)),将其一端扭转 \({180}^{ \circ  }\) 后与另一端黏合在一起 (即让 \(A\) 与 \(C\) 重合, \(B\) 与 \(D\) 重合. 如图22-3(b) 所示). 读者可以考察这个带状曲面是单侧的. 事实上, 可在曲面上任取一条与其边界相平行的闭曲线 \(L\) ,动点 \(M\) 从 \(L\) 上的点 \({M}_{0}\) 出发,其法线方向与 \({M}_{0}\) 的法线方向相一致,当 \(M\) 沿 \(L\) 连续变动一周回到 \({M}_{0}\) 时,由图 22-3(b) 看到,这时 \(M\) 的法线方向却与 \({M}_{0}\) 的法线方向相反. 对默比乌斯带还可更简单地说明它的单侧特性,即沿这个带子上任一处出发涂以一种颜色,则可以不越过边界而将它全部涂遍 (即把原纸带的两面都涂上同样的颜色).
+
+
+
+\begin{figure}
+	\centering
+	\includegraphics[width=.3\textwidth]{images/P203.jpg}
+	\caption{图 $22-3$}
+	\label{fig:P203}
+\end{figure}
+
+通常由 \(z = z\left( {x,y}\right)\) 所表示的曲面都是双侧曲面,当以其法线正方向与 \(z\) 轴正向的夹角成锐角的一侧 (也称为上侧) 为正侧时,则另一侧 (也称下侧) 为负侧. 当 \(S\) 为封闭曲面时, 通常规定曲面的外侧为正侧, 内侧为负侧.
+
+\subsection{第二型曲面积分的概念}
+
+先观察一个流量计算问题. 设某流体以一定的流速
+\[
+\mathbf{v} = \left( {P\left( {x,y,z}\right) ,Q\left( {x,y,z}\right) ,R\left( {x,y,z}\right) }\right)
+\]
+从给定的曲面 \(S\) 的负侧流向正侧 (图 22-4),其中 \(P,Q,R\) 为所讨论范围上的连续函数,求单位时间内流经曲面 \(S\) 的总流量 \(E\) .
+
+设在曲面 \(S\) 的正侧上任一点(x, y, z)处的单位法向量为
+\[
+\mathbf{n} = \left( {\cos \alpha ,\cos \beta ,\cos \gamma }\right) .
+\]
+\begin{figure}
+	\centering
+	\includegraphics[width=.3\textwidth]{images/P204.jpg}
+	\caption{图 $22-4$}
+	\label{fig:P204}
+\end{figure}
+
+这里 \(\alpha ,\beta ,\gamma\) 是 \(x,y,z\) 的函数,则单位时间内流经小曲面 \({S}_{i}\) 的流量近- 似地等于
+\[
+\mathbf{v}\left( {{\xi }_{i},{\eta }_{i},{\zeta }_{i}}\right)  \cdot  \mathbf{n}\left( {{\xi }_{i},{\eta }_{i},{\zeta }_{i}}\right) \Delta {S}_{i}
+\]
+\[
+= \left\lbrack  {P\left( {{\xi }_{i},{\eta }_{i},{\zeta }_{i}}\right) \cos {\alpha }_{i} + Q\left( {{\xi }_{i},{\eta }_{i},{\zeta }_{i}}\right) \cos {\beta }_{i} + }\right.
+\]
+\[
+\left. {R\left( {{\xi }_{i},{\eta }_{i},{\zeta }_{i}}\right) \cos {\gamma }_{i}}\right\rbrack  \Delta {S}_{i},
+\]
+其中 \(\left( {{\xi }_{i},{\eta }_{i},{\zeta }_{i}}\right)\) 是 \({S}_{i}\) 上任意取定的一点, \(\cos {\alpha }_{i},\cos {\beta }_{i},\cos {\gamma }_{i}\) 是 \({S}_{i}\) 的正侧上法线的方向余弦,又 \(\Delta {S}_{i}\cos {\alpha }_{i},\Delta {S}_{i}\cos {\beta }_{i},\Delta {S}_{i}\cos {\gamma }_{i}\) 分别是 \({S}_{i}\) 的正侧在坐标面 \({yz},{zx}\) 和 \({xy}\) 上投影区域的面积的近似值,并分别记作 \(\Delta {S}_{{i}_{yz}},\Delta {S}_{{i}_{zx}},\Delta {S}_{{i}_{xy}}\) ,于是单位时间内由小曲面 \({S}_{i}\) 的负侧流向正侧的流量也近似地等于
+\[
+P\left( {{\xi }_{i},{\eta }_{i},{\zeta }_{i}}\right) \Delta {S}_{{i}_{yz}} + Q\left( {{\xi }_{i},{\eta }_{i},{\zeta }_{i}}\right) \Delta {S}_{{i}_{zx}} + R\left( {{\xi }_{i},{\eta }_{i},{\zeta }_{i}}\right) \Delta {S}_{{i}_{xy}},
+\]
+故单位时间内由曲面 \(S\) 的负侧流向正侧的总流量
+\[
+E = \mathop{\lim }\limits_{{\parallel T\parallel  \rightarrow  0}}\mathop{\sum }\limits_{{i = 1}}^{n}\left\{  {P\left( {{\xi }_{i},{\eta }_{i},{\zeta }_{i}}\right) \Delta {S}_{{i}_{yz}} + Q\left( {{\xi }_{i},{\eta }_{i},{\zeta }_{i}}\right) \Delta {S}_{{i}_{zx}} + R\left( {{\xi }_{i},{\eta }_{i},{\zeta }_{i}}\right) \Delta {S}_{{i}_{xy}}}\right\}  .
+\]
+这种与曲面的侧有关的和式极限就是所要讨论的第二型曲面积分.
+
+%定义  1
+\begin{definition}{}{def:}
+
+\end{definition}
+设 \(P,Q,R\) 为定义在双侧曲面 \(S\) 上的函数,在 \(S\) 所指定的一侧作分割 \(T\) ,它把 \(S\) 分为 \(n\) 个小曲面 \({S}_{1},{S}_{2},\cdots ,{S}_{n}\) ,分割 \(T\) 的细度 \(\parallel T\parallel  = \mathop{\max }\limits_{{1 \leq  i \leq  n}}\left\{  {S}_{i}\right\}\) ,以 \(\Delta {S}_{{i}_{yz}}\) , \(\Delta {S}_{{i}_{zx}},\Delta {S}_{{i}_{xy}}\) 分别表示 \({S}_{i}\) 在三个坐标面上的投影区域的面积,它们的符号由 \({S}_{i}\) 的方向来确定. 若 \({S}_{i}\) 的法线正向与 \(z\) 轴正向成锐角时, \({S}_{i}\) 在 \({xy}\) 平面的投影区域的面积 \(\Delta {S}_{{i}_{xy}}\) 为正. 反之,若 \({S}_{i}\) 法线正向与 \(z\) 轴正向成钝角时,它在 \({xy}\) 平面的投影区域的面积 \(\Delta {S}_{{i}_{xy}}\) 为负. 在各个小曲面 \({S}_{i}\) 上任取一点 \(\left( {{\xi }_{i},{\eta }_{i},{\zeta }_{i}}\right)\) . 若
+\[
+\mathop{\lim }\limits_{{\parallel T\parallel  \rightarrow  0}}\mathop{\sum }\limits_{{i = 1}}^{n}P\left( {{\xi }_{i},{\eta }_{i},{\zeta }_{i}}\right) \Delta {S}_{{i}_{yz}} + \mathop{\lim }\limits_{{\parallel T\parallel  \rightarrow  0}}\mathop{\sum }\limits_{{i = 1}}^{n}Q\left( {{\xi }_{i},{\eta }_{i},{\zeta }_{i}}\right) \Delta {S}_{{i}_{zx}} + \mathop{\lim }\limits_{{\parallel T\parallel  \rightarrow  0}}\mathop{\sum }\limits_{{i = 1}}^{n}R\left( {{\xi }_{i},{\eta }_{i},{\zeta }_{i}}\right) \Delta {S}_{{i}_{xy}}
+\]
+存在,且与曲面 \(S\) 的分割 \(T\) 和 \(\left( {{\xi }_{i},{\eta }_{i},{\zeta }_{i}}\right)\) 在 \({S}_{i}\) 上的取法无关,则称此极限为函数 \(P,Q\) , \(R\) 在曲面 \(S\) 所指定的一侧上的第二型曲面积分,记作
+\[
+{\iint }_{S}P\left( {x,y,z}\right) \mathrm{d}y\mathrm{\;d}z + Q\left( {x,y,z}\right) \mathrm{d}z\mathrm{\;d}x + R\left( {x,y,z}\right) \mathrm{d}x\mathrm{\;d}y \tag{1}
+\]
+或
+\[
+{\iint }_{S}P\left( {x,y,z}\right) \mathrm{d}y\mathrm{\;d}z + {\iint }_{S}Q\left( {x,y,z}\right) \mathrm{d}z\mathrm{\;d}x + {\iint }_{S}R\left( {x,y,z}\right) \mathrm{d}x\mathrm{\;d}y.
+\]
+据此定义,某流体以速度 \(v = \left( {P,Q,R}\right)\) 在单位时间内从曲面 \(S\) 的负侧流向正侧的总流量
+\[
+E = {\iint }_{S}P\left( {x,y,z}\right) \mathrm{d}y\mathrm{\;d}z + Q\left( {x,y,z}\right) \mathrm{d}z\mathrm{\;d}x + R\left( {x,y,z}\right) \mathrm{d}x\mathrm{\;d}y.
+\]
+又若, 空间的磁场强度为
+\[
+\left( {P\left( {x,y,z}\right) ,Q\left( {x,y,z}\right) ,R\left( {x,y,z}\right) }\right) ,
+\]
+则通过曲面 \(S\) 的磁通量 (磁力线总数)
+\[
+H = {\iint }_{S}P\left( {x,y,z}\right) \mathrm{d}y\mathrm{\;d}z + Q\left( {x,y,z}\right) \mathrm{d}z\mathrm{\;d}x + R\left( {x,y,z}\right) \mathrm{d}x\mathrm{\;d}y.
+\]
+若以 \(- S\) 表示曲面 \(S\) 的另一侧,由定义易得
+\[
+{\iint }_{-S}P\mathrm{\;d}y\mathrm{\;d}z + Q\mathrm{\;d}z\mathrm{\;d}x + R\mathrm{\;d}x\mathrm{\;d}y
+\]
+\[
+=  - {\iint }_{S}P\mathrm{\;d}y\mathrm{\;d}z + Q\mathrm{\;d}z\mathrm{\;d}x + R\mathrm{\;d}x\mathrm{\;d}y.
+\]
+与第二型曲线积分一样, 第二型曲面积分也有如下一些性质:
+
+1. 若 \({\iint }_{S}{P}_{i}\mathrm{\;d}y\mathrm{\;d}z + {Q}_{i}\mathrm{\;d}z\mathrm{\;d}x + {R}_{i}\mathrm{\;d}x\mathrm{\;d}y\;\left( {i = 1,2,\cdots ,k}\right)\) 存在,则有
+\[
+{\iint }_{S}\left( {\mathop{\sum }\limits_{{i = 1}}^{k}{c}_{i}{P}_{i}}\right) \mathrm{d}y\mathrm{\;d}z + \left( {\mathop{\sum }\limits_{{i = 1}}^{k}{c}_{i}{Q}_{i}}\right) \mathrm{d}z\mathrm{\;d}x + \left( {\mathop{\sum }\limits_{{i = 1}}^{k}{c}_{i}{R}_{i}}\right) \mathrm{d}x\mathrm{\;d}y
+\]
+\[
+= \mathop{\sum }\limits_{{i = 1}}^{k}{c}_{i}{\iint }_{S}{P}_{i}\mathrm{\;d}y\mathrm{\;d}z + {Q}_{i}\mathrm{\;d}z\mathrm{\;d}x + {R}_{i}\mathrm{\;d}x\mathrm{\;d}y,
+\]
+其中 \({c}_{i}\left( {i = 1,2,\cdots ,k}\right)\) 是常数.
+
+2. 若曲面 \(S\) 是由两两无公共内点的曲面块 \({S}_{1},{S}_{2},\cdots ,{S}_{k}\) 所组成,且
+\[
+{\iint }_{{S}_{i}}P\mathrm{\;d}y\mathrm{\;d}z + Q\mathrm{\;d}z\mathrm{\;d}x + R\mathrm{\;d}x\mathrm{\;d}y\;\left( {i = 1,2,\cdots ,k}\right)
+\]
+存在, 则有
+\[
+{\iint }_{S}P\mathrm{\;d}y\mathrm{\;d}z + Q\mathrm{\;d}z\mathrm{\;d}x + R\mathrm{\;d}x\mathrm{\;d}y
+\]
+\[
+= \mathop{\sum }\limits_{{i = 1}}^{k}{\iint }_{{S}_{i}}P\mathrm{\;d}y\mathrm{\;d}z + Q\mathrm{\;d}z\mathrm{\;d}x + R\mathrm{\;d}x\mathrm{\;d}y.
+\]
+\subsection{第二型曲面积分的计算}
+
+第二型曲面积分也是把它化为二重积分来计算.
+
+%定理 22.2
+\begin{theorem}{}{the:}
+
+\end{theorem}
+ 设 \(R\) 是定义在光滑曲面
+\[
+S : z = z\left( {x,y}\right) ,\;\left( {x,y}\right)  \in  {D}_{xy}
+\]
+上的连续函数,以 \(S\) 的上侧为正侧 (这时 \(S\) 的法线方向与 \(z\) 轴正向成锐角),则有
+\[
+{\iint }_{S}R\left( {x,y,z}\right) \mathrm{d}x\mathrm{\;d}y = {\iint }_{{D}_{xy}}R\left( {x,y,z\left( {x,y}\right) }\right) \mathrm{d}x\mathrm{\;d}y. \tag{2}
+\]
+%证
+\begin{proof}
+
+\end{proof}
+由第二型曲面积分定义
+\[
+{\iint }_{S}R\left( {x,y,z}\right) \mathrm{d}x\mathrm{\;d}y = \mathop{\lim }\limits_{{\parallel T\parallel  \rightarrow  0}}\mathop{\sum }\limits_{{i = 1}}^{n}R\left( {{\xi }_{i},{\eta }_{i},{\zeta }_{i}}\right) \Delta {S}_{{i}_{xy}}
+\]
+\[
+= \mathop{\lim }\limits_{{d \rightarrow  0}}\mathop{\sum }\limits_{{i = 1}}^{n}R\left( {{\xi }_{i},{\eta }_{i},z\left( {{\xi }_{i},{\eta }_{i}}\right) }\right) \Delta {S}_{{i}_{xy}},
+\]
+这里 \(d = \max \left\{  {{S}_{{i}_{xy}}\text{ 的直径 }}\right\}\) . 显然由 \(\parallel T\parallel  = \max \left\{  {S}_{i}\right\}\) 的直径 \(\}  \rightarrow  0\) 立刻可推得 \(d \rightarrow  0\) . 由于 \(R\) 在 \(S\) 上连续, \(z\) 在 \({D}_{xy}\) 上连续 (曲面光滑!),据复合函数的连续性, \(R\left( {x,y,z\left( {x,y}\right) }\right)\) 也是 \({D}_{xy}\) 上的连续函数. 由二重积分的定义
+\[
+{\iint }_{{D}_{xy}}R\left( {x,y,z\left( {x,y}\right) }\right) \mathrm{d}x\mathrm{\;d}y = \mathop{\lim }\limits_{{d \rightarrow  0}}\mathop{\sum }\limits_{{i = 1}}^{n}R\left( {{\xi }_{i},{\eta }_{i},z\left( {{\xi }_{i},{\eta }_{i}}\right) }\right) \Delta {S}_{{i}_{xy}}.
+\]
+所以
+\[
+{\iint }_{S}R\left( {x,y,z}\right) \mathrm{d}x\mathrm{\;d}y = {\iint }_{{D}_{xy}}R\left( {x,y,z\left( {x,y}\right) }\right) \mathrm{d}x\mathrm{\;d}y.
+\]
+类似地,当 \(P\) 在光滑曲面
+\[
+S : x = x\left( {y,z}\right) ,\;\left( {y,z}\right)  \in  {D}_{yz}
+\]
+上连续时, 有
+\[
+{\iint }_{S}P\left( {x,y,z}\right) \mathrm{d}y\mathrm{\;d}z = {\iint }_{{D}_{yz}}P\left( {x\left( {y,z}\right) ,y,z}\right) \mathrm{d}y\mathrm{\;d}z, \tag{3}
+\]
+这里 \(S\) 是以 \(S\) 的法线方向与 \(x\) 轴的正向成锐角的那一侧为正侧. 当 \(Q\) 在光滑曲面
+\[
+S : y = y\left( {z,x}\right) ,\;\left( {z,x}\right)  \in  {D}_{zx}
+\]
+上连续时, 有
+\[
+{\iint }_{S}Q\left( {x,y,z}\right) \mathrm{d}z\mathrm{\;d}x = {\iint }_{{D}_{zx}}Q\left( {x,y\left( {z,x}\right) ,z}\right) \mathrm{d}z\mathrm{\;d}x, \tag{4}
+\]
+这里 \(S\) 是以 \(S\) 的法线方向与 \(y\) 轴的正向成锐角的那一侧为正侧.
+
+\begin{figure}
+	\centering
+	\includegraphics[width=.3\textwidth]{images/P205.jpg}
+	\caption{图 $22-5$}
+	\label{fig:P205}
+\end{figure}
+
+%例 1
+\begin{example}
+
+\end{example}
+计算 \({\iint }_{S}{xyz}\mathrm{\;d}x\mathrm{\;d}y\) ,
+
+其中 \(S\) 是球面 \({x}^{2} + {y}^{2} + {z}^{2} = 1\) 在 \(x \geq  0,y \geq  0\) 部分并取球面外侧 (图 22-5).
+
+%解
+\begin{solution}
+
+\end{solution}
+曲面 \(S\) 在第一、五卦限部分的方程分别为
+\[
+{S}_{1} : {z}_{1} = \sqrt{1 - {x}^{2} - {y}^{2}},
+\]
+\[
+{S}_{2} : {z}_{2} =  - \sqrt{1 - {x}^{2} - {y}^{2}},
+\]
+它们在 \({xy}\) 平面上的投影区域都是单位圆在第一象限部分. 依题意,积分是沿 \({S}_{1}\) 的上侧和 \({S}_{2}\) 的下侧进行,所以
+\[
+{\iint }_{S}{xyz}\mathrm{\;d}x\mathrm{\;d}y = {\iint }_{{S}_{1}}{xyz}\mathrm{\;d}x\mathrm{\;d}y + {\iint }_{{S}_{2}}{xyz}\mathrm{\;d}x\mathrm{\;d}y
+\]
+\[
+= {\iint }_{{D}_{xy}}{xy}\sqrt{1 - {x}^{2} - {y}^{2}}\mathrm{\;d}x\mathrm{\;d}y - {\iint }_{{D}_{xy}}\left( {-{xy}\sqrt{1 - {x}^{2} - {y}^{2}}}\right) \mathrm{d}x\mathrm{\;d}y
+\]
+\[
+= 2{\iint }_{{D}_{xy}}{xy}\sqrt{1 - {x}^{2} - {y}^{2}}\mathrm{\;d}x\mathrm{\;d}y
+\]
+\[
+= 2{\int }_{0}^{\frac{\pi }{2}}\mathrm{\;d}\theta {\int }_{0}^{1}{r}^{3}\cos \theta \sin \theta \sqrt{1 - {r}^{2}}\mathrm{\;d}r = \frac{2}{15}\text{ . }
+\]
+如果光滑曲面 \(S\) 由参量方程给出:
+\[
+S : \left\{  {\begin{array}{l} x = x\left( {u,v}\right) , \\  y = y\left( {u,v}\right) , \\  z = z\left( {u,v}\right) , \end{array}\;\left( {u,v}\right)  \in  D.}\right.
+\]
+若在 \(D\) 上各点它们的函数行列式
+\[
+\frac{\partial \left( {y,z}\right) }{\partial \left( {u,v}\right) },\;\frac{\partial \left( {z,x}\right) }{\partial \left( {u,v}\right) },\;\frac{\partial \left( {x,y}\right) }{\partial \left( {u,v}\right) }
+\]
+不同时为零, 则分别有
+\[
+{\iint }_{S}P\mathrm{\;d}y\mathrm{\;d}z =  \pm  {\iint }_{D}P\left( {x\left( {u,v}\right) ,y\left( {u,v}\right) ,z\left( {u,v}\right) }\right) \frac{\partial \left( {y,z}\right) }{\partial \left( {u,v}\right) }\mathrm{d}u\mathrm{\;d}v, \tag{5}
+\]
+\[
+{\iint }_{S}Q\mathrm{\;d}z\mathrm{\;d}x =  \pm  {\iint }_{D}Q\left( {x\left( {u,v}\right) ,y\left( {u,v}\right) ,z\left( {u,v}\right) }\right) \frac{\partial \left( {z,x}\right) }{\partial \left( {u,v}\right) }\mathrm{d}u\mathrm{\;d}v, \tag{6}
+\]
+\[
+{\iint }_{S}R\mathrm{\;d}x\mathrm{\;d}y =  \pm  {\iint }_{D}R\left( {x\left( {u,v}\right) ,y\left( {u,v}\right) ,z\left( {u,v}\right) }\right) \frac{\partial \left( {x,y}\right) }{\partial \left( {u,v}\right) }\mathrm{d}u\mathrm{\;d}v. \tag{7}
+\]
+%注
+\begin{remark}
+
+\end{remark}
+(5),(6),(7) 三式中的正负号分别对应曲面 \(S\) 的两个侧,特别当法向 \(\left( {\frac{\partial \left( {y,z}\right) }{\partial \left( {u,v}\right) },\frac{\partial \left( {z,x}\right) }{\partial \left( {u,v}\right) },\frac{\partial \left( {x,y}\right) }{\partial \left( {u,v}\right) }}\right)\) 对应于曲面 \(S\) 所选定的正向一侧时,取正号,否则取负号.
+
+%例 2
+\begin{example}
+
+\end{example}
+计算
+\[
+{\iint }_{S}{x}^{3}\mathrm{\;d}y\mathrm{\;d}z,
+\]
+其中 \(S\) 为椭球面 \(\frac{{x}^{2}}{{a}^{2}} + \frac{{y}^{2}}{{b}^{2}} + \frac{{z}^{2}}{{c}^{2}} = 1\) 的上半部并选取外侧.
+
+%解
+\begin{solution}
+
+\end{solution}
+把曲面表示为参量方程
+\[
+x = a\sin \varphi \cos \theta ,y = b\sin \varphi \sin \theta ,z = c\cos \varphi \;\left( {0 \leq  \varphi  \leq  \frac{\pi }{2},0 \leq  \theta  \leq  {2\pi }}\right) .
+\]
+由 (5) 式有
+\[
+{\iint }_{S}{x}^{3}\mathrm{\;d}y\mathrm{\;d}z =  \pm  {\iint }_{{D}_{\varphi \theta }}{a}^{3}{\sin }^{3}\varphi {\cos }^{3}\theta  \cdot  A\mathrm{\;d}\varphi \mathrm{d}\theta , \tag{8}
+\]
+其中
+\[
+A = \frac{\partial \left( {y,z}\right) }{\partial \left( {\varphi ,\theta }\right) } = \left| \begin{matrix} b\cos \varphi \sin \theta & b\sin \varphi \cos \theta \\   - c\sin \varphi & 0 \end{matrix}\right|  = {bc}{\sin }^{2}\varphi \cos \theta ,
+\]
+积分是在 \(S\) 的上侧进行. 由上述的注,(8)式右端取正号 (因为此时法向中 \(\frac{\partial \left( {x,y}\right) }{\partial \left( {\varphi ,\theta }\right) } = {ab}\sin \varphi \cos \varphi  \geq  0\) 对应 \(S\) 的正侧),即
+\[
+{\iint }_{S}{x}^{3}\mathrm{\;d}y\mathrm{\;d}z = {\iint }_{{D}_{\varphi \theta }}{a}^{3}{\sin }^{3}\varphi {\cos }^{3}\theta  \cdot  {bc}{\sin }^{2}\varphi \cos \theta \mathrm{d}\varphi \mathrm{d}\theta
+\]
+\[
+= {a}^{3}{bc}{\int }_{0}^{\frac{\pi }{2}}{\sin }^{5}\varphi \mathrm{d}\varphi {\int }_{0}^{2\pi }{\cos }^{4}\theta \mathrm{d}\theta  = \frac{2}{5}\pi {a}^{3}{bc}.
+\]
+\subsection{两类曲面积分的联系}
+
+与曲线积分一样, 当曲面的侧确定之后, 可以建立两种类型曲面积分的联系.
+
+设 \(S\) 为光滑曲面,并以上侧为正侧, \(R\) 为 \(S\) 上的连续函数,曲面积分在 \(S\) 的正侧进行. 因而有
+\[
+{\iint }_{S}R\left( {x,y,z}\right) \mathrm{d}x\mathrm{\;d}y = \mathop{\lim }\limits_{{\parallel T\parallel  \rightarrow  0}}\mathop{\sum }\limits_{{i = 1}}^{n}R\left( {{\xi }_{i},{\eta }_{i},{\zeta }_{i}}\right) \Delta {S}_{{i}_{xy}}. \tag{9}
+\]
+由曲面面积公式 (第二十一章 §6)
+\[
+\Delta {S}_{i} = {\iint }_{{S}_{xy}}\frac{1}{\cos \gamma }\mathrm{d}x\mathrm{\;d}y,
+\]
+其中 \(\gamma\) 是曲面 \({S}_{i}\) 的法线方向与 \(z\) 轴正向的交角,它是定义在 \({S}_{{i}_{xy}}\) 上的函数. 因为积分沿曲面正侧进行,所以 \(\gamma\) 是锐角. 又由 \(S\) 是光滑的,所以 \(\cos \gamma\) 在闭区域 \({S}_{{i}_{xy}}\) 上连续. 应用中值定理,在 \({S}_{{i}_{xy}}\) 内必存在一点,使这点的法线方向与 \(z\) 轴正向的夹角 \({\gamma }_{i}^{ * }\) 满足等式
+\[
+\Delta {S}_{i} = \frac{1}{\cos {\gamma }_{i}^{ * }}\Delta {S}_{{i}_{xy}}
+\]
+或
+\[
+\Delta {S}_{{i}_{xy}} = \cos {\gamma }_{i}^{ * } \cdot  \Delta {S}_{i}.
+\]
+于是
+\[
+R\left( {{\xi }_{i},{\eta }_{i},{\zeta }_{i}}\right) \Delta {S}_{{i}_{xy}} = R\left( {{\xi }_{i},{\eta }_{i},{\zeta }_{i}}\right) \cos {\gamma }_{i}^{ * }\Delta {S}_{i}.
+\]
+\(n\) 个部分相加后得
+\[
+\mathop{\sum }\limits_{{i = 1}}^{n}R\left( {{\xi }_{i},{\eta }_{i},{\zeta }_{i}}\right) \Delta {S}_{{i}_{xy}} = \mathop{\sum }\limits_{{i = 1}}^{n}R\left( {{\xi }_{i},{\eta }_{i},{\zeta }_{i}}\right) \cos {\gamma }_{i}^{ * }\Delta {S}_{i}. \tag{10}
+\]
+现以 \(\cos {\gamma }_{i}\) 表示曲面 \({S}_{i}\) 在点 \(\left( {{x}_{i},{y}_{i},{z}_{i}}\right)\) 的法线方向与 \(z\) 轴正向夹角的余弦,则由 \(\cos \gamma\) 的连续性,可推得当 \(\parallel T\parallel  \rightarrow  0\) 时,(10)式右端极限存在. 因此由 (9) 式得到
+\[
+{\iint }_{S}R\left( {x,y,z}\right) \mathrm{d}x\mathrm{\;d}y = {\iint }_{S}R\left( {x,y,z}\right) \cos \gamma \mathrm{d}S. \tag{11}
+\]
+这里注意当改变曲面的侧时,左边积分改变符号,右边积分中角 \(\gamma\) 改为 \(\gamma  \pm  \pi\) . 因而 \(\cos \gamma\) 也改变符号,所以右边积分也相应改变了符号. 同理可证:
+\[
+{\iint }_{S}P\left( {x,y,z}\right) \mathrm{d}y\mathrm{\;d}z = {\iint }_{S}P\left( {x,y,z}\right) \cos \alpha \mathrm{d}S, \tag{12}
+\]
+\[
+{\iint }_{S}Q\left( {x,y,z}\right) \mathrm{d}z\mathrm{\;d}x = {\iint }_{S}Q\left( {x,y,z}\right) \cos \beta \mathrm{d}S,
+\]
+其中 \(\alpha ,\beta\) 分别是 \(S\) 上的法线方向与 \(x\) 轴正向和与 \(y\) 轴正向的夹角. 一般地有
+\[
+{\iint }_{S}P\left( {x,y,z}\right) \mathrm{d}y\mathrm{\;d}z + Q\left( {x,y,z}\right) \mathrm{d}z\mathrm{\;d}x + R\left( {x,y,z}\right) \mathrm{d}x\mathrm{\;d}y
+\]
+\[
+= {\iint }_{S}\left\lbrack  {P\left( {x,y,z}\right) \cos \alpha  + Q\left( {x,y,z}\right) \cos \beta  + R\left( {x,y,z}\right) \cos \gamma }\right\rbrack  \mathrm{d}S. \tag{13}
+\]
+这样,在确定了余弦函数 \(\cos \alpha ,\cos \beta ,\cos \gamma\) 之后,由 (11),(12) 或 (13) 式便建立了两种不同类型曲面积分的联系.
+
+%定理 22.3
+\begin{theorem}{}{the:}
+
+\end{theorem}
+ 设 \(S\) 为光滑曲面,正侧法向量为 \(\left( {\cos \alpha ,\cos \beta ,\cos \gamma }\right) ,P\left( {x,y,z}\right)\) , \(Q\left( {x,y,z}\right) ,R\left( {x,y,z}\right)\) 在 \(S\) 上连续,则
+\[
+{\iint }_{S}P\left( {x,y,z}\right) \mathrm{d}y\mathrm{\;d}z + Q\left( {x,y,z}\right) \mathrm{d}z\mathrm{\;d}x + R\left( {x,y,z}\right) \mathrm{d}x\mathrm{\;d}y
+\]
+\[
+= {\iint }_{S}\left( {P\left( {x,y,z}\right) \cos \alpha  + Q\left( {x,y,z}\right) \cos \beta  + R\left( {x,y,z}\right) \cos \gamma }\right) \mathrm{d}S.
+\]
+%定理 22.4
+\begin{theorem}{}{the:}
+
+\end{theorem}
+ 设 \(P,Q,R\) 是定义在光滑曲面 \(S : z = z\left( {x,y}\right) ,\left( {x,y}\right)  \in  D\) 上的连续函数, 以 \(S\) 的上侧为正侧,则
+\[
+{\iint }_{S}P\left( {x,y,z}\right) \mathrm{d}y\mathrm{\;d}z + Q\left( {x,y,z}\right) \mathrm{d}z\mathrm{\;d}x + R\left( {x,y,z}\right) \mathrm{d}x\mathrm{\;d}y
+\]
+\[
+= {\iint }_{D}\left( {P\left( {x,y,z\left( {x,y}\right) }\right) \left( {-{z}_{x}}\right)  + Q\left( {x,y,z\left( {x,y}\right) }\right) \left( {-{z}_{y}}\right)  + R\left( {x,y,z\left( {x,y}\right) }\right) }\right) \mathrm{d}x\mathrm{\;d}y.
+\]
+%证
+\begin{proof}
+
+\end{proof}
+由于
+\[
+\cos \alpha  = \frac{-{z}_{x}}{\sqrt{1 + {z}_{x}^{2} + {z}_{y}^{2}}},\cos \beta  = \frac{-{z}_{y}}{\sqrt{1 + {z}_{x}^{2} + {z}_{y}^{2}}},\cos \gamma  = \frac{1}{\sqrt{1 + {z}_{x}^{2} + {z}_{y}^{2}}},\mathrm{\;d}S = \sqrt{1 + {z}_{x}^{2} + {z}_{y}^{2}}\mathrm{\;d}x\mathrm{\;d}y,
+\]
+因此
+\[
+{\iint }_{S}P\left( {x,y,z}\right) \mathrm{d}y\mathrm{\;d}z + Q\left( {x,y,z}\right) \mathrm{d}z\mathrm{\;d}x + R\left( {x,y,z}\right) \mathrm{d}x\mathrm{\;d}y
+\]
+\[
+= {\iint }_{S}\left( {P\left( {x,y,z}\right) \cos \alpha  + Q\left( {x,y,z}\right) \cos \beta  + R\left( {x,y,z}\right) \cos \gamma }\right) \mathrm{d}S
+\]
+\[
+= {\iint }_{D}\left( {P\left( {x,y,z\left( {x,y}\right) }\right) \left( {-{z}_{x}}\right)  + Q\left( {x,y,z\left( {x,y}\right) }\right) \left( {-{z}_{y}}\right)  + }\right.
+\]
+\[
+\left. {R\left( {x,y,z\left( {x,y}\right) }\right) }\right) \mathrm{d}x\mathrm{\;d}y\text{ . }
+\]
+%例 3
+\begin{example}
+
+\end{example}
+计算 \({\iint }_{S}\left( {{2x} + z}\right) \mathrm{d}y\mathrm{\;d}z + z\mathrm{\;d}x\mathrm{\;d}y\) ,其中 \(S = \left\{  {\left( {x,y,z}\right)  \mid  z = {x}^{2} + {y}^{2},z \in  \left\lbrack  {0,1}\right\rbrack  }\right\}\) , 取上侧.
+
+%解
+\begin{solution}
+
+\end{solution}
+\({z}_{x} = {2x},{z}_{y} = {2y}\) ,
+\[
+I = {\iint }_{D}\left( {\left( {{2x} + {x}^{2} + {y}^{2}}\right) \left( {-{2x}}\right)  + {x}^{2} + {y}^{2}}\right) \mathrm{d}x\mathrm{\;d}y = {\iint }_{D}\left( {{y}^{2} - 3{x}^{2}}\right) \mathrm{d}x\mathrm{\;d}y
+\]
+\[
+=  - {\iint }_{D}2{x}^{2}\mathrm{\;d}x\mathrm{\;d}y =  - 2{\int }_{0}^{2\pi }\mathrm{d}\theta {\int }_{0}^{1}{r}^{2}{\cos }^{2}{\theta r}\mathrm{\;d}r =  - \frac{\pi }{2}\text{ , }
+\]
+其中由于 \(x\left( {{x}^{2} + {y}^{2}}\right)\) 是 \(x\) 的奇函数, \({\iint }_{D}x\left( {{x}^{2} + {y}^{2}}\right) \mathrm{d}x\mathrm{\;d}y = 0\) ; 又由对称性,
+\[
+{\iint }_{D}{x}^{2}\mathrm{\;d}x\mathrm{\;d}y = {\iint }_{D}{y}^{2}\mathrm{\;d}x\mathrm{\;d}y.
+\]
+\subsection{习题 22.2}
+
+1. 计算下列第二型曲面积分:
+
+(1) \({\iint }_{S}y\left( {x - z}\right) \mathrm{d}y\mathrm{\;d}z + {x}^{2}\mathrm{\;d}z\mathrm{\;d}x + \left( {{y}^{2} + {xz}}\right) \mathrm{d}x\mathrm{\;d}y\) ,其中 \(S\) 为由 \(x = y = z = 0,x = y = z = a\) 六个平面所围的立方体表面并取外侧为正向;
+
+( 2 ) \({\iint }_{S}\left( {x + y}\right) \mathrm{d}y\mathrm{\;d}z + \left( {y + z}\right) \mathrm{d}z\mathrm{\;d}x + \left( {z + x}\right) \mathrm{d}x\mathrm{\;d}y\) ,其中 \(S\) 是以原点为中心,边长为 2 的立方体表面并取外侧为正向;
+
+(3) \({\iint }_{S}{xy}\mathrm{\;d}y\mathrm{\;d}z + {yz}\mathrm{\;d}z\mathrm{\;d}x + {xz}\mathrm{\;d}x\mathrm{\;d}y\) ,其中 \(S\) 是由平面 \(x = y = z = 0\) 和 \(x + y + z = 1\) 所围的四面体表面并取外侧为正向;
+
+(4) \({\iint }_{S}{yz}\mathrm{\;d}z\mathrm{\;d}x\) ,其中 \(S\) 是球面 \({x}^{2} + {y}^{2} + {z}^{2} = 1\) 的上半部分并取外侧为正向；
+
+(5) \({\iint }_{S}{x}^{2}\mathrm{\;d}y\mathrm{\;d}z + {y}^{2}\mathrm{\;d}z\mathrm{\;d}x + {z}^{2}\mathrm{\;d}x\mathrm{\;d}y\) ,其中 \(S\) 是球面 \({\left( x - a\right) }^{2} + {\left( y - b\right) }^{2} + {\left( z - c\right) }^{2} = {R}^{2}\) 并取外侧为正向.
+
+2. 设某流体的流速为 \(v = \left( {k,y,0}\right)\) ,求单位时间内从球面 \({x}^{2} + {y}^{2} + {z}^{2} = 4\) 的内部流过球面的流量.
+
+3. 计算第二型曲面积分
+\[
+I = {\iint }_{S}f\left( x\right) \mathrm{d}y\mathrm{\;d}z + g\left( y\right) \mathrm{d}z\mathrm{\;d}x + h\left( z\right) \mathrm{d}x\mathrm{\;d}y,
+\]
+其中 \(S\) 是平行六面体 \(0 \leq  x \leq  a,0 \leq  y \leq  b,0 \leq  z \leq  c\) 的表面并取外侧为正向, \(f\left( x\right) ,g\left( y\right) ,h\left( z\right)\) 为 \(S\) 上的连续函数.
+
+4. 设磁场强度为 \(\mathbf{E}\left( {x,y,z}\right)  = \left( {{x}^{2},{y}^{2},{z}^{2}}\right)\) ,求从球内出发通过上半球面 \({x}^{2} + {y}^{2} + {z}^{2} = {a}^{2},z \geq  0\) 的磁通量.
+
+\section{高斯公式与斯托克斯公式}
+
+\subsection{高斯公式}
+
+格林公式建立了沿封闭曲线的曲线积分与二重积分的关系, 沿空间闭曲面的曲面积分和三重积分之间也有类似的关系, 这就是本段所要讨论的高斯 (Gauss) 公式.
+
+%定理 22.5
+\begin{theorem}{}{the:}
+
+\end{theorem}
+ 设空间区域 \(V\) 由分片光滑的双侧封闭曲面 \(S\) 围成. 若函数 \(P,Q,R\) 在 \(V\) 上连续, 且有一阶连续偏导数, 则
+\[
+{\iiint }_{V}\left( {\frac{\partial P}{\partial x} + \frac{\partial Q}{\partial y} + \frac{\partial R}{\partial z}}\right) \mathrm{d}x\mathrm{\;d}y\mathrm{\;d}z
+\]
+\[
+= {\oiint }_{S}P\mathrm{\;d}y\mathrm{\;d}z + Q\mathrm{\;d}z\mathrm{\;d}x + R\mathrm{\;d}x\mathrm{\;d}{y}\footnote{若 \(S\) 为封闭曲面,则曲面积分的积分号用 \(\oint\) 表示.}, \tag{1}
+\]
+其中 \(S\) 取外侧. (1) 式称为高斯公式.
+
+%证
+\begin{proof}
+
+\end{proof}
+下面只证
+\[
+{\iiint }_{V}\frac{\partial R}{\partial z}\mathrm{\;d}x\mathrm{\;d}y\mathrm{\;d}z = {\oiint }_{S}R\mathrm{\;d}x\mathrm{\;d}y.
+\]
+读者可类似地证明
+\[
+{\iiint }_{V}\frac{\partial P}{\partial x}\mathrm{\;d}x\mathrm{\;d}y\mathrm{\;d}z = {\oiint }_{S}P\mathrm{\;d}y\mathrm{\;d}z,
+\]
+\[
+{\iiint }_{V}\frac{\partial Q}{\partial y}\mathrm{\;d}x\mathrm{\;d}y\mathrm{\;d}z = {\oiint }_{S}Q\mathrm{\;d}z\mathrm{\;d}x.
+\]
+\begin{figure}
+	\centering
+	\includegraphics[width=.3\textwidth]{images/P206.jpg}
+	\caption{图 $22-6$}
+	\label{fig:P206}
+\end{figure}
+
+这些结果相加便得到了高斯公式 (1).
+
+先设 \(V\) 是一个 \({xy}\) 型区域,即其边界曲面 \(S\) 由曲面
+\[
+{S}_{2} : z = {z}_{2}\left( {x,y}\right) ,\left( {x,y}\right)  \in  {D}_{xy},
+\]
+\[
+{S}_{1} : z = {z}_{1}\left( {x,y}\right) ,\left( {x,y}\right)  \in  {D}_{xy}
+\]
+及垂直于 \({D}_{xy}\) 的边界的柱面 \({S}_{3}\) 组成 (图 22-6),其中 \({z}_{1}\left( {x,y}\right)  \leq\)  \({z}_{2}\left( {x,y}\right)\) . 于是按三重积分的计算方法有
+\[
+{\iiint }_{V}\frac{\partial R}{\partial z}\mathrm{\;d}x\mathrm{\;d}y\mathrm{\;d}z
+\]
+\[
+= {\iint }_{{D}_{xy}}\mathrm{\;d}x\mathrm{\;d}y{\int }_{{z}_{1}\left( {x,y}\right) }^{{z}_{2}\left( {x,y}\right) }\frac{\partial R}{\partial z}\mathrm{\;d}z
+\]
+\[
+= {\iint }_{{D}_{xy}}\left( {R\left( {x,y,{z}_{2}\left( {x,y}\right) }\right)  - R\left( {x,y,{z}_{1}\left( {x,y}\right) }\right) \mathrm{d}x\mathrm{\;d}y}\right.
+\]
+\[
+= {\iint }_{{D}_{xy}}R\left( {x,y,{z}_{2}\left( {x,y}\right) }\right) \mathrm{d}x\mathrm{\;d}y - {\iint }_{{D}_{xy}}R\left( {x,y,{z}_{1}\left( {x,y}\right) }\right) \mathrm{d}x\mathrm{\;d}y
+\]
+\[
+= {\iint }_{{S}_{2}}R\left( {x,y,z}\right) \mathrm{d}x\mathrm{\;d}y - {\iint }_{{S}_{1}}R\left( {x,y,z}\right) \mathrm{d}x\mathrm{\;d}y
+\]
+\[
+= {\iint }_{{S}_{2}}R\left( {x,y,z}\right) \mathrm{d}x\mathrm{\;d}y + {\iint }_{-{S}_{1}}R\left( {x,y,z}\right) \mathrm{d}x\mathrm{\;d}y,
+\]
+其中 \({S}_{1},{S}_{2}\) 都取上侧. 又由于 \({S}_{3}\) 在 \({xy}\) 平面上投影区域的面积为零,所以
+\[
+{\iint }_{{S}_{3}}R\left( {x,y,z}\right) \mathrm{d}x\mathrm{\;d}y = 0.
+\]
+
+
+因此
+\[
+{\iiint }_{V}\frac{\partial R}{\partial z}\mathrm{\;d}x\mathrm{\;d}y\mathrm{\;d}z = {\iint }_{{S}_{2}}R\mathrm{\;d}x\mathrm{\;d}y + {\iint }_{-{S}_{1}}R\mathrm{\;d}x\mathrm{\;d}y + {\iint }_{{S}_{3}}R\mathrm{\;d}x\mathrm{\;d}y
+\]
+\[
+= {\oiint }_{S}R\mathrm{\;d}x\mathrm{\;d}y\text{ . }
+\]
+对于不是 \({xy}\) 型区域的情形,则用有限个光滑曲面将它分割成若干个 \({xy}\) 型区域来讨论. 详细的推导与格林公式相似, 这里不再细说了.
+
+高斯公式可用来简化某些曲面积分的计算.
+
+%例 1
+\begin{example}
+
+\end{example}
+计算
+\[
+{\oiint }_{S}y\left( {x - z}\right) \mathrm{d}y\mathrm{\;d}z + {x}^{2}\mathrm{\;d}z\mathrm{\;d}x + \left( {{y}^{2} + {xz}}\right) \mathrm{d}x\mathrm{\;d}y,
+\]
+其中 \(S\) 是边长为 \(a\) 的正立方体表面并取外侧 (即上节习题 \(1\left( 1\right)\) ).
+
+%解
+\begin{solution}
+
+\end{solution}
+应用高斯公式, 所求曲面积分等于
+\[
+{\iiint }_{V}\left\lbrack  {\frac{\partial }{\partial x}\left( {y\left( {x - z}\right) }\right)  + \frac{\partial }{\partial y}\left( {x}^{2}\right)  + \frac{\partial }{\partial z}\left( {{y}^{2} + {xz}}\right) }\right\rbrack  \mathrm{d}x\mathrm{\;d}y\mathrm{\;d}z
+\]
+\[
+= {\iiint }_{V}\left( {y + x}\right) \mathrm{d}x\mathrm{\;d}y\mathrm{\;d}z = {\int }_{0}^{a}\mathrm{\;d}z{\int }_{0}^{a}\mathrm{\;d}y{\int }_{0}^{a}\left( {y + x}\right) \mathrm{d}x
+\]
+\[
+= a{\int }_{0}^{a}\left( {{ay} + \frac{1}{2}{a}^{2}}\right) \mathrm{d}y = {a}^{4}.
+\]
+若高斯公式中 \(P = x,Q = y,R = z\) ,则有
+\[
+{\iiint }_{V}\left( {1 + 1 + 1}\right) \mathrm{d}x\mathrm{\;d}y\mathrm{\;d}z = {\oiint }_{S}x\mathrm{\;d}y\mathrm{\;d}z + y\mathrm{\;d}z\mathrm{\;d}x + z\mathrm{\;d}x\mathrm{\;d}y.
+\]
+于是得到应用第二型曲面积分计算空间区域 \(V\) 的体积公式
+\[
+{\Delta V} = \frac{1}{3}{\oiint }_{S}x\mathrm{\;d}y\mathrm{\;d}z + y\mathrm{\;d}z\mathrm{\;d}x + z\mathrm{\;d}x\mathrm{\;d}y.
+\]
+\subsection{斯托克斯公式}
+
+斯托克斯 (Stokes) 公式是建立沿空间双侧曲面 \(S\) 的积分与沿 \(S\) 的边界曲线 \(L\) 的积分之间的联系.
+
+在讲下述定理之前,先对双侧曲面 \(S\) 的侧与其边界曲线 \(L\) 的方向作如下规定: 设有人站在 \(S\) 上指定的一侧,若沿 \(L\) 行走,指定的侧总在人的左方,则人前进的方向为边界线 \(L\) 的正向; 若沿 \(L\) 行走,指定的侧总在人的右方,则人前进的方向为边界线 \(L\) 的负向, 这个规定方法也称为右手法则, 如图 22-7 所示.
+
+\begin{figure}
+	\centering
+	\includegraphics[width=.3\textwidth]{images/P207.jpg}
+	\caption{图 $22-7$}
+	\label{fig:P207}
+\end{figure}
+
+%定理 22.6
+\begin{theorem}{}{the:}
+
+\end{theorem}
+ 设光滑曲面 \(S\) 的边界 \(L\) 是按段光滑的连续曲线. 若函数 \(P,Q,R\) 在 \(S\) (连同 \(L\) ) 上连续,且有一阶连续偏导数,则
+\[
+{\iint }_{S}\left( {\frac{\partial R}{\partial y} - \frac{\partial Q}{\partial z}}\right) \mathrm{d}y\mathrm{\;d}z + \left( {\frac{\partial P}{\partial z} - \frac{\partial R}{\partial x}}\right) \mathrm{d}z\mathrm{\;d}x + \left( {\frac{\partial Q}{\partial x} - \frac{\partial P}{\partial y}}\right) \mathrm{d}x\mathrm{\;d}y
+\]
+\[
+= {\oint }_{L}P\mathrm{\;d}x + Q\mathrm{\;d}y + R\mathrm{\;d}z, \tag{2}
+\]
+其中 \(S\) 的侧与 \(L\) 的方向按右手法则确定.
+
+%证
+\begin{proof}
+
+\end{proof}
+先证
+\[
+{\iint }_{S}\frac{\partial P}{\partial z}\mathrm{\;d}z\mathrm{\;d}x - \frac{\partial P}{\partial y}\mathrm{\;d}x\mathrm{\;d}y = {\oint }_{L}P\mathrm{\;d}x, \tag{3}
+\]
+其中曲面 \(S\) 由方程 \(z = z\left( {x,y}\right)\) 确定,它的正侧法线方向数为 \(\left( {-{z}_{x}, - {z}_{y},1}\right)\) ,方向余弦为 \(\left( {\cos \alpha ,\cos \beta ,\cos \gamma }\right)\) ,所以
+\[
+\frac{\partial z}{\partial x} =  - \frac{\cos \alpha }{\cos \gamma },\;\frac{\partial z}{\partial y} =  - \frac{\cos \beta }{\cos \gamma }.
+\]
+若 \(S\) 在 \({xy}\) 平面上投影区域为 \({D}_{xy},L\) 在 \({xy}\) 平面上的投影曲线记为 \(\Gamma\) . 现由第二型曲线积分定义及格林公式有
+\[
+{\oint }_{L}P\left( {x,y,z}\right) \mathrm{d}x = {\oint }_{\Gamma }P\left( {x,y,z\left( {x,y}\right) }\right) \mathrm{d}x
+\]
+\[
+=  - {\iint }_{{D}_{xy}}\frac{\partial }{\partial y}P\left( {x,y,z\left( {x,y}\right) }\right) \mathrm{d}x\mathrm{\;d}y.
+\]
+因为
+\[
+\frac{\partial }{\partial y}P\left( {x,y,z\left( {x,y}\right) }\right)  = \frac{\partial P}{\partial y} + \frac{\partial P}{\partial z}\frac{\partial z}{\partial y},
+\]
+所以
+\[
+- {\iint }_{{D}_{xy}}\frac{\partial }{\partial y}P\left( {x,y,z\left( {x,y}\right) }\right) \mathrm{d}x\mathrm{\;d}y =  - {\iint }_{S}\left( {\frac{\partial P}{\partial y} + \frac{\partial P}{\partial z}\frac{\partial z}{\partial y}}\right) \mathrm{d}x\mathrm{\;d}y.
+\]
+由于 \(\frac{\partial z}{\partial y} =  - \frac{\cos \beta }{\cos \gamma }\) ,从而
+\[
+- {\iint }_{S}\left( {\frac{\partial P}{\partial y} + \frac{\partial P}{\partial z}\frac{\partial z}{\partial y}}\right) \mathrm{d}x\mathrm{\;d}y =  - {\iint }_{S}\left( {\frac{\partial P}{\partial y} - \frac{\partial P}{\partial z}\frac{\cos \beta }{\cos \gamma }}\right) \mathrm{d}x\mathrm{\;d}y
+\]
+\[
+=  - {\iint }_{S}\left( {\frac{\partial P}{\partial y}\cos \gamma  - \frac{\partial P}{\partial z}\cos \beta }\right) \frac{\mathrm{d}x\mathrm{\;d}y}{\cos \gamma }
+\]
+\[
+=  - {\iint }_{S}\left( {\frac{\partial P}{\partial y}\cos \gamma  - \frac{\partial P}{\partial z}\cos \beta }\right) \mathrm{d}S
+\]
+\[
+= {\iint }_{S}\frac{\partial P}{\partial z}\mathrm{\;d}z\mathrm{\;d}x - \frac{\partial P}{\partial y}\mathrm{\;d}x\mathrm{\;d}y.
+\]
+综合上述结果, 便得所要证明的 (3) 式.
+
+同样对于曲面 \(S\) 表示为 \(x = x\left( {y,z}\right)\) 和 \(y = y\left( {z,x}\right)\) 时,可证得
+\[
+{\iint }_{S}\frac{\partial Q}{\partial x}\mathrm{\;d}x\mathrm{\;d}y - \frac{\partial Q}{\partial z}\mathrm{\;d}y\mathrm{\;d}z = {\oint }_{L}Q\mathrm{\;d}y \tag{4}
+\]
+和
+\[
+{\iint }_{S}\frac{\partial R}{\partial y}\mathrm{\;d}y\mathrm{\;d}z - \frac{\partial R}{\partial x}\mathrm{\;d}z\mathrm{\;d}x = {\oint }_{L}R\mathrm{\;d}z. \tag{5}
+\]
+将 \(\left( 3\right) ,\left( 4\right) ,\left( 5\right)\) 三式相加即得(2)式.
+
+如果曲面 \(S\) 不能以 \(z = z\left( {x,y}\right)\) 的形式给出,则可用一些光滑曲线把 \(S\) 分割为若干小块, 使每一小块能用这种形式来表示. 因而这时 (2) 式也能成立.
+
+公式 (2) 称为斯托克斯公式.
+
+为了便于记忆, 斯托克斯公式也常写成如下形式:
+\[
+{\iint }_{S}\left| \begin{matrix} \mathrm{d}y\mathrm{\;d}z & \mathrm{\;d}z\mathrm{\;d}x & \mathrm{\;d}x\mathrm{\;d}y \\  \frac{\partial }{\partial x} & \frac{\partial }{\partial y} & \frac{\partial }{\partial z} \\  P & Q & R \end{matrix}\right|  = {\oint }_{L}P\mathrm{\;d}x + Q\mathrm{\;d}y + R\mathrm{\;d}z.
+\]
+%例 2
+\begin{example}
+
+\end{example}
+计算
+\[
+I = {\oint }_{L}\left( {{y}^{2} - {z}^{2}}\right) \mathrm{d}x + \left( {{z}^{2} - {x}^{2}}\right) \mathrm{d}y + \left( {{x}^{2} - {y}^{2}}\right) \mathrm{d}z,
+\]
+其中 \(L\) 是立方体 \(\left\lbrack  {0,a}\right\rbrack   \times  \left\lbrack  {0,a}\right\rbrack   \times  \left\lbrack  {0,a}\right\rbrack\) 的表面与平面 \(x +\)  \(y + z = \frac{3a}{2}\) 的交线,从 \(z\) 轴正向看去取逆时针方向 (图22-8).
+
+\begin{figure}
+	\centering
+	\includegraphics[width=.3\textwidth]{images/P208.jpg}
+	\caption{图 $22-8$}
+	\label{fig:P208}
+\end{figure}
+
+%解
+\begin{solution}
+
+\end{solution}
+令 \(S\) 为 \(x + y + z = \frac{3a}{2}\) 被 \(L\) 所围的一块,取上侧,由斯托克斯公式,
+\[
+I = {\iint }_{S}\left| \begin{matrix} \mathrm{d}y\mathrm{\;d}z & \mathrm{\;d}z\mathrm{\;d}x & \mathrm{\;d}x\mathrm{\;d}y \\  \frac{\partial }{\partial x} & \frac{\partial }{\partial y} & \frac{\partial }{\partial z} \\  {y}^{2} - {z}^{2} & {z}^{2} - {x}^{2} & {x}^{2} - {y}^{2} \end{matrix}\right|
+\]
+\[
+= {\iint }_{S}\left( {-{2y} - {2z}}\right) \mathrm{d}y\mathrm{\;d}z + \left( {-{2z} - {2x}}\right) \mathrm{d}z\mathrm{\;d}x + \left( {-{2x} - {2y}}\right) \mathrm{d}x\mathrm{\;d}y
+\]
+\[
+= \frac{1}{\sqrt{3}}{\iint }_{S} - 4\left( {x + y + z}\right) \mathrm{d}S
+\]
+\[
+=  - 2\sqrt{3}a{\iint }_{S}\mathrm{\;d}S =  - \frac{9}{2}{a}^{3}.
+\]
+由斯托克斯公式, 可导出空间曲线积分与路线无关的条件. 为此先介绍一下空间单连通区域的概念.
+
+区域 \(V\) 称为单连通区域,如果 \(V\) 内任一封闭曲线皆可以不经过 \(V\) 以外的点而连续收缩于属于 \(V\) 的一点. 如球体是单连通区域. 非单连通区域称为复连通区域. 如环状区域不是单连通区域, 而是复连通区域.
+
+与平面曲线积分相仿, 空间曲线积分与路线的无关性也有下面相应的定理.
+
+%定理 22.7
+\begin{theorem}{}{the:}
+
+\end{theorem}
+ 设 \(\Omega  \subset  {\mathbf{R}}^{3}\) 为空间单连通区域. 若函数 \(P,Q,R\) 在 \(\Omega\) 上连续,且有一阶连续偏导数, 则以下四个条件是等价的:
+
+(i) 对于 \(\Omega\) 内任一按段光滑的封闭曲线 \(L\) ,有
+\[
+{\oint }_{L}P\mathrm{\;d}x + Q\mathrm{\;d}y + R\mathrm{\;d}z = 0;
+\]
+(ii) 对于 \(\Omega\) 内任一按段光滑的曲线 \(L\) ,曲线积分
+\[
+{\int }_{L}P\mathrm{\;d}x + Q\mathrm{\;d}y + R\mathrm{\;d}z
+\]
+与路线无关;
+
+(iii) \(P\mathrm{\;d}x + Q\mathrm{\;d}y + R\mathrm{\;d}z\) 是 \(\Omega\) 内某一函数 \(u\) 的全微分,即
+\[
+\mathrm{d}u = P\mathrm{\;d}x + Q\mathrm{\;d}y + R\mathrm{\;d}z; \tag{6}
+\]
+(iv) \(\frac{\partial P}{\partial y} = \frac{\partial Q}{\partial x},\frac{\partial Q}{\partial z} = \frac{\partial R}{\partial y},\frac{\partial R}{\partial x} = \frac{\partial P}{\partial z}\) 在 \(\Omega\) 内处处成立.
+
+这个定理的证明与定理 21.12 相仿, 这里不重复了.
+
+%例 3
+\begin{example}
+
+\end{example}
+验证曲线积分
+\[
+{\int }_{L}\left( {y + z}\right) \mathrm{d}x + \left( {z + x}\right) \mathrm{d}y + \left( {x + y}\right) \mathrm{d}z
+\]
+与路线无关,并求被积表达式的原函数 \(u\left( {x,y,z}\right)\) .
+
+%解
+\begin{solution}
+
+\end{solution}
+由于
+\[
+P = y + z,\;Q = z + x,\;R = x + y,
+\]
+\[
+\frac{\partial P}{\partial y} = \frac{\partial Q}{\partial x} = \frac{\partial Q}{\partial z} = \frac{\partial R}{\partial y} = \frac{\partial R}{\partial x} = \frac{\partial P}{\partial z} = 1,
+\]
+\begin{figure}
+	\centering
+	\includegraphics[width=.3\textwidth]{images/P209.jpg}
+	\caption{图 $22-9$}
+	\label{fig:P209}
+\end{figure}
+
+所以曲线积分与路线无关.
+
+现在求
+\[
+u\left( {x,y,z}\right)  = {\int }_{{M}_{0}M}\left( {y + z}\right) \mathrm{d}x + \left( {z + x}\right) \mathrm{d}y + \left( {x + y}\right) \mathrm{d}z.
+\]
+取 \({M}_{0}M\) 如图 22-9,从 \({M}_{0}\) 沿平行于 \(x\) 轴的直线到 \({M}_{1}\left( {x,{y}_{0},{z}_{0}}\right)\) , 再沿平行于 \(y\) 轴的直线到 \({M}_{2}\left( {x,y,{z}_{0}}\right)\) ,最后沿平行于 \(z\) 轴的直线到 \(M\left( {x,y,z}\right)\) . 于是
+\[
+u\left( {x,y,z}\right)  = {\int }_{{x}_{0}}^{x}\left( {{y}_{0} + {z}_{0}}\right) \mathrm{d}s + {\int }_{{y}_{0}}^{y}\left( {{z}_{0} + x}\right) \mathrm{d}t + {\int }_{{z}_{0}}^{z}\left( {x + y}\right) \mathrm{d}r
+\]
+\[
+= \left( {{y}_{0} + {z}_{0}}\right) x - \left( {{y}_{0} + {z}_{0}}\right) {x}_{0} + \left( {{z}_{0} + x}\right) y -
+\]
+\[
+\left( {{z}_{0} + x}\right) {y}_{0} + \left( {x + y}\right) z - \left( {x + y}\right) {z}_{0}
+\]
+\[
+= {xy} + {xz} + {yz} + c,
+\]
+其中 \(c =  - {x}_{0}{y}_{0} - {x}_{0}{z}_{0} - {y}_{0}{z}_{0}\) 是一个常数. 若取 \({M}_{0}\) 为原点,则得
+\[
+u\left( {x,y,z}\right)  = {xy} + {xz} + {yz}.
+\]
+\subsection{习题 22.3}
+
+1. 应用高斯公式计算下列曲面积分:
+
+(1) \({\oiint }_{S}{yz}\mathrm{\;d}y\mathrm{\;d}z + {zx}\mathrm{\;d}z\mathrm{\;d}x + {xy}\mathrm{\;d}x\mathrm{\;d}y\) ,其中 \(S\) 是单位球面 \({x}^{2} + {y}^{2} + {z}^{2} = 1\) 的外侧；
+
+(2) \({\oiint }_{S}{x}^{2}\mathrm{\;d}y\mathrm{\;d}z + {y}^{2}\mathrm{\;d}z\mathrm{\;d}x + {z}^{2}\mathrm{\;d}x\mathrm{\;d}y\) ,其中 \(S\) 是立方体 \(0 \leq  x,y,z \leq  a\) 表面的外侧；
+
+( 3 ) \({\oiint }_{S}{x}^{2}\mathrm{\;d}y\mathrm{\;d}z + {y}^{2}\mathrm{\;d}z\mathrm{\;d}x + {z}^{2}\mathrm{\;d}x\mathrm{\;d}y\) ,其中 \(S\) 是锥面 \({x}^{2} + {y}^{2} = {z}^{2}\) 与平面 \(z = h\) 所围空间区域
+
+\(\left( {0 \leq  z \leq  h}\right)\) 的表面,方向取外侧;
+
+(4) \({\oiint }_{S}{x}^{3}\mathrm{\;d}y\mathrm{\;d}z + {y}^{3}\mathrm{\;d}z\mathrm{\;d}x + {z}^{3}\mathrm{\;d}x\mathrm{\;d}y\) ,其中 \(S\) 是单位球面 \({x}^{2} + {y}^{2} + {z}^{2} = 1\) 的外侧；
+
+(5) \({\iint }_{S}x\mathrm{\;d}y\mathrm{\;d}z + y\mathrm{\;d}z\mathrm{\;d}x + z\mathrm{\;d}x\mathrm{\;d}y\) ,其中 \(S\) 是上半球面 \(z = \sqrt{{a}^{2} - {x}^{2} - {y}^{2}}\) 的外侧.
+
+2. 应用高斯公式计算三重积分
+\[
+{\iiint }_{V}\left( {{xy} + {yz} + {zx}}\right) \mathrm{d}x\mathrm{\;d}y\mathrm{\;d}z,
+\]
+其中 \(V\) 是由 \(x \geq  0,y \geq  0,0 \leq  z \leq  1\) 与 \({x}^{2} + {y}^{2} \leq  1\) 所确定的空间区域.
+
+3. 应用斯托克斯公式计算下列曲线积分:
+
+(1) \({\oint }_{L}\left( {{y}^{2} + {z}^{2}}\right) \mathrm{d}x + \left( {{x}^{2} + {z}^{2}}\right) \mathrm{d}y + \left( {{x}^{2} + {y}^{2}}\right) \mathrm{d}z\) ,其中 \(L\) 为 \(x + y + z = 1\) 与三坐标面的交线,它的走向使所围平面区域上侧在曲线的左侧;
+
+( 2 ) \({\oint }_{L}{x}^{2}{y}^{3}\mathrm{\;d}x + \mathrm{d}y + z\mathrm{\;d}z\) ,其中 \(L\) 为 \({y}^{2} + {z}^{2} = 1,x = y\) 所交的椭圆的正向；
+
+(3) \({\oint }_{L}\left( {z - y}\right) \mathrm{d}x + \left( {x - z}\right) \mathrm{d}y + \left( {y - x}\right) \mathrm{d}z\) ,其中 \(L\) 为以 \(A\left( {a,0,0}\right) ,B\left( {0,a,0}\right) ,C\left( {0,0,a}\right)\) 为顶点的三角形沿 \({ABCA}\) 的方向. 4. 求下列全微分的原函数:
+
+(1) \({yz}\mathrm{\;d}x + {xz}\mathrm{\;d}y + {xy}\mathrm{\;d}z\) ;
+
+(2) \(\left( {{x}^{2} - {2yz}}\right) \mathrm{d}x + \left( {{y}^{2} - {2xz}}\right) \mathrm{d}y + \left( {{z}^{2} - {2xy}}\right) \mathrm{d}z\) .
+
+5. 验证下列线积分与路线无关, 并计算其值:
+
+(1) \({\int }_{\left( 1,1,1\right) }^{\left( 2,3, - 4\right) }x\mathrm{\;d}x + {y}^{2}\mathrm{\;d}y - {z}^{3}\mathrm{\;d}z\) ;
+
+(2) \({\int }_{\left( {x}_{1},{y}_{1},{z}_{1}\right) }^{\left( {x}_{2},{y}_{2},{z}_{2}\right) }\frac{x\mathrm{\;d}x + y\mathrm{\;d}y + z\mathrm{\;d}z}{\sqrt{{x}^{2} + {y}^{2} + {z}^{2}}}\) ,其中 \(\left( {{x}_{1},{y}_{1},{z}_{1}}\right) ,\left( {{x}_{2},{y}_{2},{z}_{2}}\right)\) 在球面 \({x}^{2} + {y}^{2} + {z}^{2} = {a}^{2}\) 上.
+
+6. 证明: 由曲面 \(S\) 所包围的立体 \(V\) 的体积 \({\Delta V}\) 为
+\[
+{\Delta V} = \frac{1}{3}{\oiint }_{S}\left( {x\cos \alpha  + y\cos \beta  + z\cos \gamma }\right) \mathrm{d}S,
+\]
+其中 \(\cos \alpha ,\cos \beta ,\cos \gamma\) 为曲面 \(S\) 的外法线方向余弦.
+
+7. 证明: 若 \(S\) 为封闭曲面, \(l\) 为任何固定方向,则
+\[
+{\oiint }_{S}\cos \left( {\overset{⏜}{\mathbf{n}},\mathbf{l}}\right) \mathrm{d}S = 0,
+\]
+其中 \(\mathbf{n}\) 为曲面 \(S\) 的外法线方向.
+
+8. 证明公式
+\[
+{\iiint }_{V}\frac{\mathrm{d}x\mathrm{\;d}y\mathrm{\;d}z}{r} = \frac{1}{2}{\oiint }_{S}\cos \left( {\widehat{\mathbf{r}},\mathbf{n}}\right) \mathrm{d}S,
+\]
+其中 \(S\) 是包围 \(V\) 的曲面, \(\mathbf{n}\) 是 \(S\) 的外法线方向, \(r = \sqrt{{x}^{2} + {y}^{2} + {z}^{2}},\mathbf{r} = \left( {x,y,z}\right)\) .
+
+9. 若 \(L\) 是平面 \(x\cos \alpha  + y\cos \beta  + z\cos \gamma  - p = 0\) 上的闭曲线,它所包围区域的面积为 \(S\) ,求
+\[
+{\oint }_{L}\left| \begin{matrix} \mathrm{d}x & \mathrm{\;d}y & \mathrm{\;d}z \\  \cos \alpha & \cos \beta & \cos \gamma \\  x & y & z \end{matrix}\right| ,
+\]
+其中 \(L\) 依正向进行.
+
+\section{* §4 场论初步}
+
+\subsection{场的概念}
+
+若对全空间或其中某一区域 \(V\) 中每一点 \(M\) ,都有一个数量 (或向量) 与之对应,则称在 \(V\) 上给定了一个数量场 (或向量场).
+
+温度场和密度场都是数量场. 在空间中引进了直角坐标系后,空间中点 \(M\) 的位置可由坐标确定. 因此,给定了某个数量场就等于给定了一个数量函数 \(u\left( {x,y,z}\right)\) . 在以下讨论中,我们总是设 \(u\left( {x,y,z}\right)\) 对每个变量都有连续偏导数. 若这些偏导数不同时等于零, 则满足方程
+\[
+u\left( {x,y,z}\right)  = c\left( {c\text{ 为常数 }}\right)
+\]
+的所有的点通常是一个曲面. 在这曲面上函数 \(u\) 都取同一值,因此常称它为等值面. 例如温度场中的等温面等.
+
+向量场可以重力场或速度场为例. 当引进直角坐标系后, 向量场就与向量函数 \(\mathbf{A}\left( {x,y,z}\right)\) 相对应. 设 \(\mathbf{A}\) 在三个坐标轴上的投影分别为
+\[
+P\left( {x,y,z}\right) ,Q\left( {x,y,z}\right) ,R\left( {x,y,z}\right) ,
+\]
+则
+\[
+\mathbf{A}\left( {x,y,z}\right)  = \left( {P\left( {x,y,z}\right) ,Q\left( {x,y,z}\right) ,R\left( {x,y,z}\right) }\right) ,
+\]
+这里 \(P,Q,R\) 为所定义区域上的数量函数,并假定它们有连续偏导数.
+
+设 \(L\) 为向量场中一条曲线. 若 \(L\) 上每点 \(M\) 处的切线方向都与向量函数 \(\mathbf{A}\) 在该点的方向一致, 即
+\[
+\frac{\mathrm{d}x}{P} = \frac{\mathrm{d}y}{Q} = \frac{\mathrm{d}z}{R},
+\]
+则称曲线 \(L\) 为向量场 \(\mathbf{A}\) 的向量场线. 例如电力线、磁力线等都是向量场线.
+
+需要注意, 场的性质是它自己的属性, 和坐标系的引进无关. 引入或选择某种坐标系是为了便于通过数学方法来研究它的性质. 下面所讨论的场的一些概念虽然是在所选用的坐标系下建立的, 但都可以证明它们和坐标系的选取无关.
+
+\subsection{梯度场}
+
+在第十七章 §3 中我们已经介绍了梯度的概念,它是由数量函数 \(u\left( {x,y,z}\right)\) 所定义的向量函数
+\[
+\operatorname{grad}u = \left( {\frac{\partial u}{\partial x},\frac{\partial u}{\partial y},\frac{\partial u}{\partial z}}\right) ,
+\]
+而且 \(\operatorname{grad}u\) 的方向就是使 \(\frac{\partial u}{\partial l}\) 达到最大值的方向,它的大小就是 \(u\) 在这个方向上的方向导数值. 因此我们可以定义数量场 \(u\) 在点 \(M\) 处的梯度 grad \(u\) 为这样的向量,它的方向是在 \(M\) 处最大的方向导数的方向,而它的大小是在 \(M\) 处最大方向导数值. 由于方向导数的定义与坐标系选取无关, 因此梯度定义也是与坐标系选取无关的向量. 由梯度给出的向量场, 称为梯度场. 又因为数量场 \(u\left( {x,y,z}\right)\) 的等值面 \(u\left( {x,y,z}\right)  = c\) 的法线方向为
+\[
+\left( {\frac{\partial u}{\partial x},\frac{\partial u}{\partial y},\frac{\partial u}{\partial z}}\right)
+\]
+所以 grad \(u\) 的方向与等值面正交,即等值面的法线方向.
+
+引进符号向量
+\[
+\nabla  = \left( {\frac{\partial }{\partial x},\frac{\partial }{\partial y},\frac{\partial }{\partial z}}\right) .
+\]
+当把它作为运算符号来看待时\footnote{\(\nabla\) 常称为哈密顿 (Hamilton) 算符, 读作 "Nabla".}, 梯度可写作
+\[
+\text{ grad }u = \nabla u\text{ . }
+\]
+关于梯度, 有以下一些基本性质:
+
+1. 若 \(u,v\) 是数量函数,则
+\[
+\nabla \left( {u + v}\right)  = \nabla u + \nabla v.
+\]
+2. 若 \(u,v\) 是数量函数,则
+\[
+\nabla \left( {uv}\right)  = u\left( {\nabla v}\right)  + \left( {\nabla u}\right) v.
+\]
+特别地有
+\[
+\nabla {u}^{2} = {2u}\left( {\nabla u}\right) .
+\]
+3. 若 \(\mathbf{r} = \left( {x,y,z}\right) ,\varphi  = \varphi \left( {x,y,z}\right)\) ,则
+\[
+\mathrm{d}\varphi  = \mathrm{d}\mathbf{r} \cdot  \nabla \varphi
+\]
+4. 若 \(f = f\left( u\right) ,u = u\left( {x,y,z}\right)\) ,则
+\[
+\nabla f = {f}^{\prime }\left( u\right) \nabla u.
+\]
+5. 若 \(f = f\left( {{u}_{1},{u}_{2},\cdots ,{u}_{m}}\right) ,{u}_{i} = {u}_{i}\left( {x,y,z}\right) \left( {i = 1,2,\cdots ,m}\right)\) ,则
+\[
+\nabla f = \mathop{\sum }\limits_{{i = 1}}^{m}\frac{\partial f}{\partial {u}_{i}}\nabla {u}_{i}.
+\]
+这些公式读者可利用定义来直接验证.
+
+%例 1
+\begin{example}
+
+\end{example}
+设质量为 \(m\) 的质点位于原点,质量为 1 的质点位于 \(M\left( {x,y,z}\right)\) ,记 \({OM} = r =\)  \(\sqrt{{x}^{2} + {y}^{2} + {z}^{2}}\) ,求 \(\frac{m}{r}\) 的梯度.
+
+解
+\[
+\nabla \frac{m}{r} =  - \frac{m}{{r}^{2}}\left( {\frac{x}{r},\frac{y}{r},\frac{z}{r}}\right) .
+\]
+若以 \({r}_{0}\) 表示 \(\overrightarrow{OM}\) 上的单位向量 \(\left( {\frac{x}{r},\frac{y}{r},\frac{z}{r}}\right)\) ,则有
+\[
+\nabla \frac{m}{r} =  - \frac{m}{{r}^{2}}{\mathbf{r}}_{0}.
+\]
+它表示两质点间的引力, 方向朝着原点, 大小是与质量的乘积成比例, 与两点间的距离的平方成反比. 这说明了引力场是数量函数 \(\frac{m}{r}\) 的梯度场. 因此我们常称 \(\frac{m}{r}\) 为引力势.
+
+
+
+\subsection{散度场}
+
+设
+\[
+\mathbf{A}\left( {x,y,z}\right)  = \left( {P\left( {x,y,z}\right) ,Q\left( {x,y,z}\right) ,R\left( {x,y,z}\right) }\right)
+\]
+为空间区域 \(V\) 上的向量函数,对 \(V\) 上每一点(x, y, z),定义数量函数
+\[
+D\left( {x,y,z}\right)  = \frac{\partial P}{\partial x} + \frac{\partial Q}{\partial y} + \frac{\partial R}{\partial z},
+\]
+称它为向量函数 \(\mathbf{A}\) 在(x, y, z)处的散度,记作\footnote{div 是 divergence(散度) 一词的缩写.}
+\[
+D\left( {x,y,z}\right)  = \operatorname{div}\mathbf{A}{\left( x,y,z\right) }.
+\]
+设 \({\mathbf{n}}_{0} = \left( {\cos \alpha ,\cos \beta ,\cos \gamma }\right)\) 为曲面的单位法向量,则 \(\mathrm{d}\mathbf{S} = {\mathbf{n}}_{0}\mathrm{\;d}S\) 就称为曲面的面积元素向量. 于是高斯公式可写成如下向量形式:
+\[
+{\iiint }_{V}\operatorname{div}\mathbf{A}\mathrm{d}V = {\oiint }_{S}\mathbf{A} \cdot  \mathrm{d}\mathbf{S}. \tag{1}
+\]
+在 \(V\) 中任取一点 \({M}_{0}\) ,对 (1) 式中的三重积分应用中值定理,得
+\[
+{\iiint }_{V}\operatorname{div}\mathbf{A}\mathrm{d}V = \operatorname{div}\mathbf{A}\left( {M}^{ * }\right)  \cdot  {\Delta V} = {\oiint }_{S}\mathbf{A} \cdot  \mathrm{d}\mathbf{S},
+\]
+其中 \({M}^{ * }\) 为 \(V\) 中某一点,于是有
+\[
+\operatorname{div}\mathbf{A}\left( {M}^{ * }\right)  = \frac{{\oiint }_{S}\mathbf{A} \cdot  \mathrm{d}\mathbf{S}}{\Delta V}.
+\]
+令 \(V\) 收缩到点 \({M}_{0}\) (记成 \(V \rightarrow  {M}_{0}\) ),则 \({M}^{ * }\) 也趋向点 \({M}_{0}\) ,因此
+\[
+\operatorname{div}\mathbf{A}\left( {M}_{0}\right)  = \mathop{\lim }\limits_{{V \rightarrow  {M}_{0}}}\frac{{\oiint }_{S}\mathbf{A} \cdot  \mathrm{d}\mathbf{S}}{\Delta V}. \tag{2}
+\]
+这个等式可以看作是散度的另一种定义形式. (2)式右边的分子、分母都与坐标系的选取无关,因此它的极限也与坐标系选取无关,所以散度 \(\operatorname{div}\mathbf{A}\) 与坐标系选取无关. 由向量场 \(\mathbf{A}\) 的散度 \(\operatorname{div}\mathbf{A}\) 所构成的数量场,称为散度场.
+
+散度的物理意义: 联系本章 §2 中提到流速为 \(\mathbf{A}\) 的不可压缩流体,经过封闭曲面 \(S\) 的流量是
+\[
+{\oiint }_{S}\mathbf{A} \cdot  \mathrm{d}\mathbf{S}.
+\]
+于是 (2) 式表明 \(\operatorname{div}\mathbf{A}\left( {M}_{0}\right)\) 是流量对体积 \(V\) 的变化率,并称它为 \(\mathbf{A}\) 在点 \({M}_{0}\) 的流量密度. 若 \(\operatorname{div}\mathbf{A}\left( {M}_{0}\right)  > 0\) ,说明在每一单位时间内有一定数量的流体流出这一点,则称这一点为源. 相反,若 \(\operatorname{div}\mathbf{A}\left( {M}_{0}\right)  < 0\) ,说明流体在这一点被吸收,则称这点为汇. 若在向量场 \(A\) 中每一点皆有
+\[
+\operatorname{div}\mathbf{A} = 0,
+\]
+
+
+则称 \(\mathbf{A}\) 为无源场.
+
+由前面引进的算符 \(\nabla\) ,向量场 \(\mathbf{A}\) 的散度的向量形式是
+\[
+\operatorname{div}\mathbf{A} = \nabla  \cdot  \mathbf{A}\text{ . }
+\]
+关于散度, 容易由定义直接推得以下一些基本性质:
+
+1. 若 \(\mathbf{u},\mathbf{v}\) 是向量函数,则
+\[
+\nabla  \cdot  \left( {\mathbf{u} + \mathbf{v}}\right)  = \nabla  \cdot  \mathbf{u} + \nabla  \cdot  \mathbf{v}.
+\]
+2. 若 \(\varphi\) 是数量函数, \(\mathbf{F}\) 是向量函数,则
+\[
+\nabla  \cdot  \left( {\varphi \mathbf{F}}\right)  = \varphi \nabla  \cdot  \mathbf{F} + \mathbf{F} \cdot  \nabla \varphi .
+\]
+3. 若 \(\varphi  = \varphi \left( {x,y,z}\right)\) 是一数量函数,则
+\[
+\nabla  \cdot  \nabla \varphi  = \frac{{\partial }^{2}\varphi }{\partial {x}^{2}} + \frac{{\partial }^{2}\varphi }{\partial {y}^{2}} + \frac{{\partial }^{2}\varphi }{\partial {z}^{2}}.
+\]
+算符 \(\nabla\) 的内积 \(\nabla  \cdot  \nabla\) 常记作 \({\Delta }\) \footnote{\(\Delta  = \nabla  \cdot  \nabla  = \frac{{\partial }^{2}}{\partial {x}^{2}} + \frac{{\partial }^{2}}{\partial {y}^{2}} + \frac{{\partial }^{2}}{\partial {z}^{2}}\) 称为拉普拉斯算符.},于是有
+\[
+\nabla  \cdot  \nabla \varphi  = {\Delta \varphi }
+\]
+%例 2
+\begin{example}
+
+\end{example}
+求例 1 中引力场 \(\mathbf{F} =  - \frac{m}{{r}^{2}}\left( {\frac{x}{r},\frac{y}{r},\frac{z}{r}}\right)\) 所产生的散度场.
+
+%解
+\begin{solution}
+
+\end{solution}
+因为 \({r}^{2} = {x}^{2} + {y}^{2} + {z}^{2}\) ,所以
+\[
+\mathbf{F} =  - \frac{m}{{\left( {x}^{2} + {y}^{2} + {z}^{2}\right) }^{3/2}}\left( {x,y,z}\right) ,
+\]
+\[
+\nabla  \cdot  \mathbf{F} =  - m\left\lbrack  {\frac{\partial }{\partial x}\left( \frac{x}{{\left( {x}^{2} + {y}^{2} + {z}^{2}\right) }^{3/2}}\right)  + \frac{\partial }{\partial y}\left( \frac{y}{{\left( {x}^{2} + {y}^{2} + {z}^{2}\right) }^{3/2}}\right)  + }\right.
+\]
+\[
+\left. {\frac{\partial }{\partial z}\left( \frac{z}{{\left( {x}^{2} + {y}^{2} + {z}^{2}\right) }^{3/2}}\right) }\right\rbrack
+\]
+\[
+= 0\text{ . }
+\]
+因此引力场 \(\mathbf{F}\) 内每一点处的散度都为零 (原点除外).
+
+\subsection{旋度场}
+
+设
+\[
+\mathbf{A}\left( {x,y,z}\right)  = \left( {P\left( {x,y,z}\right) ,Q\left( {x,y,z}\right) ,R\left( {x,y,z}\right) }\right)
+\]
+为空间区域 \(V\) 上的向量函数. 对 \(V\) 上每一点(x, y, z),定义向量函数
+\[
+\mathbf{F}\left( {x,y,z}\right)  = \left( {\frac{\partial R}{\partial y} - \frac{\partial Q}{\partial z},\frac{\partial P}{\partial z} - \frac{\partial R}{\partial x},\frac{\partial Q}{\partial x} - \frac{\partial P}{\partial y}}\right) ,
+\]
+称它为向量函数 \(\mathbf{A}\) 在(x, y, z)处的旋度,记作\footnote{rot 是 rotation (旋度) 一词的缩写,有的书也用 curl 表示旋度,为便于记忆, \(\operatorname{rot}A\) 可形式地写成
+\[
+\operatorname{rot}\mathbf{A} = \left| \begin{matrix} \mathbf{i} & \mathbf{j} & \mathbf{k} \\  \frac{\partial }{\partial x} & \frac{\partial }{\partial y} & \frac{\partial }{\partial z} \\  P & Q & R \end{matrix}\right| .
+\]
+}
+
+
+\[
+\mathbf{F}\left( {x,y,z}\right)  = \operatorname{rot}{\mathbf{A}}.
+\]
+设 \(\left( {\cos {\alpha }_{t},\cos {\beta }_{t},\cos {\gamma }_{t}}\right)\) 是曲线 \(L\) 的正向上的单位切线向量 \({t}_{0}\) 的方向余弦,向量 \(\mathrm{d}s = \left( {\cos {\alpha }_{t},\cos {\beta }_{t},\cos {\gamma }_{t}}\right) \mathrm{d}s = {t}_{0}\mathrm{\;d}l\) 称为弧长元素向量. 于是斯托克斯公式可写成如下向量形式:
+\[
+{\iint }_{S}\operatorname{rot}\mathbf{A} \cdot  \mathrm{d}\mathbf{S} = {\oint }_{L}\mathbf{A} \cdot  \mathrm{d}\mathbf{s}. \tag{3}
+\]
+为了说明旋度与坐标系的选取无关,我们在场 \(V\) 中任意取一点 \({M}_{0}\) ,通过 \({M}_{0}\) 作平面 \(\pi\) 垂直于曲面 \(S\) 的法向量 \({\mathbf{n}}_{0}\) (图 22-10), 且在 \(\pi\) 上围绕 \({M}_{0}\) 作任一封闭曲线 \(L\) ,记 \(L\) 所围区域为 \(D\) ,则由 (3)式有
+\[
+{\iint }_{S}\operatorname{rot}\mathbf{A} \cdot  \mathrm{d}\mathbf{S} = {\iint }_{S}\operatorname{rot}\mathbf{A} \cdot  {\mathbf{n}}_{0}\mathrm{\;d}S = {\oint }_{L}\mathbf{A} \cdot  \mathrm{d}s. \tag{4}
+\]
+\begin{figure}
+	\centering
+	\includegraphics[width=.3\textwidth]{images/P210.jpg}
+	\caption{图 $22-10$}
+	\label{fig:P210}
+\end{figure}
+
+对左端曲面积分应用中值定理可得
+\[
+{\iint }_{D}\operatorname{rot}\mathbf{A} \cdot  {\mathbf{n}}_{0}\mathrm{\;d}S = {\left( \operatorname{rot}\mathbf{A} \cdot  {\mathbf{n}}_{0}\right) }_{{M}^{ * }}\mu \left( D\right)  = {\oint }_{L}\mathbf{A} \cdot  \mathrm{d}s,
+\]
+其中 \(\mu \left( D\right)\) 为区域 \(D\) 的面积, \({M}^{ * }\) 为 \(D\) 中的某一点. 因此
+\[
+{\left( \operatorname{rot}A \cdot  {\mathbf{n}}_{0}\right) }_{{M}^{ * }} = \frac{{\oint }_{L}\mathbf{A} \cdot  \mathrm{d}\mathbf{s}}{\mu \left( D\right) }.
+\]
+现让 \(D\) 收缩到点 \({M}_{0}\) (记作 \(D \rightarrow  {M}_{0}\) ) 时,于是 \({M}^{ * }\) 趋于 \({M}_{0}\) ,因此有
+\[
+{\left( \operatorname{rot}\mathbf{A} \cdot  {\mathbf{n}}_{0}\right) }_{{M}_{0}} = \mathop{\lim }\limits_{{D \rightarrow  {M}_{0}}}\frac{{\oint }_{L}\mathbf{A} \cdot  \mathrm{d}\mathbf{s}}{\mu \left( D\right) }. \tag{5}
+\]
+(5) 式左边为 \(\operatorname{rot}\mathbf{A}\) 在法线方向上的投影,因此它也确定了 \(\operatorname{rot}\mathbf{A}\) 的本身,所以 (5) 也可以作为旋度的另一种定义形式. 由于 (5) 式右边的极限与坐标系的选取无关,故 rot \(A\) 也与坐标系选取无关.
+
+由向量函数 \(\mathbf{A}\) 的旋度 rot \(\mathbf{A}\) 所定义的向量场,称为旋度场.
+
+在流量问题中, 我们称
+\[
+{\oint }_{L}A \cdot  \mathrm{d}S
+\]
+为沿闭曲线 \(L\) 的环流量,它表示流速为 \(\mathbf{A}\) 的不可压缩流体在单位时间内沿曲线 \(L\) 的流体总量,反映了流体沿 \(L\) 时的旋转强弱程度. 当 \(\operatorname{rot}A = 0\) 时,沿任意封闭曲线的环流量为零,即流体流动时不成旋涡,这时称向量场 \(\mathbf{A}\) 为无旋场.
+
+公式 (4) 表明向量场在曲面边界线上的切线投影对弧长的曲线积分等于向量场的旋度的法线投影在曲面上对面积的曲面积分. 它的物理意义可以说成是: 流体的速度场的旋度的法线投影在曲面上对面积的曲面积分等于流体在曲面边界上的环流量.
+
+
+
+为了更好地认识旋度的物理意义及这一名称的来源, 我们讨论刚体绕定轴旋转的问题. 设一刚体以角速度 \(\omega\) 绕某轴旋转,则角速度向量 \(\mathbf{\omega }\) 方向沿着旋转轴,其指向与旋转方向的关系符合右手法则,即右手拇指指向角速度 \(\mathbf{\omega }\) 的方向,其他四指指向旋转方向. 若取定旋转轴上一点 \(O\) 作为原点 (图 22-11),刚体上任意一点 \(P\) 的线速度 \(v\) 可表示为
+\[
+v = \omega  \times  r,
+\]
+\begin{figure}
+	\centering
+	\includegraphics[width=.3\textwidth]{images/P211.jpg}
+	\caption{图 $22-11$}
+	\label{fig:P211}
+\end{figure}
+
+其中 \(r = \overrightarrow{OP}\) 是 \(P\) 的径向量. 设 \(P\) 的坐标为(x, y, z),便有 \(r = \left( {x,y,z}\right)\) , 又设 \(\mathbf{\omega } = \left( {{\omega }_{x},{\omega }_{y},{\omega }_{z}}\right)\) . 于是
+\[
+\mathbf{v} = \left( {{\omega }_{y}z - {\omega }_{z}y,{\omega }_{z}x - {\omega }_{x}z,{\omega }_{x}y - {\omega }_{y}x}\right) ,
+\]
+所以
+\[
+\text{ rot }\mathbf{v} = \left( {2{\omega }_{x},2{\omega }_{y},2{\omega }_{z}}\right)  = 2\mathbf{\omega }
+\]
+或
+\[
+\omega  = \frac{1}{2}\operatorname{rot}v
+\]
+这等式表明线速度向量 \(\mathbf{v}\) 的旋度除去一个常数因子 \(\frac{1}{2}\) 外,就是旋转的角速度向量 \(\mathbf{\omega }\) . 可见 \(v\) 的旋度与 \(\omega\) 成正比,这也说明了旋度这个名称的来源.
+
+应用算符 \(\nabla\) 表示 \(\mathbf{A}\) 的旋度是
+\[
+\text{ rot }\mathbf{A} = \nabla  \times  \mathbf{A}\text{ . }
+\]
+旋度有如下一些基本性质:
+
+1. 若 \(\mathbf{u},\mathbf{v}\) 是向量函数,则
+\[
+\nabla  \times  \left( {\mathbf{u} + \mathbf{v}}\right)  = \nabla  \times  \mathbf{u} + \nabla  \times  \mathbf{v},
+\]
+\[
+\nabla \left( {\mathbf{u} \cdot  \mathbf{v}}\right)  = \mathbf{u} \times  \left( {\nabla  \times  \mathbf{v}}\right)  + \mathbf{v} \times  \left( {\nabla  \times  \mathbf{u}}\right)  + \left( {\mathbf{u} \cdot  \nabla }\right) \mathbf{v} + \left( {\mathbf{v} \cdot  \nabla }\right) \mathbf{u},
+\]
+\[
+\nabla  \cdot  \left( {\mathbf{u} \times  \mathbf{v}}\right)  = \mathbf{v} \cdot  \nabla  \times  \mathbf{u} - \mathbf{u} \cdot  \nabla  \times  \mathbf{v},
+\]
+\[
+\nabla  \times  \left( {\mathbf{u} \times  \mathbf{v}}\right)  = \left( {\mathbf{v} \cdot  \nabla }\right) \mathbf{u} - \left( {\mathbf{u} \cdot  \nabla }\right) \mathbf{v} + \left( {\nabla  \cdot  \mathbf{v}}\right) \mathbf{u} - \left( {\nabla  \cdot  \mathbf{u}}\right) \mathbf{v}.
+\]
+2. 若 \(\varphi\) 是数量函数, \(\mathbf{A}\) 是向量函数,则
+\[
+\nabla  \times  \left( {\varphi \mathbf{A}}\right)  = \varphi \left( {\nabla  \times  \mathbf{A}}\right)  + \nabla \varphi  \times  \mathbf{A}.
+\]
+3. 若 \(\varphi\) 是数量函数, \(\mathbf{A}\) 是向量函数,则
+\[
+\nabla  \cdot  \left( {\nabla  \times  \mathbf{A}}\right)  = 0,
+\]
+\[
+\nabla  \times  \nabla \varphi  = \mathbf{0},
+\]
+\[
+\nabla  \times  \left( {\nabla  \times  \mathbf{A}}\right)  = \nabla \left( {\nabla  \cdot  \mathbf{A}}\right)  - {\nabla }^{2}\mathbf{A} = \nabla \left( {\nabla  \cdot  \mathbf{A}}\right)  - \Delta \mathbf{A}.
+\]
+这些等式读者都可通过梯度、散度、旋度等定义来直接验证.
+
+\subsection{管量场与有势场}
+
+\begin{figure}
+	\centering
+	\includegraphics[width=.3\textwidth]{images/P212.jpg}
+	\caption{图 $22-12$}
+	\label{fig:P212}
+\end{figure}
+
+若一个向量场 \(\mathbf{A}\) 的散度恒为零,即div \(\mathbf{A} = 0\) ,我们曾称 \(\mathbf{A}\) 为无源场. 从高斯公式知,此时沿任何封闭曲面的曲面积分都等于零. 我们把场 \(\mathbf{A}\) 称作管量场. 这是因为,若在向量场 \(\mathbf{A}\) 中作一向量管 (图 22-12),即由向量线围成的管状的曲面,用断面 \({S}_{1},{S}_{2}\) 截它,以 \({S}_{3}\) 表示所截出的管的表面,我们就得到了由 \({S}_{1}\) , \({S}_{2},{S}_{3}\) 所围成的封闭曲面 \(S\) . 于是由 (1) 式得出
+\[
+{\oiint }_{S}\mathbf{A} \cdot  \mathrm{d}\mathbf{S} = {\iint }_{{S}_{1}\text{ 外侧 }}\mathbf{A} \cdot  \mathrm{d}\mathbf{S} + {\iint }_{{S}_{2}\text{ 外侧 }}\mathbf{A} \cdot  \mathrm{d}\mathbf{S} + {\iint }_{{S}_{3}\text{ 外侧 }}\mathbf{A} \cdot  \mathrm{d}\mathbf{S} = 0.
+\]
+而向量线与曲面 \({S}_{3}\) 的法线正交,所以
+\[
+{\iint }_{{S}_{3}\text{ 外侧 }}\mathbf{A} \cdot  \mathrm{d}\mathbf{S} = 0,
+\]
+即
+\[
+{\iint }_{{S}_{1}}\mathbf{A} \cdot  \mathrm{d}\mathbf{S} + {\iint }_{{S}_{2}}\mathbf{A} \cdot  \mathrm{d}\mathbf{S} = 0,
+\]
+\[
+{\iint }_{{S}_{1}}\mathbf{A} \cdot  \mathrm{d}\mathbf{S} = {\iint }_{{S}_{2}}\mathbf{A} \cdot  \mathrm{d}\mathbf{S}.
+\]
+这等式说明了流体通过向量管的任意断面的流量是相同的,所以我们把场 \(\mathbf{A}\) 称为管量场. 如例 2,由 \(\frac{m}{r}\) 的梯度 \(\nabla \frac{m}{r}\) 所成的引力场 \(\mathbf{F}\) 是一个管量场.
+
+若一个向量场 \(\mathbf{A}\) 的旋度恒为零,即 rot \(\mathbf{A} = \mathbf{0}\) ,我们在前面称 \(\mathbf{A}\) 为无旋场. 从斯托克斯公式知, 这时在空间单连通区域内沿任何封闭曲线的曲线积分都等于零, 这种场也称为有势场. 这是因为当 \(\operatorname{rot}A = 0\) 时,由定理 22.7 推得此时空间曲线积分与路线无关, 且存在某函数 \(u\left( {x,y,z}\right)\) ,使得
+\[
+\mathrm{d}u = P\mathrm{\;d}x + Q\mathrm{\;d}y + R\mathrm{\;d}z,
+\]
+即
+\[
+\text{ grad }u = \left( {P,Q,R}\right) \text{ . }
+\]
+通常称 \(u\) 为势函数. 因此,若某向量场 \(\mathbf{A}\) 的旋度为零,则必存在某个势函数 \(u\) ,使得 grad \(u = \mathbf{A}\) . 这也是一个向量场是某个数量场的梯度场的充要条件. 在例 1 中,引力势 \(u = \frac{m}{r}\) 就是势函数. 所以
+\[
+\nabla u = \mathbf{F} =  - \frac{m}{{r}^{2}}\left( {\frac{x}{r},\frac{y}{r},\frac{z}{r}}\right) .
+\]
+因为 \(\nabla  \times  \nabla u = \mathbf{0}\) 恒成立,所以 \(\nabla  \times  \mathbf{F} = \mathbf{0}\) . 它也是引力场 \(\mathbf{F}\) 是有势场的充要条件.
+
+若一个向量场 \(\mathbf{A}\) 既是管量场,又是有势场,则称这个向量场为调和场. 上述例 2 中讲到的引力场 \(\mathbf{F}\) 就是调和场. 若 \(\mathbf{A}\) 是一个调和场,必有
+\[
+\nabla  \cdot  \mathbf{A} = 0,\;\nabla u = \mathbf{A}.
+\]
+显然
+\[
+\nabla  \cdot  \nabla u = {\nabla }^{2}u = {\Delta u} = 0,
+\]
+即必有势函数 \(u\) 满足
+\[
+\frac{{\partial }^{2}u}{\partial {x}^{2}} + \frac{{\partial }^{2}u}{\partial {y}^{2}} + \frac{{\partial }^{2}u}{\partial {z}^{2}} = 0.
+\]
+这时称函数 \(u\) 为调和函数.
+
+\subsection{习题 22.4}
+
+1. 若 \(r = \sqrt{{x}^{2} + {y}^{2} + {z}^{2}}\) ,计算 \(\nabla r,\nabla {r}^{2},\nabla \frac{1}{r},\nabla f\left( r\right) ,\nabla {r}^{n}\left( {n \geq  3}\right)\) .
+
+2. 求 \(u = {x}^{2} + 2{y}^{2} + 3{z}^{2} + {2xy} - {4x} + {2y} - {4z}\) 在点 \(O\left( {0,0,0}\right) ,A\left( {1,1,1}\right) ,B\left( {-1, - 1, - 1}\right)\) 处的梯度,并求梯度为零之点.
+
+3. 证明本节第二段关于梯度的一些基本性质 1-5.
+
+4. 计算下列向量场 \(\mathbf{A}\) 的散度与旋度:
+
+( 1 ) \(\mathbf{A} = \left( {{y}^{2} + {z}^{2},{z}^{2} + {x}^{2},{x}^{2} + {y}^{2}}\right) ;\;\left( 2\right) \mathbf{A} = \left( {{x}^{2}{yz},x{y}^{2}z,{xy}{z}^{2}}\right)\) ;
+
+(3) \(A = \left( {\frac{x}{yz},\frac{y}{zx},\frac{z}{xy}}\right)\) .
+
+5. 证明本节第三段关于散度的一些基本性质 1-3.
+
+6. 证明本节第四段关于旋度的一些基本性质 1-3 (可应用算符 \(\nabla\) 推演).
+
+7. 证明: 场 \(A = \left( {{yz}\left( {{2x} + y + z}\right) ,{xz}\left( {x + {2y} + z}\right) ,{xy}\left( {x + y + {2z}}\right) }\right)\) 是有势场并求其势函数.
+
+8. 若流体流速 \(\mathbf{A} = \left( {{x}^{2},{y}^{2},{z}^{2}}\right)\) ,求单位时间内穿过 \(\frac{1}{8}\) 球面 \({x}^{2} + {y}^{2} + {z}^{2} = 1,x > 0,y > 0,z > 0\) 的流量.
+
+9. 设流速 \(\mathbf{A} = \left( {-y,x,c}\right)\) ( \(c\) 为常数),求环流量:
+
+(1)沿圆周 \({x}^{2} + {y}^{2} = 1,z = 0\) ；(2)沿圆周 \({\left( x - 2\right) }^{2} + {y}^{2} = 1,z = 0\) .
+
+\section{总练习题}
+
+1. 设 \(P = {x}^{2} + {5\lambda y} + {3yz},Q = {5x} + {3\lambda xz} - 2,R = \left( {\lambda  + 2}\right) {xy} - {4z}\) .
+
+(1)计算 \({\int }_{L}P\mathrm{\;d}x + Q\mathrm{\;d}y + R\mathrm{\;d}z\) ,其中 \(L\) 为螺旋线 \(x = a\cos t,y = a\sin t,z = {ct}\left( {0 \leq  t \leq  {2\pi }}\right)\) ；
+
+(2) 设 \(\mathbf{A} = \left( {P,Q,R}\right)\) ,求 \(\operatorname{rot}\mathbf{A}\) ;
+
+(3)问在什么条件下 \(\mathbf{A}\) 为有势场? 并求势函数.
+
+2. 证明: 若 \({\Delta u} = \frac{{\partial }^{2}u}{\partial {x}^{2}} + \frac{{\partial }^{2}u}{\partial {y}^{2}} + \frac{{\partial }^{2}u}{\partial {z}^{2}},S\) 为包围区域 \(V\) 的曲面的外侧,则
+
+(1) \({\iiint }_{V}{\Delta u}\mathrm{\;d}x\mathrm{\;d}y\mathrm{\;d}z = {\oiint }_{S}\frac{\partial u}{\partial \mathbf{n}}\mathrm{d}S\) ；
+
+(2) \({\oiint }_{S}u\frac{\partial u}{\partial \mathbf{n}}\mathrm{d}S = {\iiint }_{V}\nabla  \cdot  \nabla u\mathrm{\;d}x\mathrm{\;d}y\mathrm{\;d}z + {\iiint }_{V}{u\Delta u}\mathrm{\;d}x\mathrm{\;d}y\mathrm{\;d}z\) ,
+
+其中 \(u\) 在区域 \(V\) 及其界面 \(S\) 上有二阶连续偏导数, \(\frac{\partial u}{\partial \mathbf{n}}\) 为沿曲面 \(S\) 外法线方向的方向导数.
+
+3. 设 \(S\) 为光滑闭曲面, \(V\) 为 \(S\) 所围的区域. 函数 \(u\left( {x,y,z}\right)\) 在 \(V\) 与 \(S\) 上具有二阶连续偏导数,函数 \(\omega \left( {x,y,z}\right)\) 偏导连续. 证明:
+
+(1) \({\iiint }_{V}\omega \frac{\partial u}{\partial x}\mathrm{\;d}x\mathrm{\;d}y\mathrm{\;d}z = {\oiint }_{S}{u\omega }\mathrm{d}y\mathrm{\;d}z - {\iiint }_{V}u\frac{\partial \omega }{\partial x}\mathrm{\;d}x\mathrm{\;d}y\mathrm{\;d}z\) ;
+
+(2) \({\iiint }_{V}{\omega \Delta u}\mathrm{\;d}x\mathrm{\;d}y\mathrm{\;d}z = {\oiint }_{S}\omega \frac{\partial u}{\partial \mathbf{n}}\mathrm{d}S - {\iiint }_{V}\nabla u \cdot  \nabla \omega \mathrm{d}x\mathrm{\;d}y\mathrm{\;d}z\) .
+
+4. 设 \(\mathbf{A} = \frac{\mathbf{r}}{{\left| \mathbf{r}\right| }^{3}},S\) 为一封闭曲面, \(\mathbf{r} = \left( {x,y,z}\right)\) . 证明当原点在曲面 \(S\) 的外、上、内时,分别有
+\[
+{\oiint }_{S}\mathbf{A} \cdot  \mathrm{d}\mathbf{S} = 0,{2\pi },{4\pi }.
+\]
+5. 计算 \(I = {\iint }_{S}{xz}\mathrm{\;d}y\mathrm{\;d}z + {yx}\mathrm{\;d}z\mathrm{\;d}x + {zy}\mathrm{\;d}x\mathrm{\;d}y\) ,其中 \(S\) 是柱面 \({x}^{2} + {y}^{2} = 1\) 在 \(- 1 \leq  z \leq  1\) 和 \(x \geq  0\) 的部分. 曲面侧的法向与 \(x\) 轴正向成锐角.
+
+6. 证明公式:
+\[
+{\iint }_{D}f\left( {m\sin \varphi \cos \theta  + n\sin \varphi \sin \theta  + p\cos \varphi }\right) \sin \varphi \mathrm{d}\theta \mathrm{d}\varphi
+\]
+\[
+= {2\pi }{\int }_{-1}^{1}f\left( {u\sqrt{{m}^{2} + {n}^{2} + {p}^{2}}}\right) \mathrm{d}u\text{ , }
+\]
+这里 \(D = \left\{  {\left( {\theta ,\varphi }\right)  \mid  0 \leq  \theta  \leq  {2\pi },0 \leq  \varphi  \leq  \pi }\right\}  ,{m}^{2} + {n}^{2} + {p}^{2} > 0,f\left( t\right)\) 在 \(\left| t\right|  < \sqrt{{m}^{2} + {n}^{2} + {p}^{2}}\) 时为连续函数.
+

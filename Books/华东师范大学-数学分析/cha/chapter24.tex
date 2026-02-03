@@ -1,0 +1,807 @@
+\chapter{附录实数理论}
+
+在中学数学中, 我们已经知道实数包括有理数和无理数. 从历史上看, 人们先认识有理数. 不过在公元前古希腊时期就已发现不可公度线段, 指出 “无理数” 的存在. 但有关实数的理论却直到 19 世纪末, 为奠定微积分基础的需要才完整地建立起来.
+
+\subsection{建立实数的原则}
+
+有理数全体组成的集合 \(\mathbf{Q}\) ,构成一个阿基米德有序域,我们希望有理数扩充到实数之后, 全体实数的集合也构成阿基米德有序域.
+
+所谓集合 \(F\) 构成一个阿基米德有序域,是说它满足以下三个条件:
+
+1. \(F\) 是域 在 \(F\) 中定义了加法 “+” 与乘法 “ \(\cdot\) ” 两个运算,使得对于 \(F\) 中任意元素 \(a,b,c\) 成立:
+
+加法的结合律: \(\left( {a + b}\right)  + c = a + \left( {b + c}\right)\) ;
+
+加法的交换律: \(a + b = b + a\) ;
+
+乘法的结合律: \(\left( {a \cdot  b}\right)  \cdot  c = a \cdot  \left( {b \cdot  c}\right)\) ;
+
+乘法的交换律: \(a \cdot  b = b \cdot  a\) ;
+
+乘法关于加法的分配律: \(a \cdot  \left( {b + c}\right)  = a \cdot  b + a \cdot  c\) .
+
+在 \(F\) 中存在零元素和反元素: 在 \(F\) 中存在一个元素 “ 0 ”,使得对 \(F\) 中任一元素 \(a\) , 有 \(a + 0 = a\) ,则称 “ 0 ” 为零元素; 对每一个元素 \(a \in  F\) ,有一个元素 \(\left( {-a}\right)  \in  F\) ,使得 \(a + \left( {-a}\right)\)  \(= 0\) ,则称 \(- a\) 为 \(a\) 的反元素.
+
+在 \(F\) 中存在单位元素与逆元素: 在 \(F\) 中存在一个元素 \(e\) ,使得对 \(F\) 中任一元素 \(a\) , 有 \(a \cdot  e = a\) ,则称 \(e\) 为单位元素; 对每一个非零元素 \(a \in  F\) ,有一个元素 \({a}^{-1} \in  F\) ,使得 \(a \cdot\)  \({a}^{-1} = e\) ,则称 \({a}^{-1}\) 为 \(a\) 的逆元素.
+
+2. \(F\) 是有序域 在 \(F\) 中定义了序关系 “<” 具有如下 (全序) 性质:
+
+传递性:对 \(F\) 中的元素 \(a,b,c\) ,若 \(a < b\) \footnote{关系式 \(a < b\) 称为 \(a\) 小于 \(b\) ,或 \(b\) 大于 \(a\) .} \(,b < c\) ,则 \(a < c\) ；
+
+三歧性: \(F\) 中任意两个元素 \(a\) 与 \(b\) 之间,关系
+\[
+a < b,a = b,a > b
+\]
+三者必居其一,也只居其一 (这里 \(a > b\) ,就是 \(b < a\) ).
+
+当序与加法、乘法运算结合起来进行时, 则有如下性质:
+
+加法保序性: 若 \(a < b\) ,则对任何 \(c \in  F\) ,有 \(a + c < b + c\) ;
+
+
+
+乘法保序性: 若 \(a < b\) 及 \(c > 0\)\footnote{若元素 \(c\) 满足关系式 \(c > 0\) ,则称 \(c\) 为正元素；若满足关系式 \(c < 0\) ,则称 \(c\) 为负元素.} ,则 \({ac} < {bc}\) .
+
+3. \(F\) 中元素满足阿基米德性 对 \(F\) 中任意两个正元素 \(a,b\) ,必存在自然数 \(n\) ,使得 \({na} > {b}\) \footnote{ \(n\) (自然数) 个元素 \(a\) 相加,记作 \({na}\left( { = \underset{n\text{ 个 }}{\underbrace{a + a + \cdots  + a}}}\right)\) .}.
+
+有理数系 \(\mathbf{Q}\) 满足上述所有条件,所以它是一个阿基米德有序域. 我们现在的目标是:利用有理数作材料,构造出一个新的有序域,它不仅具有阿基米德性,而且能使确界原理得以成立, 并把有理数作为它的一部分. 特别当有理数作为新数进行运算时, 仍保持其原来的运算规律, 我们称这种新数为实数. 用有理数构造新数的方法很多, 如戴德金的分划说, 康托尔的基本列说, 区间套说, 等等. 本附录将向大家详细介绍戴德金分划说.
+
+\subsection{分析}
+
+我们称能使确界原理得以成立的有序域为具有完备性的有序域. 读者已知有理数域 \(\mathbf{Q}\) 不是完备的有序域,现在要把它扩充成一个具有完备性的有序域 \(\mathbf{R}\) .
+
+不妨先假定这种 \(\mathbf{R}\) 是存在的,然后看它应具有什么特性,尤其是新数与旧数 (有理数) 之间的关系如何?
+
+先介绍两个引理 (证明可以暂时不看).
+
+引理 1 一个有序域如果具有完备性, 则必具有阿基米德性.
+
+%证
+\begin{proof}
+
+\end{proof}
+用反证法. 设 \(\alpha ,\beta\) 为域中正元素,倘若序列 \(\{ {n\alpha }\}\) 中没有一项大于 \(\beta\) ,则序列有上界 ( \(\beta\) 就是一个). 因而由完备性假设,存在 \(\{ {n\alpha }\}\) 的上确界 \(\lambda\) ,对一切自然数 \(n\) 有 \(\lambda  \geq\)  \(n{\alpha }\)\footnote{关系式 \(a \leq  b\) 表示元素 \(a,b\) 之间有关系式 \(a < b\) 或 \(a = b\) .} ,同时存在某个自然数 \({n}_{0}\) ,使 \({n}_{0}\alpha  > \lambda  - \alpha\) . 从而有
+\[
+\left( {{n}_{0} + 2}\right) \alpha  \leq  \lambda  < \left( {{n}_{0} + 1}\right) \alpha \text{ 或 }\alpha  < 0,
+\]
+这与假设 \(\alpha  > 0\) 矛盾. 所以完备的有序域必具有阿基米德性.
+
+引理 2 一个有序域, 如果具有阿基米德性, 则它的有理元素\footnote{任一阿基米德有序域都有一个与有理数域同构的子域, 其元素称为有理元素. 为此, 今后为叙述方便,将对“有理元素”与“有理数”两种说法看作有相同含义而不加以区别. 如有理元素 \(d\) 也说有理数 \(d\) .}必在该域中稠密. 即对有序域中任意两个不同的元素 \(\alpha ,\beta\) ,在 \(\alpha\) 与 \(\beta\) 之间必存在一个有理元素 (从而存在无穷多个有理元素).
+
+%证
+\begin{proof}
+
+\end{proof}
+设 \(\alpha ,\beta\) 为有序域中两个不同的元素,且 \(\alpha  < \beta\) . 由阿基米德性,存在正整数 \(N\) ,使得 \(N\left( {\beta  - \alpha }\right)  > 1\) 或 \(\frac{1}{N} < \beta  - \alpha\) . 令 \(d = \frac{1}{N}\) ,它是一个有理数,再任取一个有理数 \({\gamma }_{0} < \alpha\) ,在等差序列 \(\left\{  {{\gamma }_{0} + {nd}}\right\}\) 中,由阿基米德性总有某项大于 \(\alpha\) ,设在该序列中第一个大于 \(\alpha\) 的项为 \({\gamma }_{0} + {n}_{0}d\) ,则该数就是所求的有理数,即 \(\alpha  < {\gamma }_{0} + {n}_{0}d < \beta\) . 因为由 \({n}_{0}\) 的选择有 \({\gamma }_{0} + \left( {{n}_{0} - 1}\right) d \leq\)  \(\alpha\) ,倘若 \({\gamma }_{0} + {n}_{0}d \geq  \beta\) ,则这两个不等式相减将有 \(d \geq  \beta  - \alpha\) ,这与 \(d\) 的定义矛盾,从而得证.
+
+由这两个引理看到,若存在完备的有序域 \(\mathbf{R}\) ,则有理数必在其中稠密.
+
+接下来分析 \(\mathbf{R}\) 中新数 (非有理数) 与旧数 (有理数) 之间的关系. 设 \(\alpha  \in  \mathbf{R}\) ,但 \(\alpha  \notin  \mathbf{Q}\) . 那么任一 \(\gamma  \in  \mathbf{Q}\) ,或者 \(\gamma  < \alpha\) ,或者 \(\gamma  > \alpha\) ,二者必居其一. 令
+\[
+A = \left\{  {\gamma  \in  \mathbf{Q} \mid  \gamma  < \alpha }\right\}  ,{A}^{\prime } = \{ \gamma  \in  \mathbf{Q} \mid  \gamma  > \alpha \} . \tag{1}
+\]
+这时 \(A\) 与 \({A}^{\prime }\) 满足下述三个条件:
+
+\({1}^{ \circ  }A\) 和 \({A}^{\prime }\) 皆不空;
+
+\({2}^{ \circ  }A \cup  {A}^{\prime } = \mathbf{Q}\) ;
+
+\({3}^{ \circ  }\) 若 \(a \in  A,{a}^{\prime } \in  {A}^{\prime }\) ,则 \(a < {a}^{\prime }\) (从而 \(A \cap  {A}^{\prime } = \varnothing\) ).
+
+一般地,我们引入下面的定义:
+
+%定义  1
+\begin{definition}{}{def:}
+
+\end{definition}
+若 \(A,{A}^{\prime }\) 是满足上述三个条件的有理数集 \(\mathbf{Q}\) 的子集,则称序对 \(\left( {A,{A}^{\prime }}\right)\) 为 \(\mathbf{Q}\) 的一个分划,并分别称 \(A\) 和 \({A}^{\prime }\) 为该分划的下类和上类.
+
+例如,对任一 \(\gamma  \in  \mathbf{Q}\) ,令
+\[
+A = \left\{  {x \in  \mathbf{Q} \mid  x < \gamma }\right\}  ,{A}^{\prime } = \mathbf{Q} \smallsetminus  A = \{ x \in  \mathbf{Q} \mid  x \geq  \gamma \} ,
+\]
+则 \(\left( {A,{A}^{\prime }}\right)\) 显然是一个分划 (我们称它为第一种分划). 若令
+\[
+A = \left\{  {x \in  \mathbf{Q} \mid  x \leq  \gamma }\right\}  ,{A}^{\prime } = \mathbf{Q} \smallsetminus  A = \{ x \in  Q \mid  x > \gamma \} ,
+\]
+这里 \(\left( {A,{A}^{\prime }}\right)\) 显然也是一个分划 (我们称它为第二种分划). 这两个分划的特点是: 第一种分划的上类有最小数, 第二种分划的下类有最大数. 此外还有第三种分划, 它的上类无最小数,下类无最大数\footnote{由有理数本身的稠密性,不可能存在上类有最小数,同时下类有最大数的分划.} . 例如,
+\[
+{A}^{\prime } = \left\{  {x \in  \mathbf{Q} \mid  x > 0\text{ 且 }{x}^{2} > 2}\right\}  ,
+\]
+\[
+A = \mathbf{Q} \smallsetminus  {A}^{\prime } = \left\{  {x \in  \mathbf{Q} \mid  x \leq  0\text{ 或 }\left( {x > 0\text{ 且 }{x}^{2} < 2}\right) }\right\}  .
+\]
+这也是一个分划,而且在这个分划里, \(A\) 中无最大数, \({A}^{\prime }\) 中无最小数. 这是因为,当 \(x > 1\) 且 \({x}^{2} < 2\) 时,对任何满足 \(0 < h < \frac{2 - {x}^{2}}{{2x} + 1}\) 的 \(h\) ,有
+\[
+{\left( x + h\right) }^{2} = {x}^{2} + {2xh} + {h}^{2} < {x}^{2} + {2xh} + h < {x}^{2} + 2 - {x}^{2} = 2.
+\]
+可见 \(A\) 中无最大数. 类似地,设 \(x > 0\) 且 \({x}^{2} > 2\) ,则对任何满足 \(0 < h < \frac{{x}^{2} - 2}{2x}\) 的 \(h\) ,有
+\[
+{\left( x - h\right) }^{2} = {x}^{2} - {2xh} + {h}^{2} > {x}^{2} - {2xh} > 2.
+\]
+可见 \({A}^{\prime }\) 中无最小数.
+
+第三种分划的存在说明有理数集尽管稠密, 但仍有空隙. 容易看出, 填补上例中空隙的正是无理数 \(\sqrt{2}\) .
+
+现在回头来看上面由新数 \(\alpha\) 所产生的分划 (1),究竟属于哪一种. 很清楚,如果 \(A\) 有最大数或 \({A}^{\prime }\) 有最小数,则该最大数或最小数与 \(\alpha\) 之间将不存在任何有理数,从而与引理 2 矛盾,所以由 \(\alpha\) 所产生的分划 \(\left( {A,{A}^{\prime }}\right)\) 必为第三种分划. 反之,设 \(\left( {A,{A}^{\prime }}\right)\) 是 \(\mathbf{Q}\) 的任一第三种分划,它是否必由某一新数 \(\alpha\) 产生呢? 首先 \(A\) 与 \({A}^{\prime }\) 之间必至少有一新数存在,否则 \(A\) 作为 \(\mathbf{R}\) 的有上界的子集将没有上确界 (最小上界),这与 \(\mathbf{R}\) 的完备性相矛盾. 其次, \(A\) 与 \({A}^{\prime }\) 之间也只能有一个新数,倘若有两个新数,则在这两个数之间又将不存在任何有理数,这又与引理 2 相矛盾. 设这唯一的新数为 \(\alpha\) ,则分划 \(\left( {A,{A}^{\prime }}\right)\) 只能由 \(\alpha\) 所产生而且也是反过来确定 \(\alpha\) 的. 这样就获得如下重要结果: 如果 \(\mathbf{Q}\) 能扩充成完备的有序域 \(\mathbf{R}\) ,则 \(\mathbf{R}\) 中的新数与 \(Q\) 中的第三种分划必一一对应.
+
+这样一来,只要知道 \(\mathbf{Q}\) 的所有第三种分划,就可以知道 \(\mathbf{R}\) 上的序,这是因为不仅新数与旧数可比较大小,新数与新数也可以比较大小.一旦知道了 \(\mathbf{R}\) 上的序,就可从 \(\mathbf{Q}\) 内已知的四则运算推知 \(\mathbf{R}\) 上的四则运算. 这是因为在有序域上序与加法、乘法运算是协调的. 此外,也不难看到: 若存在 \(\mathbf{Q}\) 的完备扩充的话,则这种扩充基本上 (即在序同构意义下) 是唯一的. 所有这些虽然我们不打算作深入地讨论, 但必须认识到有上述事实, 才有助于对以下内容的理解.
+
+\subsection{分划全体所成的有序集}
+
+现在不再假设 \(\mathbf{R}\) 的存在,而是要把它真正地构造出来. 我们设想,对每一个可能的 \(\mathbf{Q}\) 的第三种分划,都定义一个新数来填补空隙. 由于这种分划与新数是一一对应的,因此, 不妨干脆就把分划本身用来充当新数, 这是允许的. 因为归根到底数学对象本身究竟是什么并不重要, 重要的是它们之间的关系和运算. 而且为统一起见, 我们也用分划形式来表示相应的旧数 (正如把整数扩充到有理数时, 也可用假分数来表示整数那样). 于是我们就把注意力转到 \(\mathbf{Q}\) 的分划的全体上去.
+
+定义 \(2\mathrm{Q}\) 的分划的全体称为分划集,以 \(\mathbf{R}\) 表示,其中第一种分划和第二种分划看作是同一种分划,即由同一个 \(r\) 产生的第一种分划和第二种分划不加区别地看作同一分划,称为有端分划\footnote{这里“端”是指上类的最小数或下类的最大数.},并用 \({r}^{ * }\) 记这个分划. 第三种分划称为无端分划. 今后凡分划, 不论有端还是无端,都用小写希腊字母来表示,如 \(\alpha  = \left( {A,{A}^{\prime }}\right) ,\beta  = \left( {B,{B}^{\prime }}\right)\) 等 (小写拉丁字母则用来表示有理数).
+
+由于任一分划均由它的上、下两类中的任何一类完全确定, 因此, 给定了分划的一个类,也就完全确定了该分划. \(\mathbf{Q}\) 的怎样的子集才能成为一个分划的类呢? 对此有如下命题:
+
+定理 1 (类的标志) Q 的非空子集 \(M\) 能成为一个分划的上 (下) 类的充要条件是:
+
+\({1}^{ \circ  }M \neq  \mathbf{Q}\) ;
+
+\({2}^{ \circ  }\) 若 \(x \in  M\) ,且 \(y > x\left( {y < x}\right)\) ,则 \(y \in  M\) .
+
+%证
+\begin{proof}
+
+\end{proof}
+只需证充分性. 设 \(M\) 满足条件,则 \(M\) 与 \(\mathbf{Q} \smallsetminus  M\) 不空. 令 \(A = M,{A}^{\prime } = \mathbf{Q} \smallsetminus  M\) ,则 \(\left( {A,{A}^{\prime }}\right)\) 满足分划的前两个条件. 设 \(x \in  A,y \in  {A}^{\prime }\) ,由 \({A}^{\prime }\) 的定义不可能有 \(y = x\) . 再由 \({2}^{ \circ  }\) 它也不可能有 \(y < x\) ,因而必有 \(y > x\) ,即分划的第三个条件也满足.
+
+推论 不论是上类还是下类,若 \(a,b\) 属于它,则 \(a,b\) 之间的有理数都属于它.
+
+%定义  3
+\begin{definition}{}{def:}
+
+\end{definition}
+设 \(\alpha  = \left( {A,{A}^{\prime }}\right) ,\beta  = \left( {B,{B}^{\prime }}\right)\) 为任意两个分划,我们说: 在 \(A,B\) 无端 (通过调整总可以办到)的情形下,若 \(A \subset  B\) ,则有 \(\alpha  < \beta\) ；若 \(A = B\) ,则有 \(\alpha  = \beta\) ；若 \(A \supset  B\) ,则有 \(\alpha  > \beta\) .
+
+定理 2 定义 3 中的关系 “<” 是全序的,即满足下述条件:
+
+\({1}^{ \circ  }\) 若 \(\alpha  < \beta ,\beta  < \gamma\) ,则 \(\alpha  < \gamma\) (传递性);
+
+\({2}^{ \circ  }\alpha  < \beta ,\alpha  = \beta ,\alpha  > \beta\) 三者必居其一,且仅居其一 (三歧性).
+
+%证
+\begin{proof}
+
+\end{proof}
+\({1}^{ \circ  }\) 是显然的. 现在证明 \({2}^{ \circ  }\) (三歧性). 如果 \(A \neq  B\) ,且 \(A ⊄ B\) ,则必存在某个 \(a \in  A\) , 同时 \(a \in  {B}^{\prime }\) . 由后一关系及分划定义,对任何 \(b \in  B\) 都有 \(a > b\) . 再由定理 1 得 \(B \subset  A\) .
+
+注意 如果不限制下类无端, 则对同一个有端分划将出现第一种分划小于第二种分划的不合理现象.
+
+读者容易证明如下命题.
+
+定理 \({31}^{ \circ  }\) 设 \(\alpha  = \left( {A,{A}^{\prime }}\right)\) ,对任何 \(a \in  A,a\) 对应的分划记为 \({a}^{ * }\) ,则有 \({a}^{ * } \leq  \alpha\) ,对任何 \(b \in  {A}^{\prime }\) ,有 \({b}^{ * } \geq  \alpha\) . 反之,由 \({a}^{ * } < \alpha\) 有 \(a \in  A\) ,由 \({b}^{ * } > \alpha\) 有 \(b \in  {A}^{\prime }\) .
+
+\({2}^{ \circ  }\) 对任意 \(\alpha ,\beta\) ,当 \(\alpha  < \beta\) 时,存在 \(r \in  \mathbf{Q}\) ,使得 \(\alpha  < r < \beta\) (这说明有端分划在 \(\mathbf{R}\) 中稠密).
+
+定理 4 (戴德金定理,或称实数的连续性定理) 设 \(A\) 与 \({A}^{\prime }\) 为 \(\mathbf{R}\) 的子集,它满足如下条件:
+
+\({1}^{ \circ  }A\) 与 \({A}^{\prime }\) 均不空;
+
+\({2}^{ \circ  }A \cup  {A}^{\prime } = \mathbf{R}\) ;
+
+\({3}^{ \circ  }\) 若 \(\alpha  \in  A,{\alpha }^{\prime } \in  {A}^{\prime }\) ,则 \(\alpha  < {\alpha }^{\prime }\) .
+
+则或者 \(A\) 有最大元,或者 \({A}^{\prime }\) 有最小元 (称序对 \(\left( {A,{A}^{\prime }}\right)\) 为 \(\mathbf{R}\) 的一个分划).
+
+%证
+\begin{proof}
+
+\end{proof}
+令 \(A = \left\{  {r \in  \mathbf{Q} \mid  {r}^{ * } \in  A}\right\}  ,{A}^{\prime } = \left\{  {r \in  \mathbf{Q} \mid  {r}^{ * } \in  {A}^{\prime }}\right\}\) ,则 \(\alpha  = \left( {A,{A}^{\prime }}\right)\) 为 \(\mathbf{Q}\) 的一个分划. 设 \(\beta  < \alpha\) ,由定理 3 的 \({2}^{ \circ  }\) ,存在 \(r \in  \mathbf{Q}\) ,使得 \(\beta  < {r}^{ * } < \alpha\) . 由 \({r}^{ * } < \alpha\) 及定理 3 的 \({1}^{ \circ  }\) 有 \(r \in  A\) . 又由 \(\beta  <\)  \({r}^{ * }\) ,根据类的标志\footnote{在定理 1 中如果将 \(\mathrm{Q}\) 改为 \(\mathrm{R}\) ,其结论仍然成立. 当然这里只用到它的必要条件部分.}知道 \(\beta  \in  A\) . 同样由 \(\beta  > \alpha\) ,可得 \(\beta  \in  {A}^{\prime }\) . 但 \(\alpha\) 本身作为 \(\mathbf{Q}\) 的一个分划,也是 \(\mathbf{R}\) 的元素,故不属于 \(A\) ,必属于 \({A}^{\prime }\) . 若 \(\alpha  \in  A\) ,则 \(\alpha\) 为 \(A\) 的最大元,否则为 \({A}^{\prime }\) 的最小元.
+
+因为以后将把 \(\mathbf{R}\) 看作是实数集,所以本定理是说: 实数集无空隙,或更通俗地说: 如果将实数集看作一条直线,并用一把没有厚度的理想的刀来砍它,那么不论砍在哪里, 总要碰到直线上的一点. 戴德金称实数的这个性质为连续性, 但有的书也称它为实数的连通性.
+
+定理 5 (实数的完备性定理) 设 \(M\) 为 \(\mathbf{R}\) 中有上界的子集,则 \(M\) 在 \(\mathbf{R}\) 中有上确界. 即 \(M\) 在 \(\mathbf{R}\) 中全体上界所组成的集合有最小元.
+
+%证
+\begin{proof}
+
+\end{proof}
+令 \(M\) 在 \(\mathbf{R}\) 中全体上界组成的集合为 \({A}^{\prime }\) ,令 \(A = \mathbf{R} \smallsetminus  {A}^{\prime }\) . 则 \(\left( {A,{A}^{\prime }}\right)\) 为 \(\mathbf{R}\) 的一个分划. 由戴德金定理,或者 \(A\) 有最大元,或者 \({A}^{\prime }\) 有最小元. 因为 \(A\) 中任一元素 \(a\) 都不是 \(M\) 的上界,故存在 \(M\) 中某一元素 \(m\) ,使 \(a < m\) . 由定理 3 的 \({2}^{ \circ  }\) ,存在 \({a}_{1}\) ,使得 \(a < {a}_{1} < m\) ,即 \({a}_{1} \in\)  \(A\) ,于是 \(A\) 无最大元. 因而 \({A}^{\prime }\) 一定有最小元.
+
+\subsection{ \(\mathbf{R}\) 中的加法}
+
+在定义 \(\mathbf{R}\) 中的加法之前,先证明一个引理.
+
+引理 3 对任何 \(\mathbf{Q}\) 的分划 \(\left( {A,{A}^{\prime }}\right)\) 及任何有理数 \(k > 0\) ,存在 \(a \in  A,{a}^{\prime } \in  {A}^{\prime }\) ,使得 \({a}^{\prime } -\)  \(a = k\) .
+
+%证
+\begin{proof}
+
+\end{proof}
+设 \(c \in  A,{c}^{\prime } \in  {A}^{\prime }\) . 由阿基米德性,在等差序列 \(\{ c + {nk}\}\) 中必有大于 \({c}^{\prime }\) 的项,设 \(c +\)  \({n}_{0}k\) 是该序列中第一个大于 \({c}^{\prime }\) 的项,则 \(c + {n}_{0}k \in  {A}^{\prime }\) ,而 \(c + \left( {{n}_{0} - 1}\right) k \in  A\) ,故分别取它们为 \({a}^{\prime }\) 与 \(a\) 时,其差正是 \(k\) .
+
+设 \(X,Y\) 为两个数集,我们用 \(X + Y,X \cdot  Y\) 和 \(- X\) 分别表示 \(\{ x + y \mid  x \in  X,y \in  Y\} ,\{ x \cdot  y \mid\)  \(x \in  X,y \in  Y\}\) 和 \(\{  - x \mid  x \in  X\}\) .
+
+%定义  4
+\begin{definition}{}{def:}
+
+\end{definition}
+设 \(\alpha  = \left( {A,{A}^{\prime }}\right) ,\beta  = \left( {B,{B}^{\prime }}\right)\) ,我们定义 \(\alpha  + \beta  = \left( {C,{C}^{\prime }}\right)\) ,其中 \(C = A + B\) ,从而 \({C}^{\prime } = \mathbf{Q} \smallsetminus  C\) .
+
+这里必须指出,定义 4 中的 \(\left( {C,{C}^{\prime }}\right)\) 确是 \(\mathbf{Q}\) 的一个分划,因为 \(C\) 非空, \(C \neq  \mathbf{Q}\) ,设 \(x \in  A,y \in  B,z < x + y\) . 这时令 \({x}_{1} = x - \frac{x + y - z}{2},{y}_{1} = y - \frac{x + y - z}{2}\) ,则 \({x}_{1} \in  A,{y}_{1} \in  B\) 且 \(z = {x}_{1} + {y}_{1}\) ,故 \(C\) 确是这一分划的下类.
+
+当然,我们也可以从定义 \({C}^{\prime } = {A}^{\prime } + {B}^{\prime }\) 入手. 读者可以验证这两个定义的一致性,即它们至多相差一个端.
+
+定理 6 \(\mathbf{R}\) 中的加法具有下列性质: 对任何 \(\alpha ,\beta ,\gamma  \in  \mathbf{R}\) ,
+
+\({1}^{ \circ  }\;\alpha  + \beta  = \beta  + \alpha\) (交换律), \(\left( {\alpha  + \beta }\right)  + \gamma  = \alpha  + \left( {\beta  + \gamma }\right)\) (结合律).
+
+\({2}^{ \circ  }\) 存在零元 \({0}\)\footnote{这里 0 表示 \(\mathrm{R}\) 中零元,以区别 \(\mathrm{Q}\) 中零元 0,当把 \(\mathrm{R}\) 中零元等同于 \(\mathrm{Q}\) 中零元后,就统一用 0 表示零元,下一段 \(\mathbf{R}\) 中单位元也用同样的表示方式.} ,对任何 \(\alpha  \in  \mathbf{R}\) ,有 \(\alpha  + 0 = \alpha\) .
+
+\({3}^{ \circ  }\) 对任何 \(\alpha  \in  \mathbf{R}\) ,存在反元 \(- \alpha  \in  \mathbf{R}\) ,使得 \(\alpha  + \left( {-\alpha }\right)  = \mathbf{0}\) .
+
+\({4}^{ \circ  }\) 若 \(\alpha  < \beta\) ,则 \(\alpha  + \gamma  < \beta  + \gamma\) (加法的单调性).
+
+%证
+\begin{proof}
+
+\end{proof}
+\({1}^{ \circ  }\) 显然.
+
+\({2}^{ \circ  }\) 以一切负有理数为下类的 \({0}^{ * }\) 满足零元要求. 事实上,设 \(A\) 为 \(\alpha\) 的下类,则对任一 \(x \in  A\) 及 \(y < 0\) ,都有 \(x + y < x\) ,故 \(x + y \in  A\) ,从而 \(\alpha  + {0}^{ * } \leq  \alpha\) . 另一方面. 若 \(A\) 无端,则对任何 \(x \in  A\) ,存在 \({x}_{1} > x\) ,且 \({x}_{1} \in  A\) . 从而 \(x = {x}_{1} + \left( {x - {x}_{1}}\right)\) ,其中 \(x - {x}_{1} < 0\) . 于是又有 \(\alpha  + {0}^{ * } \geq  \alpha\) . 这就得到 \(\alpha  + {0}^{ * } = \alpha\) . 由于零元的唯一性\footnote{设 \({0}_{1}\) 和 \({0}_{2}\) 为两个零元,由于 \({0}_{1} = {0}_{1} + {0}_{2} = {0}_{2} + {0}_{1} = {0}_{2}\) ,所以零元是唯一的.用同样的方法读者可证反元和下一段讲到的逆元也具有唯一性.}今后将一直把 \({0}^{ * }\) 写作0.
+
+\({3}^{ \circ  }\) 设 \(\alpha  = \left( {A,{A}^{\prime }}\right)\) ,现在证明 \(\left( {-{A}^{\prime }, - A}\right)\) 满足要求,易见 \(\left( {-{A}^{\prime }, - A}\right)\) 是一个分划. 暂将它写作 \(- \alpha\) . 由于 \(A + \left( {-{A}^{\prime }}\right)  = A - {A}^{\prime }\) 中的元素恒为负有理数,故 \(\alpha  + \left( {-\alpha }\right)  \leq  0\) . 另一方面,由引理 3,对任给的 \(\varepsilon  > 0\) ,总存在 \({A}^{\prime }\) 中的数 \({a}^{\prime }\) 与 \(A\) 中的数 \(a\) ,使得 \(0 \leq  {a}^{\prime } - a < \varepsilon\) ,故有 \(\alpha  + \left( {-\alpha }\right)  \geq  0\) . 从而得 \(\alpha  + \left( {-\alpha }\right)  = 0\) . 由于反元的唯一性. 今后将一直把 \(\left( {-{A}^{\prime }, - A}\right)\) 写作 \(- \alpha\) .
+
+\({4}^{ \circ  }\) 设 \(\alpha  < \beta\) ,由定义 \(A \subset  B\) . 于是有 \(A + C \subseteq  B + C\) ,所以 \(\alpha  + \gamma  \leq  \beta  + \gamma\) . 另一方面,倘若 \(\alpha  +\)  \(\gamma  = \beta  + \gamma\) ,则两边各加 \(- \gamma\) 将有 \(\alpha  = \beta\) . 这与假设相矛盾,故应有 \(\alpha  + \gamma  < \beta  + \gamma\) .
+
+\subsection{ \(\mathbf{R}\) 中的乘法}
+
+在定义 \(\mathbf{R}\) 中乘法之前先介绍一个与引理 3 相类似的定理.
+
+定理 7 对任何分划 \(\alpha  = \left( {A,{A}^{\prime }}\right)  > 0\) 及任何有理数 \(k > 1\) ,存在 \(a \in  A,{a}^{\prime } \in  {A}^{\prime }\) ,使得 \(\frac{{a}^{\prime }}{a} = k.\)
+
+%证
+\begin{proof}
+
+\end{proof}
+与引理 3 的证明相仿,只需将那里的等差序列改用等比序列 \(\left\{  {c{k}^{n}}\right\}\) 就可以了.
+
+%定义  5
+\begin{definition}{}{def:}
+
+\end{definition}
+设 \(\alpha  = \left( {A,{A}^{\prime }}\right)\) ,则在 \(A,{A}^{\prime }\) 两类中有一个且仅有一个不包含 0,也就是说该类中元素皆同号,我们称这个类为分划 \(\alpha\) 的同号类,记作 \(\bar{A}\) .
+
+由定义 5 可见,当 \(\alpha  > 0\) 时,其同号类是上类,当 \(\alpha  < 0\) 时,则下类为其同号类,若 \(\alpha  =\) 0 , 则不定.
+
+定理 8 (同号类的标志) \(\mathbf{Q}\) 的不空子集 \(M\) 成为某分划的同号类的充要条件是:
+
+\({1}^{ \circ  }M\) 中只含同号的数.
+
+\({2}^{ \circ  }\) 若 \(x \in  M\) ,则对任何正有理数 \(h,x\left( {1 + h}\right)  \in  M\) .
+
+这个定理的证明读者容易自行推得.
+
+%定义  6
+\begin{definition}{}{def:}
+
+\end{definition}
+设 \(\alpha\) 的同号类为 \(\bar{A},\beta\) 的同号类为 \(\bar{B}\) ,我们定义 \(\alpha  \cdot  \beta\) 为 \(\{ x \cdot  y \mid  x \in  \bar{A},y \in\)  \(\bar{B}\}\) ,也就是 \(\bar{A} \cdot  \bar{B}\) 为其同号类的分划.
+
+注意定义 6 中的 \(\bar{A} \cdot  \bar{B}\) 确实是某个分划的同号类. 因为由定理 7 (同号类的标志) 知满足 \({1}^{ \circ  }\) 是显然的. 又若 \({xy} \in  \bar{A} \cdot  \bar{B}\) ,则由于
+\[
+\left( {1 + h}\right)  = \left( {1 + \frac{h}{2 + h}}\right)  \cdot  \left( {1 + \frac{h}{2}}\right) ,
+\]
+有
+\[
+{xy}\left( {1 + h}\right)  = x\left( {1 + \frac{h}{2 + h}}\right)  \cdot  y\left( {1 + \frac{h}{2}}\right) .
+\]
+由同号类标志右边属于 \(\bar{A} \cdot  \bar{B}\) ,故左边亦属于它,即 \({2}^{ \circ  }\) 也满足.
+
+定理 9 \(\mathrm{R}\) 中的乘法具有下列性质: 对任何 \(\alpha ,\beta ,\gamma  \in  \mathbf{R}\) ,
+
+\({1}^{ \circ  }\alpha  \cdot  \beta  = \beta  \cdot  \alpha\) (交换律), \(\left( {\alpha  \cdot  \beta }\right) \gamma  = \alpha \left( {\beta  \cdot  \gamma }\right)\) (结合律).
+
+\({2}^{ \circ  }\) 同号相乘得正,异号相乘得负\footnote{同有理数一样,若 \(\alpha  > 0\) ,则称 \(\alpha\) 为正元; 若 \(\alpha  < 0\) ,则称 \(\alpha\) 为负元.},乘 0 得 0 .
+
+\({3}^{ \circ  }\left( {\alpha  + \beta }\right) \gamma  = {\alpha \gamma } + {\beta \gamma }\) (分配律).
+
+\({4}^{ \circ  }\) 存在单位元1,它对任何 \(\alpha\) 都有 \(\alpha  \cdot  \mathbf{1} = \alpha\) .
+
+\({5}^{ \circ  }\) 对任何 \(\alpha  \neq  0\) ,存在逆元 \({\alpha }^{-1}\) 使 \(\alpha  \cdot  {\alpha }^{-1} = 1\) .
+
+\({6}^{ \circ  }\) 若 \(\alpha  < \beta\) 且 \(\gamma  > 0\) ,则 \({\alpha \gamma } < {\beta \gamma }\) .
+
+%证
+\begin{proof}
+
+\end{proof}
+\({1}^{ \circ  }\) 显然.
+
+\({2}^{ \circ  }\) 易见当 \(\alpha ,\beta\) 同号时,有 \(\alpha  \cdot  \beta  \geq  0\) ,当 \(\alpha ,\beta\) 异号时,则有 \(\alpha  \cdot  \beta  \leq  0\) . 现在只需证明 \(\alpha ,\beta\) 均不为 0 时, \(\alpha  \cdot  \beta  \neq  0\) . 事实上,如果 \(\alpha ,\beta  \neq  0\) ,则在 0 与 \(\bar{A}\) 之间必存在某有理数 \(a\) ,同样在 0 与 \(\bar{B}\) 之间也必存在某有理数 \(b\) . 因而 \(a \cdot  b\) 必在 0 与 \(\bar{A} \cdot  \bar{B}\) 之间,也就是说 \(\alpha\) . \(\beta  \neq  0\) .
+
+\({3}^{ \circ  }\) (i) 先假定 \(\alpha ,\beta\) 同号,且 \(\gamma  \neq  0\) . 我们只需证明 \(\left( {\alpha  + \beta }\right) \gamma  = {\alpha \gamma } + {\beta \gamma }\) 两边有相等的同号类即可. 由于两个同号分划的和的同号类等于它们的同号类的和, 因此有下列一连串的等式:
+\[
+\overline{\left( {A + B}\right) C} = \overline{\left( A + B\right) } \cdot  \bar{C} = \left( {\bar{A} + \bar{B}}\right)  \cdot  \bar{C} = \bar{A} \cdot  \bar{C} + \bar{B} \cdot  \bar{C}
+\]
+\[
+= \overline{AC} + \overline{BC} = \overline{{AC} + {BC}}\text{ . }
+\]
+这里只有中间那个等式需要说明一下, 等式左边和右边的一般项分别为
+
+\(\left( {a + b}\right) c\) 和 \(a{c}_{1} + b{c}_{2}\) ,其中 \(a \in  \bar{A},b \in  \bar{B},c,{c}_{1},{c}_{2}, \in  \bar{C}\) .
+
+显然前者是后者的特例. 但由于 \(a\) 与 \(b\) 同号, \(a{c}_{1} + b{c}_{2}\) 必然在 \(\left( {a + b}\right) {c}_{1}\) 与 \(\left( {a + b}\right) {c}_{2}\) 之间,故后者也是前者的特例. 从而等式成立.
+
+(ii) 对于一般情况,当 \(\alpha ,\beta ,\gamma\) 和 \(\alpha  + \beta\) 皆不为 0 时,可如下证明. 设 \(\alpha ,\beta\) 不同号. 对等式 \(\alpha  + \beta  = \left( {\alpha  + \beta }\right)\) 作移项得 \(\left( {\alpha  + \beta }\right)  + \left( {-\alpha }\right)  = \beta\) 或 \(\left( {\alpha  + \beta }\right)  + \left( {-\beta }\right)  = \alpha\) . 这两个式子中总有一个左边有两个同号的被加项, 不妨设是其中第一式, 那么对该式应用 (i) 并利用关系 \(\left( {-\alpha }\right) \gamma  =  - \alpha {\gamma }\) \footnote{这实际上是 \(\alpha  + \beta  = 0\) 时的特例,它可由比较两边同号类而得到.}再作一次移项就行了. 若 \(\alpha ,\beta\) 中有一个为 0,那就更不成问题了.
+
+\({4}^{ \circ  }\;{1}^{ * }\) 满足作为单位元的要求. 事实上, \({1}^{ * }\) 的同号类为 \(\{ 1 + h \mid  h \in  \mathbf{Q}\) 且 \(h > 0\}\) . 设 \(\bar{A}\) 为 \(\alpha\) 的同号类, \(x\) 为 \(\bar{A}\) 中任一数, \(h > 0\) ,则 \(\bar{A} \cdot  {\overline{1}}^{ * }\) 之一般项为 \(x\left( {1 + h}\right)\) . 又由 \(\bar{A}\) 为同号类, 所以 \(x\left( {1 + h}\right)  \in  \bar{A}\) ,从而 \(\bar{A} \cdot  {\overline{1}}^{ * } \subset  \bar{A}\) . 另一方面,假设 \(\bar{A}\) 无端,则对任何 \(x \in  \bar{A}\) ,存在 \({x}^{\prime } \in  \bar{A}\) , 使 \(\frac{x}{{x}^{\prime }} > 1\) ,从而 \(x = {x}^{\prime } \cdot  \frac{x}{{x}^{\prime }}\) ,这里 \(\frac{x}{{x}^{\prime }} \in  {\overline{1}}^{ * }\) ,故又有 \(\bar{A} \subset  \bar{A} \cdot  {\overline{1}}^{ * }\) ,这就推得 \(\alpha  \cdot  {1}^{ * } = \alpha\) . 由于单位元的唯一性,今后将 \({1}^{ * }\) 写作 1 .
+
+\({5}^{ \circ  }\) 设 \(\alpha  \neq  0\) ,且 \(\alpha\) 的同号类为 \(\bar{A}\) . 现在证明以
+\[
+{\bar{A}}^{-1} = \left\{  {{y}^{-1} \mid  y\text{ 在 }0\text{ 与 }\bar{A}\text{ 之间 }}\right\}
+\]
+为同号类的分划满足逆元的要求. 首先易见它是一个分划,暂把它写作 \({\alpha }^{-1}\) . 对 \(x \in  \bar{A}\) , \({y}^{-1} \in  {\bar{A}}^{-1}\) 有 \(x{y}^{-1} > 1\) ,故 \(\alpha  \cdot  {\alpha }^{-1} = 1\) . 又由引理 3 知存在 \(x \in  \bar{A},{y}^{-1} \in  {\bar{A}}^{-1}\) ,使 \(x{y}^{-1}\) 和 1 可接近到事先指定的任何程度,故 \(\alpha  \cdot  {\alpha }^{-1} \leq  1\) . 从而等式成立. 我们今后将 \(\alpha\) 的逆元写作 \({\alpha }^{-1}\) .
+
+\({6}^{ \circ  }\) 设 \(\alpha  < \beta\) ,由加法性质 \({4}^{ \circ  }\) ,两边各加 \(- \alpha\) 得 \(\beta  - \alpha  > 0\) . 由于过程可逆知道: \(\alpha  < \beta\) 当且仅当 \(\beta  - \alpha  > 0\) . 因分配律对差也成立\footnote{\(\left( {\alpha  - \beta }\right) \gamma  + {\beta \gamma } = \left\lbrack  {\left( {\alpha  - \beta }\right)  + \beta }\right\rbrack   \cdot  \gamma  = \alpha  \cdot  \gamma\) ,等式两边加 \(\left( {-{\beta \gamma }}\right)\) 即得 \(\left( {\alpha  - \beta }\right) \gamma  = {\alpha \gamma } - {\beta \gamma }\) .},有 \(\left( {\beta  - \alpha }\right) \gamma  = {\beta \gamma } - {\alpha \gamma }\) . 再由正乘正得正,故 \({\beta \gamma } - {\alpha \gamma } >\) 0 . 从而又有 \({\alpha \gamma } < {\beta \gamma }\) .
+
+\subsection{ \(\mathbf{R}\) 作为 \(\mathbf{Q}\) 的扩充}
+
+通过对应 \(r \leftrightarrow  {r}^{ * },\mathbf{Q}\) 与 \(\mathbf{R}\) 的子集 \({\mathbf{Q}}^{ * }\) 之间建立了一对一的映射.
+
+定理 10 对于 \(\mathbf{Q}\) 与 \(\mathbf{R}\) 的子集 \({\mathbf{Q}}^{ * }\) 之间的映射 \(r \leftrightarrow  {r}^{ * }\) ,具有如下性质:
+
+\({1}^{ \circ  }\) 保序性 即 \(a < b\left( {a = b}\right)\) 当且仅当 \({a}^{ * } < {b}^{ * }\left( {{a}^{ * } = {b}^{ * }}\right)\) .
+
+\({2}^{ \circ  }\) 保持加法和乘法两个运算,即
+\[
+{\left( a + b\right) }^{ * } = {a}^{ * } + {b}^{ * },{\left( a \cdot  b\right) }^{ * } = {a}^{ * } \cdot  {b}^{ * }.
+\]
+%证
+\begin{proof}
+
+\end{proof}
+关于保序性是显然的, 故只证后一结论.
+
+关于加法, 我们比较下类. 由于
+\[
+{\left( a + b\right) }^{ * }\text{ 的下类 } = \{ z \mid  z < a + b\} \text{ , }
+\]
+\[
+{a}^{ * } + {b}^{ * }\text{ 的下类 } = \{ x + y \mid  x < a,y < b\} \text{ . }
+\]
+因 \(x < a,y < b\) 时有 \(x + y < a + b\) ,故 \({a}^{ * } + {b}^{ * } \subset  {\left( a + b\right) }^{ * }\) . 另一方面,因任一 \(z < a + b\) 恒可表示为 \(z = \left( {a - \frac{a + b - z}{2}}\right)  + \left( {b - \frac{a + b - z}{2}}\right)\) ,故相反的包含关系也成立.
+
+关于乘法, 比较它们的同号类. 由于
+
+\({\left( a \cdot  b\right) }^{ * }\) 的同号类 \(= \{ {ab}\left( {1 + h}\right)  \mid  h > 0\}\) ,
+
+\({a}^{ * } \cdot  {b}^{ * }\) 的同号类 \(= \{ a\left( {1 + s}\right)  \mid  s > 0\}  \cdot  \{ b\left( {1 + t}\right)  \mid  t > 0\}\) ,
+
+\(\left( {1 + s}\right) \left( {1 + t}\right)  > 1\) ,故
+
+\({a}^{ * } \cdot  {b}^{ * }\) 的同号类 \(\subset  {\left( a \cdot  b\right) }^{ * }\) 的同号类.
+
+另一方面,因 \(\left( {1 + h}\right)  = \left( {1 + \frac{h}{2 + h}}\right) \left( {1 + \frac{h}{2}}\right)\) ,故相反的包含关系也成立.
+
+这个定理说明,在这个映射下 \(\mathbf{Q}\) 与 \({\mathbf{Q}}^{ * }\) 具有同构关系,从而可以把它们等同起来, 把 \(\mathbf{R}\) 看作是 \(\mathbf{Q}\) 的扩充,把无端分划称为无理数,称 \(\mathbf{R}\) 为实数集.
+
+最后一项工作是必须指出 \(\mathbf{R}\) 中运算的唯一性.
+
+定理 11 在 \(\mathbf{R}\) 中的加、乘、求反元、求逆元等运算是唯一的,即从等价的分划出发, 得到的结论也是等价的, 且只能在有端分划的情形下出现形式上的差异.
+
+%证
+\begin{proof}
+
+\end{proof}
+仅就乘法来证明. 设 \(\bar{A},\bar{B}\) 分别为 \(\alpha ,\beta\) 的同号类. 为简便起见,设 \(\bar{A}\) 有端为 \(a,\bar{B}\) 无端. 我们证明 \(\bar{A} \cdot  \bar{B} = {\bar{A}}^{ \circ  }\bar{B}\) (这里 \({\bar{A}}^{ \circ  }\) 表示去掉端的 \(\bar{A}\) ). 由于 \(\bar{A} \cdot  \bar{B} = a \cdot  \bar{B} \cup  {\bar{A}}^{ \circ  }\bar{B}\) ,所以只需指出 \(a \cdot  \bar{B} \subset  \bar{A} \circ  \bar{B}\) 即可. 事实上,对任一 \(b \in  \bar{B}\) ,由于 \(\bar{B}\) 无端,故当 \(h\) 充分小时, \(\frac{b}{1 + h} \in  \bar{B}\) . 又因 \(a \cdot  b = a\left( {1 + h}\right) \frac{b}{1 + h}\) ,而 \(a\left( {1 + h}\right)  \in  {\bar{A}}^{ \circ  }\) ,可见 \(a \cdot  b \in  {\bar{A}}^{ \circ  }\bar{B}\) . 因此,只有 \(\bar{A},\bar{B}\) 皆无端时, \(\bar{A} \cdot  \bar{B}\) 才会比 \(\bar{A}{}^{ \circ  } \cdot  \bar{B}{}^{ \circ  }\) 多出一个 \(a \cdot  b\) .
+
+由于每一分划都是由它的下类或上类来确定的, 因此, 完全可由全体分划的下类 (或上类) 所组成集合 \({\mathbf{R}}^{\prime }\) 来代替原来的分划集. 不仅如此,当用下类 (或上类) 来定义实数时, 也可以硬性规定统一的形式. 如规定下类 (或上类) 一律无端来达到表示的唯一性.但不管采用哪一种方式, 都可以相应地定义序和运算来达到相同的扩充目的.
+
+\subsection{实数的无限小数表示\footnote{在本段中只用到实数域的性质(主要是阿基米德性和区间套定理),而与实数的具体定义方式无关. 因此本段可独立阅读.}}
+
+为了实用的目的, 人们需要给实数一种方便的表示形式, 使它既易于比较大小, 又便于运算和估计以至达到任意精确的程度, 无限小数就是这样的一种表示形式.
+
+定理 12 对任一实数 \(\gamma  \in  \lbrack 0,1)\) 都唯一地对应着一个整数数列 \(\left\{  {c}_{n}\right\}\) ,其中 \({c}_{n}\) 为 0, \(1,\cdots ,9\) 中的某一数,且有无限个 \({c}_{n} < 9\) ,使得有理数列 \(\left\{  {a}_{n}\right\}  \left( {{a}_{n} = 0.{c}_{1}\cdots {c}_{n}}\right)\) \footnote{在此采取了通常十进位小数记法,即 \(0.{c}_{1}\cdots {c}_{n} = \mathop{\sum }\limits_{{k = 1}}^{n}\frac{{c}_{k}}{{10}^{k}}\) .}满足不等式
+\[
+{a}_{n} \leq  \gamma  < {a}_{n} + {10}^{-n},n = 1,2,\cdots . \tag{2}
+\]
+反之,任一满足上述关于 \({c}_{n}\) 条件的整数数列 \(\left\{  {c}_{n}\right\}\) ,必存在唯一实数 \(\gamma  \in  \lbrack 0,1)\) ,使不等式(2)成立.
+
+%证
+\begin{proof}
+
+\end{proof}
+首先证明,若实数 \(\gamma  \in  \lbrack 0,1)\) ,则存在整数数列 \(\left\{  {c}_{n}\right\}\) 且满足不等式 (2). 为此, 将闭区间 \(\left\lbrack  {0,1}\right\rbrack\) 十等分,令 \(0.{c}_{1}\) 为分点: \(0,{0.1},\cdots ,{0.9}\) (不考虑右端点) 中不超过 \(\gamma\) 的最大数,于是 \(0.{c}_{1} \leq  \gamma  < 0.{c}_{1} + {10}^{-1}\) . 再对区间 \(\left\lbrack  {0.{c}_{1},0.{c}_{1} + {10}^{-1}}\right\rbrack\) 十等分,令 \(0.{c}_{1}{c}_{2}\) 为分点: \(0.{c}_{1},0.{c}_{1}1,\cdots ,0.{c}_{1}9\) (不考虑右端点) 中不超过 \(\gamma\) 的最大数,于是 \(0.{c}_{1}{c}_{2} \leq  \gamma  < 0.{c}_{1}{c}_{2} + {10}^{-2}\) . 照此无限进行下去,它的第 \(n\) 步便是 (2) 式.
+
+还要证明在所有 \({c}_{n}\) 中,必有无限多个小于 9 . 事实上,假如当 \(n > r\) 后均有 \({c}_{n} = 9\) ,则这时出现
+\[
+{a}_{n} = 0.{c}_{1}\cdots {c}_{r}9\cdots 9.
+\]
+由于 \(\gamma  \geq  {a}_{n}\) ,将有
+\[
+\gamma  - {a}_{r} \geq  \frac{1}{{10}^{r}}\mathop{\sum }\limits_{{k = 1}}^{{n - r}}\frac{9}{{10}^{k}} = \frac{1}{{10}^{r}}\left( {1 - \frac{1}{{10}^{n - r}}}\right) .
+\]
+这表明当 \(n\) 充分大时上式右边可任意接近于 \({10}^{-r}\) ,但由 \(\left( 2\right) \gamma  - {a}_{r}\) 应为小于 \({10}^{-r}\) 的定数, 矛盾!
+
+其次证明 \(\gamma\) 的存在性. 设 \(\left\{  {c}_{n}\right\}\) 满足定理中关于 \({c}_{n}\) 的条件,显然 \(\left\{  {a}_{n}\right\}\) 为递增数列. 令 \({a}_{n} + {10}^{-n} = {b}_{n}\) ,则因
+\[
+{b}_{n - 1} - {b}_{n} = {10}^{-\left( {n - 1}\right) } - \left( {{c}_{n} + 1}\right) {10}^{-n}\left\{  \begin{array}{l}  = 0,\text{ 当 }{c}_{n} = 9, \\   > 0,\text{ 当 }{c}_{n} < 9 \end{array}\right.
+\]
+可知 \(\left\lbrack  {{a}_{n},{b}_{n}}\right\rbrack  ,n = 1,2,\cdots\) 构成区间套. 又因 \({b}_{n} - {a}_{n} = {10}^{-n} \rightarrow  0\left( {n \rightarrow  \infty }\right)\) ,故由区间套定理, 存在唯一实数 \(\gamma\) ,满足 \({a}_{n} \leq  \gamma  \leq  {b}_{n},n = 1,2,\cdots\) . 但因有无限多个 \({c}_{n} < 9\) ,从而 \(\left\{  {b}_{n}\right\}\) 中无最小项. 因此对任何 \(n,\gamma  \neq  {b}_{n}\) ,这样就得到 (2).
+
+最后证明对应的唯一性.先证明不同实数对应不同的数列. 事实上,若实数 \(\gamma ,\delta\) 都对应同一数列 \(\left\{  {c}_{n}\right\}\) ,则由 (2) 可得不等式 \(\left| {\gamma  - \delta }\right|  < {10}^{-n}\) 对任何 \(n\) 成立,从而有 \(\gamma  = \delta\) . 再证明不同的数列为不同的实数所对应. 设 \(\gamma\) 对应于 \(\left\{  {c}_{n}\right\}  ,\delta\) 对应于 \(\left\{  {d}_{n}\right\}\) . 如果当 \(n < r\) 时, \({c}_{n} = {d}_{n}\) ,但 \({c}_{r} < {d}_{r}\) ,则由 (2) 有
+\[
+\gamma  < 0.{c}_{1}\cdots {c}_{r} + {10}^{-r}\text{ 及 }\delta  \geq  0.{c}_{1}\cdots {c}_{r - 1}{d}_{r},
+\]
+故由 \({c}_{r} < {d}_{r}\) 就得到 \(\gamma  < \delta\) . 从而不同的数列对应的实数也不同.
+
+现在利用定理 12 的结果给 \(\lbrack 0,1)\) 内的任一实数一种方便的记法:
+\[
+\gamma  = 0.{c}_{1}{c}_{2}\cdots \text{ . }
+\]
+它不外乎是定理 12 中那一列不等式的缩写, 有了这个记法, 任何实数都可写作\footnote{如果 \({c}_{\mathrm{a}}\) 从某项起均为 0,可将这些 0 省略而得到有限小数. 又若 \({c}_{0} \geq  0\) ,还可简单地写作 \(\gamma  = {c}_{0} \cdot  {c}_{1}{c}_{2}\cdots\)}
+\[
+\gamma  = {c}_{0} + 0.{c}_{1}{c}_{2}\cdots \text{, } \tag{3}
+\]
+其中 \({c}_{0}\) 为整数. (3) 式称为实数 \(\gamma\) 的无限小数表示,而有限小数
+\[
+{c}_{0} + 0.{c}_{1}\cdots {c}_{n}\text{ 和 }{c}_{0} + 0.{c}_{1}\cdots {c}_{n} + {10}^{-n}
+\]
+分别称为 \(\gamma\) 的 \(\left( {n\text{ 阶 }}\right)\) 不足近似值和过剩近似值,它们一起构成足以确定 \(\gamma\) 的区间套.
+
+\subsection{无限小数四则运算的定义}
+
+我们将应用无限小数递增有界数列必“稳定”于某个小数这一重要性质来建立无限小数的四则运算. 以下讨论的都是非负小数.
+
+设
+\[
+{x}_{1},{x}_{2},\cdots ,{x}_{n},\cdots  \tag{4}
+\]
+是小数数列,若对所有 \(k = 1,2,\cdots\) ,有 \({x}_{k} \leq  {x}_{k + 1}\) ,数列 (4) 称为递增数列. 若存在整数 \(M\) , 使对于所有 \(k = 1,2,\cdots\) ,有 \({x}_{k} \leq  M\) ,则称数列 (4) 有上界.
+
+
+
+若数列的项 \({x}_{n}\) 都是整数,并能找到 \({n}_{0}\) ,对所有 \(n > {n}_{0}\) ,有 \({x}_{n} = \xi\) ,则称数列稳定于 \(\xi\) . 容易看出,若整数数列递增,并且有上界 \(M\) ,那么这数列必稳定于某一整数 \(\xi  \leq  M\) .
+
+现在考虑小数数列
+\[
+{\mathbf{a}}_{1} = {\alpha }_{10} \cdot  {\alpha }_{11}{\alpha }_{12}{\alpha }_{13}\cdots
+\]
+\[
+{\mathbf{a}}_{2} = {\alpha }_{20} \cdot  {\alpha }_{21}{\alpha }_{22}{\alpha }_{23}\cdots  \tag{5}
+\]
+............
+\[
+{\mathbf{a}}_{n} = {\alpha }_{n0} \cdot  {\alpha }_{n1}{\alpha }_{n2}{\alpha }_{n3}\cdots
+\]
+............
+
+(5)的右边相当于一个无限矩阵.
+
+%定义  7
+\begin{definition}{}{def:}
+
+\end{definition}
+若对任意 \(k = 0,1,2,\cdots ,\left( 5\right)\) 的第 \(k\) 列 \(\left\{  {\alpha }_{nk}\right\}\) 稳定于 \({\gamma }_{k}\) ,则称数列(5)稳定于 \(a = {\gamma }_{0}.{\gamma }_{1}{\gamma }_{2}{\gamma }_{3}\cdots\) ,记作
+\[
+{a}_{n} \rightarrow  a, \tag{6}
+\]
+其中 \({\gamma }_{0}\) 是整数, \({\gamma }_{k}\left( {k = 1,2,\cdots }\right)\) 是 \(\{ 0,1,2,\cdots ,9\}\) 中某个数字.
+
+定理 13 若递增数列 (5) 有上界 \(M\) ,则数列必稳定于满足下列不等式的某个数 \(a\) :
+\[
+{a}_{n} \leq  a \leq  M\;\left( {n = 1,2,3,\cdots }\right) . \tag{7}
+\]
+%证
+\begin{proof}
+
+\end{proof}
+由于矩阵 (5) 的零列也是递增的,而且有上界 \(M\) ,因此零列的整数稳定于某一非负整数 \({\gamma }_{0} \leq  M\) . 现用归纳法来证明. 假若已证明矩阵 (5) 中下标不大于 \(k\) 的各列分别稳定于 \({\gamma }_{0},{\gamma }_{1},\cdots ,{\gamma }_{k}\) ,而且
+\[
+{\gamma }_{0} \cdot  {\gamma }_{1}\cdots {\gamma }_{k} \leq  M\;\left( {{\gamma }_{1},\cdots ,{\gamma }_{k}\text{ 是数字 }}\right) .
+\]
+现需证明 (5) 的第 \(\left( {k + 1}\right)\) 列必稳定于某一数字 \({\gamma }_{k + 1}\) ,而且有不等式
+\[
+{\gamma }_{0} \cdot  {\gamma }_{1}\cdots {\gamma }_{k}{\gamma }_{k + 1} \leq  M \tag{8}
+\]
+事实上,当 \({n}_{1}\) 充分大且 \(n > {n}_{1}\) 时, \({\mathbf{a}}_{n}\) 的小数表示可写为
+\[
+{a}_{n} = {\gamma }_{0} \cdot  {\gamma }_{1}\cdots {\gamma }_{k}{a}_{n,k + 1}{a}_{n,k + 2}\cdots  \leq  M.
+\]
+因为 \({a}_{n}\) 是递增的,所以对上述 \(n\) ,数字 \({a}_{n,k + 1}\left( { \leq  9}\right)\) 递增,于是当 \(n > {n}_{2}\left( {n}_{2}\right.\) 充分大) 时, \(\left\{  {a}_{n,k + 1}\right\}\) 将稳定于某一数字 \({\gamma }_{k + 1}\) ,而且
+\[
+{\gamma }_{0} \cdot  {\gamma }_{1}\cdots {\gamma }_{k}{\gamma }_{k + 1} \leq  {a}_{n} \leq  M\;\left( {n > {n}_{2}}\right) ,
+\]
+这就证明了不等式 (8) 和 \({\mathbf{a}}_{n} \rightarrow  \mathbf{a} = {\gamma }_{0} \cdot  {\gamma }_{1}{\gamma }_{2}\cdots\) ,于是可推出 (7) 中第二个不等式.
+
+现证对所有 \(n,{\mathbf{a}}_{n} \leq  \mathbf{a}\) . 若结论不成立,则可以找到自然数 \(n\) ,使得 \(\mathbf{a} < {\mathbf{a}}_{n}\) . 因此,对某个 \(k\) 有
+\[
+{a}_{n} = {\gamma }_{0} \cdot  {\gamma }_{1}\cdots {\gamma }_{k}{a}_{n,k + 1}{a}_{n,k + 2}\cdots ,
+\]
+并且 \({\gamma }_{k + 1} < {a}_{n,k + 1}\) . 当 \(n\) 无限增大时, \({a}_{n,k + 1}\) 递增,并稳定于数 \({\gamma }_{k + 1}\) ,由此得到 \({\gamma }_{k + 1} < {\gamma }_{k + 1}\) 的矛盾.
+
+给定两个小数 \(\mathbf{x} = {\alpha }_{0}.{\alpha }_{1}{\alpha }_{2}\cdots ,\mathbf{y} = {\beta }_{0}.{\beta }_{1}{\beta }_{2}\cdots\) ,用 \({\mathbf{x}}^{\left( n\right) }\) 表示 \(\mathbf{x}\) 的 \(n\) 位不足近似值,则 \({\mathbf{x}}^{\left( n\right) } + {\mathbf{y}}^{\left( n\right) } = {\alpha }_{0} \cdot  {\alpha }_{1}\cdots {\alpha }_{n} + {\beta }_{0} \cdot  {\beta }_{1}\cdots {\beta }_{n}.\)
+
+定理 14 在上述记号下,
+\[
+{x}^{\left( n\right) } + {y}^{\left( n\right) };
+\]
+\[
+{\left( {x}^{\left( n\right) } \cdot  {y}^{\left( n\right) }\right) }^{\left( n\right) };
+\]
+\[
+{x}^{\left( n\right) } - \left( {{y}^{\left( n\right) } + {10}^{-n}}\right) \;\left( {x > y > 0}\right) ,
+\]
+\[
+{\left( \frac{{x}^{\left( n\right) }}{{y}^{\left( n\right) } + {10}^{-n}}\right) }^{\left( n\right) }\;\left( {y > 0}\right)  \tag{9}
+\]
+都是递增有界数列, 所以分别稳定于某个数.
+
+%证
+\begin{proof}
+
+\end{proof}
+由于
+\[
+{x}^{\left( n\right) } + {y}^{\left( n\right) } \leq  {\alpha }_{0} + 1 + {\beta }_{0} + 1;
+\]
+\[
+{\left( {\mathbf{x}}^{\left( n\right) } \cdot  {\mathbf{y}}^{\left( n\right) }\right) }^{\left( n\right) } \leq  \left( {{\alpha }_{0} + 1}\right) \left( {{\beta }_{0} + 1}\right) ;
+\]
+\[
+{\mathbf{x}}^{\left( n\right) } - \left( {{\mathbf{y}}^{\left( n\right) } + {10}^{-n}}\right)  \leq  {\alpha }_{0} + 1;
+\]
+\[
+{\left( \frac{{\mathbf{x}}^{\left( n\right) }}{{\mathbf{y}}^{\left( n\right) } + {10}^{-n}}\right) }^{\left( n\right) } \leq  \frac{{\alpha }_{0} + 1}{{\beta }_{0} \cdot  {\beta }_{1}\cdots {\beta }_{s}}\;\text{ (其中 }s\text{ 使得 }{\beta }_{s} > 0\text{ ), }
+\]
+因此所有数列都是有界的,因为当 \(n\) 增大时, \({\mathbf{x}}^{\left( n\right) }\) 递增, \({\mathbf{y}}^{\left( n\right) } + {10}^{-n}\) 递减,易见 (9) 中各数列是递增的. 由定理 13 , 即有 (9) 中各数列稳定于某个数.
+
+%定义  8
+\begin{definition}{}{def:}
+
+\end{definition}
+对任意两个无限小数 \(x,y\) ,我们定义 \(x + y,x \cdot  y,x - y\) 为
+\[
+{x}^{\left( n\right) } + {y}^{\left( n\right) } \rightarrow  x + y;
+\]
+\[
+{\left( {\mathbf{x}}^{\left( n\right) } \cdot  {\mathbf{y}}^{\left( n\right) }\right) }^{\left( n\right) }\overset{ \rightarrow  }{ \rightarrow  }\mathbf{x} \cdot  \mathbf{y};
+\]
+\[
+{\mathbf{x}}^{\left( n\right) } - \left( {{\mathbf{y}}^{\left( n\right) } + {10}^{-n}}\right) \overrightarrow{ \rightarrow  }\mathbf{x} - \mathbf{y}\;\left( {\mathbf{x} > \mathbf{y} > 0}\right) ;
+\]
+\[
+{\left( \frac{{\mathbf{x}}^{\left( n\right) }}{{\mathbf{y}}^{\left( n\right) } + {10}^{-n}}\right) }^{\left( n\right) }\overset{ \rightarrow  }{ \rightarrow  }\frac{\mathbf{x}}{\mathbf{y}}\;\left( {\mathbf{y} > 0}\right) .
+\]
+由此可知: 当 \(x > y > 0\) 时,必存在 \(n\) ,使得 \({x}^{\left( n\right) } - \left( {{y}^{\left( n\right) } + {10}^{-n}}\right)  > 0\) .
+
+\subsection{含有 \({x}^{n}\) 的形式}
+
+1. \(\int {x}^{n}\mathrm{\;d}x = \frac{{x}^{n + 1}}{n + 1} + C,\;n \neq   - 1\)
+
+2. \(\int \frac{1}{x}\mathrm{\;d}x = \ln \left| x\right|  + C\)
+
+\subsection{含有 \(a + {bx}\) 的形式}
+
+3. \(\int \frac{x}{a + {bx}}\mathrm{\;d}x = \frac{1}{{b}^{2}}\left( {{bx} - a\ln \left| {a + {bx}}\right| }\right)  + C\)
+
+4. \(\int \frac{x}{{\left( a + bx\right) }^{2}}\mathrm{\;d}x = \frac{1}{{b}^{2}}\left( {\frac{a}{a + {bx}} + \ln \left| {a + {bx}}\right| }\right)  + C\)
+
+5. \(\int \frac{x}{{\left( a + bx\right) }^{n}}\mathrm{\;d}x = \frac{1}{{b}^{2}}\left\lbrack  {\frac{-1}{\left( {n - 2}\right) {\left( a + bx\right) }^{n - 2}} + }\right.\)
+
+\(\left. \frac{a}{\left( {n - 1}\right) {\left( a + bx\right) }^{n - 1}}\right\rbrack   + C,\;n \neq  1,2\)
+
+6. \(\int \frac{{x}^{2}}{a + {bx}}\mathrm{\;d}x = \frac{1}{{b}^{3}}\left\lbrack  {-\frac{bx}{2}\left( {{2a} - {bx}}\right)  + {a}^{2}\ln \left| {a + {bx}}\right| }\right\rbrack   + C\)
+
+7. \(\int \frac{{x}^{2}}{{\left( a + bx\right) }^{2}}\mathrm{\;d}x = \frac{1}{{b}^{3}}\left( {{bx} - \frac{{a}^{2}}{a + {bx}} - {2a}\ln \left| {a + {bx}}\right| }\right)  + C\)
+
+8. \(\int \frac{{x}^{2}}{{\left( a + bx\right) }^{3}}\mathrm{\;d}x = \frac{1}{{b}^{3}}\left\lbrack  {\frac{2a}{a + {bx}} - \frac{{a}^{2}}{2{\left( a + bx\right) }^{2}} + \ln \left| {a + {bx}}\right| }\right\rbrack   + C\)
+
+9. \(\int \frac{{x}^{2}}{{\left( a + bx\right) }^{n}}\mathrm{\;d}x = \frac{1}{{b}^{3}}\left\lbrack  {\frac{-1}{\left( {n - 3}\right) {\left( a + bx\right) }^{n - 3}} + }\right.\)
+\[
+\left. {\frac{2a}{\left( {n - 2}\right) {\left( a + bx\right) }^{n - 2}} - \frac{{a}^{2}}{\left( {n - 1}\right) {\left( a + bx\right) }^{n - 1}}}\right\rbrack   + C,\;n \neq  1,2,3
+\]
+10. \(\int \frac{1}{x\left( {a + {bx}}\right) }\mathrm{d}x = \frac{1}{a}\ln \left| \frac{x}{a + {bx}}\right|  + C\)
+
+11. \(\int \frac{1}{x{\left( a + bx\right) }^{2}}\mathrm{\;d}x = \frac{1}{a}\left( {\frac{1}{a + {bx}} + \frac{1}{a}\ln \left| \frac{x}{a + {bx}}\right| }\right)  + C\)
+
+12. \(\int \frac{1}{{x}^{2}\left( {a + {bx}}\right) }\mathrm{d}x =  - \frac{1}{a}\left( {\frac{1}{x} + \frac{b}{a}\ln \left| \frac{x}{a + {bx}}\right| }\right)  + C\)
+
+13. \(\int \frac{1}{{x}^{2}{\left( a + bx\right) }^{2}}\mathrm{\;d}x =  - \frac{1}{{a}^{2}}\left\lbrack  {\frac{a + {2bx}}{x\left( {a + {bx}}\right) } + \frac{2b}{a}\ln \left| \frac{x}{a + {bx}}\right| }\right\rbrack   + C\)
+
+\subsection{含有 \({a}^{2} \pm  {x}^{2},a > 0\) 的形式}
+
+14. \(\int \frac{1}{{a}^{2} + {x}^{2}}\mathrm{\;d}x = \frac{1}{a}\arctan \frac{x}{a} + C\)
+
+15. \(\int \frac{1}{{x}^{2} - {a}^{2}}\mathrm{\;d}x =  - \int \frac{1}{{a}^{2} - {x}^{2}}\mathrm{\;d}x = \frac{1}{2a}\ln \left| \frac{x - a}{x + a}\right|  + C\)
+
+16. \(\int \frac{1}{{\left( {a}^{2} \pm  {x}^{2}\right) }^{n}}\mathrm{\;d}x = \frac{1}{2{a}^{2}\left( {n - 1}\right) }\left\lbrack  {\frac{x}{{\left( {a}^{2} \pm  {x}^{2}\right) }^{n - 1}} + }\right.\)
+\[
+\left. {\left( {{2n} - 3}\right) \int \frac{1}{{\left( {a}^{2} \pm  {x}^{2}\right) }^{n - 1}}\mathrm{\;d}x}\right\rbrack  ,\;n \neq  1
+\]
+四、含有 \(a + {bx} + c{x}^{2},{b}^{2} \neq  {4ac}\) 的形式
+
+17. \(\int \frac{1}{a + {bx} + c{x}^{2}}\mathrm{\;d}x = \frac{2}{\sqrt{{4ac} - {b}^{2}}}\arctan \frac{{2cx} + b}{\sqrt{{4ac} - {b}^{2}}} + C,\;{b}^{2} < {4ac}\)
+\[
+= \frac{1}{\sqrt{{b}^{2} - {4ac}}}\ln \left| \frac{{2cx} + b - \sqrt{{b}^{2} - {4ac}}}{{2cx} + b + \sqrt{{b}^{2} - {4ac}}}\right|  + C,\;{b}^{2} > {4ac}
+\]
+18. \(\int \frac{x}{a + {bx} + c{x}^{2}}\mathrm{\;d}x = \frac{1}{2c}\left( {\ln \left| {a + {bx} + c{x}^{2}}\right|  - b\int \frac{1}{a + {bx} + c{x}^{2}}\mathrm{\;d}x}\right)\)
+
+五、含有 \(\sqrt{a + {bx}}\) 的形式
+
+19. \(\int {x}^{n}\sqrt{a + {bx}}\mathrm{\;d}x = \frac{2}{b\left( {{2n} + 3}\right) } \cdot  \left\lbrack  {{x}^{n}{\left( a + bx\right) }^{3/2} - {na}\int {x}^{n - 1}\sqrt{a + {bx}}\mathrm{\;d}x}\right\rbrack\)
+
+20. \(\int \frac{1}{x\sqrt{a + {bx}}}\mathrm{\;d}x = \frac{1}{\sqrt{a}}\ln \left| \frac{\sqrt{a + {bx}} - \sqrt{a}}{\sqrt{a + {bx}} + \sqrt{a}}\right|  + C,\;a > 0\)
+\[
+= \frac{2}{\sqrt{-a}}\arctan \sqrt{\frac{a + {bx}}{-a}} + C,\;a < 0
+\]
+21. \(\int \frac{1}{{x}^{n}\sqrt{a + {bx}}}\mathrm{\;d}x = \frac{-1}{a\left( {n - 1}\right) }\left\lbrack  {\frac{\sqrt{a + {bx}}}{{x}^{n - 1}} + \frac{b\left( {{2n} - 3}\right) }{2}\int \frac{1}{{x}^{n - 1}\sqrt{a + {bx}}}\mathrm{\;d}x}\right\rbrack  ,\;n \neq  1\)
+
+22. \(\int \frac{\sqrt{a + {bx}}}{x}\mathrm{\;d}x = 2\sqrt{a + {bx}} + a\int \frac{1}{x\sqrt{a + {bx}}}\mathrm{\;d}x\)
+
+23. \(\int \frac{\sqrt{a + {bx}}}{{x}^{n}}\mathrm{\;d}x = \frac{-1}{a\left( {n - 1}\right) }\left\lbrack  {\frac{{\left( a + bx\right) }^{3/2}}{{x}^{n - 1}} + }\right.\)
+\[
+\left. {\frac{\left( {{2n} - 5}\right) b}{2}\int \frac{\sqrt{a + {bx}}}{{x}^{n - 1}}\mathrm{\;d}x}\right\rbrack  ,\;n \neq  1
+\]
+24. \(\int \frac{x}{\sqrt{a + {bx}}}\mathrm{\;d}x = \frac{-2\left( {{2a} - {bx}}\right) }{3{b}^{2}}\sqrt{a + {bx}} + C\)
+
+25. \(\int \frac{{x}^{n}}{\sqrt{a + {bx}}}\mathrm{\;d}x = \frac{2}{\left( {{2n} + 1}\right) b}\left( {{x}^{n}\sqrt{a + {bx}} - {na}\int \frac{{x}^{n - 1}}{\sqrt{a + {bx}}}\mathrm{\;d}x}\right)\)
+
+六、含有 \(\sqrt{{x}^{2} \pm  {a}^{2}},a > 0\) 的形式
+
+26. \(\int \sqrt{{x}^{2} \pm  {a}^{2}}\mathrm{\;d}x = \frac{1}{2}\left( {x\sqrt{{x}^{2} \pm  {a}^{2}} \pm  {a}^{2}\ln \left| {x + \sqrt{{x}^{2} \pm  {a}^{2}}}\right| }\right)  + C\)
+
+27. \(\int {x}^{2}\sqrt{{x}^{2} \pm  {a}^{2}}\mathrm{\;d}x = \frac{1}{8}\left\lbrack  {x\left( {2{x}^{2} \pm  {a}^{2}}\right) \sqrt{{x}^{2} \pm  {a}^{2}} - {a}^{4}\ln \left| {x + \sqrt{{x}^{2} \pm  {a}^{2}}}\right| }\right\rbrack   + C\)
+
+28. \(\int \frac{1}{x}\sqrt{{x}^{2} + {a}^{2}}\mathrm{\;d}x = \sqrt{{x}^{2} + {a}^{2}} - a\ln \left| \frac{a + \sqrt{{x}^{2} + {a}^{2}}}{x}\right|  + C\)
+
+29. \(\int \frac{1}{x}\sqrt{{x}^{2} - {a}^{2}}\mathrm{\;d}x = \sqrt{{x}^{2} - {a}^{2}} - a\arccos \frac{a}{x} + C\)
+
+30. \(\int \frac{1}{{x}^{2}}\sqrt{{x}^{2} \pm  {a}^{2}}\mathrm{\;d}x = \frac{-1}{x}\sqrt{{x}^{2} \pm  {a}^{2}} + \ln \left| {x + \sqrt{{x}^{2} \pm  {a}^{2}}}\right|  + C\)
+
+31. \(\int \frac{1}{\sqrt{{x}^{2} \pm  {a}^{2}}}\mathrm{\;d}x = \ln \left| {x + \sqrt{{x}^{2} \pm  {a}^{2}}}\right|  + C\)
+
+32. \(\int \frac{{x}^{2}}{\sqrt{{x}^{2} \pm  {a}^{2}}}\mathrm{\;d}x = \frac{1}{2}\left( {x\sqrt{{x}^{2} \pm  {a}^{2}} \mp  {a}^{2}\ln \left| {x + \sqrt{{x}^{2} \pm  {a}^{2}}}\right| }\right)  + C\)
+
+33. \(\int \frac{1}{x\sqrt{{x}^{2} - {a}^{2}}}\mathrm{\;d}x = \frac{1}{a}\arccos \frac{a}{x} + C\)
+
+34. \(\int \frac{1}{x\sqrt{{x}^{2} + {a}^{2}}}\mathrm{\;d}x = \frac{-1}{a}\ln \left| \frac{a + \sqrt{{x}^{2} + {a}^{2}}}{x}\right|  + C\)
+
+35. \(\int \frac{1}{{x}^{2}\sqrt{{x}^{2} \pm  {a}^{2}}}\mathrm{\;d}x =  \mp  \frac{\sqrt{{x}^{2} \pm  {a}^{2}}}{{a}^{2}x} + C\)
+
+36. \(\int \frac{1}{{\left( {x}^{2} \pm  {a}^{2}\right) }^{3/2}}\mathrm{\;d}x = \frac{\pm x}{{a}^{2}\sqrt{{x}^{2} \pm  {a}^{2}}} + C\)
+
+七、含有 \(\sqrt{{a}^{2} - {x}^{2}},a > 0\) 的形式
+
+37. \(\int \sqrt{{a}^{2} - {x}^{2}}\mathrm{\;d}x = \frac{1}{2}\left( {x\sqrt{{a}^{2} - {x}^{2}} + {a}^{2}\arcsin \frac{x}{a}}\right)  + C\)
+
+38. \(\int {x}^{2}\sqrt{{a}^{2} - {x}^{2}}\mathrm{\;d}x = \frac{1}{8}\left\lbrack  {x\left( {2{x}^{2} - {a}^{2}}\right) \sqrt{{a}^{2} - {x}^{2}} + {a}^{4}\arcsin \frac{x}{a}}\right\rbrack   + C\)
+
+39. \(\int \frac{1}{x}\sqrt{{a}^{2} - {x}^{2}}\mathrm{\;d}x = \sqrt{{a}^{2} - {x}^{2}} - a\ln \left| \frac{a + \sqrt{{a}^{2} - {x}^{2}}}{x}\right|  + C\) 40. \(\int \frac{1}{{x}^{2}}\sqrt{{a}^{2} - {x}^{2}}\mathrm{\;d}x = \frac{-1}{x}\sqrt{{a}^{2} - {x}^{2}} - \arcsin \frac{x}{a} + C\)
+
+41. \(\int \frac{1}{\sqrt{{a}^{2} - {x}^{2}}}\mathrm{\;d}x = \arcsin \frac{x}{a} + C\)
+
+42. \(\int \frac{1}{x\sqrt{{a}^{2} - {x}^{2}}}\mathrm{\;d}x = \frac{-1}{a}\ln \left| \frac{a + \sqrt{{a}^{2} - {x}^{2}}}{x}\right|  + C\)
+
+43. \(\int \frac{1}{{x}^{2}\sqrt{{a}^{2} - {x}^{2}}}\mathrm{\;d}x = \frac{-\sqrt{{a}^{2} - {x}^{2}}}{{a}^{2}x} + C\)
+
+44. \(\int \frac{{x}^{2}}{\sqrt{{a}^{2} - {x}^{2}}}\mathrm{\;d}x = \frac{1}{2}\left( {-x\sqrt{{a}^{2} - {x}^{2}} + {a}^{2}\arcsin \frac{x}{a}}\right)  + C\)
+
+45. \(\int \frac{1}{{\left( {a}^{2} - {x}^{2}\right) }^{3/2}}\mathrm{\;d}x = \frac{x}{{a}^{2}\sqrt{{a}^{2} - {x}^{2}}} + C\)
+
+八、含有 \(\sin x\) 或 \(\cos x\) 的形式
+
+46. \(\int \sin x\mathrm{\;d}x =  - \cos x + C\)
+
+47. \(\int \cos x\mathrm{\;d}x = \sin x + C\)
+
+48. \(\int {\sin }^{2}x\mathrm{\;d}x = \frac{1}{2}\left( {x - \sin x\cos x}\right)  + C\)
+
+49. \(\int {\cos }^{2}x\mathrm{\;d}x = \frac{1}{2}\left( {x + \sin x\cos x}\right)  + C\)
+
+50. \(\int {\sin }^{n}x\mathrm{\;d}x = \frac{1}{n}\left\lbrack  {-{\sin }^{n - 1}x\cos x + \left( {n - 1}\right) \int {\sin }^{n - 2}x\mathrm{\;d}x}\right\rbrack\)
+
+51. \(\int {\cos }^{n}x\mathrm{\;d}x = \frac{1}{n}\left\lbrack  {{\cos }^{n - 1}x\sin x + \left( {n - 1}\right) \int {\cos }^{n - 2}x\mathrm{\;d}x}\right\rbrack\)
+
+52. \(\int x\sin x\mathrm{\;d}x = \sin x - x\cos x + C\)
+
+53. \(\int x\cos x\mathrm{\;d}x = \cos x + x\sin x + C\)
+
+54. \(\int {x}^{n}\sin x\mathrm{\;d}x =  - {x}^{n}\cos x + n\int {x}^{n - 1}\cos x\mathrm{\;d}x\)
+
+55. \(\int {x}^{n}\cos x\mathrm{\;d}x = {x}^{n}\sin x - n\int {x}^{n - 1}\sin x\mathrm{\;d}x\)
+
+56. \(\int \frac{1}{1 \pm  \sin x}\mathrm{\;d}x = \tan x \mp  \sec x + C\)
+
+57. \(\int \frac{1}{1 \pm  \cos x}\mathrm{\;d}x =  - \cot x \pm  \csc x + C\)
+
+58. \(\int \frac{1}{\sin x\cos x}\mathrm{\;d}x = \ln \left| {\tan x}\right|  + C\)
+
+九、含有 \(\tan x,\cot x,\sec x,\csc x\) 的形式
+
+59. \(\int \tan x\mathrm{\;d}x =  - \ln \left| {\cos x}\right|  + C\)
+
+60. \(\int \cot x\mathrm{\;d}x = \ln \left| {\sin x}\right|  + C\)
+
+61. \(\int \sec x\mathrm{\;d}x = \ln \left| {\sec x + \tan x}\right|  + C\)
+
+62. \(\int \csc x\mathrm{\;d}x = \ln \left| {\csc x - \cot x}\right|  + C\)
+
+63. \(\int {\tan }^{2}x\mathrm{\;d}x =  - x + \tan x + C\)
+
+64. \(\int {\cot }^{2}x\mathrm{\;d}x =  - x - \cot x + C\)
+
+65. \(\int {\sec }^{2}x\mathrm{\;d}x = \tan x + C\)
+
+66. \(\int {\csc }^{2}x\mathrm{\;d}x =  - \cot x + C\)
+
+67. \(\int {\tan }^{n}x\mathrm{\;d}x = \frac{{\tan }^{n - 1}x}{n - 1} - \int {\tan }^{n - 2}x\mathrm{\;d}x,\;n \neq  1\)
+
+68. \(\int {\cot }^{n}x\mathrm{\;d}x =  - \frac{{\cot }^{n - 1}x}{n - 1} - \int {\cot }^{n - 2}x\mathrm{\;d}x,\;n \neq  1\)
+
+69. \(\int {\sec }^{n}x\mathrm{\;d}x = \frac{{\sec }^{n - 2}x\tan x}{n - 1} + \frac{n - 2}{n - 1}\int {\sec }^{n - 2}x\mathrm{\;d}x,\;n \neq  1\)
+
+70. \(\int {\csc }^{n}x\mathrm{\;d}x =  - \frac{{\csc }^{n - 2}x\cot x}{n - 1} + \frac{n - 2}{n - 1}\int {\csc }^{n - 2}x\mathrm{\;d}x,\;n \neq  1\)
+
+71. \(\int \frac{1}{1 \pm  \tan x}\mathrm{\;d}x = \frac{1}{2}\left( {x \pm  \ln \left| {\cos x \pm  \sin x}\right| }\right)  + C\)
+
+72. \(\int \frac{1}{1 \pm  \cot x}\mathrm{\;d}x = \frac{1}{2}\left( {x \mp  \ln \left| {\sin x \pm  \cos x}\right| }\right)  + C\)
+
+73. \(\int \frac{1}{1 \pm  \sec x}\mathrm{\;d}x = x + \cot x \mp  \csc x + C\)
+
+74. \(\int \frac{1}{1 \pm  \csc x}\mathrm{\;d}x = x - \tan x \pm  \sec x + C\)
+
+\subsection{十、含有反三角函数的形式}
+
+75. \(\int \arcsin x\mathrm{\;d}x = x\arcsin x + \sqrt{1 - {x}^{2}} + C\)
+
+76. \(\int \arccos x\mathrm{\;d}x = x\arccos x - \sqrt{1 - {x}^{2}} + C\)
+
+77. \(\int \arctan x\mathrm{\;d}x = x\arctan x - \frac{1}{2}\ln \left( {1 + {x}^{2}}\right)  + C\)
+
+78. \(\int \operatorname{arccot}x\mathrm{\;d}x = x\operatorname{arccot}x + \frac{1}{2}\ln \left( {1 + {x}^{2}}\right)  + C\)
+
+79. \(\int \operatorname{arcsec}x\mathrm{\;d}x = x\operatorname{arcsec}x - \ln \left| {x + \sqrt{{x}^{2} - 1}}\right|  + C\)
+
+80. \(\int \operatorname{arccsc}x\mathrm{\;d}x = x\operatorname{arccsc}x + \ln \left| {x + \sqrt{{x}^{2} - 1}}\right|  + C\)
+
+81. \(\int x\arcsin x\mathrm{\;d}x = \frac{1}{4}\left\lbrack  {x\sqrt{1 - {x}^{2}} + \left( {2{x}^{2} - 1}\right) \arcsin x}\right\rbrack   + C\)
+
+82. \(\int x\arccos x\mathrm{\;d}x = \frac{1}{4}\left\lbrack  {-x\sqrt{1 - {x}^{2}} + \left( {2{x}^{2} - 1}\right) \arccos x}\right\rbrack   + C\)
+
+83. \(\int x\arctan x\mathrm{\;d}x = \frac{1}{2}\left\lbrack  {\left( {1 + {x}^{2}}\right) \arctan x - x}\right\rbrack   + C\)
+
+84. \(\int x\operatorname{arccot}x\mathrm{\;d}x = \frac{1}{2}\left\lbrack  {\left( {1 + {x}^{2}}\right) \operatorname{arccot}x + x}\right\rbrack   + C\)
+
+十一、含有 \({\mathrm{e}}^{x}\) 的形式
+
+85. \(\int {a}^{x}\mathrm{\;d}x = \frac{{a}^{x}}{\ln a} + C\)
+
+86. \(\int {\mathrm{e}}^{x}\mathrm{\;d}x = {\mathrm{e}}^{x} + C\)
+
+87. \(\int x{\mathrm{e}}^{x}\mathrm{\;d}x = \left( {x - 1}\right) {\mathrm{e}}^{x} + C\)
+
+88. \(\int {x}^{n}{\mathrm{e}}^{x}\mathrm{\;d}x = {x}^{n}{\mathrm{e}}^{x} - n\int {x}^{n - 1}{\mathrm{e}}^{x}\mathrm{\;d}x\)
+
+89. \(\int \frac{1}{1 + {\mathrm{e}}^{x}}\mathrm{\;d}x = x - \ln \left( {1 + {\mathrm{e}}^{x}}\right)  + C\)
+
+90. \(\int {\mathrm{e}}^{ax}\sin {bx}\mathrm{\;d}x = \frac{{\mathrm{e}}^{ax}}{{a}^{2} + {b}^{2}}\left( {a\sin {bx} - b\cos {bx}}\right)  + C\)
+
+91. \(\int {\mathrm{e}}^{ax}\cos {bx}\mathrm{\;d}x = \frac{{\mathrm{e}}^{ax}}{{a}^{2} + {b}^{2}}\left( {a\cos {bx} + b\sin {bx}}\right)  + C\)
+
+\subsection{十二、含有 \(\ln x\) 的形式}
+
+92. \(\int \ln x\mathrm{\;d}x = x\left( {\ln x - 1}\right)  + C\)
+
+93. \(\int \frac{\ln x}{\sqrt{x}}\mathrm{\;d}x = 4\sqrt{x}\left( {\ln \sqrt{x} - 1}\right)  + C\)
+
+94. \(\int x\ln x\mathrm{\;d}x = \frac{{x}^{2}}{4}\left( {2\ln x - 1}\right)  + C\)
+
+95. \(\int {x}^{n}\ln x\mathrm{\;d}x = \frac{{x}^{n + 1}}{{\left( n + 1\right) }^{2}}\left\lbrack  {\left( {n + 1}\right) \ln x - 1}\right\rbrack   + C,\;n \neq   - 1\)
+
+96. \(\int {\left( \ln x\right) }^{2}\mathrm{\;d}x = x\left\lbrack  {{\left( \ln x\right) }^{2} - 2\ln x + 2}\right\rbrack   + C\)
+
+97. \(\int {\left( \ln x\right) }^{n}\mathrm{\;d}x = x{\left( \ln x\right) }^{n} - n\int {\left( \ln x\right) }^{n - 1}\mathrm{\;d}x\)
+
+98. \(\int \sin \left( {\ln x}\right) \mathrm{d}x = \frac{x}{2}\left\lbrack  {\sin \left( {\ln x}\right)  - \cos \left( {\ln x}\right) }\right\rbrack   + C\)
+
+99. \(\int \cos \left( {\ln x}\right) \mathrm{d}x = \frac{x}{2}\left\lbrack  {\sin \left( {\ln x}\right)  + \cos \left( {\ln x}\right) }\right\rbrack   + C\)
+
+100. \(\int \ln \left( {x + \sqrt{1 + {x}^{2}}}\right) \mathrm{d}x = x\ln \left( {x + \sqrt{1 + {x}^{2}}}\right)  - \sqrt{1 + {x}^{2}} + C\)
+
+
+

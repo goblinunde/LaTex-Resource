@@ -1,0 +1,1178 @@
+\chapter{函数的连续性}
+
+\section{连续性概念}
+
+连续函数是数学分析中着重讨论的一类函数.
+
+从几何形象上粗略地说, 连续函数在坐标平面上的图像是一条连绵不断的曲线. 当然我们不能满足于这种直观的认识, 而应给出函数连续性的精确定义, 并由此出发研究连续函数的性质. 本节中先定义函数在一点的连续性和在区间上的连续性.
+
+\subsection{函数在一点的连续性}
+
+%定义  1
+\begin{definition}{函数在一点的连续}{def:函数在一点的连续}
+设函数 \(f\) 在某 \(U\left( {x}_{0}\right)\) 上有定义. 若
+\[
+\mathop{\lim }\limits_{{x \rightarrow  {x}_{0}}}f\left( x\right)  = f\left( {x}_{0}\right) , \tag{1}
+\]
+则称 \(f\) 在点 \({x}_{0}\) 连续.
+\end{definition}
+
+
+例如,函数 \(f\left( x\right)  = {2x} + 1\) 在点 \(x = 2\) 连续,因为
+\[
+\mathop{\lim }\limits_{{x \rightarrow  2}}f\left( x\right)  = \mathop{\lim }\limits_{{x \rightarrow  2}}\left( {{2x} + 1}\right)  = 5 = f\left( 2\right) .
+\]
+又如, 函数
+\[
+f\left( x\right)  = \left\{  \begin{matrix} x\sin \frac{1}{x}, & x \neq  0, \\  0, & x = 0 \end{matrix}\right.
+\]
+在点 \(x = 0\) 连续,因为
+\[
+\mathop{\lim }\limits_{{x \rightarrow  0}}f\left( x\right)  = \mathop{\lim }\limits_{{x \rightarrow  0}}x\sin \frac{1}{x} = 0 = f\left( 0\right) .
+\]
+为引入函数 \(y = f\left( x\right)\) 在点 \({x}_{0}\) 连续的另一种表述,记 \({\Delta x} = x - {x}_{0}\) ,称为自变量 \(x\) (在点 \(\left. {x}_{0}\right)\) 的增量或改变量. 设 \({y}_{0} = f\left( {x}_{0}\right)\) ,相应的函数 \(y\left( \right.\) 在点 \(\left. {x}_{0}\right)\) 的增量记为
+\[
+{\Delta y} = f\left( x\right)  - f\left( {x}_{0}\right)  = f\left( {{x}_{0} + {\Delta x}}\right)  - f\left( {x}_{0}\right)  = y - {y}_{0}.
+\]
+%注
+\begin{remark}
+自变量的增量 \({\Delta x}\) 或函数的增量 \({\Delta y}\) 可以是正数,也可以是 0 或负数.
+\end{remark}
+
+
+引进了增量的概念之后,易见 “函数 \(y = f\left( x\right)\) 在点 \({x}_{0}\) 连续” 等价于
+\[
+\mathop{\lim }\limits_{{{\Delta x} \rightarrow  0}}{\Delta y} = 0.
+\]
+由于函数在一点的连续性是通过极限来定义的,因而也可直接用 \(\varepsilon  - \delta\) 方式来叙述,即: 若对任给的 \(\varepsilon  > 0\) ,存在 \(\delta  > 0\) ,使得当 \(\left| {x - {x}_{0}}\right|  < \delta\) 时,有
+\[
+\left| {f\left( x\right)  - f\left( {x}_{0}\right) }\right|  < \varepsilon , \tag{2}
+\]
+则称函数 \(f\) 在点 \({x}_{0}\) 连续.
+
+由上述定义,我们可得出函数 \(f\) 在点 \({x}_{0}\) 有极限与 \(f\) 在 \({x}_{0}\) 连续这两个概念之间的联系. 首先, \(f\) 在点 \({x}_{0}\) 有极限是 \(f\) 在 \({x}_{0}\) 连续的必要条件; 进一步说,“ \(f\) 在点 \({x}_{0}\) 连续”不仅要求 \(f\) 在点 \({x}_{0}\) 有极限,而且要求其极限值应等于 \(f\) 在 \({x}_{0}\) 的函数值 \(f\left( {x}_{0}\right)\) . 其次,在讨论极限时,我们假定 \(f\) 在点 \({x}_{0}\) 的某空心邻域 \({U}^{ \circ  }\left( {x}_{0}\right)\) 上有定义 ( \(f\) 在点 \({x}_{0}\) 可以没有定义),而 “ \(f\) 在点 \({x}_{0}\) 连续” 则要求 \(f\) 在某 \(U\left( {x}_{0}\right)\) 上 (包括点 \({x}_{0}\) ) 有定义,此时由于 (2) 式当 \(x = {x}_{0}\) 时总是成立的,所以在极限定义中的 “ \(0 < \left| {x - {x}_{0}}\right|  < \delta\) ” 换成了在连续定义中的 “ \(\left| {x - {x}_{0}}\right|  < \delta\) ”. 最后, (1) 式又可表示为
+\[
+\mathop{\lim }\limits_{{x \rightarrow  {x}_{0}}}f\left( x\right)  = f\left( {\mathop{\lim }\limits_{{x \rightarrow  {x}_{0}}}x}\right) ,
+\]
+可见 “ \(f\) 在点 \({x}_{0}\) 连续” 意味着极限运算 \(\mathop{\lim }\limits_{{x \rightarrow  {x}_{0}}}\) 与对应法则 \(f\) 的可交换性.
+
+%例 1
+\begin{example}
+证明函数 \(f\left( x\right)  = {xD}\left( x\right)\) 在点 \(x = 0\) 连续,其中 \(D\left( x\right)\) 为狄利克雷函数.
+\end{example}
+
+
+%证
+\begin{proof}
+由 \(f\left( 0\right)  = 0\) 及 \(\left| {D\left( x\right) }\right|  \leq  1\) ,对任给的 \(\varepsilon  > 0\) ,为使
+\[
+\left| {f\left( x\right)  - f\left( 0\right) }\right|  = \left| {{xD}\left( x\right) }\right|  \leq  \left| x\right|  < \varepsilon ,
+\]
+只要取 \(\delta  = \varepsilon\) ,即可按 \(\varepsilon  - \delta\) 定义推得 \(f\) 在点 \(x = 0\) 连续.
+\end{proof}
+
+
+相应于 \(f\) 在点 \({x}_{0}\) 的左、右极限的概念,我们给出左、右连续的定义如下.
+
+%定义  2
+\begin{definition}{左右连续}{def:左右连续}
+设函数 \(f\) 在某 \({U}_{ + }\left( {x}_{0}\right) \left( {{U}_{ - }\left( {x}_{0}\right) }\right)\) 有定义. 若
+\[
+\mathop{\lim }\limits_{{x \rightarrow  {x}_{0}^{ + }}}f\left( x\right)  = f\left( {x}_{0}\right) \left( {\mathop{\lim }\limits_{{x \rightarrow  {x}_{0}^{ - }}}f\left( x\right)  = f\left( {x}_{0}\right) }\right) ,
+\]
+则称 \(f\) 在点 \({x}_{0}\) 右 (左) 连续.
+\end{definition}
+
+
+根据上述定义 1 与定义 2 , 不难推出如下定理.
+
+%定理 4.1
+\begin{theorem}{}{the:}
+函数 \(f\) 在点 \({x}_{0}\) 连续的充要条件是: \(f\) 在点 \({x}_{0}\) 既是右连续,又是左连续.
+\end{theorem}
+
+
+%例 2
+\begin{example}
+讨论函数
+\[
+f\left( x\right)  = \left\{  \begin{array}{ll} x + 2, & x \geq  0, \\  x - 2, & x < 0 \end{array}\right.
+\]
+在点 \(x = 0\) 的连续性.
+\end{example}
+
+
+%解
+\begin{solution}
+因为
+\[
+\mathop{\lim }\limits_{{x \rightarrow  {0}^{ + }}}f\left( x\right)  = \mathop{\lim }\limits_{{x \rightarrow  {0}^{ + }}}\left( {x + 2}\right)  = 2,
+\]
+\[
+\mathop{\lim }\limits_{{x \rightarrow  {0}^{ - }}}f\left( x\right)  = \mathop{\lim }\limits_{{x \rightarrow  {0}^{ - }}}\left( {x - 2}\right)  =  - 2,
+\]
+而 \(f\left( 0\right)  = 2\) ,所以 \(f\) 在点 \(x = 0\) 右连续,但不左连续,从而它在 \(x = 0\) 不连续 (见图 4-1).
+\begin{figure}
+    \centering
+    \includegraphics[width=.3\textwidth]{images/P016.jpg}
+    \caption{图 $4-1$}
+    \label{fig:P016}
+\end{figure}
+\end{solution}
+
+
+\subsection{间断点及其分类}
+
+%定义  3
+\begin{definition}{间断点}{def:间断点}
+设函数 \(f\) 在某 \({U}^{ \circ  }\left( {x}_{0}\right)\) 上有定义. 若 \(f\) 在点 \({x}_{0}\) 无定义,或 \(f\) 在点 \({x}_{0}\) 有定义而不连续,则称点 \({x}_{0}\) 为函数 \(f\) 的间断点或不连续点.
+\end{definition}
+
+
+按此定义以及上一段中关于极限与连续性之间联系的讨论,可知若 \({x}_{0}\) 为函数 \(f\) 的间断点, 则必出现下列情形之一:
+
+(i) \(f\) 在点 \({x}_{0}\) 无定义或极限 \(\mathop{\lim }\limits_{{x \rightarrow  {x}_{0}}}f\left( x\right)\) 不存在;
+
+(ii) \(f\) 在点 \({x}_{0}\) 有定义且极限 \(\mathop{\lim }\limits_{{x \rightarrow  {x}_{0}}}f\left( x\right)\) 存在\footnote{这里所说的极限存在是指存在有限极限,即不包括非正常极限.},但 \(\mathop{\lim }\limits_{{x \rightarrow  {x}_{0}}}f\left( x\right)  \neq  f\left( {x}_{0}\right)\) .
+
+据此, 我们对函数的间断点作如下分类.
+
+1. 可去间断点 若
+\[
+\mathop{\lim }\limits_{{x \rightarrow  {x}_{0}}}f\left( x\right)  = A,
+\]
+而 \(f\) 在点 \({x}_{0}\) 无定义,或有定义但 \(f\left( {x}_{0}\right)  \neq  A\) ,则称点 \({x}_{0}\) 为 \(f\) 的可去间断点.
+
+例如,对于函数 \(f\left( x\right)  = \left| {\operatorname{sgn}x}\right|\) ,因 \(f\left( 0\right)  = 0\) ,而
+\[
+\mathop{\lim }\limits_{{x \rightarrow  0}}f\left( x\right)  = 1 \neq  f\left( 0\right) ,
+\]
+故点 \(x = 0\) 为 \(f\left( x\right)  = \left| {\operatorname{sgn}x}\right|\) 的可去间断点. 又如函数 \(g\left( x\right)  = \frac{\sin x}{x}\) ,由于 \(\mathop{\lim }\limits_{{x \rightarrow  0}}g\left( x\right)  = 1\) ,而 \(g\) 在 \(x = 0\) 无定义,所以点 \(x = 0\) 是函数 \(g\) 的可去间断点.
+
+设点 \({x}_{0}\) 为函数 \(f\) 的可去间断点,且 \(\mathop{\lim }\limits_{{x \rightarrow  {x}_{0}}}f\left( x\right)  = A\) . 我们按如下方法定义一个函数 \(\widehat{f}\) : 当 \(x \neq  {x}_{0}\) 时, \(\widehat{f}\left( x\right)  = f\left( x\right)\) ; 当 \(x = {x}_{0}\) 时, \(\widehat{f}\left( {x}_{0}\right)  = A\) . 易见,对于函数 \(\widehat{f}\) ,点 \({x}_{0}\) 是它的连续点. 例如,对上述的 \(g\left( x\right)  = \frac{\sin x}{x}\) ,我们定义
+\[
+\widehat{g}\left( x\right)  = \left\{  \begin{matrix} \frac{\sin x}{x}, & x \neq  0, \\  1, & x = 0, \end{matrix}\right.
+\]
+则 \(\widehat{g}\) 在点 \(x = 0\) 连续.
+
+2. 跳跃间断点 若函数 \(f\) 在点 \({x}_{0}\) 的左、右极限都存在,但
+\[
+\mathop{\lim }\limits_{{x \rightarrow  {x}_{0}^{ + }}}f\left( x\right)  \neq  \mathop{\lim }\limits_{{x \rightarrow  {x}_{0}^{ - }}}f\left( x\right) ,
+\]
+则称点 \({x}_{0}\) 为函数 \(f\) 的跳跃间断点.
+
+例如,对函数 \(f\left( x\right)  = \left\lbrack  x\right\rbrack\) (图 1-5),当 \(x = n\) ( \(n\) 为整数) 时,有
+\[
+\mathop{\lim }\limits_{{x \rightarrow  {n}^{ - }}}\left\lbrack  x\right\rbrack   = n - 1,\mathop{\lim }\limits_{{x \rightarrow  {n}^{ + }}}\left\lbrack  x\right\rbrack   = n,
+\]
+所以在整数点上函数 \(f\) 的左、右极限不相等,从而整数点都是函数 \(f\left( x\right)  = \left\lbrack  x\right\rbrack\) 的跳跃间断点. 又如符号函数 \(\operatorname{sgn}x\) 在 \(x = 0\) 处的左、右极限分别为 -1 和 1,故 \(x = 0\) 是 \(\operatorname{sgn}x\) 的跳跃间断点 (图 1-1).
+
+可去间断点和跳跃间断点统称为第一类间断点. 第一类间断点的特点是函数在该点处的左、右极限都存在.
+
+3. 函数的所有其他形式的间断点,即使得函数至少有一侧极限不存在的那些点, 称为第二类间断点.
+
+例如,函数 \(y = \frac{1}{x}\) 当 \(x \rightarrow  0\) 时不存在有限的极限,故 \(x = 0\) 是 \(y = \frac{1}{x}\) 的第二类间断点. 函数 \(\sin \frac{1}{x}\) 在 \(x = 0\) 处左、右极限都不存在,故 \(x = 0\) 是 \(\sin \frac{1}{x}\) 的第二类间断点. 又如,对于狄利克雷函数 \(D\left( x\right)\) ,其定义域 \(\mathbf{R}\) 上每一点 \(x\) 都是第二类间断点.
+
+
+
+\subsection{区间上的连续函数}
+
+若函数 \(f\) 在区间 \(I\) 上的每一点都连续,则称 \(f\) 为 \(I\) 上的连续函数. 对于闭区间或半开半闭区间的端点, 函数在这些点上连续是指左连续或右连续.
+
+例如,函数 \(y = c,y = x,y = \sin x\) 和 \(y = \cos x\) 都是 \(\mathbf{R}\) 上的连续函数. 又如函数 \(y =\)  \(\sqrt{1 - {x}^{2}}\) 在(-1,1)上的每一点都连续,在 \(x = 1\) 为左连续,在 \(x =  - 1\) 为右连续,因而它在 \(\left\lbrack  {-1,1}\right\rbrack\) 上连续.
+
+若函数 \(f\) 在区间 \(\left\lbrack  {a,b}\right\rbrack\) 上仅有有限个第一类间断点,则称 \(f\) 在 \(\left\lbrack  {a,b}\right\rbrack\) 上分段连续. 例如,函数 \(y = \left\lbrack  x\right\rbrack\) 和 \(y = x - \left\lbrack  x\right\rbrack\) 在区间 \(\left\lbrack  {-3,3}\right\rbrack\) 上是分段连续的.
+
+在 §3 中我们将证明任何初等函数在其定义区间上为连续函数. 同时,也存在着在其定义区间上每一点都不连续的函数, 如前面已提到的狄利克雷函数.
+
+%例 3
+\begin{example}
+证明: 黎曼函数
+\[
+R\left( x\right)  = \left\{  \begin{array}{ll} \frac{1}{q}, & \text{ 当 }x = \frac{p}{q}\left( {p,q\text{ 为正整数, }\frac{p}{q}\text{ 为既约真分数 }}\right) , \\  0, & \text{ 当 }x = 0,1\text{ 及 }\left( {0,1}\right) \text{ 上的无理数 } \end{array}\right.
+\]
+在(0,1)上任何无理点都连续,任何有理点都不连续.
+\end{example}
+
+
+%证
+\begin{proof}
+设 \(\xi  \in  \left( {0,1}\right)\) 为无理数. 任给 \(\varepsilon  > 0\) (不妨设 \(\varepsilon  < \frac{1}{2}\) ),满足 \(\frac{1}{q} \geq  \varepsilon\) 的正整数 \(q\) 显然只有有限个 (但至少有一个,如 \(q = 2\) ),从而使 \(R\left( x\right)  \geq  \varepsilon\) 的有理数 \(x \in  \left( {0,1}\right)\) 只有有限个 (至少有一个,如 \(\frac{1}{2}\) ),设为 \({x}_{1},\cdots ,{x}_{n}\) . 取
+\[
+\delta  = \min \left\{  {\left| {{x}_{1} - \xi }\right| ,\cdots ,\left| {{x}_{n} - \xi }\right| ,\xi ,1 - \xi }\right\}  ,
+\]
+则对任何 \(x \in  U\left( {\xi ;\delta }\right) \left( { \subset  \left( {0,1}\right) }\right)\) ,当 \(x\) 为有理数时,有 \(R\left( x\right)  < \varepsilon\) ,当 \(x\) 为无理数时,有 \(R\left( x\right)  = 0\) . 于是,对任何 \(x \in  U\left( {\xi ;\delta }\right)\) ,总有
+\[
+\left| {R\left( x\right)  - R\left( \xi \right) }\right|  = R\left( x\right)  < \varepsilon .
+\]
+这就证明了 \(R\left( x\right)\) 在无理点 \(\xi\) 连续.
+
+现设 \(\frac{p}{q}\) 为(0,1)上任一有理数. 取 \({\varepsilon }_{0} = \frac{1}{2q}\) ,对任何正数 \(\delta\) (无论多么小),在 \(U\left( {\frac{p}{q};\delta }\right)\) 内总可取到无理数 \(x\left( { \in  \left( {0,1}\right) }\right)\) ,使得
+\[
+\left| {R\left( x\right)  - R\left( \frac{p}{q}\right) }\right|  = \frac{1}{q} > {\varepsilon }_{0}.
+\]
+所以 \(R\left( x\right)\) 在任何有理点都不连续.
+\end{proof}
+
+
+\subsection{习题 4.1}
+
+1. 按定义证明下列函数在其定义域内连续:
+
+(1) \(f\left( x\right)  = \frac{1}{x}\) ;
+
+(2) \(f\left( x\right)  = \left| x\right|\) .
+
+2. 指出下列函数的间断点并说明其类型:
+
+(1) \(f\left( x\right)  = x + \frac{1}{x}\) ;
+
+(2) \(f\left( x\right)  = \frac{\sin x}{\left| x\right| }\) ;
+
+(3) \(f\left( x\right)  = \left\lbrack  \left| {\cos x}\right| \right\rbrack\) ;
+
+(4) \(f\left( x\right)  = \operatorname{sgn}\left| x\right|\) ;
+
+(5) \(f\left( x\right)  = \operatorname{sgn}\left( {\cos x}\right)\) ;
+
+(6) \(f\left( x\right)  = \left\{  \begin{matrix} x, & x\text{ 为有理数, } \\   - x, & x\text{ 为无理数; } \end{matrix}\right.\)
+
+(7) \(f\left( x\right)  = \left\{  \begin{matrix} \frac{1}{x + 7}, &  - \infty  < x <  - 7, \\  x, &  - 7 \leq  x \leq  1, \\  \left( {x - 1}\right) \sin \frac{1}{x - 1}, & 1 < x <  + \infty . \end{matrix}\right.\)
+
+3. 延拓下列函数,使其在 \(\mathbf{R}\) 上连续:
+
+(1) \(f\left( x\right)  = \frac{{x}^{3} - 8}{x - 2}\) ;
+
+(2) \(f\left( x\right)  = \frac{1 - \cos x}{{x}^{2}}\) ;
+
+(3) \(f\left( x\right)  = x\cos \frac{1}{x}\) .
+
+4. 证明: 若 \(f\) 在点 \({x}_{0}\) 连续,则 \(\left| f\right|\) 与 \({f}^{2}\) 也在点 \({x}_{0}\) 连续. 又问: 若 \(\left| f\right|\) 或 \({f}^{2}\) 在 \(I\) 上连续,那么 \(f\) 在 \(I\) 上是否必连续?
+
+5. 设当 \(x \neq  0\) 时, \(f\left( x\right)  \equiv  g\left( x\right)\) ,而 \(f\left( 0\right)  \neq  g\left( 0\right)\) . 证明: \(f\) 与 \(g\) 两者中至多有一个在 \(x = 0\) 连续.
+
+6. 设 \(f\) 为区间 \(I\) 上的单调函数. 证明: 若 \({x}_{0} \in  I\) 为 \(f\) 的间断点,则 \({x}_{0}\) 必是 \(f\) 的第一类间断点.
+
+7. 设函数 \(f\) 只有可去间断点,定义
+\[
+g\left( x\right)  = \mathop{\lim }\limits_{{y \rightarrow  x}}f\left( y\right) .
+\]
+证明 \(g\) 为连续函数.
+
+8. 设 \(f\) 为 \(\mathbf{R}\) 上的单调函数,定义
+\[
+g\left( x\right)  = f\left( {x + 0}\right) .
+\]
+证明 \(g\) 在 \(\mathbf{R}\) 上每一点都右连续.
+
+9. 举出定义在 \(\left\lbrack  {0,1}\right\rbrack\) 上分别符合下述要求的函数:
+
+(1)只在 \(\frac{1}{2},\frac{1}{3}\) 和 \(\frac{1}{4}\) 三点不连续的函数；
+
+(2)只在 \(\frac{1}{2},\frac{1}{3}\) 和 \(\frac{1}{4}\) 三点连续的函数；
+
+(3)只在 \(\frac{1}{n}\left( {n = 1,2,3,\cdots }\right)\) 上间断的函数；
+
+(4)只在 \(x = 0\) 右连续,而在其他点都不连续的函数.
+
+\section{连续函数的性质}
+
+\subsection{连续函数的局部性质}
+
+若函数 \(f\) 在点 \({x}_{0}\) 连续,则 \(f\) 在点 \({x}_{0}\) 有极限,且极限值等于函数值 \(f\left( {x}_{0}\right)\) . 从而,根据函数极限的性质能推断出函数 \(f\) 在 \(U\left( {x}_{0}\right)\) 的性态.
+
+%定理 4.2
+\begin{theorem}{局部有界性}{the:局部有界性}
+若函数 \(f\) 在点 \({x}_{0}\) 连续,则 \(f\) 在某 \(U\left( {x}_{0}\right)\) 上有界.
+\end{theorem}
+
+
+%定理 4.3
+\begin{theorem}{局部保号性}{the:局部保号性}
+若函数 \(f\) 在点 \({x}_{0}\) 连续,且 \(f\left( {x}_{0}\right)  > 0\) (或 \(< 0\) ),则对任何正数 \(r < f\left( {x}_{0}\right)\) (或 \(r <  - f\left( {x}_{0}\right)\) ),存在某 \(U\left( {x}_{0}\right)\) ,使得对一切 \(x \in  U\left( {x}_{0}\right)\) ,有
+\[
+f\left( x\right)  > r\left( {\text{ 或 }f\left( x\right)  <  - r}\right) .
+\]
+\end{theorem}
+
+%注
+\begin{remark}
+在具体应用局部保号性时,常取 \(r = \frac{1}{2}f\left( {x}_{0}\right)\) ,则 (当 \(f\left( {x}_{0}\right)  > 0\) 时) 存在某 \(U\left( {x}_{0}\right)\) ,使在其上有 \(f\left( x\right)  > \frac{1}{2}f\left( {x}_{0}\right)\) .
+\end{remark}
+
+
+%定理 4.4
+\begin{theorem}{四则运算}{the:四则运算}
+若函数 \(f\) 和 \(g\) 在点 \({x}_{0}\) 连续,则 \(f \pm  g,f \cdot  g,f/g\) (这里 \(g\left( {x}_{0}\right)  \neq\) 0 )也都在点 \({x}_{0}\) 连续.
+\end{theorem}
+
+
+以上三个定理的证明, 都可从函数极限的有关定理直接推得.
+
+对常量函数 \(y = c\) 和函数 \(y = x\) 反复应用定理 4.4,能推出多项式函数
+\[
+P\left( x\right)  = {a}_{0}{x}^{n} + {a}_{1}{x}^{n - 1} + \cdots  + {a}_{n - 1}x + {a}_{n}
+\]
+和有理函数 \(R\left( x\right)  = \frac{P\left( x\right) }{Q\left( x\right) }\) ( \(P,Q\) 为多项式) 在其定义域的每一点都是连续的. 同样,由 \(\sin x\) 和 \(\cos x\) 在 \(\mathbf{R}\) 上的连续性,可推得 \(\tan x\) 与 \(\cot x\) 在其定义域的每一点都连续.
+
+关于复合函数的连续性, 有如下定理.
+
+%定理 4.5
+\begin{theorem}{}{the:}
+若函数 \(f\) 在点 \({x}_{0}\) 连续, \(g\) 在点 \({u}_{0}\) 连续, \({u}_{0} = f\left( {x}_{0}\right)\) ,则复合函数 \(g \circ  f\) 在点 \({x}_{0}\) 连续.
+\end{theorem}
+
+
+%证
+\begin{proof}
+由于 \(g\) 在 \({u}_{0}\) 连续,对任给的 \(\varepsilon  > 0\) ,存在 \({\delta }_{1} > 0\) ,使得当 \(\left| {u - {u}_{0}}\right|  < {\delta }_{1}\) 时,有
+\[
+\left| {g\left( u\right)  - g\left( {u}_{0}\right) }\right|  < \varepsilon . \tag{1}
+\]
+又由 \({u}_{0} = f\left( {x}_{0}\right)\) 及 \(u = f\left( x\right)\) 在点 \({x}_{0}\) 连续,故对上述 \({\delta }_{1} > 0\) ,存在 \(\delta  > 0\) ,使得当 \(\left| {x - {x}_{0}}\right|  < \delta\) 时, 有 \(\left| {u - {u}_{0}}\right|  = \left| {f\left( x\right)  - f\left( {x}_{0}\right) }\right|  < {\delta }_{1}\) . 联系 (1) 得: 对任给的 \(\varepsilon  > 0\) ,存在 \(\delta  > 0\) ,当 \(\left| {x - {x}_{0}}\right|  < \delta\) 时, 有
+\[
+\left| {g\left( {f\left( x\right) }\right)  - g\left( {f\left( {x}_{0}\right) }\right) }\right|  < \varepsilon .
+\]
+这就证明了 \(g \circ  f\) 在点 \({x}_{0}\) 连续.
+\end{proof}
+
+
+%注
+\begin{remark}
+根据连续性的定义, 上述定理的结论可表为
+\[
+\mathop{\lim }\limits_{{x \rightarrow  {x}_{0}}}g\left( {f\left( x\right) }\right)  = g\left( {\mathop{\lim }\limits_{{x \rightarrow  {x}_{0}}}f\left( x\right) }\right)  = g\left( {f\left( {x}_{0}\right) }\right) . \tag{2}
+\]
+\end{remark}
+
+%例 1
+\begin{example}
+求 \(\mathop{\lim }\limits_{{x \rightarrow  1}}\sin \left( {1 - {x}^{2}}\right)\) .
+\end{example}
+
+
+%解
+\begin{solution}
+\(\sin \left( {1 - {x}^{2}}\right)\) 可看作函数 \(g\left( u\right)  = \sin u\) 与 \(f\left( x\right)  = 1 - {x}^{2}\) 的复合. 由 (2) 式得
+\[
+\mathop{\lim }\limits_{{x \rightarrow  1}}\sin \left( {1 - {x}^{2}}\right)  = \sin \left( {\mathop{\lim }\limits_{{x \rightarrow  1}}\left( {1 - {x}^{2}}\right) }\right)  = \sin 0 = 0.
+\]
+\end{solution}
+
+%注
+\begin{remark}
+若复合函数 \(g \circ  f\) 的内函数 \(f\) 当 \(x \rightarrow  {x}_{0}\) 时极限为 \(a\) ,而 \(a \neq  f\left( {x}_{0}\right)\) 或 \(f\) 在 \({x}_{0}\) 无定义 (即 \({x}_{0}\) 为 \(f\) 的可去间断点),又外函数 \(g\) 在 \(u = a\) 连续,则我们仍可用上述定理来求复合函数的极限, 即有
+\[
+\mathop{\lim }\limits_{{x \rightarrow  {x}_{0}}}g\left( {f\left( x\right) }\right)  = g\left( {\mathop{\lim }\limits_{{x \rightarrow  {x}_{0}}}f\left( x\right) }\right) . \tag{3}
+\]
+读者还可证明: (3) 式不仅对于 \(x \rightarrow  {x}_{0}\) 这种类型的极限成立,而且对于 \(x \rightarrow   + \infty ,x \rightarrow   - \infty\) 或 \(x \rightarrow  {x}_{0}^{ \pm  }\) 等类型的极限也是成立的.
+\end{remark}
+
+
+%例 2
+\begin{example}
+求极限:
+
+(1) \(\mathop{\lim }\limits_{{x \rightarrow  0}}\sqrt{2 - \frac{\sin x}{x}}\) ;
+
+(2) \(\mathop{\lim }\limits_{{x \rightarrow  \infty }}\sqrt{2 - \frac{\sin x}{x}}\) .
+\end{example}
+
+
+%解
+\begin{solution}
+(1) \(\mathop{\lim }\limits_{{x \rightarrow  0}}\sqrt{2 - \frac{\sin x}{x}} = \sqrt{2 - \mathop{\lim }\limits_{{x \rightarrow  0}}\frac{\sin x}{x}} = \sqrt{2 - 1} = 1\) ;
+
+(2) \(\mathop{\lim }\limits_{{x \rightarrow  \infty }}\sqrt{2 - \frac{\sin x}{x}} = \sqrt{2 - \mathop{\lim }\limits_{{x \rightarrow  \infty }}\frac{\sin x}{x}} = \sqrt{2 - 0} = \sqrt{2}\) .
+\end{solution}
+
+
+\subsection{闭区间上连续函数的基本性质}
+
+设 \(f\) 为闭区间 \(\left\lbrack  {a,b}\right\rbrack\) 上的连续函数,本段中我们讨论 \(f\) 在 \(\left\lbrack  {a,b}\right\rbrack\) 上的整体性质.
+
+%定义  1
+\begin{definition}{最大最小值}{def:最大最小值}
+设 \(f\) 为定义在数集 \(D\) 上的函数. 若存在 \({x}_{0} \in  D\) ,使得对一切 \(x \in  D\) ,有
+\[
+f\left( {x}_{0}\right)  \geq  f\left( x\right) \left( {f\left( {x}_{0}\right)  \leq  f\left( x\right) }\right) ,
+\]
+则称 \(f\) 在 \(D\) 上有最大 (最小) 值,并称 \(f\left( {x}_{0}\right)\) 为 \(f\) 在 \(D\) 上的最大 (最小) 值.
+\end{definition}
+
+
+例如, \(\sin x\) 在 \(\left\lbrack  {0,\pi }\right\rbrack\) 上有最大值 1,最小值 0 . 但一般而言,函数 \(f\) 在其定义域 \(D\) 上不一定有最大值或最小值 (即使 \(f\) 在 \(D\) 上有界). 如 \(f\left( x\right)  = x\) 在(0,1)上既无最大值也无最小值. 又如
+\[
+g\left( x\right)  = \left\{  \begin{array}{ll} \frac{1}{x}, & x \in  \left( {0,1}\right) , \\  2, & x = 0\text{ 与 }1, \end{array}\right.  \tag{4}
+\]
+它在闭区间 \(\left\lbrack  {0,1}\right\rbrack\) 上也无最大、最小值. 下述定理给出了函数能取得最大、最小值的充分条件.
+
+%定理 4.6
+\begin{theorem}{最大最小值定理}{the:最大最小值定理}
+若函数 \(f\) 在闭区间 \(\left\lbrack  {a,b}\right\rbrack\) 上连续,则 \(f\) 在 \(\left\lbrack  {a,b}\right\rbrack\) 上有最大值与最小值.
+\end{theorem}
+
+
+为了更好地证明这个定理, 我们先证明一个引理.
+
+\begin{theorem}{有界性定理}{the:有界性定理}
+若函数 \(f\left( x\right)\) 在闭区间 \(\left\lbrack  {a,b}\right\rbrack\) 上连续,那么 \(f\left( x\right)\) 在闭区间 \(\left\lbrack  {a,b}\right\rbrack\) 上有界.
+\end{theorem}
+
+%证
+\begin{proof}
+若不然,不妨假设 \(f\left( x\right)\) 在 \(\left\lbrack  {a,b}\right\rbrack\) 上无上界. 那么存在 \({x}_{n} \in  \left\lbrack  {a,b}\right\rbrack\) ,使得
+\[
+f\left( {x}_{n}\right)  > n,\;n = 1,2,\cdots .
+\]
+由此得 \(\mathop{\lim }\limits_{{n \rightarrow  \infty }}f\left( {x}_{n}\right)  =  + \infty\) . 另一方面,因为 \(\left\{  {x}_{n}\right\}  \left( { \subset  \left\lbrack  {a,b}\right\rbrack  }\right)\) 是有界数列,所以由致密性定理, \(\left\{  {x}_{n}\right\}\) 有收敛的子列 \(\left\{  {x}_{{n}_{k}}\right\}\) ,设 \(\mathop{\lim }\limits_{{k \rightarrow  \infty }}{x}_{{n}_{k}} = {x}_{0}\) .
+
+由于
+\[
+a \leq  {x}_{{n}_{k}} \leq  b,
+\]
+由极限的不等式性质推得
+\[
+a \leq  {x}_{0} \leq  b,
+\]
+故 \(f\left( x\right)\) 在点 \({x}_{0}\) 连续. 由归结原则导出
+\[
++ \infty  = \mathop{\lim }\limits_{{n \rightarrow  \infty }}f\left( {x}_{n}\right)  = \mathop{\lim }\limits_{{k \rightarrow  \infty }}f\left( {x}_{{n}_{k}}\right)  = \mathop{\lim }\limits_{{x \rightarrow  {x}_{0}}}f\left( x\right)  = f\left( {x}_{0}\right) ,
+\]
+矛盾.
+\end{proof}
+
+\begin{proof}
+定理 4.6 的证明
+
+由引理和确界原理, 存在上确界
+\[
+\mathop{\sup }\limits_{{x \in  \left\lbrack  {a,b}\right\rbrack  }}f\left( x\right)  = M.
+\]
+下面来证明: 存在 \(\xi  \in  \left\lbrack  {a,b}\right\rbrack\) ,使 \(f\left( \xi \right)  = M\) . 倘若不然,对一切 \(x \in  \left\lbrack  {a,b}\right\rbrack\) ,都有 \(f\left( x\right)  < M\) . 令
+\[
+g\left( x\right)  = \frac{1}{M - f\left( x\right) },\;x \in  \left\lbrack  {a,b}\right\rbrack  .
+\]
+易见函数 \(g\) 在 \(\left\lbrack  {a,b}\right\rbrack\) 上连续,且取正值,故 \(g\) 在 \(\left\lbrack  {a,b}\right\rbrack\) 上有上界,记为 \(G\) . 则有
+\[
+0 < g\left( x\right)  = \frac{1}{M - f\left( x\right) } \leq  G,\;x \in  \left\lbrack  {a,b}\right\rbrack  .
+\]
+从而推得
+\[
+f\left( x\right)  \leq  M - \frac{1}{G},\;x \in  \left\lbrack  {a,b}\right\rbrack  .
+\]
+但这与 \(M\) 为 \(f\left( \left\lbrack  {a,b}\right\rbrack  \right)\) 的上确界相矛盾. 所以必有 \(\xi  \in  \left\lbrack  {a,b}\right\rbrack\) ,使 \(f\left( \xi \right)  = M\) ,即 \(f\) 在 \(\left\lbrack  {a,b}\right\rbrack\) 上有最大值.
+
+同理可证 \(f\) 在 \(\left\lbrack  {a,b}\right\rbrack\) 上有最小值.
+\end{proof}
+
+
+%注
+\begin{remark}
+函数 \(f\left( x\right)  = x,x \in  \left( {0,1}\right)\) 既没有最大值也没有最小值.
+\end{remark}
+
+
+%定理 4.7
+\begin{theorem}{介值性定理}{the:介值性定理}
+设函数 \(f\) 在闭区间 \(\left\lbrack  {a,b}\right\rbrack\) 上连续,且 \(f\left( a\right)  \neq  f\left( b\right)\) . 若 \(\mu\) 为介于 \(f\left( a\right)\) 与 \(f\left( b\right)\) 之间的任何实数 \(\left( {f\left( a\right)  < \mu  < f\left( b\right) \text{ 或 }f\left( a\right)  > \mu  > f\left( b\right) }\right)\) ,则至少存在一点 \({x}_{0} \in  \left( {a,b}\right)\) ,使得
+\[
+f\left( {x}_{0}\right)  = \mu .
+\]
+\end{theorem}
+
+这个定理表明,若 \(f\) 在 \(\left\lbrack  {a,b}\right\rbrack\) 上连续,又不妨设 \(f\left( a\right)  < f\left( b\right)\) ,则 \(f\) 在 \(\left\lbrack  {a,b}\right\rbrack\) 上必能取得区间 \(\left\lbrack  {f\left( a\right) ,f\left( b\right) }\right\rbrack\) 上的一切值,即有
+\[
+\left\lbrack  {f\left( a\right) ,f\left( b\right) }\right\rbrack   \subset  f\left( \left\lbrack  {a,b}\right\rbrack  \right) ,
+\]
+
+其几何意义如图 \(4-2\) 所示. 下面的推论是定理 4.7 的等价命题.
+
+\begin{corollary}{根的存在定理}{pro:根的存在定理}
+若函数 \(f\) 在闭区间 \(\left\lbrack  {a,b}\right\rbrack\) 上连续,且 \(f\left( a\right)\) 与 \(f\left( b\right)\) 异号 (即 \(f\left( a\right) f\left( b\right)  < 0)\) ,则至少存在一点 \({x}_{0} \in  \left( {a,b}\right)\) ,使得
+\[
+f\left( {x}_{0}\right)  = 0,
+\]
+即方程 \(f\left( x\right)  = 0\) 在(a, b)上至少有一个根.
+\end{corollary}
+
+
+这个推论的几何解释如图 \(4-3\) 所示: 若点 \(A\left( {a,f\left( a\right) }\right)\) 与 \(B\left( {b,f\left( b\right) }\right)\) 分别在 \(x\) 轴的两侧,则连接 \(A,B\) 的连续曲线 \(y = f\left( x\right)\) 与 \(x\) 轴至少有一个交点.
+
+\begin{figure}
+	\centering
+	\includegraphics[width=.3\textwidth]{images/P017.jpg}
+	\caption{图 $4-2$}
+	\label{fig:P017}
+\end{figure}
+
+\begin{figure}
+	\centering
+	\includegraphics[width=.3\textwidth]{images/P018.jpg}
+	\caption{图 $4-3$}
+	\label{fig:P018}
+\end{figure}
+
+应用介值性定理,我们还容易推得连续函数的下述性质: 若 \(f\) 在区间 \(I\) 上连续且不是常量函数,则值域 \(f\left( I\right)\) 也是一个区间; 特别地,若 \(I\) 为闭区间 \(\left\lbrack  {a,b}\right\rbrack  ,f\) 在 \(\left\lbrack  {a,b}\right\rbrack\) 上的最大值为 \(M\) ,最小值为 \(m\) ,则 \(f\left( \left\lbrack  {a,b}\right\rbrack  \right)  = \left\lbrack  {m,M}\right\rbrack\) ; 又若 \(f\) 为 \(\left\lbrack  {a,b}\right\rbrack\) 上的递增 (递减) 连续函数且不为常数, 则
+\[
+f\left( \left\lbrack  {a,b}\right\rbrack  \right)  = \left\lbrack  {f\left( a\right) ,f\left( b\right) }\right\rbrack  \left( \left\lbrack  {f\left( b\right) ,f\left( a\right) }\right\rbrack  \right) .
+\]
+
+\begin{proof}
+定理 4.7 的证明
+
+不妨设 \(f\left( a\right)  < \mu  < f\left( b\right)\) . 令 \(g\left( x\right)  = f\left( x\right)  - \mu\) ,则 \(g\) 也是 \(\left\lbrack  {a,b}\right\rbrack\) 上的连续函数,且 \(g\left( a\right)  < 0,g\left( b\right)  > 0\) . 于是定理的结论转化为: 存在 \({x}_{0} \in  \left( {a,b}\right)\) ,使得 \(g\left( {x}_{0}\right)  = 0\) (即上述推论). 设集合(见图4-4)
+\[
+E = \{ x \mid  g\left( x\right)  < 0,x \in  \left\lbrack  {a,b}\right\rbrack  \} .
+\]
+\begin{figure}
+    \centering
+    \includegraphics[width=.3\textwidth]{images/P019.jpg}
+    \caption{图 $4-4$}
+    \label{fig:P019}
+\end{figure}
+
+显然 \(E\) 为非空有界数集 \(\left( {E \subset  \left\lbrack  {a,b}\right\rbrack  \text{ ,且 }a \in  E}\right)\) ,故由确界原理,存在上确界 \({x}_{0} = \sup E\) . 另一方面,因 \(g\left( a\right)  < 0\) , \(g\left( b\right)  > 0\) ,由连续函数的局部保号性,存在 \(\delta  > 0\) , 使得
+\[
+g\left( x\right)  < 0,x \in  \left\lbrack  {a,a + \delta );g\left( x\right)  > 0,x \in  (b - \delta ,b}\right\rbrack  .
+\]
+由此易见 \({x}_{0} \neq  a,{x}_{0} \neq  b\) ,即 \({x}_{0} \in  \left( {a,b}\right)\) .
+
+下证 \(g\left( {x}_{0}\right)  = 0\) . 倘若 \(g\left( {x}_{0}\right)  \neq  0\) ,不妨设 \(g\left( {x}_{0}\right)  < 0\) . 再由局部保号性,存在 \(U\left( {{x}_{0};\eta }\right) \left( { \subset  \left( {a,b}\right) }\right)\) ,使在其上 \(g\left( x\right)  < 0\) ,特别有 \(g\left( {{x}_{0} + \frac{\eta }{2}}\right)  < 0 \Rightarrow  {x}_{0} + \frac{\eta }{2} \in  E\) . 但这与 \({x}_{0} =\)  \(\sup E\) 相矛盾,故必有 \(g\left( {x}_{0}\right)  = 0\) .
+\end{proof}
+
+
+%例 3
+\begin{example}
+设 \(a > 0,n\) 是正整数. 证明: 方程 \({x}^{n} = a\) 有唯一的正数解.
+\end{example}
+
+
+在第一章 § 3 例 2 中给出了该题 \(n = 2\) 情形的证明,现在用介值性定理来证明一般的情形.
+
+%证
+\begin{proof}
+先证存在性. 由于当 \(x \rightarrow   + \infty\) 时,有 \({x}^{n} \rightarrow   + \infty\) ,故必存在正数 \(b\) ,使得 \({b}^{n} > a\) . 因 \(f\left( x\right)\)  \(= {x}^{n}\) 在 \(\left\lbrack  {0,b}\right\rbrack\) 上连续,并有 \(f\left( 0\right)  < a < f\left( b\right)\) ,故由介值性定理,至少存在一点 \({x}_{0} \in  \left( {0,b}\right)\) , 使得 \(f\left( {x}_{0}\right)  = {x}_{0}^{n} = a\) .
+
+再证唯一性. 设正数 \({x}_{1}\) 使得 \({x}_{1}^{n} = a\) ,则有
+\[
+{x}_{0}^{n} - {x}_{1}^{n} = \left( {{x}_{0} - {x}_{1}}\right) \left( {{x}_{0}^{n - 1} + {x}_{0}^{n - 2}{x}_{1} + \cdots  + {x}_{1}^{n - 1}}\right)  = 0,
+\]
+由于第二个括号内的数为正,所以只能 \({x}_{0} - {x}_{1} = 0\) ,即 \({x}_{1} = {x}_{0}\) .
+\end{proof}
+
+
+%例 4
+\begin{example}
+设 \(f\) 在 \(\left\lbrack  {a,b}\right\rbrack\) 上连续,满足
+\[
+f\left( \left\lbrack  {a,b}\right\rbrack  \right)  \subset  \left\lbrack  {a,b}\right\rbrack  . \tag{5}
+\]
+证明: 存在 \({x}_{0} \in  \left\lbrack  {a,b}\right\rbrack\) ,使得
+\[
+f\left( {x}_{0}\right)  = {x}_{0}. \tag{6}
+\]
+\end{example}
+
+%证
+\begin{proof}
+条件 (5) 意味着: 对任何 \(x \in  \left\lbrack  {a,b}\right\rbrack\) ,有 \(a \leq  f\left( x\right)  \leq  b\) ,特别有
+\[
+a \leq  f\left( a\right) \text{ 以及 }f\left( b\right)  \leq  b.
+\]
+若 \(a = f\left( a\right)\) 或 \(f\left( b\right)  = b\) ,则取 \({x}_{0} = a\) 或 \(b\) ,从而 (6) 式成立. 现设 \(a < f\left( a\right)\) 与 \(f\left( b\right)  < b\) . 令
+\[
+F\left( x\right)  = f\left( x\right)  - x,
+\]
+则 \(F\left( a\right)  = f\left( a\right)  - a > 0,F\left( b\right)  = f\left( b\right)  - b < 0\) . 故由根的存在性定理,存在 \({x}_{0} \in  \left( {a,b}\right)\) ,使得 \(F\left( {x}_{0}\right)  = 0\) ,即 \(f\left( {x}_{0}\right)  = {x}_{0}.\)
+\end{proof}
+
+
+从本例的证明过程可见, 在应用介值性定理或根的存在性定理证明某些问题时, 选取合适的辅助函数 (如在本例中令 \(F\left( x\right)  = f\left( x\right)  - x\) ),可收到事半功倍的效果.
+
+\subsection{反函数的连续性}
+
+%定理 4.8
+\begin{theorem}{反函数的连续性}{the:反函数的连续性}
+若函数 \(f\) 在 \(\left\lbrack  {a,b}\right\rbrack\) 上严格单调并连续,则反函数 \({f}^{-1}\) 在其定义域 \(\left\lbrack  {f\left( a\right) ,f\left( b\right) }\right\rbrack\) 或 \(\left\lbrack  {f\left( b\right) ,f\left( a\right) }\right\rbrack\) 上连续.
+\end{theorem}
+
+
+%证
+\begin{proof}
+不妨设 \(f\) 在 \(\left\lbrack  {a,b}\right\rbrack\) 上严格增. 此时 \(f\) 的值域即反函数 \({f}^{-1}\) 的定义域为 \(\left\lbrack  {f\left( a\right) ,f\left( b\right) }\right\rbrack\) . 任取 \({y}_{0} \in  (f\left( a\right)\) , \(f\left( b\right) )\) ,设 \({x}_{0} = {f}^{-1}\left( {y}_{0}\right)\) ,则 \({x}_{0} \in  \left( {a,b}\right)\) . 于是对任给的 \(\varepsilon  > 0\) , 可在(a, b)上 \({x}_{0}\) 的两侧各取异于 \({x}_{0}\) 的点 \({x}_{1},{x}_{2}\)  \(\left( {{x}_{1} < {x}_{0} < {x}_{2}}\right)\) ,使它们与 \({x}_{0}\) 的距离小于 \(\varepsilon\) (图4-5).
+
+\begin{figure}
+    \centering
+    \includegraphics[width=.3\textwidth]{images/P020.jpg}
+    \caption{图 $4-5$}
+    \label{fig:P020}
+\end{figure}
+
+设与 \({x}_{1},{x}_{2}\) 对应的函数值分别为 \({y}_{1},{y}_{2}\) ,由 \(f\) 的严格增性知 \({y}_{1} < {y}_{0} < {y}_{2}\) . 令
+\[
+\delta  = \min \left\{  {{y}_{2} - {y}_{0},{y}_{0} - {y}_{1}}\right\}  ,
+\]
+则当 \(y \in  U\left( {{y}_{0};\delta }\right)\) 时,对应的 \(x = {f}^{-1}\left( y\right)\) 的值都落在 \({x}_{1}\) 与 \({x}_{2}\) 之间,故有
+\[
+\left| {{f}^{-1}\left( y\right)  - {f}^{-1}\left( {y}_{0}\right) }\right|  = \left| {x - {x}_{0}}\right|  < \varepsilon ,
+\]
+这就证明了 \({f}^{-1}\) 在点 \({y}_{0}\) 连续,从而 \({f}^{-1}\) 在 \(\left( {f\left( a\right) ,f\left( b\right) }\right)\) 上连续.
+
+类似地可证 \({f}^{-1}\) 在其定义区间的端点 \(f\left( a\right)\) 与 \(f\left( b\right)\) 分别为右连续与左连续. 所以 \({f}^{-1}\) 在 \(\left\lbrack  {f\left( a\right) ,f\left( b\right) }\right\rbrack\) 上连续.
+\end{proof}
+
+
+%例 5
+\begin{example}
+
+由于 \(y = \sin x\) 在区间 \(\left\lbrack  {-\frac{\pi }{2},\frac{\pi }{2}}\right\rbrack\) 上严格单调且连续,故其反函数 \(y = \arcsin x\) 在区间 \(\left\lbrack  {-1,1}\right\rbrack\) 上连续.
+
+同理可得其他反三角函数也在相应的定义区间上连续. 如 \(y = \arccos x\) 在 \(\left\lbrack  {-1,1}\right\rbrack\) 上连续, \(y = \arctan x\) 在 \(\left( {-\infty , + \infty }\right)\) 上连续等.
+
+\end{example}
+%例 6
+\begin{example}
+
+由于 \(y = {x}^{n}\) ( \(n\) 为正整数) 在 \(\lbrack 0, + \infty )\) 上严格单调且连续,其值域为 \(\lbrack 0, + \infty )\) , 故 \(y = {x}^{\frac{1}{n}}\) 在 \(\lbrack 0, + \infty )\) 上连续. 又若把 \(y = {x}^{-\frac{1}{n}}\) ( \(n\) 为正整数) 看作由 \(y = {u}^{\frac{1}{n}}\) 与 \(u = \frac{1}{x}\) 复合而成的函数,则由复合函数的连续性, \(y = {x}^{-\frac{1}{n}}\) 在 \(\left( {0, + \infty }\right)\) 上连续.
+
+综上可知,若 \(q\) 为非零整数,则 \(y = {x}^{\frac{1}{q}}\) 是其定义区间上的连续函数.
+
+\end{example}
+
+%例 7
+\begin{example}
+证明: 有理幂函数 \(y = {x}^{\alpha }\) 在其定义区间上连续.
+\end{example}
+
+
+%证
+\begin{proof}
+设有理数 \(\alpha  = \frac{p}{q}\) ,这里 \(p,q\left( { \neq  0}\right)\) 为整数. 因为 \(y = {u}^{\frac{1}{q}}\) 与 \(u = {x}^{p}\) 均在其定义区间上连续, 所以复合函数
+\[
+y = {\left( {x}^{p}\right) }^{\frac{1}{q}} = {x}^{\alpha }
+\]
+也是其定义区间上的连续函数.
+\end{proof}
+
+
+\subsection{一致连续性}
+
+函数 \(f\) 在区间上连续,是指 \(f\) 在该区间上每一点都连续. 本段中讨论的一致连续性概念反映了函数在区间上更强的连续性.
+
+%定义  2
+\begin{definition}{一致连续}{def:一致连续}
+设 \(f\) 为定义在区间 \(I\) 上的函数. 若对任给的 \(\varepsilon  > 0\) ,存在 \(\delta  = \delta \left( \varepsilon \right)  > 0\) ,使得对任何 \({x}^{\prime },{x}^{\prime \prime } \in  I\) ,只要 \(\left| {{x}^{\prime } - {x}^{\prime \prime }}\right|  < \delta\) ,就有
+\[
+\left| {f\left( {x}^{\prime }\right)  - f\left( {x}^{\prime \prime }\right) }\right|  < \varepsilon ,
+\]
+则称函数 \(f\) 在区间 \(I\) 上一致连续.
+\end{definition}
+
+
+直观地说, \(f\) 在 \(I\) 上一致连续意味着: 不论两点 \({x}^{\prime }\) 与 \({x}^{\prime \prime }\) 在 \(I\) 中处于什么位置,只要
+
+它们的距离小于 \(\delta\) ,就可使 \(\left| {f\left( {x}^{\prime }\right)  - f\left( {x}^{\prime \prime }\right) }\right|  < \varepsilon\) .
+
+%例 8
+\begin{example}
+证明 \(f\left( x\right)  = {ax} + b\left( {a \neq  0}\right)\) 在 \(\left( {-\infty , + \infty }\right)\) 上一致连续.
+\end{example}
+
+
+%证
+\begin{proof}
+任给 \(\varepsilon  > 0\) ,由于
+\[
+\left| {f\left( {x}^{\prime }\right)  - f\left( {x}^{\prime \prime }\right) }\right|  = \left| a\right| \left| {{x}^{\prime } - {x}^{\prime \prime }}\right| ,
+\]
+故可选取 \(\delta  = \frac{\varepsilon }{\left| a\right| }\) ,则对任何 \({x}^{\prime },{x}^{\prime \prime } \in  \left( {-\infty , + \infty }\right)\) ,只要 \(\left| {{x}^{\prime } - {x}^{\prime \prime }}\right|  < \delta\) ,就有
+\[
+\left| {f\left( {x}^{\prime }\right)  - f\left( {x}^{\prime \prime }\right) }\right|  < \varepsilon .
+\]
+这就证得 \(f\left( x\right)  = {ax} + b\) 在 \(\left( {-\infty , + \infty }\right)\) 上一致连续.
+\end{proof}
+
+
+%例 9
+\begin{example}
+证明函数 \(y = \frac{1}{x}\) 在(0,1)上不一致连续 (尽管它在(0,1)上每一点都连续).
+\end{example}
+
+
+%证
+\begin{proof}
+按一致连续性的定义,为证函数 \(f\) 在某区间 \(I\) 上不一致连续,只需证明: 存在某 \({\varepsilon }_{0} > 0\) ,对任何正数 \(\delta\) (不论 \(\delta\) 多么小),总存在两点 \({x}^{\prime },{x}^{\prime \prime } \in  I\) ,尽管 \(\left| {{x}^{\prime } - {x}^{\prime \prime }}\right|  < \delta\) ,但有 \(\left| {f\left( {x}^{\prime }\right)  - f\left( {x}^{\prime \prime }\right) }\right|  \geq  {\varepsilon }_{0}.\)
+
+对于本例中函数 \(y = \frac{1}{x}\) ,可取 \({\varepsilon }_{0} = 1\) ,对无论多么小的正数 \(\delta \left( { < \frac{1}{2}}\right)\) ,只要取 \({x}^{\prime } = \delta\) 与 \({x}^{\prime \prime } = \frac{\delta }{2}\) (图 4-6),则虽有
+\[
+\left| {{x}^{\prime } - {x}^{\prime \prime }}\right|  = \frac{\delta }{2} < \delta ,
+\]
+但
+\[
+\left| {\frac{1}{{x}^{\prime }} - \frac{1}{{x}^{\prime \prime }}}\right|  = \frac{1}{\delta } > 1,
+\]
+所以 \(y = \frac{1}{x}\) 在(0,1)上不一致连续.
+\begin{figure}
+    \centering
+    \includegraphics[width=.3\textwidth]{images/P021.jpg}
+    \caption{图 $4-6$}
+    \label{fig:P021}
+\end{figure}
+
+\end{proof}
+
+
+
+%例 10
+\begin{example}
+函数 \(f\left( x\right)\) 定义在区间 \(I\) 上,试证 \(f\left( x\right)\) 在 \(I\) 上一致连续的充要条件为: 对任何数列 \(\left\{  {x}_{n}^{\prime }\right\}  ,\left\{  {x}_{n}^{\prime \prime }\right\}   \subset  I\) ,若 \(\mathop{\lim }\limits_{{n \rightarrow  \infty }}\left( {{x}_{n}^{\prime } - {x}_{n}^{\prime \prime }}\right)  = 0\) ,则
+\[
+\mathop{\lim }\limits_{{n \rightarrow  \infty }}\left\lbrack  {f\left( {x}_{n}^{\prime }\right)  - f\left( {x}_{n}^{\prime \prime }\right) }\right\rbrack   = 0.
+\]
+\end{example}
+
+%证
+\begin{proof}
+
+必要性 若 \(f\left( x\right)\) 在 \(I\) 上一致连续,则 \(\forall \varepsilon  > 0,\exists \delta \left( \varepsilon \right)  > 0,\forall {x}^{\prime },{x}^{\prime \prime } \in  I,\left| {{x}^{\prime } - {x}^{\prime \prime }}\right|  < \delta\) , 则 \(\left| {f\left( {x}^{\prime }\right)  - f\left( {x}^{\prime \prime }\right) }\right|  < \varepsilon\) . 设 \(I\) 上两个数列 \(\left\{  {x}_{n}^{\prime }\right\}  ,\left\{  {x}_{n}^{\prime \prime }\right\}\) ,满足 \(\mathop{\lim }\limits_{{n \rightarrow  \infty }}\left( {{x}_{n}^{\prime } - {x}_{n}^{\prime \prime }}\right)  = 0\) ,于是对上述 \(\delta  > 0,\exists N > 0,\forall n > N,\left| {{x}_{n}^{\prime } - {x}_{n}^{\prime \prime }}\right|  < \delta\) ,由一致连续性条件,有
+\[
+\left| {f\left( {x}_{n}^{\prime }\right)  - f\left( {x}_{n}^{\prime \prime }\right) }\right|  < \varepsilon ,
+\]
+即
+\[
+\mathop{\lim }\limits_{{n \rightarrow  \infty }}\left\lbrack  {f\left( {x}_{n}^{\prime }\right)  - f\left( {x}_{n}^{\prime \prime }\right) }\right\rbrack   = 0.
+\]
+充分性 设对 \(I\) 上任意两个数列 \(\left\{  {x}_{n}^{\prime }\right\}\) 与 \(\left\{  {x}_{n}^{\prime \prime }\right\}\) ,若 \(\mathop{\lim }\limits_{{n \rightarrow  \infty }}\left( {{x}_{n}^{\prime } - {x}_{n}^{\prime \prime }}\right)  = 0\) ,则有 \(\mathop{\lim }\limits_{{n \rightarrow  \infty }}\left\lbrack  {f\left( {x}_{n}^{\prime }\right)  - f\left( {x}_{n}^{\prime \prime }\right) }\right\rbrack   = 0\) . 现证 \(f\left( x\right)\) 在 \(I\) 上一致连续.
+
+用反证法. 若 \(f\left( x\right)\) 在 \(I\) 上不一致连续,则
+
+\(\exists {\varepsilon }_{0} > 0,\forall \delta  > 0,\exists {x}^{\prime },{x}^{\prime \prime }\) ,满足 \(\left| {{x}^{\prime } - {x}^{\prime \prime }}\right|  < \delta\) ,但有 \(\left| {f\left( {x}^{\prime }\right)  - f\left( {x}^{\prime \prime }\right) }\right|  \geq  {\varepsilon }_{0}\) .
+
+取 \({\delta }_{1} = 1,\exists {x}_{1}^{\prime },{x}_{1}^{\prime \prime } \in  I,\left| {{x}_{1}^{\prime } - {x}_{1}^{\prime \prime }}\right|  < 1\) ,有 \(\left| {f\left( {x}_{1}^{\prime }\right)  - f\left( {x}_{1}^{\prime \prime }\right) }\right|  \geq  {\varepsilon }_{0}\) ,
+
+取 \({\delta }_{2} = \frac{1}{2},\exists {x}_{2}^{\prime },{x}_{2}^{\prime \prime } \in  I,\left| {{x}_{2}^{\prime } - {x}_{2}^{\prime \prime }}\right|  < \frac{1}{2}\) ,有 \(\left| {f\left( {x}_{2}^{\prime }\right)  - f\left( {x}_{2}^{\prime \prime }\right) }\right|  \geq  {\varepsilon }_{0}\) ,
+
+............
+
+取 \({\delta }_{n} = \frac{1}{n},\exists {x}_{n}^{\prime },{x}_{n}^{\prime \prime } \in  I,\left| {{x}_{n}^{\prime } - {x}_{n}^{\prime \prime }}\right|  < \frac{1}{n}\) ,有 \(\left| {f\left( {x}_{n}^{\prime }\right)  - f\left( {x}_{n}^{\prime \prime }\right) }\right|  \geq  {\varepsilon }_{0}\) ,
+
+............
+
+于是 \(\mathop{\lim }\limits_{{n \rightarrow  \infty }}\left( {{x}_{n}^{\prime } - {x}_{n}^{\prime \prime }}\right)  = 0\) ,但是 \(\mathop{\lim }\limits_{{n \rightarrow  \infty }}\left\lbrack  {f\left( {x}_{n}^{\prime }\right)  - f\left( {x}_{n}^{\prime \prime }\right) }\right\rbrack   \neq  0\) ,与所设条件矛盾. 所以 \(f\left( x\right)\) 在 \(I\) 上一致连续.
+\end{proof}
+
+%例 11
+\begin{example}
+证明 \(f\left( x\right)  = \sin \frac{1}{x}\) 在区间(0,1)上不一致连续.
+\end{example}
+
+
+%证
+\begin{proof}
+取 \({x}_{n} = \frac{1}{2n\pi },{y}_{n} = \frac{1}{{2n\pi } + \frac{\pi }{2}},n = 1,2,\cdots\) .虽然
+\[
+\mathop{\lim }\limits_{{n \rightarrow  \infty }}\left( {{x}_{n} - {y}_{n}}\right)  = 0,
+\]
+但是
+\[
+\left| {\sin \frac{1}{{x}_{n}} - \sin \frac{1}{{y}_{n}}}\right|  = 1 \rightarrow  0,
+\]
+故由例 10 的结论推得 \(\sin \frac{1}{x}\) 在(0,1)上不一致连续.
+\end{proof}
+
+函数在区间上的连续与一致连续这两个概念有着重要的差别. \(f\) 在区间 \(I\) 上连续, 是指任给 \(\varepsilon  > 0\) ,对每一点 \(x \in  I\) ,都存在相应的正数 \(\delta  = \delta \left( {\varepsilon ,x}\right)\) ,只要 \({x}^{\prime } \in  I\) 且 \(\left| {x - {x}^{\prime }}\right|  < \delta\) , 就有 \(\left| {f\left( x\right)  - f\left( {x}^{\prime }\right) }\right|  < \varepsilon\) . 一般来说,对于 \(I\) 上不同的点,相应的正数 \(\delta\) 是不同的. 换句话说, \(\delta\) 的取值除依赖于 \(\varepsilon\) 之外,还与点 \(x\) 有关,由此我们写 \(\delta  = \delta \left( {\varepsilon ,x}\right)\) 以表示 \(\delta\) 与 \(\varepsilon\) 和 \(x\) 的依赖关系. 如果能做到 \(\delta\) 只与 \(\varepsilon\) 有关,而与 \(x\) 无关,或者说存在适合于 \(I\) 上所有点 \(x\) 的公共的 \(\delta\) ,即 \(\delta  = \delta \left( \varepsilon \right)\) ,那么函数就不仅在 \(I\) 上连续,而且是一致连续了.
+
+所以, \(f\) 在区间 \(I\) 上一致连续是 \(f\) 的又一个整体性质,由它可推出 \(f\) 在 \(I\) 上每一点都连续的这一局部性质 (只要在定义 2 中把 \({x}^{\prime }\) 看作定点,把 \({x}^{\prime \prime }\) 看作动点,即得 \(f\) 在点 \({x}^{\prime }\) 连续). 而从例 9 可见,由 \(f\) 在区间 \(I\) 上每一点都连续,并不能推出 \(f\) 在 \(I\) 上一致连续. 然而, 对于定义在闭区间上的函数来说, 由它在每一点都连续却可推出在区间上的一致连续性, 即有如下重要定理:
+
+%定理 4.9
+\begin{theorem}{一致连续性}{the:一致连续性}
+若函数 \(f\) 在闭区间 \(\left\lbrack  {a,b}\right\rbrack\) 上连续,则 \(f\) 在 \(\left\lbrack  {a,b}\right\rbrack\) 上一致连续.
+\end{theorem}
+
+%证
+\begin{proof}
+若不然,存在 \({\varepsilon }_{0} > 0\) ,以及区间 \(\left\lbrack  {a,b}\right\rbrack\) 上的点列 \(\left\{  {x}_{n}\right\}  ,\left\{  {y}_{n}\right\}\) ,虽然 \(\mathop{\lim }\limits_{{n \rightarrow  \infty }}\left( {{x}_{n} - {y}_{n}}\right)  = 0\) , 但是
+\[
+\left| {f\left( {x}_{n}\right)  - f\left( {y}_{n}\right) }\right|  \geq  {\varepsilon }_{0},\;n = 1,2,\cdots . \tag{7}
+\]
+因为 \(\left\{  {x}_{n}\right\}\) 有界,所以由致密性定理, \(\left\{  {x}_{n}\right\}\) 有一个收敛的子列 \(\left\{  {x}_{{n}_{k}}\right\}\) . 设 \(\mathop{\lim }\limits_{{k \rightarrow  \infty }}{x}_{{n}_{k}} = {x}_{0}\) ,从而
+\[
+\mathop{\lim }\limits_{{k \rightarrow  \infty }}{y}_{{n}_{k}} = \mathop{\lim }\limits_{{k \rightarrow  \infty }}\left\lbrack  {\left( {{y}_{{n}_{k}} - {x}_{{n}_{k}}}\right)  + {x}_{{n}_{k}}}\right\rbrack   = {x}_{0},
+\]
+又 \(a \leq  {x}_{{n}_{k}} \leq  b\) ,由极限的不等式性质推得 \(a \leq  {x}_{0} \leq  b\) ,故 \(f\left( x\right)\) 在点 \({x}_{0}\) 连续. 由归结原则与(7)式得
+\[
+{\varepsilon }_{0} \leq  \mathop{\lim }\limits_{{k \rightarrow  \infty }}\left| {f\left( {x}_{{n}_{k}}\right)  - f\left( {y}_{{n}_{k}}\right) }\right|  = \left| {f\left( {x}_{0}\right)  - f\left( {x}_{0}\right) }\right|  = 0,
+\]
+矛盾.
+\end{proof}
+
+
+%例 12
+\begin{example}
+设区间 \({I}_{1}\) 的右端点为 \(c \in  {I}_{1}\) ,区间 \({I}_{2}\) 的左端点也为 \(c \in  {I}_{2}\left( {{I}_{1},{I}_{2}}\right.\) 可分别为有限或无限区间). 试按一致连续性的定义证明: 若 \(f\) 分别在 \({I}_{1}\) 和 \({I}_{2}\) 上一致连续,则 \(f\) 在 \(I = {I}_{1} \cup  {I}_{2}\) 上也一致连续.
+\end{example}
+
+
+%证
+\begin{proof}
+任给 \(\varepsilon  > 0\) ,由 \(f\) 在 \({I}_{1}\) 和 \({I}_{2}\) 上的一致连续性,分别存在正数 \({\delta }_{1}\) 和 \({\delta }_{2}\) ,使得对任何 \({x}^{\prime },{x}^{\prime \prime } \in  {I}_{1}\) ,只要 \(\left| {{x}^{\prime } - {x}^{\prime \prime }}\right|  < {\delta }_{1}\) ,就有
+\[
+\left| {f\left( {x}^{\prime }\right)  - f\left( {x}^{\prime \prime }\right) }\right|  < \varepsilon ; \tag{8}
+\]
+又对任何 \({x}^{\prime },{x}^{\prime \prime } \in  {I}_{2}\) ,只要 \(\left| {{x}^{\prime } - {x}^{\prime \prime }}\right|  < {\delta }_{2}\) ,也有 (8) 式成立.
+
+点 \(x = c\) 作为 \({I}_{1}\) 的右端点, \(f\) 在点 \(c\) 为左连续,作为 \({I}_{2}\) 的左端点, \(f\) 在点 \(c\) 为右连续,所以 \(f\) 在点 \(c\) 连续. 故对上述 \(\varepsilon  > 0\) ,存在 \({\delta }_{3} > 0\) ,当 \(\left| {x - c}\right|  < {\delta }_{3}\) 时,有
+\[
+\left| {f\left( x\right)  - f\left( c\right) }\right|  < \frac{\varepsilon }{2}. \tag{9}
+\]
+令 \(\delta  = \min \left\{  {{\delta }_{1},{\delta }_{2},{\delta }_{3}}\right\}\) ,对任何 \({x}^{\prime },{x}^{\prime \prime } \in  I,\left| {{x}^{\prime } - {x}^{\prime \prime }}\right|  < \delta\) ,分别讨论以下两种情形:
+
+(i) \({x}^{\prime },{x}^{\prime \prime }\) 同时属于 \({I}_{1}\) 或同时属于 \({I}_{2}\) ,则 (8) 式成立.
+
+(ii) \({x}^{\prime },{x}^{\prime \prime }\) 分属 \({I}_{1}\) 与 \({I}_{2}\) ,设 \({x}^{\prime } \in  {I}_{1},{x}^{\prime \prime } \in  {I}_{2}\) ,则
+\[
+\left| {{x}^{\prime } - c}\right|  = c - {x}^{\prime } < {x}^{\prime \prime } - {x}^{\prime } < \delta  \leq  {\delta }_{3},
+\]
+故由 (9) 式得 \(\left| {f\left( {x}^{\prime }\right)  - f\left( c\right) }\right|  < \frac{\varepsilon }{2}\) . 同理得 \(\left| {f\left( {x}^{\prime \prime }\right)  - f\left( c\right) }\right|  < \frac{\varepsilon }{2}\) . 从而也有 (8) 式成立. 这就证明了 \(f\) 在 \(I\) 上一致连续.
+\end{proof}
+
+
+\subsection{习题 4.2}
+
+1. 讨论复合函数 \(f \circ  g\) 与 \(g \circ  f\) 的连续性,设
+
+(1) \(f\left( x\right)  = \operatorname{sgn}x,g\left( x\right)  = 1 + {x}^{2}\) ;
+
+(2) \(f\left( x\right)  = \operatorname{sgn}x,g\left( x\right)  = \left( {1 - {x}^{2}}\right) x\) .
+
+2. 设 \(f,g\) 在点 \({x}_{0}\) 连续,证明:
+
+(1) 若 \(f\left( {x}_{0}\right)  > g\left( {x}_{0}\right)\) ,则存在 \(U\left( {{x}_{0};\delta }\right)\) ,使在其上有 \(f\left( x\right)  > g\left( x\right)\) ;
+
+(2)若在某 \({U}^{ \circ  }\left( {x}_{0}\right)\) 上有 \(f\left( x\right)  > g\left( x\right)\) ,则 \(f\left( {x}_{0}\right)  \geq  g\left( {x}_{0}\right)\) .
+
+3. 设 \(f,g\) 在区间 \(I\) 上连续. 记
+\[
+F\left( x\right)  = \max \{ f\left( x\right) ,g\left( x\right) \} ,G\left( x\right)  = \min \{ f\left( x\right) ,g\left( x\right) \} .
+\]
+证明 \(F\) 和 \(G\) 也都在 \(I\) 上连续.
+
+提示: 利用第一章总练习题 1.
+
+4. 设 \(f\) 为 \(\mathbf{R}\) 上连续函数,常数 \(c > 0\) . 记
+\[
+F\left( x\right)  = \left\{  \begin{matrix}  - c, & f\left( x\right)  <  - c, \\  f\left( x\right) , & \left| {f\left( x\right) }\right|  \leq  c, \\  c, & f\left( x\right)  > c. \end{matrix}\right.
+\]
+证明 \(F\) 在 \(\mathbf{R}\) 上连续.
+
+提示: \(F\left( x\right)  = \max \{  - c,\min \{ c,f\left( x\right) \} \}\) .
+
+5. 设 \(f\left( x\right)  = \sin x,g\left( x\right)  = \left\{  \begin{array}{ll} x - \pi , & x \leq  0, \\  x + \pi , & x > 0. \end{array}\right.\) 证明: 复合函数 \(f \circ  g\) 在 \(x = 0\) 连续,但 \(g\) 在 \(x = 0\) 不连续.
+
+6. 设 \(f\) 在 \(\lbrack a, + \infty )\) 上连续,且 \(\mathop{\lim }\limits_{{x \rightarrow   + \infty }}f\left( x\right)\) 存在. 证明: \(f\) 在 \(\lbrack a, + \infty )\) 上有界. 又问 \(f\) 在 \(\lbrack a, + \infty )\) 上必有最大值或最小值吗?
+
+7. 若对任何充分小的 \(\varepsilon  > 0,f\) 在 \(\left\lbrack  {a + \varepsilon ,b - \varepsilon }\right\rbrack\) 上连续,能否由此推出 \(f\) 在(a, b)上连续?
+
+8. 求极限:
+
+(1) \(\mathop{\lim }\limits_{{x \rightarrow  \frac{\pi }{4}}}\left( {\pi  - x}\right) \tan x\);
+
+(2) \(\mathop{\lim }\limits_{{x \rightarrow  {1}^{ + }}}\frac{x\sqrt{1 + {2x}} - \sqrt{{x}^{2} - 1}}{x + 1}\) .
+
+9. 证明: 若 \(f\) 在 \(\left\lbrack  {a,b}\right\rbrack\) 上连续,且对任何 \(x \in  \left\lbrack  {a,b}\right\rbrack  ,f\left( x\right)  \neq  0\) ,则 \(f\) 在 \(\left\lbrack  {a,b}\right\rbrack\) 上恒正或恒负.
+
+10. 证明: 任一实系数奇次方程至少有一个实根.
+
+11. 试用一致连续的定义证明: 若 \(f,g\) 都在区间 \(I\) 上一致连续,则 \(f + g\) 也在 \(I\) 上一致连续.
+
+12. 证明 \(f\left( x\right)  = \sqrt{x}\) 在 \(\lbrack 0, + \infty )\) 上一致连续.
+
+提示: \(\lbrack 0, + \infty ) = \left\lbrack  {0,1}\right\rbrack   \cup  \lbrack 1, + \infty )\) ,利用定理 4.9 和例 10 的结论.
+
+13. 证明: \(f\left( x\right)  = {x}^{2}\) 在 \(\left\lbrack  {a,b}\right\rbrack\) 上一致连续,但在 \(\left( {-\infty , + \infty }\right)\) 上不一致连续.
+
+14. 设函数 \(f\) 在区间 \(I\) 上满足利普希茨 (Lipschitz) 条件,即存在常数 \(L > 0\) ,使得对 \(I\) 上任意两点 \({x}^{\prime },{x}^{\prime \prime }\) ,都有
+\[
+\left| {f\left( {x}^{\prime }\right)  - f\left( {x}^{\prime \prime }\right) }\right|  \leq  L\left| {{x}^{\prime } - {x}^{\prime \prime }}\right| .
+\]
+证明 \(f\) 在 \(I\) 上一致连续.
+
+15. 证明 \(\sin x\) 在 \(\left( {-\infty , + \infty }\right)\) 上一致连续.
+
+提示: 利用不等式 \(\left| {\sin {x}^{\prime } - \sin {x}^{\prime \prime }}\right|  \leq  \left| {{x}^{\prime } - {x}^{\prime \prime }}\right|\) (见第三章 §1 例 4).
+
+16. 设函数 \(f\) 满足第 6 题的条件. 证明 \(f\) 在 \(\lbrack a, + \infty )\) 上一致连续.
+
+17. 设函数 \(f\) 在 \(\left\lbrack  {0,{2a}}\right\rbrack\) 上连续,且 \(f\left( 0\right)  = f\left( {2a}\right)\) . 证明: 存在点 \({x}_{0} \in  \left\lbrack  {0,a}\right\rbrack\) ,使得 \(f\left( {x}_{0}\right)  = f\left( {{x}_{0} + a}\right)\) .
+
+18. 设 \(f\) 为 \(\left\lbrack  {a,b}\right\rbrack\) 上的增函数,其值域为 \(\left\lbrack  {f\left( a\right) ,f\left( b\right) }\right\rbrack\) . 证明 \(f\) 在 \(\left\lbrack  {a,b}\right\rbrack\) 上连续.
+
+19. 设 \(f\) 在 \(\left\lbrack  {a,b}\right\rbrack\) 上连续, \({x}_{1},{x}_{2},\cdots ,{x}_{n} \in  \left\lbrack  {a,b}\right\rbrack\) . 证明: 存在 \(\xi  \in  \left\lbrack  {a,b}\right\rbrack\) ,使得
+\[
+f\left( \xi \right)  = \frac{1}{n}\left\lbrack  {f\left( {x}_{1}\right)  + f\left( {x}_{2}\right)  + \cdots  + f\left( {x}_{n}\right) }\right\rbrack  .
+\]
+20. 证明 \(f\left( x\right)  = \cos \sqrt{x}\) 在 \(\lbrack 0, + \infty )\) 上一致连续.
+
+提示: \(\lbrack 0, + \infty ) = \left\lbrack  {0,1}\right\rbrack   \cup  \lbrack 1, + \infty )\) . 在 \(\lbrack 1, + \infty )\) 上成立不等式
+\[
+\left| {\cos \sqrt{{x}^{\prime }} - \cos \sqrt{{x}^{\prime \prime }}}\right|  \leq  \left| {\sqrt{{x}^{\prime }} - \sqrt{{x}^{\prime \prime }}}\right|  \leq  \left| {{x}^{\prime } - {x}^{\prime \prime }}\right| .
+\]
+
+\section{初等函数的连续性}
+
+从前面两节知道,在基本初等函数中,三角函数、反三角函数以及有理指数幂函数都是其定义域上的连续函数. 本节将讨论指数函数、对数函数与实指数幂函数的连续性, 以及初等函数的连续性.
+
+\subsection{指数函数的连续性}
+
+在第一章中,我们已定义了实指数的乘幂,并证明了指数函数 \(y = {a}^{x}\left( {0 < a \neq  1}\right)\) 在 \(\mathbf{R}\) 上是严格单调的.下面先把关于有理指数幂的一个重要性质推广到实指数幂, 然后证
+
+明指数函数的连续性.
+
+%定理 4.10
+\begin{theorem}{幂的运算}{the:幂的运算}
+设 \(a > 0,\alpha ,\beta\) 为任意两个实数,则有
+\[
+{a}^{\alpha } \cdot  {a}^{\beta } = {a}^{\alpha  + \beta },\;{\left( {a}^{\alpha }\right) }^{\beta } = {a}^{\alpha \beta }.
+\]
+\end{theorem}
+
+%证
+\begin{proof}
+不妨设 \(a > 1\) ,由 \({a}^{x}\) 的定义 (第一章 §3 定义 2 ),即有
+\[
+{a}^{x} = \mathop{\sup }\limits_{{r \leq  x}}\left\{  {{a}^{r} \mid  r\text{ 为有理数 }}\right\}  .
+\]
+依据上确界定义,任给 \(\varepsilon  > 0\) ,存在有理数 \(r \leq  \alpha\) 和 \(s \leq  \beta\) ,使得
+\[
+{a}^{\alpha } - \varepsilon  < {a}^{\prime },\;{a}^{\beta } - \varepsilon  < {a}^{s}.
+\]
+由 \({a}^{x}\) 的严格递增性,得
+\[
+{a}^{r + s} \leq  {a}^{\alpha  + \beta }.
+\]
+而由有理指数乘幂的性质,有 \({a}^{r} \cdot  {a}^{s} = {a}^{r + s}\) ,故得
+\[
+\left( {{a}^{\alpha } - \varepsilon }\right) \left( {{a}^{\beta } - \varepsilon }\right)  < {a}^{r + s} \leq  {a}^{\alpha  + \beta }.
+\]
+由 \(\varepsilon\) 的任意性,可得
+\[
+{a}^{\alpha } \cdot  {a}^{\beta } \leq  {a}^{\alpha  + \beta }.
+\]
+为证相反的不等式,同理存在有理数 \(p \leq  \alpha  + \beta\) ,使得
+\[
+\cdots {a}^{\alpha  + \beta } - \varepsilon  < {a}^{p}.
+\]
+再取有理数 \(r \leq  \alpha\) 和 \(s \leq  \beta\) ,并使 \(p \leq  r + s\) ,则有
+\[
+{a}^{p} \leq  {a}^{r + s} = {a}^{r} \cdot  {a}^{s} \leq  {a}^{\alpha } \cdot  {a}^{\beta }.
+\]
+由此得到 \({a}^{\alpha  + \beta } - \varepsilon  < {a}^{p} \leq  {a}^{\alpha } \cdot  {a}^{\beta }\) ,并由 \(\varepsilon\) 的任意性,推得
+\[
+{a}^{\alpha  + \beta } \leq  {a}^{\alpha } \cdot  {a}^{\beta }.
+\]
+这就证得 \({a}^{\alpha } \cdot  {a}^{\beta } = {a}^{\alpha  + \beta }\) . 后一等式的证明留给读者.
+\end{proof}
+
+
+%定理 4.11
+\begin{theorem}{指数函数连续性}{the:指数函数连续性}
+指数函数 \({a}^{x}\left( {a > 0}\right)\) 在 \(\mathbf{R}\) 上是连续的.
+\end{theorem}
+
+
+%证
+\begin{proof}
+先设 \(a > 1\) . 由第三章 §2 例 4 知
+\[
+\mathop{\lim }\limits_{{x \rightarrow  0}}{a}^{x} = 1 = {a}^{0},
+\]
+这表明 \({a}^{x}\) 在 \(x = 0\) 连续. 现任取 \({x}_{0} \in  \mathbf{R}\) . 由定理 4.10 得
+\[
+{a}^{x} = {a}^{{x}_{0} + \left( {x - {x}_{0}}\right) } = {a}^{{x}_{0}} \cdot  {a}^{x - {x}_{0}}.
+\]
+令 \(t = x - {x}_{0}\) ,则当 \(x \rightarrow  {x}_{0}\) 时有 \(t \rightarrow  0\) ,从而有
+\[
+\mathop{\lim }\limits_{{x \rightarrow  {x}_{0}}}{a}^{x} = \mathop{\lim }\limits_{{x \rightarrow  {x}_{0}}}{a}^{{x}_{0}}{a}^{x - {x}_{0}} = {a}^{{x}_{0}}\mathop{\lim }\limits_{{t \rightarrow  0}}{a}^{t} = {a}^{{x}_{0}}.
+\]
+这就证明了 \({a}^{x}\) 在任一点 \({x}_{0}\) 连续.
+
+当 \(0 < a < 1\) 时,令 \(b = \frac{1}{a}\) ,则有 \(b > 1\) ,而
+\[
+{a}^{x} = {\left( \frac{1}{b}\right) }^{x} = {b}^{-x}
+\]
+可看作函数 \({b}^{u}\) 与 \(u =  - x\) 的复合,所以此时 \({a}^{x}\) 亦在 \(\mathbf{R}\) 上连续.
+\end{proof}
+
+
+利用指数函数 \({a}^{x}\) 的连续性,以及第三章 §5 例 4 中已证明的
+\[
+\mathop{\lim }\limits_{{x \rightarrow   - \infty }}{a}^{x} = 0,\mathop{\lim }\limits_{{x \rightarrow   + \infty }}{a}^{x} =  + \infty \left( {a > 1}\right) ,
+\]
+可知 \({a}^{x}\) 的值域为 \(\left( {0, + \infty }\right)\) ( \(0 < a < 1\) 时也是如此). 于是, \({a}^{x}\) 的反函数——对数函数 \({\log }_{a}x\) 在其定义域 \(\left( {0, + \infty }\right)\) 上也连续.
+
+%例 1
+\begin{example}
+设 \(\mathop{\lim }\limits_{{x \rightarrow  {x}_{0}}}u\left( x\right)  = a > 0,\mathop{\lim }\limits_{{x \rightarrow  {x}_{0}}}v\left( x\right)  = b\) . 证明
+\[
+\mathop{\lim }\limits_{{x \rightarrow  {x}_{0}}}u{\left( x\right) }^{v\left( x\right) } = {a}^{b}.
+\]
+\end{example}
+
+%证
+\begin{proof}
+补充定义 \(u\left( {x}_{0}\right)  = a,v\left( {x}_{0}\right)  = b\) ,则 \(u\left( x\right) ,v\left( x\right)\) 在点 \({x}_{0}\) 连续,从而 \(v\left( x\right) \ln u\left( x\right)\) 在 \({x}_{0}\) 连续,所以 \(u{\left( x\right) }^{v\left( x\right) } = {\mathrm{e}}^{v\left( x\right) \ln u\left( x\right) }\) 在 \({x}_{0}\) 连续. 由此得
+\[
+\mathop{\lim }\limits_{{x \rightarrow  {x}_{0}}}u{\left( x\right) }^{v\left( x\right) } = \mathop{\lim }\limits_{{x \rightarrow  {x}_{0}}}{\mathrm{e}}^{v\left( x\right) \ln u\left( x\right) } = {\mathrm{e}}^{b\ln a} = {a}^{b}.
+\]
+\end{proof}
+
+\subsection{初等函数的连续性}
+
+由于幂函数 \({x}^{\alpha }\) ( \(\alpha\) 为实数) 可表为 \({x}^{\alpha } = {\mathrm{e}}^{\alpha \ln x}\) ,它是函数 \({\mathrm{e}}^{u}\) 与 \(u = \alpha \ln x\) 的复合,故由指数函数与对数函数的连续性以及复合函数的连续性,推得幂函数 \(y = {x}^{\alpha }\) 在其定义域 \(\left( {0, + \infty }\right)\) 上连续.
+
+前面已经指出,常量函数、三角函数、反三角函数都是其定义域上的连续函数,因此我们有下述定理:
+
+%定理 4.12
+\begin{theorem}{基本初等函数的连续性}{the:基本初等函数的连续性}
+一切基本初等函数都是其定义域上的连续函数.
+\end{theorem}
+
+
+由于任何初等函数都是由基本初等函数经过有限次四则运算与复合运算所得到, 所以有
+
+%定理 4.13
+\begin{theorem}{初等函数的连续性}{the:初等函数的连续性}
+任何初等函数都是在其定义区间上的连续函数.
+\end{theorem}
+
+
+下面举两个利用函数的连续性求极限的例子.
+
+%例 2
+\begin{example}
+求 \(\mathop{\lim }\limits_{{x \rightarrow  0}}\frac{\ln \left( {1 + x}\right) }{x}\) .
+\end{example}
+
+
+%解
+\begin{solution}
+由对数函数的连续性有
+\[
+\text{ 原式 } = \mathop{\lim }\limits_{{x \rightarrow  0}}\ln {\left( 1 + x\right) }^{\frac{1}{x}} = \ln \left\lbrack  {\mathop{\lim }\limits_{{x \rightarrow  0}}{\left( 1 + x\right) }^{\frac{1}{x}}}\right\rbrack
+\]
+\[
+= \ln \mathrm{e} = 1\text{ . }
+\]
+\end{solution}
+
+%例 3
+\begin{example}
+求 \(\mathop{\lim }\limits_{{x \rightarrow  0}}\frac{\ln \left( {1 + {x}^{2}}\right) }{\cos x}\) .
+\end{example}
+
+
+%解
+\begin{solution}
+由于 \(x = 0\) 在初等函数 \(f\left( x\right)  = \frac{\ln \left( {1 + {x}^{2}}\right) }{\cos x}\) 的定义域内,故由 \(f\) 的连续性得
+\[
+\mathop{\lim }\limits_{{x \rightarrow  0}}\frac{\ln \left( {1 + {x}^{2}}\right) }{\cos x} = f\left( 0\right)  = 0.
+\]
+\end{solution}
+
+\subsection{习题 4.3}
+
+1. 求下列极限:
+
+(1) \(\mathop{\lim }\limits_{{x \rightarrow  0}}\frac{{\mathrm{e}}^{x}\cos x + 5}{1 + {x}^{2} + \ln \left( {1 - x}\right) }\) ;
+
+(2) \(\mathop{\lim }\limits_{{x \rightarrow   + \infty }}\left( {\sqrt{x + \sqrt{x + \sqrt{x}}} - \sqrt{x}}\right)\) ；
+
+(3) \(\mathop{\lim }\limits_{{x \rightarrow  {0}^{ + }}}\left( {\sqrt{\frac{1}{x} + \sqrt{\frac{1}{x} + \sqrt{\frac{1}{x}}}} - \sqrt{\frac{1}{x} - \sqrt{\frac{1}{x} + \sqrt{\frac{1}{x}}}}}\right)\) ;
+
+(4) \(\mathop{\lim }\limits_{{x \rightarrow   + \infty }}\frac{\sqrt{x + \sqrt{x + \sqrt{x}}}}{\sqrt{x + 1}}\) ;
+
+(5) \(\mathop{\lim }\limits_{{x \rightarrow  0}}{\left( 1 + \sin x\right) }^{\cot x}\) .
+
+2. 设 \(\mathop{\lim }\limits_{{n \rightarrow  \infty }}{a}_{n} = a > 0,\mathop{\lim }\limits_{{n \rightarrow  \infty }}{b}_{n} = b\) . 证明 \(\mathop{\lim }\limits_{{n \rightarrow  \infty }}{\left( {a}_{n}\right) }^{{b}_{n}} = {a}^{b}\) .
+
+提示: \({\left( {a}_{n}\right) }^{b}{}^{n} = {\mathrm{e}}^{b}{n}^{\ln a}{}^{n}\) .
+
+\section{第四章总练习题}
+
+1. 设函数 \(f\) 在(a, b)上连续,且 \(f\left( {a + 0}\right)\) 与 \(f\left( {b - 0}\right)\) 为有限值. 证明:
+
+(1) \(f\) 在(a, b)上有界;
+
+(2)若存在 \(\xi  \in  \left( {a,b}\right)\) ,使得 \(f\left( \xi \right)  \geq  \max \left\{  {f\left( {a + 0}\right) ,f\left( {b - 0}\right) }\right\}\) ,则 \(f\) 在(a, b)上能取到最大值；
+
+(3) \(f\) 在(a, b)上一致连续.
+
+2. 设函数 \(f\) 在(a, b)上连续,且 \(f\left( {a + 0}\right)  = f\left( {b - 0}\right)  =  + \infty\) . 证明 \(f\) 在(a, b)上能取到最小值.
+
+3. 设函数 \(f\) 在区间 \(I\) 上连续,证明:
+
+(1) 若对任何有理数 \(r \in  I\) ,有 \(f\left( r\right)  = 0\) ,则在 \(I\) 上 \(f\left( x\right)  \equiv  0\) ;
+
+(2)若对任意两个有理数 \({r}_{1},{r}_{2},{r}_{1} < {r}_{2}\) ,有 \(f\left( {r}_{1}\right)  < f\left( {r}_{2}\right)\) ,则 \(f\) 在 \(I\) 上严格增.
+
+4. 设 \({a}_{1},{a}_{2},{a}_{3}\) 为正数, \({\lambda }_{1} < {\lambda }_{2} < {\lambda }_{3}\) . 证明: 方程
+\[
+\frac{{a}_{1}}{x - {\lambda }_{1}} + \frac{{a}_{2}}{x - {\lambda }_{2}} + \frac{{a}_{3}}{x - {\lambda }_{3}} = 0
+\]
+在区间 \(\left( {{\lambda }_{1},{\lambda }_{2}}\right)\) 与 \(\left( {{\lambda }_{2},{\lambda }_{3}}\right)\) 上各有一个根.
+
+提示: 考虑 \(f\left( x\right)  = {a}_{1}\left( {x - {\lambda }_{2}}\right) \left( {x - {\lambda }_{3}}\right)  + {a}_{2}\left( {x - {\lambda }_{1}}\right) \left( {x - {\lambda }_{3}}\right)  + {a}_{3}\left( {x - {\lambda }_{1}}\right) \left( {x - {\lambda }_{2}}\right)\) .
+
+5. 设 \(f\) 在 \(\left\lbrack  {a,b}\right\rbrack\) 上连续,且对任何 \(x \in  \left\lbrack  {a,b}\right\rbrack\) ,存在 \(y \in  \left\lbrack  {a,b}\right\rbrack\) ,使得
+\[
+\left| {f\left( y\right) }\right|  \leq  \frac{1}{2}\left| {f\left( x\right) }\right| .
+\]
+证明: 存在 \(\xi  \in  \left\lbrack  {a,b}\right\rbrack\) ,使得 \(f\left( \xi \right)  = 0\) .
+
+提示: 函数 \(\left| f\right|\) 在 \(\left\lbrack  {a,b}\right\rbrack\) 上有最小值 \(m = f\left( \xi \right)\) ,若 \(m = 0\) ,则已得证; 若 \(m > 0\) ,可得矛盾.
+
+6. 设 \(f\) 在 \(\left\lbrack  {a,b}\right\rbrack\) 上连续, \({x}_{1},{x}_{2},\cdots ,{x}_{n} \in  \left\lbrack  {a,b}\right\rbrack\) ,另有一组正数 \({\lambda }_{1},{\lambda }_{2},\cdots ,{\lambda }_{n}\) 满足 \({\lambda }_{1} + {\lambda }_{2} + \cdots  + {\lambda }_{n} = 1\) . 证明: 存在一点 \(\xi  \in  \left\lbrack  {a,b}\right\rbrack\) ,使得
+\[
+f\left( \xi \right)  = {\lambda }_{1}f\left( {x}_{1}\right)  + {\lambda }_{2}f\left( {x}_{2}\right)  + \cdots  + {\lambda }_{n}f\left( {x}_{n}\right) .
+\]
+注: 本章 §2 习题 19 是本题的特例,其中 \({\lambda }_{1} = {\lambda }_{2} = \cdots  = {\lambda }_{n} = \frac{1}{n}\) .
+
+7. 设 \(f\) 在 \(\lbrack 0, + \infty )\) 上连续,满足 \(0 \leq  f\left( x\right)  \leq  x,x \in  \lbrack 0, + \infty )\) . 设 \({a}_{1} \geq  0,{a}_{n + 1} = f\left( {a}_{n}\right) ,n = 1,2,\cdots\) . 证明:
+
+(1) \(\left\{  {a}_{n}\right\}\) 为收敛数列;
+
+(2)设 \(\mathop{\lim }\limits_{{n \rightarrow  \infty }}{a}_{n} = t\) ,则有 \(f\left( t\right)  = t\) ;
+
+(3)若条件改为 \(0 \leq  f\left( x\right)  < x,x \in  \left( {0, + \infty }\right)\) ,则 \(t = 0\) .
+
+8. 设 \(f\) 在 \(\left\lbrack  {0,1}\right\rbrack\) 上连续, \(f\left( 0\right)  = f\left( 1\right)\) . 证明: 对任何正整数 \(n\) ,存在 \(\xi  \in  \left\lbrack  {0,1}\right\rbrack\) ,使得
+\[
+f\left( {\xi  + \frac{1}{n}}\right)  = f\left( \xi \right) .
+\]
+提示: \(n = 1\) 时取 \(\xi  = 0.n > 1\) 时令 \(F\left( x\right)  = f\left( {x + \frac{1}{n}}\right)  - f\left( x\right)\) ,则有
+\[
+F\left( 0\right)  + F\left( \frac{1}{n}\right)  + \cdots  + F\left( \frac{n - 1}{n}\right)  = 0.
+\]
+
+9. 设 \(f\) 在 \(x = 0\) 连续,且对任何 \(x,y \in  \mathbf{R}\) ,有
+\[
+f\left( {x + y}\right)  = f\left( x\right)  + f\left( y\right) .
+\]
+证明: (1) \(f\) 在 \(\mathbf{R}\) 上连续; (2) \(f\left( x\right)  = f\left( 1\right) x\) .
+
+提示: (1) 易见 \(\mathop{\lim }\limits_{{x \rightarrow  0}}f\left( x\right)  = f\left( 0\right)  = 0 \Rightarrow  \mathop{\lim }\limits_{{x \rightarrow  {x}_{0}}}f\left( x\right)  = \mathop{\lim }\limits_{{x \rightarrow  {x}_{0}}}\left\lbrack  {f\left( {x - {x}_{0}}\right)  + f\left( {x}_{0}\right) }\right\rbrack   = f\left( {x}_{0}\right)\) ;
+
+(2)对整数 \(p,q\left( { \neq  0}\right)\) 有 \(f\left( p\right)  = {pf}\left( 1\right) ,f\left( \frac{1}{q}\right)  = \frac{1}{q}f\left( 1\right)  \Rightarrow\) 对有理数 \(r\) 有 \(f\left( r\right)  = {rf}\left( 1\right)  \Rightarrow\) 结论.
+
+10. 设定义在 \(\mathbf{R}\) 上的函数 \(f\) 在 0,1 两点连续,且对任何 \(x \in  \mathbf{R}\) ,有 \(f\left( {x}^{2}\right)  = f\left( x\right)\) . 证明 \(f\) 为常量函数.
+
+提示: 易见 \(f\) 偶; 对任何 \(x \in  {\mathbf{R}}^{ + },f\left( x\right)  = f\left( {x}^{\frac{1}{{2}^{n}}}\right)  \rightarrow  f\left( 1\right) \left( {n \rightarrow  \infty }\right)\) ,从而得 \(x \neq  0\) 时 \(f\left( x\right)  = f\left( 1\right) ;f\left( 0\right)\)  \(= \mathop{\lim }\limits_{{x \rightarrow  0}}f\left( x\right)  = f\left( 1\right)\) .
+
+11. 设 \(0 \leq  \alpha  \leq  1\) . 证明: \(f\left( x\right)  = {x}^{\alpha }\) 在区间 \(\lbrack 0, + \infty )\) 上一致连续.
+
+12. 设 \(f\left( x\right)\) 是区间 \(\left\lbrack  {a,b}\right\rbrack\) 上的一个非常数的连续函数, \(M,m\) 分别是最大、最小值. 证明: 存在 \(\lbrack \alpha\) , \(\beta \rbrack  \subset  \left\lbrack  {a,b}\right\rbrack\) ,使得
+
+(1) \(m < f\left( x\right)  < M,x \in  \left( {\alpha ,\beta }\right)\) ;
+
+(2) \(f\left( \alpha \right) ,f\left( \beta \right)\) 恰好是 \(f\left( x\right)\) 在 \(\left\lbrack  {a,b}\right\rbrack\) 上的最大、最小值 (最小、最大值).
