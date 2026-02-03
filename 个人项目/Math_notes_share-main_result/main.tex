@@ -1,0 +1,64 @@
+% !Mode:: "TeX:UTF-8"
+%!TEX program  = xelatex
+\def\allfiles{}
+\documentclass[12pt, a4paper, oneside]{ctexbook}
+\def\configPath{./config}
+\input{\configPath/config}
+
+%插入图片封面
+\begin{document}
+	\begin{figure}
+		\centering
+		%\includegraphics[scale=0.505]{黑科技3.png}
+		%\includegraphics[scale=0.55]{黑科技00.png}
+		%\includegraphics[scale=0.65]{中科大.png}
+		\includegraphics[scale=0.65]{o1.png}
+	\end{figure}
+\newpage
+%\tableofcontents %目录单栏展示
+% 开启双栏显示目录
+\setlength{\columnseprule}{1.04pt} % 设置两栏之间的分隔线宽度
+\begin{multicols}{2}
+	\tableofcontents
+\end{multicols}
+\include{chap0/chap0}  %对这个的一些功能使用起到作用
+
+%第一部分：基础学习
+\include{chap1/chap11} % 离散数学
+\include{chap1/chap12} % 近世代数
+\include{chap1/chap13} % 集合论
+\include{chap1/chap14} % 矩阵论
+\include{chap1/chap15} % 测度论
+\include{chap1/chap16} % 基础拓扑
+
+
+ %第二部分：分析学
+\include{chap2/chap21}  % 数学分析
+\include{chap2/chap22}  % 实分析/实变函数
+\include{chap2/chap23}  % 泛函分析
+\include{chap2/chap24}  % 常微分方程
+\include{chap2/chap25}  % 偏微分方程/及其反问题
+\include{chap2/chap26}  % 分数阶微积分
+
+%第三部分：概率统计
+\include{chap3/chap31}  % 概率论
+\include{chap3/chap32}	% 数量统计
+\include{chap3/chap33}  % 多元统计分析
+\include{chap3/chap34}	% 随机过程
+
+%第四部分：代数
+\include{chap4/chap41}  % 代数
+\include{chap4/chap42}	% 抽象代数
+\include{chap4/chap43}	% 几何
+
+% 第五部分：算法
+\include{chap5/chap51} % 数值计算
+\include{chap5/chap52} % 优化算法（遗传算法，蒙特卡洛......）
+\include{chap5/chap53} % 计算机常用算法
+\include{chap5/chap54} % 机器学习
+\include{chap5/chap55} % 深度学习
+\include{chap5/chap56} % 强化学习
+
+\bibliographystyle{plain}
+\bibliography{literature/literature}
+\end{document}
