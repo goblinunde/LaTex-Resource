@@ -1,0 +1,487 @@
+% Beamer Inner Theme: Shibui
+% Defines title page, lists, blocks, and other internal elements
+% Minimalist design inspired by Shibui
+
+\mode<presentation>
+
+% Check for theme option
+\DeclareOptionBeamer{nosub}{\def\shibui@nosub{true}}
+\ProcessOptionsBeamer
+
+%--------------------------------------------------
+% TITLE PAGE (rule of thirds, left-aligned, no header/footer)
+%--------------------------------------------------
+
+\defbeamertemplate*{title page}{Shibui theme}[1][]{%
+  \vspace*{0.25\textheight}%
+  \begingroup
+    \raggedright
+    \hspace{0.1\textwidth}%
+    \begin{minipage}{0.8\textwidth}
+      % Title (large)
+      \begin{beamercolorbox}[wd=\linewidth,sep=0pt,left,#1]{title}
+        \usebeamerfont{title}\inserttitle\par%
+      \end{beamercolorbox}%
+
+      % Decorative line
+      \vskip0.5em
+      {\color{shibuitext}\rule{0.3\linewidth}{0.4pt}}
+      \vskip0.5em
+
+      % Subtitle
+      \ifx\insertsubtitle\@empty%
+      \else%
+        \begin{beamercolorbox}[wd=\linewidth,sep=0pt,left,#1]{subtitle}
+          {\usebeamerfont{subtitle}\usebeamercolor[fg]{subtitle}\insertsubtitle\par}%
+        \end{beamercolorbox}%
+        \vskip1em
+      \fi
+
+      % Author
+      \begin{beamercolorbox}[wd=\linewidth,sep=0pt,left,#1]{author}
+        \usebeamerfont{author}\insertauthor
+      \end{beamercolorbox}
+
+      % Institute
+      \ifx\insertinstitute\@empty
+      \else
+        \vskip0.3em
+        \begin{beamercolorbox}[wd=\linewidth,sep=0pt,left,#1]{institute}
+          \usebeamerfont{institute}\insertinstitute
+        \end{beamercolorbox}
+      \fi
+
+      % Date
+      \vskip0.3em
+      \begin{beamercolorbox}[wd=\linewidth,sep=0pt,left,#1]{date}
+        \usebeamerfont{date}\insertdate
+      \end{beamercolorbox}
+    \end{minipage}
+  \endgroup
+  \vfill
+}
+
+% Override title page to remove header/footer
+\renewcommand{\maketitle}{%
+  \ifbeamer@inframe
+    \titlepage
+  \else
+    {%
+      \setbeamertemplate{headline}{}%
+      \setbeamertemplate{footline}{}%
+      \frame[plain,noframenumbering]{\titlepage}%
+    }%
+  \fi
+}
+
+%--------------------------------------------------
+% BACKGROUND TEXTURE (In'ei theme only)
+%--------------------------------------------------
+% Add subtle bokashi gradation and paper grain texture for In'ei theme
+% This creates the "depths within depths" shadow aesthetic from Tanizaki
+
+\RequirePackage{tikz}
+\usetikzlibrary{calc}
+\usetikzlibrary{external}
+
+% Check if In'ei theme variants are active
+\@ifundefined{shibui@theme}{}{%
+  % Number of light columns (deprecated - now using subtle vignetting instead)
+  % Kept as no-op for backwards compatibility with existing presentations
+  \providecommand{\ineilightcolumns}{2}
+
+  % Check for basic inei theme (no expensive effects)
+  \def\tempinei{inei}%
+  \ifx\shibui@theme\tempinei
+    \setbeamertemplate{background canvas}{
+      \begin{tikzpicture}[remember picture,overlay]
+        % Simple background - just base color
+        \fill[shibuibg] (current page.north west) rectangle (current page.south east);
+      \end{tikzpicture}
+    }
+  \fi
+
+  % Check for enhanced inei theme (with all effects)
+  \def\tempineienhanced{ineienhanced}%
+  \ifx\shibui@theme\tempineienhanced
+    \setbeamertemplate{background canvas}{
+      \begin{tikzpicture}[remember picture,overlay]
+        % Fill base background
+        \fill[shibuibg] (current page.north west) rectangle (current page.south east);
+
+        % Subtle vignetting - natural light falloff from center to edges
+        % Multi-step circular radial gradient (10 steps) for ultra-smooth transitions
+        \begin{scope}[opacity=0.8]
+          \foreach \step in {10,9,8,7,6,5,4,3,2,1,0} {
+            % Calculate circular radius and intensity for this step
+            % Radius: largest circle at step 10, smallest at step 0
+            \pgfmathsetmacro{\circleradius}{0.7 * \paperwidth * (1.0 - \step * 0.08)}
+            % Intensity: 0% at edges, 30% at center
+            \pgfmathsetmacro{\intensity}{\step * 3}
+            \pgfmathsetmacro{\nextintensity}{(\step + 1) * 3}
+
+            % Draw circular radial shading for this step
+            \shade[shading=radial,
+                   inner color=shibuigray!\nextintensity!shibuibg,
+                   outer color=shibuigray!\intensity!shibuibg]
+              (current page.center) circle (\circleradius pt);
+          }
+        \end{scope}
+
+        % Matte black paper effect - subtle diagonal crosshatch texture
+        % Creates woven texture like traditional Japanese paper
+        \begin{scope}[opacity=0.03]
+          % Diagonal lines (bottom-left to top-right) at 45 degrees
+          % Using 6pt spacing for finer, more even texture
+          % Simplified to avoid dimension overflow
+          \foreach \i in {-400,-394,...,800} {
+            \draw[shibuitext, line width=0.1pt]
+              ([xshift=\i pt]current page.south west) --
+              ([xshift=\i pt+600pt, yshift=600pt]current page.south west);
+          }
+
+          % Diagonal lines (top-left to bottom-right) at -45 degrees
+          \foreach \i in {-400,-394,...,800} {
+            \draw[shibuitext, line width=0.1pt]
+              ([xshift=\i pt]current page.north west) --
+              ([xshift=\i pt+600pt, yshift=-600pt]current page.north west);
+          }
+        \end{scope}
+      \end{tikzpicture}
+    }
+  \fi
+
+  % Check for inei light theme (light variant, no effects)
+  \def\tempineilight{ineilight}%
+  \ifx\shibui@theme\tempineilight
+    \setbeamertemplate{background canvas}{
+      \begin{tikzpicture}[remember picture,overlay]
+        % Simple light background
+        \fill[shibuibg] (current page.north west) rectangle (current page.south east);
+      \end{tikzpicture}
+    }
+  \fi
+}
+
+%--------------------------------------------------
+% LISTS (minimal, clean)
+%--------------------------------------------------
+
+% Itemize items - simple filled squares
+\setbeamertemplate{itemize item}{%
+  \raisebox{0.12ex}{\rule{0.6ex}{0.6ex}}%
+}
+
+\setbeamertemplate{itemize subitem}{%
+  \raisebox{0.12ex}{\rule{0.5ex}{0.5ex}}%
+}
+
+\setbeamertemplate{itemize subsubitem}{%
+  \raisebox{0.12ex}{\rule{0.4ex}{0.4ex}}%
+}
+
+% Enumerate items - simple numbers
+\setbeamertemplate{enumerate item}{%
+  \arabic{enumi}.%
+}
+
+\setbeamertemplate{enumerate subitem}{%
+  \alph{enumii}.%
+}
+
+\setbeamertemplate{enumerate subsubitem}{%
+  \roman{enumiii}.%
+}
+
+% List spacing - generous (Shibui style)
+\setlength{\leftmargini}{1.5em}
+\setlength{\leftmarginii}{1.5em}
+\setlength{\leftmarginiii}{1.5em}
+\setlength{\labelsep}{0.5em}
+
+%--------------------------------------------------
+% BLOCKS (minimal, no background boxes)
+%--------------------------------------------------
+
+\setbeamertemplate{block begin}{%
+  \vskip0.5em
+  \begin{beamercolorbox}[leftskip=0em,rightskip=0em]{block title}%
+    \usebeamerfont{block title}\insertblocktitle
+  \end{beamercolorbox}%
+  {\parskip0pt\par}%
+  \usebeamerfont{block body}%
+  \begin{beamercolorbox}[leftskip=0em,rightskip=0em,vmode]{block body}%
+}
+
+\setbeamertemplate{block end}{%
+  \end{beamercolorbox}
+  \vskip0.5em
+}
+
+% Alert block
+\setbeamertemplate{block alerted begin}{%
+  \vskip0.5em
+  \begin{beamercolorbox}[leftskip=0em,rightskip=0em]{block title alerted}%
+    \usebeamerfont{block title alerted}\insertblocktitle
+  \end{beamercolorbox}%
+  {\parskip0pt\par}%
+  \usebeamerfont{block body alerted}%
+  \begin{beamercolorbox}[leftskip=0em,rightskip=0em,vmode]{block body alerted}%
+}
+
+\setbeamertemplate{block alerted end}{%
+  \end{beamercolorbox}
+  \vskip0.5em
+}
+
+% Example block
+\setbeamertemplate{block example begin}{%
+  \vskip0.5em
+  \begin{beamercolorbox}[leftskip=0em,rightskip=0em]{block title example}%
+    \usebeamerfont{block title example}\insertblocktitle
+  \end{beamercolorbox}%
+  {\parskip0pt\par}%
+  \usebeamerfont{block body example}%
+  \begin{beamercolorbox}[leftskip=0em,rightskip=0em,vmode]{block body example}%
+}
+
+\setbeamertemplate{block example end}{%
+  \end{beamercolorbox}
+  \vskip0.5em
+}
+
+%--------------------------------------------------
+% TABLE OF CONTENTS (clean and simple)
+%--------------------------------------------------
+
+% Reduce spacing in ToC
+\setbeamertemplate{section in toc}{%
+  \inserttocsectionnumber.~\inserttocsection\par\vspace{0.2em}
+}
+
+% Subsection template - conditionally show based on nosub option
+\ifx\shibui@nosub\undefined
+  % Show subsections (default)
+  \setbeamertemplate{subsection in toc}{%
+    \hspace{1.5em}\rule{0.4ex}{0.4ex}~\inserttocsubsection\par
+  }
+\else
+  % Hide subsections when nosub option is used
+  \setbeamertemplate{subsection in toc}{}
+\fi
+
+% Reduce spacing between ToC entries
+\makeatletter
+\patchcmd{\beamer@sectionintoc}{\vskip1.5em}{\vskip0.5em}{}{}
+\makeatother
+
+%--------------------------------------------------
+% CAPTION (minimal)
+%--------------------------------------------------
+
+\setbeamertemplate{caption}{%
+  \raggedright
+  \usebeamerfont{caption}\insertcaption\par
+}
+
+\setbeamertemplate{caption label separator}{: }
+
+%--------------------------------------------------
+% BIBLIOGRAPHY (clean)
+%--------------------------------------------------
+
+\setbeamertemplate{bibliography item}{%
+  \insertbiblabel
+}
+
+%--------------------------------------------------
+% THEOREM ENVIRONMENTS (minimal)
+%--------------------------------------------------
+
+\setbeamertemplate{theorem begin}{%
+  \vskip0.5em
+  \begin{\inserttheoremblockenv}{%
+    \inserttheoremname
+    \ifx\inserttheoremaddition\@empty\else\ (\inserttheoremaddition)\fi%
+  }%
+}
+
+\setbeamertemplate{theorem end}{%
+  \end{\inserttheoremblockenv}
+  \vskip0.5em
+}
+
+%--------------------------------------------------
+% ENHANCED THEOREM ENVIRONMENTS WITH TCOLORBOX
+%--------------------------------------------------
+% These provide styled theorem-like environments matching Shibui aesthetic
+% Requires tcolorbox package
+
+\RequirePackage{tcolorbox}
+\tcbuselibrary{skins,breakable}
+
+% Base theorem box style using theme colors - minimal Shibui aesthetic
+\tcbset{
+  shibuitheoremstyle/.style={
+    colback=shibuicodebg,
+    coltext=shibuitext,
+    coltitle=shibuiaccent,
+    fonttitle=\bfseries,
+    frame hidden,
+    boxrule=0pt,
+    sharp corners,
+    left=5pt,
+    right=5pt,
+    top=3pt,
+    bottom=3pt,
+    toptitle=2pt,
+    bottomtitle=1pt,
+    breakable,
+    enhanced jigsaw,
+  }
+}
+
+% Theorem environment
+\newenvironment{shibuitheorem}[1][]{%
+  \begin{tcolorbox}[shibuitheoremstyle,title=Theorem #1]
+}{%
+  \end{tcolorbox}
+}
+
+% Lemma environment
+\newenvironment{shibuilemma}[1][]{%
+  \begin{tcolorbox}[shibuitheoremstyle,title=Lemma #1]
+}{%
+  \end{tcolorbox}
+}
+
+% Corollary environment
+\newenvironment{shibuicorollary}[1][]{%
+  \begin{tcolorbox}[shibuitheoremstyle,title=Corollary #1]
+}{%
+  \end{tcolorbox}
+}
+
+% Definition environment (uses darkgray for title color)
+\newenvironment{shibuidefinition}[1][]{%
+  \begin{tcolorbox}[shibuitheoremstyle,
+    coltitle=shibuidarkgray,
+    title=Definition #1]
+}{%
+  \end{tcolorbox}
+}
+
+% Proposition environment
+\newenvironment{shibuiproposition}[1][]{%
+  \begin{tcolorbox}[shibuitheoremstyle,title=Proposition #1]
+}{%
+  \end{tcolorbox}
+}
+
+% Proof environment with QED symbol
+\newenvironment{shibuiproof}{%
+  \par\vspace{0.3em}%
+  \noindent\textbf{Proof.}\quad
+}{%
+  \hfill$\square$\par\vspace{0.3em}%
+}
+
+%--------------------------------------------------
+% CALLOUT BOXES
+%--------------------------------------------------
+% Note, Warning, and Tip boxes using theme colors - minimal Shibui aesthetic
+
+% Note box (uses accent color for title)
+\newenvironment{shibiunote}[1][Note]{%
+  \begin{tcolorbox}[
+    colback=shibuicodebg,
+    coltext=shibuitext,
+    coltitle=shibuiaccent,
+    fonttitle=\bfseries,
+    title=#1,
+    frame hidden,
+    boxrule=0pt,
+    sharp corners,
+    left=5pt,
+    right=5pt,
+    top=3pt,
+    bottom=3pt,
+    toptitle=2pt,
+    bottomtitle=1pt,
+    breakable,
+    enhanced jigsaw,
+  ]
+}{%
+  \end{tcolorbox}
+}
+
+% Warning box (uses code background color)
+\newenvironment{shibuiwarning}[1][Warning]{%
+  \begin{tcolorbox}[
+    colback=shibuicodebg,
+    coltext=shibuitext,
+    coltitle=shibuiaccent,
+    fonttitle=\bfseries,
+    title=#1,
+    frame hidden,
+    boxrule=0pt,
+    sharp corners,
+    left=5pt,
+    right=5pt,
+    top=3pt,
+    bottom=3pt,
+    toptitle=2pt,
+    bottomtitle=1pt,
+    breakable,
+    enhanced jigsaw,
+  ]
+}{%
+  \end{tcolorbox}
+}
+
+% Tip box (uses darkgray for title)
+\newenvironment{shibuitip}[1][Tip]{%
+  \begin{tcolorbox}[
+    colback=shibuicodebg,
+    coltext=shibuitext,
+    coltitle=shibuidarkgray,
+    fonttitle=\bfseries,
+    title=#1,
+    frame hidden,
+    boxrule=0pt,
+    sharp corners,
+    left=5pt,
+    right=5pt,
+    top=3pt,
+    bottom=3pt,
+    toptitle=2pt,
+    bottomtitle=1pt,
+    breakable,
+    enhanced jigsaw,
+  ]
+}{%
+  \end{tcolorbox}
+}
+
+%--------------------------------------------------
+% MARGINS (generous whitespace, Shibui style)
+%--------------------------------------------------
+
+\setbeamersize{text margin left=1cm,text margin right=1cm}
+
+%--------------------------------------------------
+% AUTOMATIC SECTION TOC
+%--------------------------------------------------
+% Display table of contents at the start of each section
+% with the current section highlighted
+
+\AtBeginSection[]{
+  \begin{frame}{Overview}
+    % Tighter spacing for section ToC
+    \setlength{\parskip}{0pt}%
+    \setlength{\itemsep}{0pt}%
+    \tableofcontents[currentsection]
+  \end{frame}
+}
+
+\mode<all>

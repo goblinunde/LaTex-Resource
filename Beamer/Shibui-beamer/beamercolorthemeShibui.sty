@@ -1,0 +1,492 @@
+% Beamer Color Theme: Shibui
+% Multiple refined color schemes for the Shibui theme
+%
+% Supports multiple color schemes:
+% - light (default), dark (classic light/dark schemes)
+% - solarizedlight, solarizeddark, solarizedosaka (Solarized variants)
+% - nord (Arctic, north-bluish color palette)
+% - gruvboxlight, gruvboxdark (Retro groove with warm tones)
+% - autumn (Warm autumn colors with browns and oranges)
+% - inei (In Praise of Shadows - deep charcoal with muted gold)
+%
+% Usage: \usetheme[solarizedosaka]{Shibui} or \usetheme[nord]{Shibui}
+% Default: light
+
+\mode<presentation>
+
+% Declare all color scheme options
+\DeclareOptionBeamer{light}{\def\shibui@theme{light}}
+\DeclareOptionBeamer{dark}{\def\shibui@theme{dark}}
+\DeclareOptionBeamer{solarizedlight}{\def\shibui@theme{solarizedlight}}
+\DeclareOptionBeamer{solarizeddark}{\def\shibui@theme{solarizeddark}}
+\DeclareOptionBeamer{solarizedosaka}{\def\shibui@theme{solarizedosaka}}
+\DeclareOptionBeamer{nord}{\def\shibui@theme{nord}}
+\DeclareOptionBeamer{gruvboxlight}{\def\shibui@theme{gruvboxlight}}
+\DeclareOptionBeamer{gruvboxdark}{\def\shibui@theme{gruvboxdark}}
+\DeclareOptionBeamer{autumn}{\def\shibui@theme{autumn}}
+\DeclareOptionBeamer{inei}{\def\shibui@theme{inei}}
+\DeclareOptionBeamer{ineienhanced}{\def\shibui@theme{ineienhanced}}
+\DeclareOptionBeamer{ineilight}{\def\shibui@theme{ineilight}}
+\ExecuteOptionsBeamer{light}  % Default to light
+\ProcessOptionsBeamer
+
+% Define color palette based on theme
+\ifx\shibui@theme\undefined
+  \def\shibui@theme{light}
+\fi
+
+% Helper macros for theme comparison
+\def\shibui@dark{dark}
+\def\shibui@light{light}
+\def\shibui@solarizedlight{solarizedlight}
+\def\shibui@solarizeddark{solarizeddark}
+\def\shibui@solarizedosaka{solarizedosaka}
+\def\shibui@nord{nord}
+\def\shibui@gruvboxlight{gruvboxlight}
+\def\shibui@gruvboxdark{gruvboxdark}
+\def\shibui@autumn{autumn}
+\def\shibui@inei{inei}
+\def\shibui@ineienhanced{ineienhanced}
+\def\shibui@ineilight{ineilight}
+
+% Set colors based on selected theme
+\ifx\shibui@theme\shibui@dark
+  % Dark theme colors (original)
+  \definecolor{shibuibg}{HTML}{1A1A1A}        % Dark background
+  \definecolor{shibuitext}{HTML}{EEEEEE}      % Light text
+  \definecolor{shibuiaccent}{HTML}{FF6B6B}    % Lighter red for accents
+  \definecolor{shibuigray}{HTML}{444444}      % Dark gray for UI elements
+  \definecolor{shibuidarkgray}{HTML}{AAAAAA}  % Light gray for secondary text
+  \definecolor{shibuicodebg}{HTML}{252525}    % Slightly lighter than main bg
+  \definecolor{shibuilink}{HTML}{FF6B6B}      % Links (same as accent)
+  % Plot colors for data visualization
+  \definecolor{shibuiplot1}{HTML}{FF6B6B}     % Red (accent)
+  \definecolor{shibuiplot2}{HTML}{4ECDC4}     % Teal
+  \definecolor{shibuiplot3}{HTML}{FFE66D}     % Yellow
+  \definecolor{shibuiplot4}{HTML}{95E1D3}     % Mint
+  \definecolor{shibuiplot5}{HTML}{C7CEEA}     % Lavender
+  % Define preview colors for this theme
+  \definecolor{shibuibg@dark}{HTML}{1A1A1A}
+  \definecolor{shibuitext@dark}{HTML}{EEEEEE}
+  \definecolor{shibuiaccent@dark}{HTML}{FF6B6B}
+  \definecolor{shibuigray@dark}{HTML}{444444}
+  \definecolor{shibuidarkgray@dark}{HTML}{AAAAAA}
+  \definecolor{shibuicodebg@dark}{HTML}{252525}
+\else\ifx\shibui@theme\shibui@light
+  % Light theme colors (original shibui-css)
+  \definecolor{shibuibg}{HTML}{FFFFF8}        % Cream background
+  \definecolor{shibuitext}{HTML}{111111}      % Near black text
+  \definecolor{shibuiaccent}{HTML}{A00000}    % Dark red for accents
+  \definecolor{shibuigray}{HTML}{CCCCCC}      % Light gray for UI elements
+  \definecolor{shibuidarkgray}{HTML}{555555}  % Dark gray for secondary text
+  \definecolor{shibuicodebg}{HTML}{F5F5ED}    % Slightly darker than cream bg
+  \definecolor{shibuilink}{HTML}{A00000}      % Links (same as accent)
+  % Plot colors for data visualization
+  \definecolor{shibuiplot1}{HTML}{A00000}     % Dark red (accent)
+  \definecolor{shibuiplot2}{HTML}{2A6F97}     % Deep blue
+  \definecolor{shibuiplot3}{HTML}{8B4513}     % Saddle brown
+  \definecolor{shibuiplot4}{HTML}{2F4F4F}     % Dark slate gray
+  \definecolor{shibuiplot5}{HTML}{556B2F}     % Dark olive green
+  % Define preview colors for this theme
+  \definecolor{shibuibg@light}{HTML}{FFFFF8}
+  \definecolor{shibuitext@light}{HTML}{111111}
+  \definecolor{shibuiaccent@light}{HTML}{A00000}
+  \definecolor{shibuigray@light}{HTML}{CCCCCC}
+  \definecolor{shibuidarkgray@light}{HTML}{555555}
+  \definecolor{shibuicodebg@light}{HTML}{F5F5ED}
+\else\ifx\shibui@theme\shibui@solarizedlight
+  % Solarized Light theme
+  \definecolor{shibuibg}{HTML}{FDF6E3}        % Base3 - light background
+  \definecolor{shibuitext}{HTML}{657B83}      % Base00 - primary text
+  \definecolor{shibuiaccent}{HTML}{CC6961}    % Muted red - accent color
+  \definecolor{shibuigray}{HTML}{EEE8D5}      % Base2 - light gray UI
+  \definecolor{shibuidarkgray}{HTML}{93A1A1}  % Base1 - secondary text
+  \definecolor{shibuicodebg}{HTML}{EEE8D5}    % Base2 - code background
+  \definecolor{shibuilink}{HTML}{CC6961}      % Muted red - links
+  % Plot colors for data visualization
+  \definecolor{shibuiplot1}{HTML}{CC6961}     % Muted red
+  \definecolor{shibuiplot2}{HTML}{268BD2}     % Blue
+  \definecolor{shibuiplot3}{HTML}{859900}     % Green
+  \definecolor{shibuiplot4}{HTML}{D33682}     % Magenta
+  \definecolor{shibuiplot5}{HTML}{2AA198}     % Cyan
+  % Define preview colors for this theme
+  \definecolor{shibuibg@solarizedlight}{HTML}{FDF6E3}
+  \definecolor{shibuitext@solarizedlight}{HTML}{657B83}
+  \definecolor{shibuiaccent@solarizedlight}{HTML}{CC6961}
+  \definecolor{shibuigray@solarizedlight}{HTML}{EEE8D5}
+  \definecolor{shibuidarkgray@solarizedlight}{HTML}{93A1A1}
+  \definecolor{shibuicodebg@solarizedlight}{HTML}{EEE8D5}
+\else\ifx\shibui@theme\shibui@solarizeddark
+  % Solarized Dark theme
+  \definecolor{shibuibg}{HTML}{002B36}        % Base03 - dark background
+  \definecolor{shibuitext}{HTML}{839496}      % Base0 - primary text
+  \definecolor{shibuiaccent}{HTML}{268BD2}    % Blue - accent color
+  \definecolor{shibuigray}{HTML}{073642}      % Base02 - dark gray UI
+  \definecolor{shibuidarkgray}{HTML}{586E75}  % Base01 - secondary text
+  \definecolor{shibuicodebg}{HTML}{073642}    % Base02 - code background
+  \definecolor{shibuilink}{HTML}{268BD2}      % Blue - links
+  % Plot colors for data visualization
+  \definecolor{shibuiplot1}{HTML}{268BD2}     % Blue
+  \definecolor{shibuiplot2}{HTML}{2AA198}     % Cyan
+  \definecolor{shibuiplot3}{HTML}{859900}     % Green
+  \definecolor{shibuiplot4}{HTML}{B58900}     % Yellow
+  \definecolor{shibuiplot5}{HTML}{D33682}     % Magenta
+  % Define preview colors for this theme
+  \definecolor{shibuibg@solarizeddark}{HTML}{002B36}
+  \definecolor{shibuitext@solarizeddark}{HTML}{839496}
+  \definecolor{shibuiaccent@solarizeddark}{HTML}{268BD2}
+  \definecolor{shibuigray@solarizeddark}{HTML}{073642}
+  \definecolor{shibuidarkgray@solarizeddark}{HTML}{586E75}
+  \definecolor{shibuicodebg@solarizeddark}{HTML}{073642}
+\else\ifx\shibui@theme\shibui@solarizedosaka
+  % Solarized Osaka theme (deep blue variant with muted red accent)
+  \definecolor{shibuibg}{HTML}{001A26}        % Deep blue-cyan background
+  \definecolor{shibuitext}{HTML}{839496}      % Solarized base0 - primary text
+  \definecolor{shibuiaccent}{HTML}{CC6961}    % Muted red - accent color (desaturated)
+  \definecolor{shibuigray}{HTML}{003844}      % Slightly lighter blue - UI elements
+  \definecolor{shibuidarkgray}{HTML}{586E75}  % Base01 - secondary text
+  \definecolor{shibuicodebg}{HTML}{002A36}    % Slightly lighter than bg
+  \definecolor{shibuilink}{HTML}{CC6961}      % Muted red - links
+  % Plot colors for data visualization
+  \definecolor{shibuiplot1}{HTML}{CC6961}     % Muted red
+  \definecolor{shibuiplot2}{HTML}{268BD2}     % Blue
+  \definecolor{shibuiplot3}{HTML}{2AA198}     % Cyan
+  \definecolor{shibuiplot4}{HTML}{859900}     % Green
+  \definecolor{shibuiplot5}{HTML}{B58900}     % Yellow
+  % Define preview colors for this theme
+  \definecolor{shibuibg@solarizedosaka}{HTML}{001A26}
+  \definecolor{shibuitext@solarizedosaka}{HTML}{839496}
+  \definecolor{shibuiaccent@solarizedosaka}{HTML}{CC6961}
+  \definecolor{shibuigray@solarizedosaka}{HTML}{003844}
+  \definecolor{shibuidarkgray@solarizedosaka}{HTML}{586E75}
+  \definecolor{shibuicodebg@solarizedosaka}{HTML}{002A36}
+\else\ifx\shibui@theme\shibui@nord
+  % Nord theme (arctic, north-bluish)
+  \definecolor{shibuibg}{HTML}{2E3440}        % Nord0 - polar night background
+  \definecolor{shibuitext}{HTML}{ECEFF4}      % Nord6 - snow storm text
+  \definecolor{shibuiaccent}{HTML}{88C0D0}    % Nord8 - frost blue accent
+  \definecolor{shibuigray}{HTML}{3B4252}      % Nord1 - darker UI elements
+  \definecolor{shibuidarkgray}{HTML}{D8DEE9}  % Nord4 - lighter secondary text
+  \definecolor{shibuicodebg}{HTML}{3B4252}    % Nord1 - code background
+  \definecolor{shibuilink}{HTML}{88C0D0}      % Nord8 - frost blue links
+  % Plot colors for data visualization
+  \definecolor{shibuiplot1}{HTML}{88C0D0}     % Nord8 - Frost blue
+  \definecolor{shibuiplot2}{HTML}{81A1C1}     % Nord9 - Frost light blue
+  \definecolor{shibuiplot3}{HTML}{5E81AC}     % Nord10 - Frost deep blue
+  \definecolor{shibuiplot4}{HTML}{A3BE8C}     % Nord14 - Aurora green
+  \definecolor{shibuiplot5}{HTML}{B48EAD}     % Nord15 - Aurora purple
+  % Define preview colors for this theme
+  \definecolor{shibuibg@nord}{HTML}{2E3440}
+  \definecolor{shibuitext@nord}{HTML}{ECEFF4}
+  \definecolor{shibuiaccent@nord}{HTML}{88C0D0}
+  \definecolor{shibuigray@nord}{HTML}{3B4252}
+  \definecolor{shibuidarkgray@nord}{HTML}{D8DEE9}
+  \definecolor{shibuicodebg@nord}{HTML}{3B4252}
+\else\ifx\shibui@theme\shibui@gruvboxlight
+  % Gruvbox Light theme
+  \definecolor{shibuibg}{HTML}{FBF1C7}        % Light bg - warm cream
+  \definecolor{shibuitext}{HTML}{3C3836}      % Dark fg - primary text
+  \definecolor{shibuiaccent}{HTML}{D65D0E}    % Bright orange - accent
+  \definecolor{shibuigray}{HTML}{EBDBB2}      % Light bg1 - UI elements
+  \definecolor{shibuidarkgray}{HTML}{665C54}  % Dark fg2 - secondary text
+  \definecolor{shibuicodebg}{HTML}{EBDBB2}    % Light bg1 - code background
+  \definecolor{shibuilink}{HTML}{D65D0E}      % Bright orange - links
+  % Plot colors for data visualization
+  \definecolor{shibuiplot1}{HTML}{D65D0E}     % Bright orange
+  \definecolor{shibuiplot2}{HTML}{458588}     % Bright blue
+  \definecolor{shibuiplot3}{HTML}{98971A}     % Bright green
+  \definecolor{shibuiplot4}{HTML}{B16286}     % Bright purple
+  \definecolor{shibuiplot5}{HTML}{689D6A}     % Bright aqua
+  % Define preview colors for this theme
+  \definecolor{shibuibg@gruvboxlight}{HTML}{FBF1C7}
+  \definecolor{shibuitext@gruvboxlight}{HTML}{3C3836}
+  \definecolor{shibuiaccent@gruvboxlight}{HTML}{D65D0E}
+  \definecolor{shibuigray@gruvboxlight}{HTML}{EBDBB2}
+  \definecolor{shibuidarkgray@gruvboxlight}{HTML}{665C54}
+  \definecolor{shibuicodebg@gruvboxlight}{HTML}{EBDBB2}
+\else\ifx\shibui@theme\shibui@gruvboxdark
+  % Gruvbox Dark theme
+  \definecolor{shibuibg}{HTML}{282828}        % Dark bg - dark background
+  \definecolor{shibuitext}{HTML}{EBDBB2}      % Light fg - primary text
+  \definecolor{shibuiaccent}{HTML}{FE8019}    % Bright orange - accent
+  \definecolor{shibuigray}{HTML}{3C3836}      % Dark bg1 - UI elements
+  \definecolor{shibuidarkgray}{HTML}{A89984}  % Light fg2 - secondary text
+  \definecolor{shibuicodebg}{HTML}{3C3836}    % Dark bg1 - code background
+  \definecolor{shibuilink}{HTML}{FE8019}      % Bright orange - links
+  % Plot colors for data visualization
+  \definecolor{shibuiplot1}{HTML}{FE8019}     % Bright orange
+  \definecolor{shibuiplot2}{HTML}{83A598}     % Bright blue
+  \definecolor{shibuiplot3}{HTML}{B8BB26}     % Bright green
+  \definecolor{shibuiplot4}{HTML}{D3869B}     % Bright purple
+  \definecolor{shibuiplot5}{HTML}{8EC07C}     % Bright aqua
+  % Define preview colors for this theme
+  \definecolor{shibuibg@gruvboxdark}{HTML}{282828}
+  \definecolor{shibuitext@gruvboxdark}{HTML}{EBDBB2}
+  \definecolor{shibuiaccent@gruvboxdark}{HTML}{FE8019}
+  \definecolor{shibuigray@gruvboxdark}{HTML}{3C3836}
+  \definecolor{shibuidarkgray@gruvboxdark}{HTML}{A89984}
+  \definecolor{shibuicodebg@gruvboxdark}{HTML}{3C3836}
+\else\ifx\shibui@theme\shibui@autumn
+  % Autumn theme (warm, earthy tones)
+  \definecolor{shibuibg}{HTML}{FAF4ED}        % Warm light beige background
+  \definecolor{shibuitext}{HTML}{5C4A42}      % Warm brown text
+  \definecolor{shibuiaccent}{HTML}{D97742}    % Rust orange accent
+  \definecolor{shibuigray}{HTML}{EAD9CC}      % Warm light gray UI
+  \definecolor{shibuidarkgray}{HTML}{8B7366}  % Muted brown secondary text
+  \definecolor{shibuicodebg}{HTML}{F4E8D8}    % Warm cream code background
+  \definecolor{shibuilink}{HTML}{D97742}      % Rust orange links
+  % Plot colors for data visualization
+  \definecolor{shibuiplot1}{HTML}{D97742}     % Rust orange
+  \definecolor{shibuiplot2}{HTML}{A0522D}     % Sienna brown
+  \definecolor{shibuiplot3}{HTML}{CD853F}     % Peru brown
+  \definecolor{shibuiplot4}{HTML}{8B6914}     % Dark goldenrod
+  \definecolor{shibuiplot5}{HTML}{BC8F8F}     % Rosy brown
+  % Define preview colors for this theme
+  \definecolor{shibuibg@autumn}{HTML}{FAF4ED}
+  \definecolor{shibuitext@autumn}{HTML}{5C4A42}
+  \definecolor{shibuiaccent@autumn}{HTML}{D97742}
+  \definecolor{shibuigray@autumn}{HTML}{EAD9CC}
+  \definecolor{shibuidarkgray@autumn}{HTML}{8B7366}
+  \definecolor{shibuicodebg@autumn}{HTML}{F4E8D8}
+\else\ifx\shibui@theme\shibui@inei
+  % In'ei theme (陰翳 - Shadow and Light)
+  % Inspired by Tanizaki's "In Praise of Shadows"
+  % Deep sumi ink black like traditional Japanese books
+  \definecolor{shibuibg}{HTML}{0A0B0C}        % Deep sumi ink black (like Japanese books)
+  \definecolor{shibuitext}{HTML}{A8ACAE}      % Cool blue-gray (subdued, contemplative)
+  \definecolor{shibuiaccent}{HTML}{B09770}    % Warm antique gold (gleaming from darkness)
+  \definecolor{shibuigray}{HTML}{1C1A18}      % Barely lighter black with warm undertone
+  \definecolor{shibuidarkgray}{HTML}{7A726B}  % Warm gray (secondary text)
+  \definecolor{shibuicodebg}{HTML}{121416}    % Slightly lighter black for depth
+  \definecolor{shibuilink}{HTML}{B09770}      % Warm gold for links
+  % Plot colors for data visualization
+  \definecolor{shibuiplot1}{HTML}{FFA726}     % Bright amber/orange
+  \definecolor{shibuiplot2}{HTML}{29B6F6}     % Light blue/cyan
+  \definecolor{shibuiplot3}{HTML}{66BB6A}     % Medium green
+  \definecolor{shibuiplot4}{HTML}{AB47BC}     % Purple
+  \definecolor{shibuiplot5}{HTML}{EC407A}     % Pink/rose
+  % Define preview colors for this theme
+  \definecolor{shibuibg@inei}{HTML}{0A0B0C}
+  \definecolor{shibuitext@inei}{HTML}{A8ACAE}
+  \definecolor{shibuiaccent@inei}{HTML}{B09770}
+  \definecolor{shibuigray@inei}{HTML}{1C1A18}
+  \definecolor{shibuidarkgray@inei}{HTML}{7A726B}
+  \definecolor{shibuicodebg@inei}{HTML}{121416}
+\else\ifx\shibui@theme\shibui@ineienhanced
+  % In'ei Enhanced theme - same as inei (background effects in inner theme)
+  \definecolor{shibuibg}{HTML}{0A0B0C}
+  \definecolor{shibuitext}{HTML}{A8ACAE}
+  \definecolor{shibuiaccent}{HTML}{B09770}
+  \definecolor{shibuigray}{HTML}{1C1A18}
+  \definecolor{shibuidarkgray}{HTML}{7A726B}
+  \definecolor{shibuicodebg}{HTML}{121416}
+  \definecolor{shibuilink}{HTML}{B09770}
+  % Plot colors for data visualization
+  \definecolor{shibuiplot1}{HTML}{FFA726}     % Bright amber/orange
+  \definecolor{shibuiplot2}{HTML}{29B6F6}     % Light blue/cyan
+  \definecolor{shibuiplot3}{HTML}{66BB6A}     % Medium green
+  \definecolor{shibuiplot4}{HTML}{AB47BC}     % Purple
+  \definecolor{shibuiplot5}{HTML}{EC407A}     % Pink/rose
+  % Define preview colors
+  \definecolor{shibuibg@ineienhanced}{HTML}{0A0B0C}
+  \definecolor{shibuitext@ineienhanced}{HTML}{A8ACAE}
+  \definecolor{shibuiaccent@ineienhanced}{HTML}{B09770}
+  \definecolor{shibuigray@ineienhanced}{HTML}{1C1A18}
+  \definecolor{shibuidarkgray@ineienhanced}{HTML}{7A726B}
+  \definecolor{shibuicodebg@ineienhanced}{HTML}{121416}
+\else\ifx\shibui@theme\shibui@ineilight
+  % In'ei Light theme - lighter variant for better readability
+  \definecolor{shibuibg}{HTML}{E8E6E3}        % Warm off-white (like aged paper)
+  \definecolor{shibuitext}{HTML}{2A2C2E}      % Dark gray-black text
+  \definecolor{shibuiaccent}{HTML}{B09770}    % Warm antique gold
+  \definecolor{shibuigray}{HTML}{D0CEC9}      % Light warm gray
+  \definecolor{shibuidarkgray}{HTML}{5A5C5E}  % Medium gray
+  \definecolor{shibuicodebg}{HTML}{DDD9D4}    % Slightly darker off-white
+  \definecolor{shibuilink}{HTML}{B09770}      % Warm gold for links
+  % Plot colors for data visualization
+  \definecolor{shibuiplot1}{HTML}{B09770}     % Warm gold (matches accent)
+  \definecolor{shibuiplot2}{HTML}{6B8E9E}     % Muted blue
+  \definecolor{shibuiplot3}{HTML}{A87B65}     % Muted terracotta
+  \definecolor{shibuiplot4}{HTML}{7E8B7D}     % Muted sage
+  \definecolor{shibuiplot5}{HTML}{8A7B8C}     % Muted mauve
+  % Define preview colors
+  \definecolor{shibuibg@ineilight}{HTML}{E8E6E3}
+  \definecolor{shibuitext@ineilight}{HTML}{2A2C2E}
+  \definecolor{shibuiaccent@ineilight}{HTML}{B09770}
+  \definecolor{shibuigray@ineilight}{HTML}{D0CEC9}
+  \definecolor{shibuidarkgray@ineilight}{HTML}{5A5C5E}
+  \definecolor{shibuicodebg@ineilight}{HTML}{DDD9D4}
+\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi
+
+% Always define all theme colors for preview purposes (regardless of selected theme)
+% This ensures all colors are available in example.tex
+\@ifundefined{ver@shibuibg@light}{
+  \definecolor{shibuibg@light}{HTML}{FFFFF8}
+  \definecolor{shibuitext@light}{HTML}{111111}
+  \definecolor{shibuiaccent@light}{HTML}{A00000}
+  \definecolor{shibuigray@light}{HTML}{CCCCCC}
+  \definecolor{shibuidarkgray@light}{HTML}{555555}
+  \definecolor{shibuicodebg@light}{HTML}{F5F5ED}
+}{}
+\@ifundefined{ver@shibuibg@dark}{
+  \definecolor{shibuibg@dark}{HTML}{1A1A1A}
+  \definecolor{shibuitext@dark}{HTML}{EEEEEE}
+  \definecolor{shibuiaccent@dark}{HTML}{FF6B6B}
+  \definecolor{shibuigray@dark}{HTML}{444444}
+  \definecolor{shibuidarkgray@dark}{HTML}{AAAAAA}
+  \definecolor{shibuicodebg@dark}{HTML}{252525}
+}{}
+\@ifundefined{ver@shibuibg@solarizedlight}{
+  \definecolor{shibuibg@solarizedlight}{HTML}{FDF6E3}
+  \definecolor{shibuitext@solarizedlight}{HTML}{657B83}
+  \definecolor{shibuiaccent@solarizedlight}{HTML}{CC6961}
+  \definecolor{shibuigray@solarizedlight}{HTML}{EEE8D5}
+  \definecolor{shibuidarkgray@solarizedlight}{HTML}{93A1A1}
+  \definecolor{shibuicodebg@solarizedlight}{HTML}{EEE8D5}
+}{}
+\@ifundefined{ver@shibuibg@solarizeddark}{
+  \definecolor{shibuibg@solarizeddark}{HTML}{002B36}
+  \definecolor{shibuitext@solarizeddark}{HTML}{839496}
+  \definecolor{shibuiaccent@solarizeddark}{HTML}{268BD2}
+  \definecolor{shibuigray@solarizeddark}{HTML}{073642}
+  \definecolor{shibuidarkgray@solarizeddark}{HTML}{586E75}
+  \definecolor{shibuicodebg@solarizeddark}{HTML}{073642}
+}{}
+\@ifundefined{ver@shibuibg@solarizedosaka}{
+  \definecolor{shibuibg@solarizedosaka}{HTML}{001A26}
+  \definecolor{shibuitext@solarizedosaka}{HTML}{839496}
+  \definecolor{shibuiaccent@solarizedosaka}{HTML}{CC6961}
+  \definecolor{shibuigray@solarizedosaka}{HTML}{003844}
+  \definecolor{shibuidarkgray@solarizedosaka}{HTML}{586E75}
+  \definecolor{shibuicodebg@solarizedosaka}{HTML}{002A36}
+}{}
+\@ifundefined{ver@shibuibg@nord}{
+  \definecolor{shibuibg@nord}{HTML}{2E3440}
+  \definecolor{shibuitext@nord}{HTML}{ECEFF4}
+  \definecolor{shibuiaccent@nord}{HTML}{88C0D0}
+  \definecolor{shibuigray@nord}{HTML}{3B4252}
+  \definecolor{shibuidarkgray@nord}{HTML}{D8DEE9}
+  \definecolor{shibuicodebg@nord}{HTML}{3B4252}
+}{}
+\@ifundefined{ver@shibuibg@gruvboxlight}{
+  \definecolor{shibuibg@gruvboxlight}{HTML}{FBF1C7}
+  \definecolor{shibuitext@gruvboxlight}{HTML}{3C3836}
+  \definecolor{shibuiaccent@gruvboxlight}{HTML}{D65D0E}
+  \definecolor{shibuigray@gruvboxlight}{HTML}{EBDBB2}
+  \definecolor{shibuidarkgray@gruvboxlight}{HTML}{665C54}
+  \definecolor{shibuicodebg@gruvboxlight}{HTML}{EBDBB2}
+}{}
+\@ifundefined{ver@shibuibg@gruvboxdark}{
+  \definecolor{shibuibg@gruvboxdark}{HTML}{282828}
+  \definecolor{shibuitext@gruvboxdark}{HTML}{EBDBB2}
+  \definecolor{shibuiaccent@gruvboxdark}{HTML}{FE8019}
+  \definecolor{shibuigray@gruvboxdark}{HTML}{3C3836}
+  \definecolor{shibuidarkgray@gruvboxdark}{HTML}{A89984}
+  \definecolor{shibuicodebg@gruvboxdark}{HTML}{3C3836}
+}{}
+\@ifundefined{ver@shibuibg@autumn}{
+  \definecolor{shibuibg@autumn}{HTML}{FAF4ED}
+  \definecolor{shibuitext@autumn}{HTML}{5C4A42}
+  \definecolor{shibuiaccent@autumn}{HTML}{D97742}
+  \definecolor{shibuigray@autumn}{HTML}{EAD9CC}
+  \definecolor{shibuidarkgray@autumn}{HTML}{8B7366}
+  \definecolor{shibuicodebg@autumn}{HTML}{F4E8D8}
+}{}
+\@ifundefined{ver@shibuibg@inei}{
+  \definecolor{shibuibg@inei}{HTML}{0A0B0C}
+  \definecolor{shibuitext@inei}{HTML}{A8ACAE}
+  \definecolor{shibuiaccent@inei}{HTML}{B09770}
+  \definecolor{shibuigray@inei}{HTML}{1C1A18}
+  \definecolor{shibuidarkgray@inei}{HTML}{7A726B}
+  \definecolor{shibuicodebg@inei}{HTML}{121416}
+}{}
+\@ifundefined{ver@shibuibg@ineienhanced}{
+  \definecolor{shibuibg@ineienhanced}{HTML}{0A0B0C}
+  \definecolor{shibuitext@ineienhanced}{HTML}{A8ACAE}
+  \definecolor{shibuiaccent@ineienhanced}{HTML}{B09770}
+  \definecolor{shibuigray@ineienhanced}{HTML}{1C1A18}
+  \definecolor{shibuidarkgray@ineienhanced}{HTML}{7A726B}
+  \definecolor{shibuicodebg@ineienhanced}{HTML}{121416}
+}{}
+\@ifundefined{ver@shibuibg@ineilight}{
+  \definecolor{shibuibg@ineilight}{HTML}{E8E6E3}
+  \definecolor{shibuitext@ineilight}{HTML}{2A2C2E}
+  \definecolor{shibuiaccent@ineilight}{HTML}{B09770}
+  \definecolor{shibuigray@ineilight}{HTML}{D0CEC9}
+  \definecolor{shibuidarkgray@ineilight}{HTML}{5A5C5E}
+  \definecolor{shibuicodebg@ineilight}{HTML}{DDD9D4}
+}{}
+
+% Set background colors
+\setbeamercolor{background canvas}{bg=shibuibg}
+\setbeamercolor{normal text}{fg=shibuitext,bg=shibuibg}
+
+% Structure colors (minimal and clean)
+\setbeamercolor{structure}{fg=shibuitext}
+\setbeamercolor{alerted text}{fg=shibuiaccent}
+\setbeamercolor{example text}{fg=shibuidarkgray}
+
+% Title and frame title
+\setbeamercolor{title}{fg=shibuiaccent}
+\setbeamercolor{subtitle}{fg=shibuidarkgray}
+\setbeamercolor{author}{fg=shibuitext}
+\setbeamercolor{date}{fg=shibuidarkgray}
+\setbeamercolor{institute}{fg=shibuidarkgray}
+\setbeamercolor{frametitle}{fg=shibuiaccent,bg=shibuibg}
+\setbeamercolor{framesubtitle}{fg=shibuidarkgray,bg=shibuibg}
+
+% Headline and footline
+\setbeamercolor{headline}{fg=shibuidarkgray,bg=}
+\setbeamercolor{footline}{fg=shibuidarkgray,bg=}
+
+% Section in headline
+\setbeamercolor{section in head/foot}{fg=shibuiaccent,bg=}
+\setbeamercolor{subsection in head/foot}{fg=shibuidarkgray,bg=}
+
+% Navigation symbols and section names
+\setbeamercolor{section in head/foot shaded}{fg=shibuidarkgray,bg=}
+\setbeamercolor{navigation symbols}{fg=shibuigray}
+\setbeamercolor{navigation symbols dimmed}{fg=shibuigray!50}
+
+% Progress bar
+\setbeamercolor{progress bar}{fg=shibuiaccent,bg=shibuigray}
+\setbeamercolor{progress bar progress}{fg=shibuiaccent,bg=shibuiaccent}
+
+% Items (lists)
+\setbeamercolor{item}{fg=shibuiaccent}
+\setbeamercolor{subitem}{fg=shibuidarkgray}
+\setbeamercolor{subsubitem}{fg=shibuidarkgray}
+
+\setbeamercolor{itemize item}{fg=shibuiaccent}
+\setbeamercolor{itemize subitem}{fg=shibuidarkgray}
+\setbeamercolor{itemize subsubitem}{fg=shibuidarkgray}
+
+\setbeamercolor{enumerate item}{fg=shibuiaccent}
+\setbeamercolor{enumerate subitem}{fg=shibuidarkgray}
+\setbeamercolor{enumerate subsubitem}{fg=shibuidarkgray}
+
+% Blocks (minimal)
+\setbeamercolor{block title}{fg=shibuitext,bg=shibuibg}
+\setbeamercolor{block body}{fg=shibuitext,bg=shibuibg}
+
+\setbeamercolor{block title alerted}{fg=shibuiaccent,bg=shibuibg}
+\setbeamercolor{block body alerted}{fg=shibuitext,bg=shibuibg}
+
+\setbeamercolor{block title example}{fg=shibuidarkgray,bg=shibuibg}
+\setbeamercolor{block body example}{fg=shibuitext,bg=shibuibg}
+
+% Bibliography
+\setbeamercolor{bibliography entry author}{fg=shibuitext}
+\setbeamercolor{bibliography entry title}{fg=shibuitext}
+\setbeamercolor{bibliography entry location}{fg=shibuidarkgray}
+\setbeamercolor{bibliography entry note}{fg=shibuidarkgray}
+
+% Table of contents
+\setbeamercolor{section in toc}{fg=shibuiaccent}
+\setbeamercolor{subsection in toc}{fg=shibuidarkgray}
+
+% Caption
+\setbeamercolor{caption}{fg=shibuidarkgray}
+\setbeamercolor{caption name}{fg=shibuitext}
+
+\mode<all>

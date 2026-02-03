@@ -1,0 +1,182 @@
+% Beamer Font Theme: Shibui
+% Clean typography for presentations
+% Multiple font options available
+%
+% Options: sans (default), serif, garamond, charter, mono
+% Math font options: mathsans, mathserif, mathdefault (auto-matches text font)
+
+\mode<presentation>
+
+% Check for theme option (default: sans)
+\DeclareOptionBeamer{sans}{\def\shibui@font{sans}}
+\DeclareOptionBeamer{serif}{\def\shibui@font{serif}}
+\DeclareOptionBeamer{garamond}{\def\shibui@font{garamond}}
+\DeclareOptionBeamer{charter}{\def\shibui@font{charter}}
+\DeclareOptionBeamer{mono}{\def\shibui@font{mono}}
+
+% Math font options
+\DeclareOptionBeamer{mathsans}{\def\shibui@mathfont{mathsans}}
+\DeclareOptionBeamer{mathserif}{\def\shibui@mathfont{mathserif}}
+\DeclareOptionBeamer{mathdefault}{\def\shibui@mathfont{mathdefault}}
+
+\ExecuteOptionsBeamer{sans}  % Default to sans
+\ExecuteOptionsBeamer{mathdefault}  % Default math matches text
+\ProcessOptionsBeamer
+
+% Define font loading based on option
+\ifx\shibui@font\undefined
+  \def\shibui@font{sans}
+\fi
+
+% Helper macros for font comparison
+\def\shibui@sans{sans}
+\def\shibui@serif{serif}
+\def\shibui@garamond{garamond}
+\def\shibui@charter{charter}
+\def\shibui@mono{mono}
+
+% Helper macros for mathfont comparison
+\def\shibui@mathsans{mathsans}
+\def\shibui@mathserif{mathserif}
+\def\shibui@mathdefault{mathdefault}
+
+% Set up text fonts
+\ifx\shibui@font\shibui@sans
+  % Sans-serif theme: Use Fira Sans
+  \usefonttheme{default}
+  \RequirePackage[sfdefault]{FiraSans}
+  \RequirePackage[T1]{fontenc}
+  % Set up math font
+  \ifx\shibui@mathfont\shibui@mathdefault
+    % Use sans math for sans text
+    \RequirePackage{sfmath}
+  \fi
+\else\ifx\shibui@font\shibui@garamond
+  % EB Garamond: Elegant classic serif
+  \usefonttheme{serif}
+  \RequirePackage{ebgaramond}
+  \RequirePackage[T1]{fontenc}
+  % Set up math font
+  \ifx\shibui@mathfont\shibui@mathdefault
+    \RequirePackage[cmintegrals,cmbraces]{newtxmath}
+    \RequirePackage[libertine]{newtxmath}
+  \fi
+\else\ifx\shibui@font\shibui@charter
+  % Charter: Clean, readable serif
+  \usefonttheme{serif}
+  \RequirePackage[T1]{fontenc}
+  % Set up math font
+  \ifx\shibui@mathfont\shibui@mathdefault
+    \RequirePackage[charter]{mathdesign}
+  \fi
+\else\ifx\shibui@font\shibui@mono
+  % Fira Mono: Monospace for code-heavy presentations
+  \usefonttheme{default}
+  \RequirePackage[scale=0.85]{FiraMono}
+  \renewcommand*\familydefault{\ttdefault}
+  \RequirePackage[T1]{fontenc}
+  % Mono typically uses default math
+\else
+  % Serif theme (default): Use ET Book or Palatino
+  \usefonttheme{serif}
+  \RequirePackage[T1]{fontenc}
+  % Attempt to use ET Book if available, fall back to Palatino
+  \IfFileExists{ETbb.sty}{%
+    \RequirePackage[lining]{ETbb}
+  }{%
+    % Palatino as fallback (similar to ET Book)
+    \RequirePackage{mathpazo}
+    \RequirePackage[scaled=0.95]{helvet}
+  }
+\fi\fi\fi\fi
+
+% Override math font if explicitly requested
+\ifx\shibui@mathfont\shibui@mathsans
+  \RequirePackage{sfmath}
+\else\ifx\shibui@mathfont\shibui@mathserif
+  \RequirePackage{newtxmath}
+\fi\fi
+
+% Font sizes for different elements
+\setbeamerfont{title}{size=\Huge,series=\bfseries}
+\setbeamerfont{subtitle}{size=\Large,series=\normalfont}
+\setbeamerfont{author}{size=\large,series=\normalfont}
+\setbeamerfont{date}{size=\normalsize,series=\normalfont}
+\setbeamerfont{institute}{size=\normalsize,series=\normalfont}
+
+% Frame title - will appear in headline, so keep compact
+\setbeamerfont{frametitle}{size=\normalsize,series=\bfseries}
+\setbeamerfont{framesubtitle}{size=\small,series=\normalfont}
+
+% Headline and footline - small and subtle
+\setbeamerfont{headline}{size=\small,series=\normalfont}
+\setbeamerfont{footline}{size=\tiny,series=\normalfont}
+\setbeamerfont{section in head/foot}{size=\small,series=\normalfont}
+\setbeamerfont{subsection in head/foot}{size=\small,series=\normalfont}
+\setbeamerfont{page number in head/foot}{size=\tiny,series=\normalfont}
+
+% Section page
+\setbeamerfont{section title}{size=\LARGE,series=\bfseries}
+\setbeamerfont{section subtitle}{size=\large,series=\normalfont}
+
+% Normal text
+\setbeamerfont{normal text}{size=\normalsize,series=\normalfont}
+
+% Lists
+\setbeamerfont{itemize/enumerate body}{size=\normalsize}
+\setbeamerfont{itemize/enumerate subbody}{size=\normalsize}
+\setbeamerfont{itemize/enumerate subsubbody}{size=\small}
+
+% Blocks
+\setbeamerfont{block title}{size=\normalsize,series=\bfseries}
+\setbeamerfont{block body}{size=\normalsize,series=\normalfont}
+
+\setbeamerfont{block title alerted}{size=\normalsize,series=\bfseries}
+\setbeamerfont{block body alerted}{size=\normalsize,series=\normalfont}
+
+\setbeamerfont{block title example}{size=\normalsize,series=\bfseries}
+\setbeamerfont{block body example}{size=\normalsize,series=\normalfont}
+
+% Captions - smaller and less prominent
+\setbeamerfont{caption}{size=\footnotesize,series=\normalfont}
+\setbeamerfont{caption name}{size=\footnotesize,series=\normalfont}
+
+% Bibliography
+\setbeamerfont{bibliography item}{size=\small}
+\setbeamerfont{bibliography entry author}{size=\small,series=\normalfont}
+\setbeamerfont{bibliography entry title}{size=\small,series=\normalfont}
+\setbeamerfont{bibliography entry location}{size=\small,series=\normalfont}
+\setbeamerfont{bibliography entry note}{size=\small,series=\normalfont}
+
+% TOC
+\setbeamerfont{section in toc}{size=\normalsize,series=\normalfont}
+\setbeamerfont{subsection in toc}{size=\small,series=\normalfont}
+
+% Emphasis and alerts
+\renewcommand{\emph}[1]{{\itshape #1}}
+
+% Monospace fonts for code and algorithms
+\setbeamerfont{code}{family=\ttfamily,size=\scriptsize}
+\setbeamerfont{algorithm}{family=\ttfamily,size=\scriptsize}
+
+% Configure TikZ to use theme font
+\AtBeginDocument{%
+  \@ifpackageloaded{tikz}{%
+    % Set TikZ to use document font (serif or sans based on theme option)
+    \ifx\shibui@font\shibui@sans
+      % Sans-serif theme: use sans font
+      \tikzset{
+        every picture/.append style={font=\sffamily},
+        every node/.append style={font=\sffamily}
+      }
+    \else
+      % Serif theme: use serif font
+      \tikzset{
+        every picture/.append style={font=\rmfamily},
+        every node/.append style={font=\rmfamily}
+      }
+    \fi
+  }{}%
+}
+
+\mode<all>
