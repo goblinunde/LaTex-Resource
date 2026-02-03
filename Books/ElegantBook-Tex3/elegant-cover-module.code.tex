@@ -1,0 +1,139 @@
+\elegant_provide_module:n{cover}
+
+
+\clist_new:N \g__elegant_cover_clist
+
+\elegant_msg_new:nn { undefined cover info }
+  {
+    The~Elegant~cover~info~`#1'~is~undefined.\\
+  }
+
+\elegant_msg_new:nn { undefined cover style }
+  {
+    The~Elegant~cover~style~`#1'~is~undefined.\\
+    Please~select~one~of~the~following~styles. \\
+    \clist_use:Nn \g__elegant_cover_clist {,~} 
+  }
+
+
+
+
+\prop_new:N \g__elegant_cover_info_prop 
+
+\cs_new_protected_nopar:Npn \elegant_declare_cover_info:n #1 
+  {
+    \prop_set_from_keyval:Nn \g__elegant_cover_info_prop { #1 }
+    \prop_map_inline:Nn \g__elegant_cover_info_prop
+      { \tl_set:cn { l__elegant_cover_info_##1_tl } { ##2 } }
+  }
+
+\tl_new:N \l_elegant_tmp_info_tl 
+
+\cs_new_protected_nopar:Npn \elegant_use_cover_info:n #1
+  {
+    \tl_if_exist:cTF { l__elegant_cover_info_#1_tl }
+      {
+        \tl_use:c { l__elegant_cover_info_#1_tl }
+      }
+      {
+        \elegant_msg_error:nn { undefined cover info }{ #1 }
+      }
+  }
+
+
+\cs_new_protected_nopar:Npn \elegant_declare_cover_style:nn #1#2 
+  {
+    \hook_new:n { elegant-module / cover / #1 / before }
+		\hook_new:n { elegant-module / cover / #1 / after }
+    \tl_gset:cn { g_elegant_cover_#1_tl } { \titlepage #2 \endtitlepage }
+    \clist_gput_right:Nn \g__elegant_cover_clist { #1 }
+  }
+
+\hook_gput_code:nnn{begindocument/before}{.}
+  {
+    \RenewDocumentCommand\maketitle{O{default}}
+      {
+        \tl_if_exist:cTF { g_elegant_cover_#1_tl }
+        {
+          \hook_use:n { elegant-module / cover / #1 / before }
+          \tl_use:c { g_elegant_cover_#1_tl }
+          \hook_use:n { elegant-module / cover / #1 / after }
+        }
+        {
+          % error / message
+          \elegant_msg_error:nn { undefined cover style } { #1 }
+        }
+      }
+  }
+
+
+\elegant_declare_cover_style:nn { default }
+  {
+    \begin{tikzpicture}[remember~picture, overlay]
+      \node[anchor = north~west, inner~sep = 0pt,] at (current~page.north~west) {\includegraphics[width = \paperwidth, height = .8\paperwidth]{\elegant_use_cover_info:n {cover~image}}};
+      \fill[ elegant_cover_color ] ([yshift = -.8\paperwidth]current~page.north~west) rectangle ++ (\paperwidth, -0.5in);
+      \node[anchor = west, font = \Huge\bfseries] at ([shift = {(2em, -.8\paperwidth - 1.2in)}]current~page.north~west) {\elegant_use_cover_info:n { title }};
+      \node[anchor = west, font = \Large\bfseries] at ([shift = {(2.5em, -.8\paperwidth - 1.8in)}]current~page.north~west) {\elegant_use_cover_info:n { subtitle }};
+      \node[anchor = north~west, text = darkgray, align = left, font = \linespread{1.5}\selectfont] at ([shift = {(3.7em, -.8\paperwidth - 2.1in)}]current~page.north~west) {
+        \textit{作者}:~\elegant_use_cover_info:n { author } \\
+        \textit{组织}:~\elegant_use_cover_info:n { institute } \\
+        \textit{时间}:~\elegant_use_cover_info:n { date } \\
+        \textit{版本}:~\elegant_use_cover_info:n { version }
+      };
+      \node[anchor = north~east, outer~sep=0pt, inner~sep=0pt] at ([shift = {(-.8in, -.8\paperwidth - 2.1in)}]current~page.north~east) {\includegraphics[width=4.2cm]{\elegant_use_cover_info:n {logo~image}}};
+      \node[anchor = south, yshift = 1.5cm, align = center] at (current~page.south) { \elegant_use_cover_info:n { extrainfo } };
+    \end{tikzpicture}
+  }
+
+
+\elegant_declare_cover_style:nn { Skyrmion }
+  {
+    \begin{tikzpicture}[remember~picture, overlay]
+      \node[opacity = .7] at (current~page.center) {\includegraphics[width = \paperwidth, height = \paperheight]{ \elegant_use_cover_info:n { cover~image } }};
+      \draw[line~width = 1.5pt] ([shift = {(3cm, -3cm)}]current~page.north~west) -- ([shift = {(-3cm, -3cm)}]current~page.north~east); 
+      \draw[line~width = 1.5pt] ([shift = {(3cm, -6cm)}]current~page.north~west) -- ([shift = {(-3cm, -6cm)}]current~page.north~east); 
+      \node[font = \scshape, scale = 2, align = center] at ([yshift = -4.5cm]current~page.north) { \elegant_use_cover_info:n { title } };
+      \node[font = \LARGE] at ([yshift = -7.5cm]current~page.north) { \elegant_use_cover_info:n { subtitle } };
+      \node[font = \Large] at ([yshift = -9cm]current~page.north) { \elegant_use_cover_info:n { author } };
+      \node[font = \Large] at ([yshift = -10.5cm]current~page.north) { \elegant_use_cover_info:n { institute } };
+    \end{tikzpicture}
+  }
+
+\elegant_declare_cover_style:nn { mono }
+  {
+    \begin{center}
+      \vfill
+      \bfseries
+      \vspace*{2cm}
+      {\color_select:o { \elegant_use_color:n {cover} } \rule{0.9\textwidth}{2pt}}\\[3ex]
+      {\Huge \elegant_use_cover_info:n {zh-title} }\\
+      \vspace*{5ex}
+      {\Huge \elegant_use_cover_info:n {en-title} }\\
+      { \color_select:o { \elegant_use_color:n {cover} }  \rule{0.9\textwidth}{2pt}}\\ 
+      \vfill
+      \includegraphics[width=0.35\textwidth]{logo-blue}
+      \vfill
+      \end{center}
+    \begin{flushright}
+    \normalfont
+    {\color_select:o { \elegant_use_color:n {cover} } \rule{0.45\textwidth}{1pt}}\\
+    作者：\elegant_use_cover_info:n { author }\\
+    时间：\elegant_use_cover_info:n { date }\\
+    邮箱：\elegant_use_cover_info:n { email }\\
+    {\color_select:o { \elegant_use_color:n {cover} } \rule{0.45\textwidth}{1pt}}
+    \end{flushright}    
+  }
+
+
+
+\NewDocumentCommand\ElegantDeclareCoverStyle{ m+m }
+  { \elegant_declare_cover_style:nn { #1 }{ #2 } }
+
+\NewDocumentCommand\ElegantUseCoverInfo{ m }
+  { \elegant_use_cover_info:n { #1 } }
+
+\NewDocumentCommand\ElegantCoverInfo{ m }
+  { \elegant_declare_cover_info:n { #1 } }
+
+
+\endinput

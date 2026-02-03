@@ -1,0 +1,196 @@
+\elegant_provide_module:n{core}
+
+
+\hook_gput_code:nnn{begindocument/before}{.} 
+  {
+    \cs_set:Npx \contentsname { \elegant_use_name:n { contents } }
+  }
+
+
+\PassOptionsToPackage{fontset = none}{ctex}
+
+\RequirePackage{geometry, tikz}
+
+\graphicspath{{./figure/}}
+\geometry{
+  a4paper,
+  top = 25.4mm, 
+  bottom = 25.4mm,
+  left = 20mm, 
+  right = 20mm,
+  headheight = 2.17cm,
+  headsep = 4mm,
+  footskip = 12mm
+}
+
+
+\RequirePackage[explicit]{titlesec}
+
+% #1 name #2 format
+\cs_new_protected_nopar:Npn \__elegant_title_format:nn #1#2 
+  {
+    \exp_args:Nc \titleformat{#1}{}{}{0em}
+      {
+        #2
+        \color_select:o { \elegant_use_color:n { headline } } 
+        \ifttl@label
+          \elegant_use_name:n { #1 / before } 
+          \elegant_use_name:n { #1 / number } 
+          \elegant_use_name:n { #1 / after }
+          \;\; 
+        \fi:
+        ##1 
+      }
+  }
+
+
+\titlespacing{\chapter}{0pt}{-20pt}{1.3\baselineskip}
+
+\__elegant_title_format:nn { chapter }      { \centering\bfseries\LARGE }
+\__elegant_title_format:nn { section }      { \bfseries\Large }
+\__elegant_title_format:nn { subsection }   { \bfseries\large }
+\__elegant_title_format:nn { subsubsection }{ \bfseries\large }
+
+
+\RequirePackage{fancyhdr}
+\fancyhf{}
+
+\fancyfoot[c]{\color_select:o { \elegant_use_color:n { structure } }\small\thepage}
+\if@twoside
+  \fancyhead[EL]{\color_select:o { \elegant_use_color:n { structure } }\small\leftmark}
+  \fancyhead[OR]{\color_select:o { \elegant_use_color:n { structure } }\small\rightmark}
+\else
+  \fancyhead[R]{\color_select:o { \elegant_use_color:n { structure } }\small\rightmark}
+\fi
+
+\RenewDocumentCommand{\headrule}{}{\color_select:o { \elegant_use_color:n { structure } }\hrule width\textwidth}
+\pagestyle{fancy}
+\RenewDocumentCommand{\headrulewidth}{}{1pt}
+\fancypagestyle{plain}{\RenewDocumentCommand{\headrulewidth}{}{0pt}\fancyhf{}\RenewDocumentCommand{\headrule}{}{}}
+\RenewDocumentCommand{\sectionmark}{ m }{\markright{
+  \elegant_use_name:n { section / before } 
+  \elegant_use_name:n { section / number } 
+  \elegant_use_name:n { section / after }  
+\, #1}{}}
+\RenewDocumentCommand{\chaptermark}{ m }{\markboth{
+  \elegant_use_name:n { chapter / before } 
+  \elegant_use_name:n { chapter / number } 
+  \elegant_use_name:n { chapter / after }  
+\, #1}{}}
+
+
+
+\RequirePackage{hyperref}
+\hypersetup{
+  breaklinks,
+  unicode,
+  linktoc = all,
+  bookmarksnumbered = true,
+  bookmarksopen = true,
+  pdfkeywords = {ElegantBook, elegantlatex.top},
+  colorlinks,
+  linkcolor= \elegant_use_color:n { structure },
+  citecolor= \elegant_use_color:n { structure },
+  urlcolor= \elegant_use_color:n { structure },
+  plainpages = false,
+  pdfstartview = FitH,
+  pdfborder = {0 0 0},
+  pdfcreator = LaTeX
+}
+
+% 全局英文字体配置
+\RequirePackage{fontspec}
+
+\setmainfont{TeXGyreTermesX}[
+  UprightFont = *-Regular ,
+  BoldFont = *-Bold ,
+  ItalicFont = *-Italic ,
+  BoldItalicFont = *-BoldItalic ,
+  Extension = .otf ,
+  Scale = 1.0]
+  
+\setsansfont{texgyreheros}[
+  UprightFont = *-regular ,
+  BoldFont = *-bold ,
+  ItalicFont = *-italic ,
+  BoldItalicFont = *-bolditalic ,
+  Extension = .otf ,
+  Scale = 0.9]
+
+
+\NewDocumentCommand \circled { m } {
+  \tikz[baseline = (char.base)] {
+    \node[shape = circle, draw, inner~sep = 1pt] (char) {#1};
+  }
+}
+
+\ExplSyntaxOff
+  \usetikzlibrary{shadows}
+\ExplSyntaxOn
+
+\NewDocumentCommand \elegant@enum@item@i { } {
+  \tikz \draw [baseline, ball~color = \elegant_use_color:n { structure }, draw = none] circle (2pt);
+}
+
+\NewDocumentCommand \elegant@enum@item@ii { } {
+  \tikz \draw [baseline, fill = \elegant_use_color:n { structure }, draw = none, circular~drop~shadow] circle (2pt);
+}
+
+\NewDocumentCommand \elegant@enum@item@iii { } {
+  \tikz \draw [baseline, fill = \elegant_use_color:n { structure }, draw = none] circle (2pt);
+}
+
+\RequirePackage{enumitem}
+
+\setlist[enumerate, 1]{label = \color_select:o { \elegant_use_color:n { structure } } \arabic*.}
+\setlist[enumerate, 2]{label = \color_select:o { \elegant_use_color:n { structure } } (\alph*).}
+\setlist[enumerate, 3]{label = \color_select:o { \elegant_use_color:n { structure } } \Roman*.}
+\setlist[enumerate,4]{label = \color_select:o { \elegant_use_color:n { structure } } \Alph*.}
+\setlist[itemize, 1]{label = \elegant@enum@item@i}
+\setlist[itemize, 2]{label = \elegant@enum@item@ii}
+\setlist[itemize, 3]{label = \elegant@enum@item@iii}
+
+
+\RequirePackage{multicol}
+
+\elegant_if_package_loaded:nTF { tcolorbox }
+{
+  \tcbuselibrary{many}
+}
+{
+  \RequirePackage[many]{tcolorbox}
+}
+
+
+\tcbset{
+  introductionsty/.style={
+    enhanced,
+    breakable,
+    colback = \elegant_use_color:n { structure }!10,
+    colframe = \elegant_use_color:n { structure },
+    fonttitle = \bfseries,
+    colbacktitle = \elegant_use_color:n { structure },
+    attach~boxed~title~to~top~center = { yshift = -3mm, yshifttext = -1mm },
+    boxrule = 0pt,
+    toprule = 0.5pt,
+    bottomrule = 0.5pt,
+    top = 8pt,
+    before~skip = 8pt,
+    sharp~corners
+  }
+}
+
+\NewDocumentEnvironment{introduction}{ O{ \elegant_use_name:n { introduction } } }
+  {
+    \begin{tcolorbox}[introductionsty, title = {#1}]
+      \begin{multicols}{2}
+        \begin{itemize}[label = \color_select:o { \elegant_use_color:n { structure } } {\upshape\scriptsize \elegant_use_name:n { introduction / icon }}]
+  }
+  {
+        \end{itemize}
+      \end{multicols}
+    \end{tcolorbox}
+  }
+
+
+\endinput

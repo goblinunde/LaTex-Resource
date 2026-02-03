@@ -1,0 +1,10 @@
+# Ignore the font folder
+font/
+
+# Ignore all PDF files
+*.aux
+*.log
+*.synctex.gz
+*.synctex
+*.out
+*.toc

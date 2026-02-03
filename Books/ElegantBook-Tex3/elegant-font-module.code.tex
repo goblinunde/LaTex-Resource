@@ -1,0 +1,133 @@
+\elegant_provide_module:n{font}
+
+% \tl_new:N \g__elegant_font_tl 
+
+\clist_new:N \g__elegant_font_clist
+
+
+\elegant_msg_new:nn { not support font }
+  {
+    The~font~option~`#1'~is~not~support. \\
+    Please~select~one~of~the~following~font~options. \\
+    \clist_use:Nn \g__elegant_font_clist {,~} 
+  }
+
+
+\cs_new_protected_nopar:Npn \elegant_declare_font:nn #1#2 
+  {
+    \hook_new:n { elegant-module / font / #1 / before }
+		\hook_new:n { elegant-module / font / #1 / after }
+    \tl_gset:cn { g_elegant_font_#1_tl } { #2 }
+    \clist_gput_right:Nn \g__elegant_font_clist { #1 }
+  }
+
+
+\hook_gput_code:nnn{begindocument/before}{.}
+  {
+    \tl_if_exist:cTF { g_elegant_font_ \g__elegant_font_tl _tl }
+    {
+      \hook_use:n { elegant-module / font / \g__elegant_font_tl / before }
+      \tl_use:c { g_elegant_font_ \g__elegant_font_tl _tl }
+      \hook_use:n { elegant-module / font / \g__elegant_font_tl / after }
+    }
+    {
+      % error / message
+      \elegant_msg_error:nx { not support font } { \g__elegant_font_tl }
+    }
+  }
+
+\clist_map_inline:nn { adobe, fandol, founder, mac, macnew, macold, ubuntu, windows }
+  {
+    \elegant_declare_font:nn { ctex-#1 }
+      {
+        \elegant_if_package_loaded:nTF { ctex }
+          {
+            \ctex_set:n { fontset = #1 }
+          }
+          {
+            \RequirePackage[fontset = #1]{ ctex }
+          }
+      }
+  }
+
+\elegant_declare_font:nn { none }{ \relax }
+
+\elegant_declare_font:nn { founder }
+  {
+    \RequirePackage{xeCJK}
+
+    \setCJKmainfont{FZShuSong-Z01}[
+      BoldFont = FZHei-B01,
+      BoldFeatures = { FakeBold = 1.5 },
+      ItalicFont = FZKai-Z03,
+      BoldItalicFont = FZHei-B01,
+      BoldItalicFeatures = { FakeBold = 1.5 }
+    ]
+
+    \setCJKsansfont{FZKai-Z03}[
+      BoldFont = FZHei-B01,
+      BoldFeatures = { FakeBold = 1.5 },
+      ItalicFont = FZKai-Z03
+    ]
+
+    \setCJKmonofont{FZFangSong-Z02}[
+      BoldFont = FZHei-B01,
+      BoldFeatures = { FakeBold = 1.5 },
+      ItalicFont = FZKai-Z03
+    ]
+
+    \setCJKfamilyfont{zhsong}{FZShuSong-Z01}[AutoFakeBold = 1.5]
+    \setCJKfamilyfont{zhhei}{FZHei-B01}[AutoFakeBold = 1.5]
+    \setCJKfamilyfont{zhkai}{FZKai-Z03}[AutoFakeBold = 1.5]
+    \setCJKfamilyfont{zhfs}{FZFangSong-Z02}[AutoFakeBold = 1.5]
+    \setCJKfamilyfont{zhlishu}{FZLiShu-S01}[AutoFakeBold = 1.5]
+
+    \DeclareDocumentCommand \songti   {}{ \CJKfamily{zhsong} }
+    \DeclareDocumentCommand \heiti    {}{ \CJKfamily{zhhei} }
+    \DeclareDocumentCommand \kaishu   {}{ \CJKfamily{zhkai} }
+    \DeclareDocumentCommand \fangsong {}{ \CJKfamily{zhfs} }
+    \DeclareDocumentCommand \lishu    {}{ \CJKfamily{zhlishu} }
+  }
+
+\elegant_declare_font:nn { source-han }
+  {
+    \RequirePackage{xeCJK}
+
+    \setCJKmainfont{SourceHanSerifSC}[
+      UprightFont = *-Regular,
+      BoldFont = *-Bold,
+      ItalicFont = LXGWWenKai-Regular.ttf,
+      BoldItalicFont = *-Bold,
+      Extension = .otf,
+    ]
+
+    \setCJKmonofont{SourceHanSansCN}[
+      UprightFont = *-Regular,
+      BoldFont = *-Bold,
+      Extension = .otf
+    ]
+
+    \setCJKfamilyfont{zhsong}{SourceHanSerifSC}[
+      UprightFont = *-Regular,
+      Extension = .otf,
+      AutoFakeBold = 1.5
+    ]
+    
+    \setCJKfamilyfont{zhhei}{SourceHanSansCN}[
+      UprightFont = *-Regular,
+      BoldFont = *-Bold,
+      Extension = .otf
+    ]
+
+    \setCJKfamilyfont{zhkai}{LXGWWenKai}[
+      Extension = .ttf,
+      UprightFont = *-Regular,
+      BoldFont = *-Bold
+    ]
+
+    \DeclareDocumentCommand \songti   {}{ \CJKfamily{zhsong} }
+    \DeclareDocumentCommand \heiti    {}{ \CJKfamily{zhhei} }
+    \DeclareDocumentCommand \kaishu   {}{ \CJKfamily{zhkai} }
+
+  }
+\endinput
