@@ -1,0 +1,354 @@
+\documentclass[12pt,a4paper]{ctexart}
+\usepackage{amsmath,amssymb}
+\usepackage{color}
+\usepackage{geometry}
+\usepackage{array}
+\usepackage{multirow}
+\geometry{margin=2.5cm}
+
+% 定义常用数学符号和集合符号
+\providecommand{\R}{\ensuremath{\mathbb{R}}} % 实数集
+\providecommand{\N}{\ensuremath{\mathbb{N}}} % 自然数集
+\providecommand{\Z}{\ensuremath{\mathbb{Z}}} % 整数集
+\providecommand{\Q}{\ensuremath{\mathbb{Q}}} % 有理数集
+\providecommand{\C}{\ensuremath{\mathbb{C}}} % 复数集
+\providecommand{\F}{\ensuremath{\mathbb{F}}} % 一般域（Field）
+\providecommand{\K}{\ensuremath{\mathbb{K}}} % 一般数域（Number Field）
+\providecommand{\B}{\ensuremath{\mathbb{B}}}
+
+
+% 定义快捷命令
+\newcommand{\be}{\ensuremath{\;\because\;}}  % 快捷命令 \be 表示 $\because$
+\newcommand{\so}{\ensuremath{\;\therefore\;}} % 快捷命令 \so 表示 $\therefore$
+
+\newcommand{\GammaFunc}[1]{\Gamma(#1)}       % Gamma函数符号
+\newcommand{\GammaDef}{\int_0^\infty t^{x-1}e^{-t}dt}  % Gamma积分定义
+\newcommand{\GammaRec}[1]{\Gamma(#1+1) = #1\Gamma(#1)} % 递推关系
+\newcommand{\BetaFunc}[2]{\mathrm{B}(#1,#2)}  % Beta函数符号
+\newcommand{\BetaDef}{\int_0^1 t^{a-1}(1-t)^{b-1}dt}  % Beta积分定义
+\newcommand{\BetaGammaRel}[2]{\frac{\GammaFunc{#1}\GammaFunc{#2}}{\GammaFunc{#1+#2}}} % Beta-Gamma关系
+% 指数函数
+\newcommand{\expf}[2]{#1^{#2}}  % a^x
+\newcommand{\expe}[1]{\mathrm{e}^{#1}}  % e^x
+\newcommand{\expp}[2]{#1^{\left( #2 \right)}}  % a^{(x)}
+
+% 欧拉函数
+\newcommand{\euler}[1]{\phi\left( #1 \right)}  % φ(n)
+
+% 欧拉公式
+\newcommand{\eulerformula}[1]{\mathrm{e}^{\mathrm{i}#1} = \cos#1 + \mathrm{i}\sin#1}
+
+% 对数函数
+\newcommand{\logbase}[2]{\log_{#1}\left( #2 \right)}  % log_a(x)
+\newcommand{\lnx}[1]{\ln\left( #1 \right)}  % ln(x)
+
+% 复数与三角函数
+\newcommand{\complexexp}[1]{\mathrm{e}^{\mathrm{i}#1}}  % e^{iθ}
+\newcommand{\trig}[3]{#1\left( #2 \right) = #3}  % 三角函数模板
+
+% 定义概率和期望符号
+\providecommand{\E}{\ensuremath{\mathbb{E}}} % 数学期望
+\providecommand{\P}{\ensuremath{\mathbb{P}}} % 概率测度
+
+% 定义常用数学运算符
+\newcommand{\abs}[1]{\left| #1 \right|} % 绝对值
+\newcommand{\norm}[1]{\left\| #1 \right\|} % 范数
+\newcommand{\inner}[2]{\langle #1, #2 \rangle} % 内积
+\newcommand{\set}[1]{\left\{ #1 \right\}} % 集合表示
+\newcommand{\paren}[1]{\left( #1 \right)} % 圆括号自动调整大小
+
+
+
+% 定义逻辑符号
+\providecommand{\implies}{\ensuremath{\Rightarrow}}       % 推出符号（右箭头）
+\providecommand{\iff}{\ensuremath{\Leftrightarrow}}      % 等价符号（双向箭头）
+\providecommand{\limplies}{\ensuremath{\Leftarrow}}      % 左推出符号（左箭头）
+
+% 定义逻辑符号（带额外间距）
+\providecommand{\impliestwo}{\ensuremath{\;\Rightarrow\;}}
+\providecommand{\ifftwo}{\ensuremath{\;\Leftrightarrow\;}}
+\providecommand{\limpliestwo}{\ensuremath{\;\Leftarrow\;}}
+\newcommand{\dto}[2]{\overset{#1}{\rightarrow} #2}
+
+\providecommand{\AND}{\wedge} % 逻辑与
+\providecommand{\OR}{\vee} % 逻辑或
+\providecommand{\notimplies}{\nRightarrow} % 不推出符号
+
+% 定义矩阵相关符号
+\newcommand{\mat}[1]{\mathbf{#1}} % 矩阵加粗表示
+\newcommand{\vecb}[1]{\mathbf{#1}} % 向量加粗表示
+\newcommand{\rank}[1]{\mathrm{rank}(#1)} % 矩阵的秩
+\newcommand{\trace}[1]{\mathrm{tr}(#1)} % 矩阵的迹
+
+% 定义其他常用符号
+\newcommand{\degree}{^\circ} % 角度符号
+\newcommand{\limit}[2]{\lim_{#1 \to #2}} % 极限符号
+\newcommand{\argmax}{\operatorname*{arg\,max}} % 最大值点
+\newcommand{\argmin}{\operatorname*{arg\,min}} % 最小值点
+
+% 级数快捷命令
+\newcommand{\Sum}[2]{\sum\limits_{#1}^{#2}}
+
+% 多重积分快捷命令
+\newcommand{\Dint}[2]{\iint_{#1} #2 \, dx dy}
+\newcommand{\Tint}[2]{\iiint_{#1} #2 \, dx dy dz}
+
+% 测度
+\newcommand{\measure}[1]{\mu\left( #1 \right)}
+\newcommand{\lebmeasure}{\mathcal{L}}
+
+% 空集
+\newcommand{\eset}{\emptyset}
+\newcommand{\vempty}{\varnothing}
+
+% === 集合包含关系（使用 \providecommand 避免冲突） ===
+% 严格子集/包含（已通过 amssymb 定义，此处仅确保兼容）[[1]][[7]][[9]]
+\providecommand{\subsetneq}{\subsetneq}   % A ⊊ B
+\providecommand{\supsetneq}{\supsetneq}   % B ⊋ A
+\providecommand{\subseteqq}{\subseteqq}   % A ⊆ B [[9]]
+\providecommand{\supseteqq}{\supseteqq}   % B ⊇ A [[9]]
+
+% === 全序关系（Total Order） ===
+\newcommand{\torder}{\leq}        % 全序 ≤（标准符号）
+\newcommand{\tordereq}{\preceq}   % 全序 ≼（扩展符号，如字典序）
+
+% === 偏序关系（Partial Order） ===
+\newcommand{\porder}{\preceq}     % 偏序 ≼（标准符号）
+\newcommand{\pordereq}{\preccurlyeq} % 偏序 ≼（花体风格，如分量序）[[10]]
+
+% 泛函分析算子
+\newcommand{\op}[3]{\ensuremath{#1: #2 \to #3}}                  % 算子定义：T: X → Y
+\newcommand{\bounded}{\ensuremath{\mathcal{B}}}                % 有界线性算子空间 [[7]]
+\newcommand{\compact}{\ensuremath{\mathcal{K}}}                % 紧算子（Compact operator）[[2]]
+\newcommand{\LP}[1]{\ensuremath{\mathrm{L}^{#1}}}              % L^p 空间（参数化版本）
+\newcommand{\Linf}{\ensuremath{\mathrm{L}^\infty}}              % L^∞ 空间
+\newcommand{\lp}[1]{\ensuremath{\ell^{#1}}}                    % l^p 空间（使用 \ell 符号）
+\newcommand{\linf}{\ensuremath{\ell^\infty}}                   % l^∞ 空间
+\providecommand{\Lpe}[1]{\ensuremath{L^{#1}(\Omega, S, m)}}  % L^p 空间 
+\providecommand{\OSM}{\ensuremath{(\Omega, S, m)}}          % 测度空间三元组 
+\providecommand{\Cab}{\ensuremath{C[a, b]}}               % 连续函数空间 
+\providecommand{\Linf}{\ensuremath{L^\infty(\Omega, S, m)}} % L^∞ 空间 
+% 微分与积分符号
+\newcommand{\diff}{\ensuremath{\,\mathrm{d}}}                   % 微分符号
+\newcommand{\pd}[2]{\ensuremath{\frac{\partial #1}{\partial #2}}} % 偏导数 [[8]]
+\newcommand{\intab}[3]{\ensuremath{\int_{#1}^{#2} #3 \diff #1}} % 定积分
+
+% 拓扑与空间
+\newcommand{\Banach}{\ensuremath{\text{Banach}}}               % Banach 空间 [[4]]
+\newcommand{\Haus}{\ensuremath{\text{Hausdorff}}}              % Hausdorff 空间
+\newcommand{\Hilbert}{\ensuremath{\mathcal{H}}}                % Hilbert 空间 [[1]]
+
+% 扩展：连续函数与对偶空间
+\newcommand{\Cont}[1]{\ensuremath{\mathrm{C}(#1)}}             % 连续函数空间 C(X)
+\newcommand{\Dual}[1]{\ensuremath{{#1}^*}}                     % 对偶空间 X*
+
+% 格林公式
+\newcommand{\greens}[2]{%
+	\oint_{\partial D} \left( #1 \, dx + #2 \, dy \right) = 
+	\iint_{D} \left( \pd{#2}{x} - \pd{#1}{y} \right) dx dy
+}
+
+% 傅里叶变换
+\newcommand{\FT}[2]{\mathcal{F}\left\{#1\right\}(#2)}  
+% 傅里叶反变换
+\newcommand{\IFT}[2]{\mathcal{F}^{-1}\left\{#1\right\}(#2)}  
+
+% 拉普拉斯变换
+\newcommand{\LT}[2]{\mathcal{L}\left\{#1\right\}(#2)}  
+% 拉普拉斯反变换
+\newcommand{\ILT}[2]{\mathcal{L}^{-1}\left\{#1\right\}(#2)}  
+
+
+% 定义文本格式化命令
+\newcommand{\emphr}[1]{\textbf{\color{red}#1}} % 强调红色文本
+\newcommand{\emphb}[1]{\textbf{#1}} % 强调加粗文本
+\newcommand{\todo}[1]{\textbf{\color{blue}[TODO: #1]}} % 待办事项标记
+
+% 定义方程组快捷命令
+\newcommand{\eqgroup}[1]{%
+	\begin{cases}
+		#1
+	\end{cases}
+}
+
+% 定义矩阵快捷命令
+\newcommand{\pmat}[1]{%
+	\begin{pmatrix}
+		#1
+	\end{pmatrix}
+}
+\newcommand{\bmat}[1]{%
+	\begin{bmatrix}
+		#1
+	\end{bmatrix}
+}
+\newcommand{\matr}[1]{%
+	\begin{matrix}
+		#1
+	\end{matrix}
+}
+% 定义增广矩阵命令（修复列数）
+\newcommand{\augmat}[1]{%
+	\left[\begin{array}{@{}cc|c@{}}  % 三列：前两列是普通列，第三列用竖线分隔
+		#1
+	\end{array}\right]
+}
+
+\begin{document}
+	
+	\title{LaTeX 命令完整测试文档}
+	\author{自动生成}
+	\date{\today}
+	\maketitle
+	
+	\section{数学集合符号}
+	\begin{tabular}{|l|l|l|l|l|}
+		\hline
+		\textbf{命令} & \textbf{输入代码} & \textbf{输出效果} & \textbf{命令} & \textbf{输入代码} \\
+		\hline
+		实数集 & \verb|\R| & $\R$ & 自然数集 & \verb|\N| \\
+		\hline
+		整数集 & \verb|\Z| & $\Z$ & 有理数集 & \verb|\Q| \\
+		\hline
+		复数集 & \verb|\C| & $\C$ & 域符号 & \verb|\F| \\
+		\hline
+		数域 & \verb|\K| & $\K$ & 布尔集 & \verb|\B| \\
+		\hline
+	\end{tabular}
+	
+	\section{常用数学符号}
+	\begin{tabular}{|c|c|c|c|c|}
+		\hline
+		\textbf{功能} & \textbf{输入代码} & \textbf{输出效果} & \textbf{功能} & \textbf{输出效果} \\
+		\hline
+		因为 & \verb|\be| & $\be$ & 所以 & $\so$ \\
+		\hline
+		绝对值 & \verb|\abs{-x}| & $\abs{-x}$ & 范数 & $\norm{x}$ \\
+		\hline
+		内积 & \verb|\inner{u}{v}| & $\inner{u}{v}$ & 集合 & $\set{a,b,c}$ \\
+		\hline
+		希腊字母 & \verb|\degree| & $\degree$ & 极限 & $\limit{x}{a}$ \\
+		\hline
+	\end{tabular}
+	
+	\section{特殊函数与变换}
+	\begin{tabular}{|c|c|c|c|}
+		\hline
+		\textbf{函数类型} & \textbf{输入代码} & \textbf{输出效果} & \textbf{定义式} \\
+		\hline
+		Gamma函数 & \verb|\GammaFunc{z}| & $\GammaFunc{z}$ & $\GammaDef$ \\
+		\hline
+		Beta函数 & \verb|\BetaFunc{a}{b}| & $\BetaFunc{a}{b}$ & $\BetaDef$ \\
+		\hline
+		欧拉函数 & \verb|\euler{n}| & $\euler{n}$ & $\phi(12)=4$ \\
+		\hline
+		傅里叶变换 & \verb|\FT{f}{\omega}| & $\FT{f}{\omega}$ & $\mathcal{F}\{f(t)\}(\omega)$ \\
+		\hline
+	\end{tabular}
+	
+	\section{指数与对数函数}
+	\begin{tabular}{|c|c|c|c|}
+		\hline
+		功能 & 输入代码 & 输出效果 & 参数说明 \\
+		\hline
+		普通幂函数 & \verb|\expf{a}{x}| & $\expf{a}{x}$ & 底数/指数 \\
+		\hline
+		自然指数 & \verb|\expe{x}| & $\expe{x}$ & e的幂次 \\
+		\hline
+		括号幂次 & \verb|\expp{a}{x}| & $\expp{a}{x}$ & 带括号 \\
+		\hline
+		对数函数 & \verb|\logbase{2}{8}| & $\logbase{2}{8}$ & 底数/真数 \\
+		\hline
+		自然对数 & \verb|\lnx{x}| & $\lnx{x}$ & ln函数 \\
+		\hline
+	\end{tabular}
+	
+	\section{矩阵与线性代数}
+	\begin{tabular}{|c|c|c|}
+		\hline
+		功能 & 输入代码 & 输出效果 \\
+		\hline
+		矩阵表示 & \verb|\pmat{a&b\\c&d}| & $\pmat{a&b\\c&d}$ \\
+		\hline
+		增广矩阵 & \verb|\augmat{1&2&3\\4&5&6}| & $\augmat{1&2&3\\4&5&6}$ \\
+		\hline
+		矩阵秩 & \verb|\rank{A}| & $\rank{A}$ \\
+		\hline
+		矩阵迹 & \verb|\trace{A}| & $\trace{A}$ \\
+		\hline
+		向量表示 & \verb|\vecb{v}| & $\vecb{v}$ \\
+		\hline
+	\end{tabular}
+	
+	\section{积分与微分}
+	\begin{tabular}{|c|c|c|}
+		\hline
+		功能 & 输入代码 & 输出效果 \\
+		\hline
+		偏导数 & \verb|\pd{f}{x}| & $\pd{f}{x}$ \\
+		\hline
+		定积分 & \verb|\intab{a}{b}{f}| & $\intab{a}{b}{f}$ \\
+		\hline
+		双重积分 & \verb|\Dint{D}{f}| & $\Dint{D}{f}$ \\
+		\hline
+		格林公式 & \verb|\greens{P}{Q}| & $\greens{P}{Q}$ \\
+		\hline
+	\end{tabular}
+	
+	\section{概率与统计}
+	\begin{tabular}{|c|c|c|}
+		\hline
+		功能 & 输入代码 & 输出效果 \\
+		\hline
+		概率测度 & \verb|\P(A)| & $\P(A)$ \\
+		\hline
+		数学期望 & \verb|\E[X]| & $\E[X]$ \\
+		\hline
+		测度空间 & \verb|\OSM| & $\OSM$ \\
+		\hline
+	\end{tabular}
+	
+	\section{逻辑与集合}
+	\begin{tabular}{|c|c|c|c|}
+		\hline
+		符号类型 & 输入代码 & 输出效果 & 符号类型 \\
+		\hline
+		蕴含 & \verb|\implies| & $\implies$ & 等价 $\iff$ \\
+		\hline
+		子集 & \verb|\subsetneq| & $\subsetneq$ & 并集 $\cup$ \\
+		\hline
+		空集 & \verb|\eset| & $\eset$ & 补集 $\setminus$ \\
+		\hline
+	\end{tabular}
+	
+	\section{空间与算子}
+	\begin{tabular}{|c|c|c|}
+		\hline
+		概念 & 输入代码 & 输出效果 \\
+		\hline
+		Banach空间 & \verb|\Banach| & \Banach \\
+		\hline
+		Hilbert空间 & \verb|\Hilbert| & $\Hilbert$ \\
+		\hline
+		$L^p$空间 & \verb|\LP{p}| & $\LP{p}$ \\
+		\hline
+		有界算子 & \verb|\bounded| & $\bounded$ \\
+		\hline
+	\end{tabular}
+	
+	
+
+	\section{文本格式化}
+	\begin{tabular}{|c|c|c|}
+		\hline
+		功能 & 输入代码 & 输出效果 \\
+		\hline
+		红色强调 & \verb|\emphr{警告}| & \emphr{警告} \\
+		\hline
+		加粗强调 & \verb|\emphb{重点}| & \emphb{重点} \\
+		\hline
+		待办事项 & \verb|\todo{修改}| & \todo{修改} \\
+		\hline
+	\end{tabular}
+	
+\end{document}

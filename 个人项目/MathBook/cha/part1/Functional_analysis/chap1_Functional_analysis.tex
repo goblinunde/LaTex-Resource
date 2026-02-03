@@ -1,0 +1,105 @@
+\chapter{\maoti 泛函分析}
+\vspace{20.4pt}
+
+《泛函分析》是“更广泛、更一般化的”《数学分析》，将分析中的具体问题抽象到一种更加纯粹的代数、拓扑的形式中加以研究，综合运用分析、代数、几何的观点与方法，研究无限维空间上的函数、算子和极限理论，解决分析学中的问题．
+\begin{center}
+	\textcolor[RGB]{255, 0, 0}{\faHeart}在学习中要敢于做减法，减去前人已经解决的部分，看看还有那些问题没有解决，需要我们去探索解决。\textcolor[RGB]{255, 0, 0}{\faHeart}
+\end{center}
+\rightline{\zhen ---华罗庚}
+\vspace{-5pt}
+\begin{center}
+	\pgfornament[width=0.36\linewidth,color=lsp]{88}
+\end{center}
+ 
+ 我们认为要真正理解泛函分析中的一些重要的概念和理论，灵活运用这一强有力的工具，其唯一的途径就是深入了解它们的来源和背景，注重研究一些重要的、一般性定理的深刻的、具体的含义．不然的话，如果只
+是从概念到概念，纯形式地理解抽象定理的推演，那么学习泛函分析的结果只能是“\textbf{如宝山而空返，一无所获．}”
+\rightline{\zhen ---张恭庆院士} 
+
+
+\section{\deng 距离空间}
+
+ \subsection{\zhen 距离空间的基本概念}
+ 
+ \faSendO  只需要在集合$X$ \X 上能定义衡量接近的程度计算方式，就可以基于这个方式来定义极限，从而有完备、紧性、微分，积分，级数...... 
+ 	\subsubsection{基本概念}
+ 	\begin{definition}[距离空间] \label{def:001}
+ 		设$X$是任一非空集合，$\forall x,y \in \X $,$\exists d(x,y) \in \R $ 并且满足
+ 	\begin{kuohaotwo}
+ 		\item 非负性：$d(x,y) \ge 0, \Leftrightarrow x = y \to d(x,y)=0$ ，
+ 		\item 对称性： $\forall x,y \in \X, d(x,y) = d(y,x) $
+ 		\item 三角不等性（可由1,2推出）：$\forall x,y,z \in \X, d(x,y) \le d(x,z) + d(z,y)$
+ 	\end{kuohaotwo}
+称$d(x,y)$ 为$\X$定义的一个距离，定义了距离$d$的这样一个集合记作$(\X,d)$ ,也叫距离空间,不要求是线性空间。
+ 	\end{definition} 
+
+\begin{anymark}[总结~一些常见的距离空间]
+	要想证明一个集合是距离空间，只需要证明定义的$d$符合上述三个性质：\textbf{非负正定、正齐次性、三角不等式}
+	\begin{kuohao}
+		\item  n维度欧氏空间，$\R^n = \set{(\epsilon_1,\epsilon_2 ,...\epsilon_n),\epsilon_i \in \K}$ ,要证明这个需要证明Cauchy不等式（Switch不等式）。n维复数空间$\C^n$也可以，需要取模就行。
+		\item $ \textbf{C[a,b]} ,\text{其中}，d(x,y) =  \max_{a \leq t \leq b} |x(t) - y(t)|,\forall x(t),y(t) \in \Cont$
+		\item \textbf{空间 $s$} : 实数列$ \xi_k$ 的全体。设$x = \{\xi_k\}，y = \{\eta_k\}$ 是两个实数列，定义
+		$d(x, y) = \sum_{k=1}^{\infty} \frac{1}{2^k} \cdot \frac{|\xi_k - \eta_k|}{1 + |\xi_k - \eta_k|}.$
+		上式右边的 $\frac{1}{2^k}$ 是一个收敛因子，保证级数收敛
+		\item \textbf{空间 $S$} :	 $E$ 是一个 有限Lebesgue 可测集，，$E$ \text{上几乎处处有穷的可测函数全体}， \text{其中凡几乎处处相等的函数看成是同一元},$d(x,y)= \int_E \frac{|x(t) - y(t)|}{1 + |x(t) - y(t)|} dt.$
+		 \item 离散空间D : 
+		 $d(x,y) = \begin{cases}
+		 	0 & x= y\\
+		 	1 & x \ne y
+		 \end{cases}$
+		 \item 测度空间\Lpe{p} 上的$p$ 次幂L-可积函数空间\Lpe{p},$1\le p <\infty$,  简记为$L^p(\Omega)$ ; p次幂可和的数列空间$\lp{p},1 \le p <\infty ,\lp{p}=\set{\set{\epsilon_n},\sum_{n=1}^{\infty}\epsilon_n<\infty}$
+		 \item 几乎处处有界可测函数空间$\Lpe{\infty}$,简记为$\Linf(\Omega)$。有界数列空间\linf
+	\end{kuohao}
+\end{anymark}
+
+\begin{definition}[距离空间的收敛]
+	设$(\X,d)$为距离空间，$\set{x_n}\in \X $为点列，若$\exists x_0 \in \X ,d(x_n,x_0)\to 0$，则称$\set{x_n}$依距离收敛到$x_0$
+	收敛的性质和一般的数分定义一致，极限若存在，必唯一，且所有子列都收敛于同一个极限。
+\end{definition} 
+\begin{theorem}[] \label{theorem:001}
+	$(X,d)$为距离空间，则有$|d(x,y)-d(x_1,y_1)| \le |d(x,x_1)|+|d(y,y_1)|  \; x,y,x_1,y_1 \in X$ \hfill
+	
+说明一点：$\textbf{当}x_n\to x_0 \; and \; y_n \to y_o ,\textbf{必有} d(x_n,y_n) \to d(x_0,y_0)$	
+\end{theorem}
+	
+	
+\begin{anymark}
+	$C[a,b]$ 的收敛是函数列在$[a,b]$上的\textbf{一致收敛}
+	
+	空间$S$的收敛等价于函数列依测度收敛
+	
+	\textbf{离散空间中}，${x_n}\to x_0 \Leftrightarrow {x_n} == {x_0} \; n>n_0$ 
+\end{anymark}
+\begin{definition}[连续映射，等距] \label{definition:002}
+	\begin{kuohaotwo}
+		\item 	$(X,d),(X_1,d_1),\; f：X\to X_1 \hspace{1mm} ; x_0 \in X,\forall \,\epsilon >0 , \exists \delta >0 ,d(x,x_0) \le \delta \Leftarrow \forall x\in X ,d_1(f(x),f(x_0)) <\epsilon $  称\(f\)在\(x_0\)连续，若\(f\)在\(X\)上任意一点都连续，则称 \(f\)在\(X\)上连续
+		\item  等距映射 $\forall x,y \in X \; d_{1}(f(x),f(y)) =d(x,y)$
+		一个等距映射一定是一个连续映射并且是一一映上的，但不一定是映上的
+	\end{kuohaotwo}
+	
+	要称俩空间等距，需要俩空间的距离的函数之间存在有一个\textbf{映上的}等距映射
+\end{definition}
+
+ 	\subsubsection{点集}
+\begin{definition*}[点的定义]
+
+\[
+\lim_{n\to\infty}\frac{1}{n}=0
+\]
+
+\[
+\lim_x\left(1+\frac{1}{x}\right)^x = e
+\]
+\end{definition*}
+ 	\subsubsection{完备化---距离空间}
+ 	
+ \subsection{\zhen 开集、闭集及连续映射}
+ 
+ 
+ 
+ \subsection{\zhen 稠密与可分}
+ 	
+ \subsection{\zhen 完备性，barie 纲定理}
+ 
+ \subsection{\zhen 列紧与紧}
+ 
+ \subsection{ \zhen Banach 压缩映射原理}

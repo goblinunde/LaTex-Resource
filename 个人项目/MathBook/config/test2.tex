@@ -1,0 +1,355 @@
+\section{自定义的快捷命令}
+
+\begin{tcblisting}{sidebyside}
+	实数集：$\R$ 或 \R \\
+	自然数集：$\N$ 或 \N \\
+	整数集：$\Z$ 或 \Z \\
+	有理数集：$\Q$ 或 \Q \\
+	复数集：$\C$ 或 \C \\
+	一般域：$\F$ 或 \F \\
+	一般数域：$\K$ 或 \K \\
+	数学期望：$\E[X]$ 或 \E[X] \\
+	概率测度：$\P(A)$ 或 \P(A) \\
+	绝对值：$\abs{-5}$ \\
+	范数：$\norm{\vec{v}}$ \\
+	内积：$\inner{\vec{u}}{\vec{v}}$ \\
+	集合：$\set{x \in \R \mid x > 0}$ \\
+	圆括号：$\paren{\frac{a}{b}}$ \\
+	微分符号：$\diff x$ \\
+	偏导数：$\pd{f}{x}$ \\
+	定积分：$\intab{0}{1}{x^2 \diff x}$ \\
+	推出符号：$A \implies B$ \\
+	等价符号：$A \iff B$ \\
+	逻辑与：$A \AND B$ \\
+	逻辑或：$A \OR B$ \\
+	不推出符号：$A \notimplies B$ \\
+	矩阵：$\mat{A}$ \\
+	向量：$\vecb{v}$ \\
+	矩阵的秩：$\rank{\mat{A}}$ \\
+	矩阵的迹：$\trace{\mat{A}}$ \\
+	角度符号：$90\degree$ \\
+	极限符号：$\limit{x}{\infty} f(x)$ \\
+	最大值点：$\argmax_x f(x)$ \\
+	最小值点：$\argmin_x f(x)$ \\
+\end{tcblisting}
+
+\subsection{文本格式化命令}
+
+强调红色文本：\emphr{这是红色文本} \\
+强调加粗文本：\emphb{这是加粗文本} \\
+待办事项标记：\todo{完成这个任务} \\
+
+\begin{tcblisting}{sidebyside}
+	生成一个分段函数：
+	\[
+	f(x) = \eqgroup{
+		x^2, & x \geq 0 \\
+		-x, & x < 0
+	}
+	\]
+\end{tcblisting}
+
+\begin{tcblisting}{sidebyside}
+	生成一个带圆括号的矩阵：
+	\[
+	\pmat{
+		a & b & c \\
+		d & e &   % 添加占位符
+	}
+	\]
+\end{tcblisting}
+\begin{tcblisting}{sidebyside}
+	生成一个带方括号的矩阵：
+	\[
+	\bmat{
+		1 & 2 & 3 \\
+		4 & 5 & 6 \\
+		7 & 8 & 9
+	}
+	\]
+	
+\end{tcblisting}
+\begin{tcblisting}{sidebyside}
+	生成一个增广矩阵：
+	\[
+	\augmat{
+		1 & 2 & 3 \\  % 第一行三列
+		4 & 5 & 6     % 第二行三列
+	}
+	\]
+\end{tcblisting}
+\begin{tcblisting}{sidebyside}
+	\[
+	\pmat{
+		a & b & c \\ % 正确
+		d & e       % 错误：缺少一个 &
+	}
+	\]
+\end{tcblisting}
+\begin{tcblisting}{sidebyside}
+	修复后：
+	\[
+	\pmat{
+		a & b & c \\
+		d & e &   % 添加占位符
+	}
+	\]
+	
+\end{tcblisting}
+
+\begin{tcblisting}{}
+	
+	指数函数：$\expf{2}{x}$，自然指数：$\expe{x}$，带括号形式：$\expp{e}{x+y}$。
+	
+	欧拉函数的值为：$\euler{10} = 4$。
+	
+	欧拉公式：$\eulerformula{\theta}$。
+	
+	对数函数：$\logbase{2}{x}$，自然对数：$\lnx{x}$。
+	
+	复数形式：$\complexexp{\pi}$，三角函数：$\trig{\sin}{x}{\text{odd}}$。
+\end{tcblisting}
+\begin{tcblisting}{}
+	Gamma函数定义：$\GammaFunc{x} = \GammaDef$ 
+	
+	递推公式：$\GammaRec{n} \quad (n \in \mathbb{N})$ 
+	
+	特殊值：$\GammaFunc{1} = 1,\; \GammaFunc{\frac{1}{2}} = \sqrt{\pi}$ 
+	
+	Beta函数定义：$\BetaFunc{a}{b} = \BetaDef$ 
+	
+	与Gamma函数关系：$\BetaFunc{a}{b} = \BetaGammaRel{a}{b}$ 
+	
+	对称性：$\BetaFunc{a}{b} = \BetaFunc{b}{a}$ 
+\end{tcblisting}
+\begin{tcblisting}{}
+	测度的定义：$\measure{A} \geq 0$，Lebesgue 测度：$\lebmeasure^n$。
+	
+	空集的性质：$\eset \subseteq A$ 对任意集合 $A$ 成立。
+	
+	集合关系：$A \subseteqq B$，$B \supsetneq C$。
+	
+	% 集合包含
+	$A \subsetneq B$，$B \supseteqq A$
+	
+	% 全序关系
+	$a \torder b$（$a \leq b$），$x \tordereq y$（$x \preceq y$）
+	
+	% 偏序关系
+	$u \porder v$（$u \preceq v$），$s \pordereq t$（$s \preccurlyeq t$）
+	
+	全序关系：$a \torder b$，偏序关系：$x \porder y$。
+	
+	有界线性算子：$\op{T}{X}{Y} \in \bounded(X,Y)$。
+\end{tcblisting}
+
+\begin{tcblisting}{}
+	\begin{align*}
+		\BetaFunc{3}{4} &= \BetaGammaRel{3}{4} 
+		= \frac{\GammaFunc{3}\GammaFunc{4}}{\GammaFunc{7}} 
+		= \frac{2! \cdot 3!}{6!} 
+		= \frac{12}{720} 
+		= \frac{1}{60} \quad [[1]][[10]]
+	\end{align*}
+\end{tcblisting}
+
+\begin{tcblisting}{}
+	% 示例
+	\begin{align*}
+		\text{拉普拉斯变换：} &\quad \LT{f(t)}{s} = \int_{0}^{\infty} f(t)e^{-st}dt \quad [[1]][[4]] \\
+		\text{拉普拉斯反变换：} &\quad \ILT{F(s)}{t} = \frac{1}{2\pi i}\lim_{T\to\infty}\int_{\gamma - iT}^{\gamma + iT} F(s)e^{st}ds \quad [[1]][[9]] \\
+		\text{应用示例：} &\quad \LT{\sin(\omega t)}{s} = \frac{\omega}{s^2 + \omega^2} \quad [[4]][[5]]
+	\end{align*}
+\end{tcblisting}
+
+\begin{tcblisting}{}
+	% 示例
+	\begin{align*}
+		\text{傅里叶变换：} &\quad \FT{f(t)}{\omega} = \int_{-\infty}^{\infty} f(t)e^{-i\omega t}dt \quad  \\
+		\text{傅里叶反变换：} &\quad \IFT{F(\omega)}{t} = \frac{1}{2\pi}\int_{-\infty}^{\infty} F(\omega)e^{i\omega t}d\omega   \quad \\
+		\text{应用示例：} &\quad \FT{e^{-at}u(t)}{\omega} = \frac{1}{a + i\omega} \quad (a > 0) 
+	\end{align*}
+\end{tcblisting}
+
+\begin{tcblisting}{}
+	% 使用拉普拉斯变换求解微分方程 y'' + 3y' + 2y = u(t)
+	\begin{align*}
+		\LT{y'' + 3y' + 2y}{s} &= \LT{u(t)}{s} \\
+		\Rightarrow s^2Y(s) - sy(0) - y'(0) + 3sY(s) - 3y(0) + 2Y(s) &= \frac{1}{s} \quad [[1]][[5]]
+	\end{align*}
+\end{tcblisting}
+
+
+\begin{tcblisting}{sidebyside}
+	几何级数公式：
+	\[
+	\Sum{k=0}{\infty} x^k = \frac{1}{1-x} \quad (|x| < 1)
+	\]
+\end{tcblisting}
+\begin{tcblisting}{sidebyside}
+	二重积分：
+	\[
+	\Dint{\Omega}{x^2 + y^2}
+	\]
+\end{tcblisting}
+\begin{tcblisting}{sidebyside}
+	三重积分：
+	\[
+	\Tint{V}{xyz}
+	\]
+\end{tcblisting}
+\begin{tcblisting}{sidebyside}
+	环路积分示例：
+	\[
+	\oint_{C} \mathbf{F} \cdot d\mathbf{r}
+	\]
+\end{tcblisting}
+\begin{tcblisting}{sidebyside}
+	格林公式应用：
+	\[
+	\greens{P}{Q}
+	\]
+	
+	% 花体符号
+	\[
+	\mathcal{F}\{f(t)\} = \int_{-\infty}^{\infty} f(t) e^{-i\omega t} dt  % 傅里叶变换
+	\]
+	
+	% 希腊字母
+	\[
+	\lim_{\Delta x \to 0} \frac{\Delta y}{\Delta x} = \frac{dy}{dx}  % 导数定义
+	\]
+	
+	% 变体符号
+	\[
+	\text{角度：} \theta = \varphi = 45^\circ, \quad \text{误差：} \epsilon \ll \varepsilon
+	\]
+\end{tcblisting}
+
+
+\begin{kuohao}
+	\item First item in parentheses.1111
+	\item Second item in parentheses.
+\end{kuohao}
+
+\begin{change}
+	\item First change.
+	\item Second change.
+\end{change}
+
+\begin{change2}
+	\item First change in a box.
+	\item Second change in a box.
+\end{change2}
+
+\begin{changecircredtwo}
+	\item First change.
+	\item Second change.
+\end{changecircredtwo}
+
+\begin{changecicred}
+	\item First change.
+	\item Second change.
+\end{changecicred}
+
+% 基础盒子
+\begin{basebox}{}{这是一个标题}
+	这是默认样式的盒子内容，支持自动换行和数学公式：$E=mc^2$。
+\end{basebox}
+
+% 自定义颜色和宽度
+\begin{basebox}{colback=blue!5!white, colframe=blue!50!black}{蓝色主题盒子}
+	内容区域背景色为浅蓝，边框为深蓝色。
+\end{basebox}
+
+
+\begin{leftimage}[0.4\textwidth]{example-image-a}
+	This is the description for the left image.
+\end{leftimage}
+
+\begin{leftimage}[0.4\textwidth]{example-image-a}{示例图片 A}
+	这是图片 A 的说明文字。
+\end{leftimage}
+
+\begin{lefttwoimage}[0.4\textwidth]{example-image-c}{示例图片 c}
+	图c
+\end{lefttwoimage}
+\begin{leftimagewithcaption}[0.4\textwidth]{example-image-b}{示例图片 B}{fig:example-b}
+	这是图片 B 的说明文字，并带有标题和标签。
+\end{leftimagewithcaption}
+
+
+
+\pseudocodetwo{
+	\KwIn{$x$, $y$}
+	\KwOut{$z$}
+	$z \gets x + y$ \;
+	\KwRet{$z$}
+}
+
+\pseudocodeinabox{
+	\KwIn{$x$, $y$}
+	\KwOut{$z$}
+	$z \gets x + y$ \;
+	\KwRet{$z$}
+}
+
+
+% 测试 change2 环境
+\begin{change2}
+	\item 第一个条目。
+	\item 第二个条目。
+	\item 第三个条目。
+\end{change2}
+
+% 测试 kuohao 环境
+\begin{kuohao}
+	\item 这是第一个条目。
+	\item 这是第二个条目。
+	\item 这是第三个条目。
+\end{kuohao}
+\ascboxB*[C]{This is my title}
+
+\begin{proof}
+	This is the proof.
+\end{proof}
+\solc
+\begin{equation*}
+	\frac{GMm}{r^2} = m \omega^2 r \RA \frac{GMm}{r^2} = m\left(\frac{2\pi}{T}\right)^2 r \RA r^3
+	= \frac{GMT^2}{4\pi^2}
+\end{equation*}
+
+$A \implies B$ 表示 $A$ 推出 $B$。
+
+- $A \iff B$ 表示 $A$ 等价于 $B$。
+
+- $A \limplies B$ 表示 $B$ 推出 $A$（左推出）。
+
+
+在1公式环境中：
+\[
+P \implies Q, \quad P \iff Q, \quad P \limplies Q
+\]
+
+
+在2公式环境中：
+\[
+P \impliestwo Q, \quad P \ifftwo Q, \quad P \limpliestwo Q
+\]
+
+在正文中也可以直接使用：\\
+如果 A \impliestwo B，那么 B \limpliestwo A。等价关系可以写为 A \ifftwo B。
+
+
+这是一个数学推导的示例：
+
+\[
+\be \text{上确界和下确界}
+\]
+
+\[
+\so \text{结论成立}
+\]
+
+在正文中也可以使用：\be 上确界和下确界，\so 结论成立。
+

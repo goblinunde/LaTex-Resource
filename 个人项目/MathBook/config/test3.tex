@@ -1,0 +1,262 @@
+
+	
+	\section*{水平空格测试}
+	\subsection*{列表缩进}
+	\begin{itemize}[leftmargin=2em]
+		\item \titem 短缩进项目 (0.5em)
+		\item \exitem 长缩进项目 (1.0em)
+	\end{itemize}
+	
+	公式对齐测试：
+	\begin{align*}
+		x &= 1 \eqskip + 2 \eqskip - 3 \\
+		y &= \lskip 5 \times 4
+	\end{align*}
+	
+	\section*{垂直间距测试}
+	段落前间距 \yskip
+	
+	\lipsum[1][1-3]\bxskip % 负间距压缩
+	
+	强制换行测试：\\ \rcyskip 这是紧接上一行的内容
+	
+	公式间距测试：
+	\begin{equation}
+		E=mc^2 \eqyskip
+	\end{equation}
+	
+	\section*{数学符号测试}
+	导数示例：
+	\[
+	\ddt{x} = v, \quad \dddt{x} = a
+	\]
+	
+	箭头演示：
+	\[
+	A \ra B \RA C
+	\]
+	
+	特殊符号：
+	\[
+	\avg{\sigma} = \frac{1}{N}\sum_{i=1}^N \sigma_i
+	\]
+	
+	微分运算：
+	\[
+	\int \ee^{x} \dd x = \ee^{x} + C
+	\]
+	
+	\section*{单位系统测试}
+	速度：10\mps，加速度：5\mpss
+	
+	温度变化：25\OC → 30\OC
+	
+	电容值：100\muF，150\pF
+	
+	电场强度：200\Vpm 或 2\Vpcm
+	
+	特殊单位组合：比热容 4184\jpkgk
+	
+	\section*{结束符号测试}
+	\subsection*{行末结束符}
+	这是证明过程 \eoe
+	
+	\subsection*{公式结束符}
+	\begin{equation}
+		\lim_{x\to 0}\frac{\sin x}{x} = 1 \teoe
+	\end{equation}
+	
+	\subsection*{精确对齐结束符}
+	\begin{flushright}
+		证明结论 \feoe
+	\end{flushright}
+	
+	\section*{箭头符号测试}
+	趋势演示：价格走势 $\up$ 成交量 $\down$
+	
+	
+	数学公式环境：
+	\[
+	f(x) \upmid g(x) \quad \text{当} \quad x \downmid y
+	\]
+	
+	混合模式：
+	\begin{itemize}
+		\item 短期趋势：价格\uplong 
+		\item 长期趋势：交易量\downlong
+	\end{itemize}
+	
+% ========== 使用示例 ==========
+ 基本使用（全默认参数）
+
+	% 基础用法
+	$A \upsmart B$ \quad \text{效果: } \upsmart \downsmart
+	
+	% 自定义参数
+	\dynarrow[FF0000][2ex][45][1pt] \dynarrow[FF0000][2ex][45][1pt] 
+	
+	% 替换部分样式
+	\upsmart[FF6B6B][2ex]  % 仅修改颜色和长度
+	
+	% 学术风格向下箭头
+	\downacad[7F8C8D][1.5ex]  
+	% 保持原-35°角度，继承Latex[round]箭头类型
+	
+	% 科技感向下箭头（带发光效果）
+	\uptech[00F2FE][2.2ex][-25] 
+	% 修改角度为-25°实现向下效果，保留渐变装饰
+	
+	% ===== 经典组合效果 =====
+	% 商业智能双箭头
+	$A \upsmart[4A90E2][2ex][30] \leftrightarrow \downsmart[FF6B6B][2ex][-30] B$ 
+	% 双向对比箭头，增强视觉冲击力
+	
+	% 科技感三重奏
+	\uptech[00F2FE][2.5ex][-30][1pt] 
+	\uptech[00F2FE][2.5ex][0][1pt] 
+	\uptech[00F2FE][2.5ex][30][1pt] 
+	% 三向排列箭头，营造立体空间感
+	
+	% 学术风组合箭头
+	\upacad[2C3E50][1.8ex][45] \downacad[7F8C8D][1.8ex][-45]
+	% 45°斜角组合，适合流程图展示
+	
+	% ===== 进阶视觉效果 =====
+	% 渐变过渡箭头
+	\uptech[00F2FE][2.2ex][25][0.8pt] 
+	\uptech[00F2FE][2.2ex][15][0.8pt] 
+	\uptech[00F2FE][2.2ex][5][0.8pt] 
+	% 角度渐变序列，模拟波动效果
+	
+	% 多彩数据流
+	\dynarrow[FF3366][2.5ex][20][1.2pt]
+	\dynarrow[00CC99][2.5ex][-20][1.2pt]
+	\dynarrow[FFCC00][2.5ex][0][1.2pt]
+	% 三色箭头并行，象征多维数据流动
+	
+	% 深度层次表现
+	\upsmart[4A90E2][2.5ex][45][0.7pt]
+	\upsmart[7AB8F0][2.2ex][45][0.6pt]
+	\upsmart[B0D8F5][1.9ex][45][0.5pt]
+	% 同方向多层次，通过透明度/尺寸营造景深
+	
+	% ===== 动态交互示例 =====
+	% 状态转换箭头组
+	\downsmart[FF6B6B][1.8ex][-25] 
+	$\Rightarrow $
+	\upsmart[4A90E2][1.8ex][25] 
+	% 转换关系可视化
+	
+	% 三维坐标系箭头
+	\upsmart[FF0000][2.5ex][0]   % X轴
+	\upsmart[00FF00][2.5ex][90]  % Y轴
+	\upsmart[0000FF][2.5ex][45]  % Z轴
+	% 坐标系三维示意
+	
+	% 时间轴箭头序列
+	\dynarrow[FF9900][1.5ex][0][0.8pt]
+	\dynarrow[FF9900][1.5ex][0][0.8pt]
+	\dynarrow[FF9900][1.5ex][0][0.8pt]
+	% 线性时间轴表示
+	
+	% ===== 高级装饰效果 =====
+	% 高光箭头组合
+	\uptech[00F2FE][2.8ex][30][1pt]
+	\uptech[00F2FE][2.8ex][30][1pt][preaction={draw, white, line width=1.5pt, opacity=0.9}]
+	% 双重描边高光效果
+	
+	% 渐变宽度序列
+	\foreach \w in {0.5,0.7,1.0,1.2} {
+		\upacad[2C3E50][1.5ex][35][\w pt]
+	}
+	% 线宽渐变序列展示
+	
+	% 彩虹箭头阵列
+	\foreach \c [count=\i from 0] in {FF0000,FFA500,FFD700,00FF00,00CED1,0000FF,8A2BE2} {
+		\upsmart[\c][2ex][30][0.8pt]
+	}
+	% 色谱渐变阵列
+	
+	% 主箭头 + 辅助箭头组合
+	\upsmart[4A90E2][2.5ex][30][1pt] 
+	\upsmart[FFFFFF][2ex][30][0.5pt]
+	% 白色箭头在前作为高亮层
+	
+	% 透明度渐变
+	\foreach \a in {0.3,0.5,0.7,1.0} {
+		\upacad[2C3E50][1.8ex][45][0.6pt][opacity=\a]
+	}
+	
+	% 箭头+文字组合
+	\upsmart[4A90E2][2ex][30] \text{\scriptsize +23\%} 
+	\quad 
+	\downsmart[FF6B6B][2ex][-30] \text{\scriptsize -15\%}
+	
+	% 新装饰样式定义
+	\newcommand{\wavepattern}{%
+		preaction={draw, decorate, decoration={snake, amplitude=1pt, segment length=5pt}},
+		top color=white, bottom color=blue!20
+	}
+	
+
+
+
+	
+% 正确使用方式
+
+	
+	% ===== 动画波浪箭头 =====
+	\begin{animateinline}{10}
+		\multiframe{20}{rAngle=0+5}{
+			\tikz{
+				\draw[
+				preaction={draw, decorate, 
+					decoration={snake, 
+						amplitude=1.5pt, % 固定振幅
+						segment length=5pt % 固定周期
+					}
+				},
+				red
+				] (0,0) -- (2,0);
+			}
+		}
+	\end{animateinline}
+	
+
+
+
+% 基础用法
+\wavyarrow{1}         % 默认长度1单位
+\wavyarrow[red]{1.2}  % 红色箭头，长度1.2单位
+
+% 组合使用
+A \wavyarrow[blue!70!black]{1.5} B
+
+
+
+	% 线宽 = 长度 × 0.3 的黄金平衡
+	\upsmart[4A90E2][2ex][30][0.6pt] 
+	\upsmart[4A90E2][2.5ex][30][0.75pt]
+	
+	% 符合1:1.618的长度比
+	\upsmart[4A90E2][2.2ex][30] 
+	\downsmart[FF6B6B][3.5ex][-30]
+	
+	
+	% 冷暖色平衡组合
+	\upsmart[4A90E2][2ex][30] % 冷色调
+	\downsmart[FF6B6B][2ex][-30] % 暖色调
+	
+	\section*{特殊格式测试}
+	\subsection*{半衰期符号}
+%	放射性衰变：$N(t) = N_0 \cdot 2^{-t/\halflife}$
+	
+	\subsection*{净力符号}
+	牛顿定律：$\fnet = m \cdot a$
+	
+	\subsection*{静电常量}
+	库仑定律：$F = \frac{1}{\ec} \frac{q_1 q_2}{r^2}$
+	
+	\section*{空命令测试}
+	此处\xskip 应该没有额外空格，此处\oskip 同样无效果
+	

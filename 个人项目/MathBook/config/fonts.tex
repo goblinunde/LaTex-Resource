@@ -1,0 +1,60 @@
+\usepackage{fontspec}
+\usepackage{xeCJK}
+
+%\setmainfont{毛泽东字体}[Path = ./]
+%\setCJKmainfont[Path = ./]{毛泽东字体}   %% 这个是全局设置为 毛主席的字体
+
+\setCJKfamilyfont{maoti}[Path=./fonts/, Extension=.ttf, BoldFont=*]{maoti}
+\newcommand*{\maoti}{\CJKfamily{maoti}} %%% 毛主席字体
+
+\setCJKfamilyfont{zhen}[Path=./fonts/, Extension=.ttf, BoldFont=*]{huawenzhengkai}
+\newcommand*{\zhen}{\CJKfamily{zhen}} % 华文正楷
+
+\setCJKfamilyfont{boyang}[Path=./fonts/, Extension=.ttf, BoldFont=*]{boyang}
+\newcommand*{\boyang}{\CJKfamily{boyang}}  % 博洋草书3500
+
+\setCJKfamilyfont{deng}[Path=./fonts/, Extension=.ttf, BoldFont=*]{deng}
+\newcommand*{\deng}{\CJKfamily{deng}} % 邓小平字体
+
+\setCJKfamilyfont{shou}[Path=./fonts/, Extension=.ttf, BoldFont=*]{shou}
+\newcommand*{\shou}{\CJKfamily{shou}}  % 字魂瘦金体(商用需授权)
+
+
+%% 不起作用的原因是:专门用于中日韩等双字节字体，而AlexBrush/Sudestada是纯西文字体
+%\setCJKfamilyfont{alex}[Path=./fonts/, Extension=.ttf, BoldFont=*]{alex}
+%\newcommand*{\alex}{\CJKfamily{alex}}  % AlexBrush-7XGA
+%\setCJKfamilyfont{qianming}[Path=./fonts/, Extension=.ttf, BoldFont=*]{sun}
+%\newcommand*{\qianming}{\CJKfamily{qianming}}  % Sudestada-Mine Cover.ttf 签名的用
+
+% 西文字体定义
+\newfontfamily\alexfont[Path=./fonts/, Extension=.ttf]{alex} 
+\newcommand{\alex}{\alexfont}  % 签名草体
+
+\newfontfamily\qianmingfont[Path=./fonts/, Extension=.ttf]{sun} 
+\newcommand{\qianming}{\qianmingfont}  % 签名草体
+
+\newfontfamily\Liorafont[Path=./fonts/, Extension=.ttf]{LiorahBT} 
+\newcommand{\Liora}{\Liorafont} % 签名草体
+
+\newfontfamily\timefont[Path=./fonts/, Extension=.ttf]{times-new-yorker-1} 
+\newcommand{\Timef}{\timefont} % 墨水
+
+\newfontfamily\InterLifont[Path=./fonts/, Extension=.ttf]{Inter-Light} 
+\newcommand{\interLi}{\InterLifont} % 正常
+
+\newfontfamily\Interfont[Path=./fonts/, Extension=.ttf]{InterVariable-Italic} 
+\newcommand{\interxie}{\Interfont} % 斜体
+
+\newfontfamily\InterBofont[Path=./fonts/, Extension=.ttf]{Inter-Bold} 
+\newcommand{\inter}{\InterBofont}  %% 粗体 
+
+\newfontfamily\Maplefont[Path=./fonts/, Extension=.ttf]{MapleMono-NF-CN-MediumItalic} 
+\newcommand{\maple}{\Maplefont}  %% maple 字体
+
+\newfontfamily\ZifferaVeneta[Path=./fonts/, Extension=.ttf]{ZifferaVeneta} 
+\newcommand{\ziff}{\ZifferaVeneta}  %% 鬼画符字体
+
+\newfontfamily\yidakixie[Path=./fonts/, Extension=.ttf]{yidakixie} 
+\newcommand{\yidali}{\yidakixie}  %% 鬼画符字体
+
+%% 还需要设计一些艺术字体进来

@@ -1,0 +1,104 @@
+% !TeX program = xelatex
+% !TeX encoding = UTF-8
+% !TeX spellcheck = en_GB
+% !BIB program = biber
+\documentclass[
+lang=cn,
+10pt,
+newtx,
+thmcnt=section,
+cod=minted,
+bibstyle=numeric,      % 设置参考文献样式为数字格式
+citestyle=numeric,     % 设置引用样式
+backend=biber          % 指定 biber
+]{vividbook}
+% \documentclass[lang=cn,10pt,newtx,thmcnt=section,cod=minted]{vividbook} %开启minted版本
+%\documentclass[lang=cn,10pt,newtx,thmcnt=section]{vividbook} % 无minted版本!使用这个请务必注释掉48行附近的\input{cha/minteds.tex}
+\addbibresource{./reference.bib}  % 参考文献
+\usepackage{animate}   %动画演示
+\input{./config/fonts.tex}  %% 设置自己喜欢的字体文件，支持中日韩欧美英字体
+\input{./config/title.tex}  %% 设置自己的标题栏目
+\begin{document}
+
+	\chapterimage{chapterimage05.pdf} 
+	\maketitle
+	
+	\frontmatter
+	\thispagestyle{fancy}
+	\tableofcontents  %% 生成目录
+	
+	\mainmatter
+	\partsimage{partimage01.pdf} %%生成的是 “部分页面”的背景图片，part页面目录的
+	
+
+%%	\input{./config/test1.tex} % 展示自己添加的中文字体和西文字体的效果
+%% 	\input{./config/test2.tex} % 定义的一些数学符号
+%%	\input{./config/test3.tex} % 定义的空格 和箭头的使用
+%%	\input{./config/test4.tex} %% 格式
+%% 	\input{./config/test5.tex} %% 有序列表设计
+
+
+%% -------------------- 第一部分 ：分析学 ---------
+%% 包括 ： 数学分析 ， 实分析/实变函数  泛函分析  复变函数（复分析）
+%%        方程 -------> 常微分方程 ，偏微分方程 ，分数阶微分方程 ，微分几何
+%%  
+		\part{分析学}
+\input{./config/introduce/1_analysis.tex} %% 分析学介绍
+
+%	  \chapterimage{chapterimage02.pdf}
+%	 \chapterimage{chapterimage04.pdf}
+%	 \input{cha/part1/math_analysis/part1.tex}        %% 数学分析第一部分
+%	 \input{cha/part1/math_analysis/part2.tex}             %% 数学分析第二部分
+%	 \input{cha/part1/math_analysis/part3.tex}               %% 数学分析第三部分
+%	 \input{cha/part1/math_analysis/part4.tex}                 %% 数学分析第四部分
+%	 \input{cha/part1/math_analysis/part5.tex}                        %% 数学分析第五部分
+
+ \chapterimage{chapterimage04.pdf}
+	 \input{cha/part1/Functional_analysis/chap1_Functional_analysis.tex} % 距离空间
+	 \input{cha/part1/Functional_analysis/chap1_Functional_analysis_fufan.tex} % 赋范空间
+	 \input{cha/part1/Functional_analysis/chap1_Functional_analysis_hilbert.tex} % 内积空间
+	 \input{cha/part1/Functional_analysis/chap1_Functional_analysis_suanzi.tex} % 有界算子
+	 \input{cha/part1/Functional_analysis/chap1_Functional_analysis_Hahn_Banach.tex} % 共轭空间
+	 \input{cha/part1/Functional_analysis/chap1_Functional_analysis_pu.tex} % 谱
+%	 
+%% 	 -------------------- 第二部分：代数 ----------
+%% 包括： 高等代数 ，近世代数
+%% 
+	\part{代数}
+\input{./config/introduce/2_algebra.tex} %% 分析学介绍
+	\chapterimage{chapterimage02.pdf} %% 这个默认是对整个的part起作用，需要newpage
+	\input{cha/part2/algebra/chap1_AdvancedAlgebra.tex}
+	
+%%   ---------------- 第三部分：概率统计 ------------
+%% 包括 ：概率论 、数理统计、多元统计分析、随机过程
+%%
+
+%	\part{概率统计}
+%\input{./config/introduce/3_probability.tex} %% 分析学介绍
+%\chapterimage{chapterimage02.pdf} %% 这个默认是对整个的part起作用，需要newpage
+%\input{cha/part3/probability/chap1_AdvancedAlgebra.tex}
+
+%%  -----------------第四部分：计算与算法 ------------
+%%  包括：数值计算 、优化算法（遗传算法，蒙特卡洛......）、计算机常用算法、机器学习、深度学习、强化学习、LLM、提示词工程、大模型微调......
+
+%	\part{计算数学} 
+%\input{./config/introduce/2_daishu.tex} %% 分析学介绍
+%\chapterimage{chapterimage02.pdf} %% 这个默认是对整个的part起作用，需要newpage
+%\input{cha/part2/algebra/chap1_AdvancedAlgebra.tex}
+
+%%  ------------------第五部分： 基础类数学（入门）------
+%%  包括：离散数学、集合论、矩阵论、测度论、基础拓扑
+
+%	\part{基础数学}
+%\input{./config/introduce/2_daishu.tex} %% 分析学介绍
+%\chapterimage{chapterimage02.pdf} %% 这个默认是对整个的part起作用，需要newpage
+%\input{cha/part2/algebra/chap1_AdvancedAlgebra.tex}
+	
+	\newpage
+% 输出参考文献
+%\printbibliography
+
+
+\end{document}
+
+
