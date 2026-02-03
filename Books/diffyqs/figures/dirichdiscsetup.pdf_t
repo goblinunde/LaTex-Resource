@@ -1,0 +1,12 @@
+\begin{picture}(0,0)%
+\includegraphics{dirichdiscsetup.pdf}%
+\end{picture}%
+\setlength{\unitlength}{3947sp}%
+\begin{picture}(2859,2708)(229,-1932)
+\put(1620,-378){\makebox(0,0)[lb]{\smash{\fontsize{12}{14.4}\normalfont {\color[rgb]{0,0,0}$\Delta u = 0$}%
+}}}
+\put(1713,449){\makebox(0,0)[lb]{\smash{\fontsize{12}{14.4}\normalfont {\color[rgb]{0,0,0}$u(1,\theta)=g(\theta)$}%
+}}}
+\put(1522,-1357){\makebox(0,0)[lb]{\smash{\fontsize{12}{14.4}\normalfont {\color[rgb]{0,0,0}radius 1}%
+}}}
+\end{picture}%
