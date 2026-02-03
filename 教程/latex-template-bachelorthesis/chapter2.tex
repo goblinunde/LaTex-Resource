@@ -1,0 +1,935 @@
+\chapter{Mathematische Theorie}
+
+In diesem Kapitel wird zunächst unter Verwendung vorher eingeführter Sätze und Definitionen die Existenz der Singulärwertzerlegung bewiesen.
+Anschließend wird an einem konkreten Beispiel die Berechnung durchgeführt und die SVD visualisiert.
+Um das Kapitel abzuschließen, erfolgt eine Beweisführung von zwei wichtigen Eigenschaften der SVD, die auch im Anwendungsteil erneut aufgegriffen werden.
+
+\section{Existenzbeweis der SVD}
+Es wird davon ausgegangen, dass der Leser\footnote{Aus Gründen der besseren Lesbarkeit wird das generische Maskulinum verwendet, wobei alle Geschlechter mit eingeschlossen sind.} mit den Grundlagen der linearen Algebra vertraut ist, insbesondere mit Matrizen und ihren Eigenschaften.
+Bekannte Definitionen werden nicht erneut aufgeführt, die einzige Ausnahme bildet \zcref{eigvec}, da diese für jegliche Beweisführung und für das Verständnis in diesem Kapitel unerlässlich ist und deswegen eine Auffrischung sinnvoll erscheint.
+\begin{definition}\label{eigvec}
+    Sei \(n \in \N\) und \(A \in \R^{n \times n}\). Für
+    \begin{equation*}
+        Av=\lambda v
+    \end{equation*}
+    heißen die Lösungen \(\R^{n} \ni v \neq \symbf{0}\) \emph{Eigenvektoren} und die zugehörigen \(\lambda\) \emph{Eigenwerte}.   
+\end{definition}
+Vorausgesetzte Sätze werden ohne weiteren Beweis verwendet, wobei die entsprechenden Beweise aus~\cite{raschLineareAlgebraVersion2021} zu entnehmen sind.
+Vor der Verwendung werden die Sätze kurz rekapituliert, wie an \zcref{bes} verdeutlicht wird.
+\begin{repitition}[Basisergänzungssatz]\label{bes}
+    Sei \(V\) ein beliebiger Vektorraum, \(L \subseteq V\) linear unabhängig und \(E \subseteq V\) ein Erzeugendensystem von \(V\). Dann kann \(L\) durch Elemente aus \(E\) zu einer Basis von \(V\) ergänzt werden.
+\end{repitition}
+Um die Existenz der Singulärwertzerlegung für beliebige Matrizen zu beweisen, bedarf es der Hilfe eines anderen Satzes, des sogenannten Spektralsatzes.
+Dieser hat keine eindeutige Formulierung, sondern beschreibt vielmehr mehrere verwandte Aussagen der Mathematik, wobei sich in dieser Arbeit auf seine Folgerungen für symmetrische Matrizen beschränkt wird.
+Es ist ebenfalls wichtig zu betonen, dass der Spektralsatz zwar hier \enquote{nur} für den Beweis der Singulärwertzerlegung verwendet wird, eine Bezeichnung als Hilfssatz jedoch irreführend wäre, da der Satz für sich genommen bereits eine bedeutende Aussage der linearen Algebra und Funktionalanalysis darstellt.
+Um den Spektralsatz für symmetrische Matrizen einführen und anschließend beweisen zu können, benötigen wir zunächst \zcref{complex,lm:realeig} sowie \zcref{gram}.
+\begin{lemma}\label{complex}
+    Sei \(z \in \C\) und \(a,b \in \R\) mit \(z = a + bi\). 
+    Es gilt \(z = \overline{z}\) genau dann, wenn \(z \in \R\).     
+\end{lemma}
+\begin{proof}
+    \enquote{\(\Ra\)}\ Durch \(z = \overline{z}\) gilt
+    \begin{align*}
+        a + bi &= a -bi\\
+        \Lra \quad 2bi &= 0.
+    \end{align*}
+    Da \(i \neq 0\) muss \(b = 0\), womit \(\mathfrak{Im}(z) = 0\). Also ist \(z = \mathfrak{Re}(z) \in \R\).\\
+    \enquote{\(\La\)}\ Folgt direkt aus der Definition der komplexen Zahlen.  
+\end{proof}
+\begin{lemma}\label{lm:realeig} 
+    Sei \(n \in \N,\ A \in \R^{n \times n} \) und \(\lambda \in \R\) ein reeller Eigenwert von \(A\).\\
+    Dann gibt es einen zugehörigen Eigenvektor \(\R^{n} \ni v \neq 0\), der ebenfalls reell ist.     
+\end{lemma}
+\begin{proof}
+    Angenommen \(\C^{n} \ni v \neq 0\) mit \(v = x+iy\) für \(x,y \in \R^{n}\).
+    Dann gilt nach \zcref{eigvec}
+    \begin{align*}
+        Av &= \lambda v \\
+        \Lra A(x+yi) &= \lambda(x+yi) \\ 
+        \Lra Ax + Ayi &= \lambda x + \lambda yi.
+    \end{align*}        
+    Durch einen Koeffizientenvergleich erhalten wir damit
+    \begin{equation*}
+        Ax = \lambda x \quad \wedge \quad Ay = \lambda y.
+    \end{equation*}
+    Da \(v \neq 0\) ist, muss entweder \(x \neq 0\) oder \(y \neq 0\) sein, womit nach \zcref{eigvec} mindestens ein reeller Eigenvektor zu \(\lambda\) existiert.
+\end{proof}
+\begin{repitition}[Gram-Schmidtsches Orthonormalisierungsverfahren]\label{gram}
+    Sei \(V\) ein euklidischer Vektorraum und \(\{u_1,\ldots,u_n\}\) eine Menge von linear unabhängigen Vektoren in \(V\). 
+    Dann kann eine Menge \(\{v_1,\ldots,v_n\}\) aus Vektoren in \(V\)  konstruiert werden, sodass \(\{v_1,\ldots,v_n\}\) orthonormal ist und 
+    \begin{equation*}
+        \symcal{L}\{v_1,\ldots,v_n\} = \symcal{L}\{u_1,\ldots,u_n\}.
+    \end{equation*}
+\end{repitition}
+\begin{theorem}[Spektralsatz]\label{spec}
+    Sei \(n \in \N\) und \(A \in \R^{n \times n} \) quadratisch und symmetrisch. 
+    Dann gilt:
+    \begin{enumerate}[label= (\roman*)]
+        \item \(A\) hat nur reelle Eigenwerte.\label{spec1}
+        \item Es existiert eine orthogonale Matrix \(R \in \R^{n \times n}\), sodass \(R^{-1}AR = R^{T}AR = \Lambda \in \R^{n \times n}\) diagonal ist.\label{spec2}
+    \end{enumerate}
+\end{theorem}
+\begin{proof}
+    Die Behauptungen werden nacheinander bewiesen~\cite{proof:SpectralTom}.
+
+    \vspace{5pt}
+    \underline{Zu~\ref{spec1}}. Sei \(\lambda \in \C\) ein Eigenwert von \(A\) mit zugehörigem Eigenvektor \(\C^{n} \ni v \neq 0 \). 
+    Dann ist mit \zcref{eigvec}
+    \begin{align}
+        Av &=\lambda v \notag \label{al21}\\
+        \Lra \quad A\overline{v} &= \overline{\lambda}\overline{v},
+    \end{align}
+    da \(A\) reell ist und somit \(A=\overline{A}\) nach \zcref{complex}. 
+    Nun gilt zum einen
+    \begin{equation}
+        {\left(Av\right)}^T \overline{v} = {\left(\lambda v\right)}^{T} \overline{v} = \lambda {v}^{T} \overline{v} \label{eq22}
+    \end{equation}
+    und zum anderen
+    \begin{equation}
+        {\left(Av\right)}^T \overline{v} = v^{T}A^{T}\overline{v} \overset{A\text{ sym.}}{=} v^{T}A\overline{v} \overset{\eqref{al21}}{=} v^{T}\overline{\lambda}\overline{v} = \overline{\lambda}v^{T}\overline{v}. \label{eq23}
+    \end{equation}
+    Mit~\eqref{eq22}\(=\)\eqref{eq23} ergibt sich
+    \begin{equation*}
+        \lambda v^{T}\overline{v} = \overline{\lambda}v^{T}\overline{v} .
+    \end{equation*}
+    Da \(v \neq 0\) ist, erhalten wir
+    \begin{equation*}
+        \lambda = \overline{\lambda}.
+    \end{equation*}
+    Nach \zcref{complex} ist dann \(\lambda \in \R\).\qed
+    \vspace{5pt} 
+
+    \underline{Zu~\ref{spec2}}. Induktion über \(n \in \N\): \\
+    \textit{Induktionsanfang}. 
+    Für \(n=1\) sind \(A\) und \(R\) Skalare. 
+    Setze \(R=1\). 
+    Damit ist \(R\) orthogonal, da \(R^{-1}=R^{T}\) und \(\R \ni A = R^{-1}AR\) trivialerweise diagonal. \\
+    \textit{Induktionshypothese}. 
+    Die Behauptung~\ref{spec2} gelte für festes, beliebiges \(n-1 \in \N\). 
+    Es soll gezeigt werden, dass sie dann auch für \(n\) gilt.  \\
+    \textit{Induktionsschritt}.  
+    Sei \(\lambda_1\) ein beliebiger Eigenwert von \(A\) mit zugehörigem normiertem Eigenvektor \(v_1\), also \(\norm{v_1} = 1\).  
+    Nach~\ref{spec1} gilt \(\lambda_1 \in \R\) und damit nach \zcref{lm:realeig} auch \(v_1 \in \R^{n}\). 
+    Mit dem Basisergänzungssatz (\zcref{bes}) kann \(v_1\) durch Vektoren \(u_2,\ldots,u_n\) zu einer Basis von \(\R^{n}\) ergänzt werden. 
+    Nun kann das Gram-Schmidt’sche Orthonormalisierungsverfahren (\zcref{gram}) angewendet werden, wodurch eine orthonormale Basis \(\{v_1,\ldots,v_n\}\) von \(\R^{n}\) konstruiert wird.  
+    Der Leser wird daran erinnert, dass orthonormale Vektoren normiert und orthogonal sind.
+    Sei 
+    \begin{equation*}
+        P = 
+        \begin{bmatrix}
+            \vert & \vert & \vert & \vert\\
+            v_1 & v_2 & \cdots & v_n \\
+            \vert & \vert & \vert & \vert
+        \end{bmatrix} 
+        \in \R ^{n \times n}
+    \end{equation*} 
+    mit \(v_1,\ldots,v_n\) als Spaltenvektoren und setze \(B = P^{-1}AP = P^{T}AP \in \R^{n \times n}\).
+
+    Das Ziel ist, die Induktionshypothese auf eine symmetrische Untermatrix \(C \in \R^{\left(n-1\right)\times\left(n-1\right)}\) von \(B\) anzuwenden.
+    Dafür wird zunächst die Symmetrie von \(B\) gezeigt:   
+    \begin{equation*}
+        B^{T} = {\left(P^{T}AP\right)}^{T} = {\left(AP\right)}^{T}P = P^{T}A^{T}P \overset{A\text{ sym.}}{=} P^{T}AP = B.
+    \end{equation*} 
+    Betrachte jetzt die erste Spalte von \(B\). 
+    Die erste Spalte einer beliebigen Matrix erhält man durch Multiplikation mit dem kanonischen Einheitsvektor \(\symbf{e}_1\): 
+    \begin{align*}
+        B\symbf{e}_1 &= P^{T}AP\symbf{e}_1 \\
+        &= P^{T}Av_1 & {\left(\text{\small\(v_1\) ist die erste Spalte von \(P\)}\right)} \\
+        &= P^{T}{\lambda}_1v_1 & {\left(\text{\small\(\lambda_1\) ist der Eigenwert zu \(v_1\)}\right)} \\
+        &= P^{T}v_1{\lambda}_1 \\
+        &= \brows{v_1 \\ v_2 \\ \rowsvdots \\ v_n}v_1{\lambda}_1 \\
+        &= 
+        \begin{bmatrix}
+                \langle v_1,v_1 \rangle \\ \langle v_2,v_1 \rangle \\ \dots \\ \langle v_n,v_1 \rangle
+        \end{bmatrix}
+        {\lambda}_1 \\
+        &=
+        \begin{bmatrix}
+            1  \\ 0 \\ \vdots \\ 0
+        \end{bmatrix}
+        {\lambda}_1. & {\left(\text{\small\(\norm{v_1} = 1\) und bel.\ \(v_i,v_j \in \{v_1,\ldots,v_n\}\) orthogonal}\right)}
+    \end{align*}
+    Mit der Darstellung als Blockmatrix und durch Symmetrie von \(B\) folgt somit 
+    \(
+    B = 
+    \begin{bmatrix}
+        {\lambda}_1 & \symbf{0} \\
+        \symbf{0} & C
+    \end{bmatrix}
+    \)
+    mit \(C \in \R^{(n-1) \times (n-1)}\) symmetrisch.
+
+    Nach Induktionshypothese gibt es damit ein orthogonales \(Q \in \R^{(n-1)\times(n-1)}\) mit \(Q^{T}CQ = D\) diagonal. 
+    Dann gilt
+    \begin{align*}
+        P^{T}AP &= B \\
+        &= 
+        \begin{bmatrix}
+            {\lambda}_1 & \symbf{0} \\
+            \symbf{0} & C
+        \end{bmatrix} \\
+        &=
+        \begin{bmatrix}
+            {\lambda}_1 & \symbf{0} \\
+            \symbf{0} & QDQ^{T}
+        \end{bmatrix} \\
+        &=
+        \begin{bmatrix}
+            1 & \symbf{0} \\
+            \symbf{0} & Q
+        \end{bmatrix}
+        \begin{bmatrix}
+            {\lambda}_1 & \symbf{0} \\
+            \symbf{0} & D
+        \end{bmatrix}
+        \begin{bmatrix}
+            1 & \symbf{0} \\
+            \symbf{0} & Q^{T}
+        \end{bmatrix}.
+    \end{align*}
+    Also ist
+    \begin{equation*}
+        \begin{bmatrix}
+            1 & \symbf{0} \\
+            \symbf{0} & Q^{T}
+        \end{bmatrix}
+        P^{T}AP
+        \begin{bmatrix}
+            1 & \symbf{0} \\
+            \symbf{0} & Q
+        \end{bmatrix}
+        =
+        \begin{bmatrix}
+            {\lambda}_1 & \symbf{0} \\
+            \symbf{0} & D
+        \end{bmatrix}.
+    \end{equation*} 
+    Definiere
+    \begin{equation*}
+        R = P
+        \begin{bmatrix}
+            1 & \symbf{0} \\
+            \symbf{0} & Q
+        \end{bmatrix}. 
+    \end{equation*}   
+    Es gilt
+    \begin{equation*}
+        R^{T} =
+        \begin{bmatrix}
+            1 & \symbf{0} \\
+            \symbf{0} & Q^{T}
+        \end{bmatrix}
+        P^{T}
+        =
+        \begin{bmatrix}
+            1 & \symbf{0} \\
+            \symbf{0} & Q^{-1}
+        \end{bmatrix}
+        P^{-1} 
+        =
+        R^{-1}.
+    \end{equation*}
+    Dementsprechend ist \(R\) orthogonal und \(R^{-1}AR = R^{T}AR\) = 
+    \(
+    \begin{bmatrix}
+        {\lambda}_1 & \symbf{0} \\
+        \symbf{0} & D
+    \end{bmatrix}
+    =
+    \Lambda
+    \)  
+    diagonal, da \(D\) diagonal ist.              
+\end{proof}
+\begin{corollary}\label{cor:spec}
+    Seien die Voraussetzungen aus \zcref{spec} gegeben.\\
+    Dann gilt, dass die Diagonalwerte von \(\Lambda \in \R^{n \times n}\) die Eigenwerte der Matrix \(A\) und die Spalten von \(R\) die zugehörigen normierten Eigenvektoren von \(A\) sind.    
+\end{corollary}
+\begin{proof}
+    Nach dem \hyperref[spec]{Spektralsatz} gibt es ein orthogonales 
+    \(
+    R=
+    \big[
+    \begin{matrix}
+        r_1 \dots r_n
+    \end{matrix}
+    \big]
+    \)
+    mit
+    \(r_1,\ldots,r_n \in \R^{n}\) 
+    und 
+    \(\Lambda = \diag(\lambda_1,\ldots,\lambda_n)\), sodass
+    \begin{equation*}
+        R^{-1}AR = \Lambda.
+    \end{equation*}
+    Dann ist
+    \begin{equation*}
+        AR = R\Lambda
+    \end{equation*} 
+    oder spaltenweise
+    \begin{equation*}
+        Ar_i = {\lambda}_i r_i, \quad \text{für } i = 1,\ldots,n.
+    \end{equation*}
+    Da \(R\) orthogonal ist, sind die Spaltenvektoren \(r_1,\ldots,r_n\) von \(R\) der Definition nach orthonormal.
+    Für beliebiges \(r_i\) gilt somit \(\norm{r_i} = 1\), wodurch \(r_i \neq \symbf{0}\) sein muss.
+    Nach \zcref{eigvec} sind also \(r_1,\ldots,r_n\) die (normierten) Eigenvektoren von \(A\) mit zugehörigen Eigenwerten \(\lambda_1,\ldots,\lambda_n\).\vspace{6pt}\\
+    \noindent{\emph{Hinweis}}. Mithilfe von Zeilen- und Spaltenvertauschungen innerhalb von \(R\) und \(\Lambda\) kann \(\Lambda\) so geordnet werden, dass \(\lambda_1 \geq \lambda_2 \geq \cdots \geq \lambda_n\).
+Diese Sortierung wird für den Rest der Arbeit angenommen.
+\end{proof}
+\begin{remark}\label{rem:orth}
+    Durch \zcref{cor:spec} lässt sich direkt die nützliche Aussage treffen, dass bei einer symmetrischen Matrix Eigenvektoren zu verschiedenen Eigenwerten orthogonal zueinander sind. 
+\end{remark}
+Für den Existenzbeweis der Singulärwertzerlegung werden zusätzlich zum Spektralsatz noch \zcref{rep:dim}, \zcref{lem:rk} und \zcref{rep:eigrank} benötigt.
+Der Beweis von \zcref{lem:rk} erfolgt nach~\cite{cheruvilthomasAnswerWhyDoes2013}.
+\begin{repitition}[Dimensionssatz]\label{rep:dim}
+    Seien \(m,n \in \N\) und \(A \in \R^{m \times n}\). Dann gilt:
+    \begin{equation*}
+        \text{df}(A) + \text{rg}(A) = n.
+    \end{equation*} 
+\end{repitition}
+\begin{lemma}\label{lem:rk}
+    Seien \(m,n \in \N\) und \(X \in \R^{m \times n}\). 
+    Dann ist \(\rg(X) = \rg (X^{T}X)\). 
+\end{lemma}
+\begin{proof}
+    Sei \(v \in \ker(X)\) beliebig. 
+    Dann ist 
+    \begin{align*}
+        Xv &= \symbf{0} \\
+        \Rightarrow \quad X^{T}Xv &= \symbf{0},
+    \end{align*}
+    womit \(v \in \ker(X^{T}X)\).
+    Gleichzeitig gilt für \(v \in \ker(X^{T}X)\) 
+    \begin{alignat*}{2}
+        && \qquad X^{T}Xv &= \symbf{0} \\
+        &\Rightarrow& v^{T}X^{T}Xv &= \symbf{0} \\
+        &\Lra& {\norm{Xv}}^{2} &= \symbf{0} \\
+        &\Lra& Xv &= \symbf{0},
+    \end{alignat*} 
+    also \(v \in \ker(X)\).
+    Damit ist \(\ker(X) = \ker(X^{T}X)\) und es folgt \(\rg(X) = \rg(X^{T}X)\) nach dem Dimensionssatz (\zcref{rep:dim}). 
+\end{proof}
+\begin{repitition}\label{rep:eigrank}
+    Der Rang einer reell symmetrischen Matrix ist die Anzahl der von null verschiedenen Eigenwerten.
+\end{repitition}
+Nun kann mithilfe der vorangegangenen Aussagen die Existenz der Singulärwertzerlegung für beliebige reelle Matrizen bewiesen werden.
+Der Beweis orientiert sich dabei an~\cite{chenLecture5Singular2020}.
+\begin{theorem}[Singulärwertzerlegung]\label{th:svd}
+    Seien \(m,n\in\N\) und \(X \in \R^{m \times n}\). \\
+    Dann existieren orthogonale Matrizen \(U \in \R^{m \times m}, V \in \R^{n \times n}\) und eine Matrix \(\Sigma \in \R^{m \times n}\), sodass
+    \begin{equation*}
+        X = U \Sigma V^{T}.
+    \end{equation*}
+\end{theorem}
+\begin{proof}
+    Sei \(C = X^{T}X \in \R^{n \times n}\) und \(r = \rg(X) \leq \min(m,n)\).
+    Dann ist \(C\) symmetrisch und positiv semidefinit, da zum einen 
+    \begin{equation*}
+        C^{T} = {\big(X^{T}X\big)}^{T} = X^{T}X = C
+    \end{equation*}  
+    und zum anderen für beliebiges \(\R^{n} \ni w \neq 0\) gilt:
+    \begin{equation*}
+        w^{T}Cw = w^{T}(X^{T}X)w = {\big(Xw\big)}^{T}\big(Xw\big) = \langle Xw,Xw \rangle = {\norm{Xw}}^{2} \geq 0.
+    \end{equation*}
+    Damit sind alle Eigenwerte von \(C\) positiv oder gleich null. 
+    Nach \zcref{cor:spec} gibt es durch die Symmetrie ein orthogonales 
+    \begin{equation*}
+        \symbf{V} =
+        \big[
+        \begin{matrix}
+            v_1 \dots v_n
+        \end{matrix}
+        \big]
+        \in \R^{n \times n}
+    \end{equation*}
+    und diagonales \(\Lambda = \diag(\lambda_1,\ldots,\lambda_n) \in \R^{n \times n}\) mit \(\lambda_1 \geq \cdots \geq \lambda_r > 0 \oset[.45ex]{\footnotemark}{=} \lambda_{r+1} = \cdots = \lambda_n\)\footnotetext{Nach \zcref{lem:rk,rep:eigrank} sowie der positiven Semidefinitheit von \(X^{T}X\).}, sodass \(C = V \Lambda V^{T}\).    
+    Sei \(\sigma_i = \sqrt{\lambda_i}\) für \(i \in \{1,\ldots,r\}\) und
+    \begin{equation*}
+        \symbf{\Sigma} = 
+        \begin{bmatrix}
+            \diag(\sigma_1,\ldots,\sigma_r) & \symbf{0} \\
+            \symbf{0} & \symbf{0}
+        \end{bmatrix}
+        \in \R^{m \times n}
+    \end{equation*}
+    Sei außerdem
+    \begin{equation*}
+        u_i = \frac{1}{\sigma_i}Xv_i \in \R^{m}.
+    \end{equation*}
+    Dann sind \(u_1,\ldots,u_r\) orthornomal für \(j \in \{1,\ldots,r\}\):
+    \begin{align*}
+        u_i^{T}u_j &= {\left(\frac{1}{\sigma_i}Xv_i\right)}^{T}\left(\frac{1}{\sigma_j}Xv_j\right) \\
+        &= \frac{1}{\sigma_i \sigma_j}v_i^{T}\underbrace{X^{\raisebox{0.2ex}{\(\scriptstyle{T}\)}}X}_{=C}v_j \\
+        &= \frac{1}{\sigma_i\sigma_j}v_i^{T}(\lambda_j v_j) & {\left(\text{\small \(\lambda_j\) ist der Eigenwert zu \(v_j\)}\right)} \\
+        &= \frac{\sigma_j}{\sigma_i}v_i^{T}v_j & {\bigl(\text{\small\(\lambda_j = \sigma_j^{2}\)}\bigr)} \\
+        &=
+        \begin{cases}
+            1, \quad & i=j. \\
+            0, \quad & i \neq j.
+        \end{cases} & {\bigl(\text{\small \(v_i,v_j\) sind orthonormal}\bigr)}
+    \end{align*}
+    \enlargethispage{\baselineskip}%
+    Wie bereits im Beweis des Spektralsatzes können \(u_1,\ldots,u_r\) mithilfe des Basisergänzungssatzes (\zcref{bes}) und des Gram-Schmidt-Verfahrens (\zcref{gram}) durch Vektoren \(u_{r+1}\ldots,u_m \in \R^{m}\) zu einer orthonormalen Basis von \(\R^{m}\) ergänzt werden. 
+    Damit ist 
+    \begin{equation*}
+        \symbf{U} =
+        \big[
+        \begin{matrix}
+            u_1 \dots u_{r}u_{r+1} \dots u_m
+        \end{matrix}
+        \big]
+        \in \R^{m \times m}
+    \end{equation*}
+    orthogonal.   
+    Es bleibt zu  zeigen, dass \(XV = U\Sigma\) ist, also:
+    \begin{equation*}
+        X
+        \big[
+        \begin{matrix}
+            v_1 \dots v_{r}v_{r+1} \dots v_n
+        \end{matrix}
+        \big]
+        =
+        \big[
+        \begin{matrix}
+            u_1 \dots u_{r}u_{r+1} \dots u_m
+        \end{matrix}
+        \big]
+        {
+        \renewcommand{\arraystretch}{0.8}
+        \delimiterfactor=1000
+        \begin{bNiceArray}{cccc|c}[margin]
+            \sigma_1 & & & & \Block{4-1}{\symbf{0}} \\
+            & \sigma_2 & & & \\
+            & & \raisebox{-0.9ex}{\rotatebox{15}{\(\ddots\)}} & & \\
+            & & & \sigma_r & \\
+            \hline % chktex 44
+            \Block{1-4}{\symbf{0}} & & & & \symbf{0}
+        \end{bNiceArray}
+        }.
+    \end{equation*}
+    Für \(1 \leq i \leq r\) gilt \(Xv_i = u_i \sigma_i\) nach Konstruktion. \\
+    Für \(i > r\) soll gezeigt werden, dass \(Xv_i = 0u_i  = \symbf{0}\) ist. 
+    Betrachte dafür
+    \begin{equation*}
+        X^{T}Xv_i = Cv_i \overset{(*)}{=} 0v_i = \symbf{0}
+    \end{equation*}
+    {\small\((*)\) \textit{Der zugehörige Eigenwert zum Eigenvektor} \(v_i\) \textit{ist \num{0} für} \(i>r\).} 
+    \vspace{5pt}
+    \\
+    Damit muss wie erwünscht \(Xv_i = \symbf{0}\) gelten, oder \(X^{T} = \symbf{0}\), wodurch ebenfalls \(Xv_i = \symbf{0}\) folgt.       
+    Dementsprechend ist \(X = U \Sigma V^{T}\) und die Aussage ist bewiesen. 
+\end{proof}
+\begin{remark}\leavevmode
+    \vspace{-14pt}
+    \begin{itemize}
+        \item Die Diagonalwerte von \(\Sigma\) heißen \textbf{\underline{Singulärwerte}} von \(X\) und werden in der Regel absteigend sortiert. 
+        \item Die Spalten von \(U\) heißen \textbf{\underline{linke Singulärvektoren}} von \(X\).
+        \item Die Spalten von \(V\) heißen \textbf{\underline{rechte Singulärvektoren}} von \(X\). 
+    \end{itemize}       
+\end{remark}
+\enlargethispage{\baselineskip}%
+Der zentrale Beweis dieses Kapitels ist somit abgeschlossen und die Berechnung der Singulärwertzerlegung kann an einem Beispiel veranschaulicht und visualisiert werden.
+\section{Beispiel und Visualisierung}
+\begin{example}\label{ex:svd}
+    Sei 
+    \begin{equation*}
+        A =
+        \begin{bmatrix}
+            1 & -1 & 3 \\
+            3 & \phantom{-}1 & 1
+        \end{bmatrix} \in \R^{2 \times 3}.
+    \end{equation*}
+    Um die SVD dieser Matrix zu finden, muss der Beweis von \zcref{th:svd} mithilfe unserer konkreten Werte schrittweise nachvollzogen werden.
+    Zuerst wird also
+    \begin{equation*}
+        \renewcommand{\arraystretch}{0.9}
+        A^{T}A = 
+        \begin{bmatrix}
+            10 & \phantom{-}2 & \phantom{-}6 \\
+            2 & \phantom{-}2 & -2 \\
+            6 & -2 & \phantom{-}10
+        \end{bmatrix} \in \R^{3 \times 3}
+    \end{equation*}
+    bestimmt. 
+    Davon sollen die Eigenwerte mit zugehörigen normierten Eigenvektoren berechnet werden.
+    Für die Eigenwerte muss zunächst
+    \begin{equation*}
+        \det(A^{T}A - \lambda \symbfit{I}_{3}) = 0
+    \end{equation*}    
+    gesetzt und die Lösungen \(\lambda_i\) für \(i =1,2,3\) gefunden werden.
+    Auf die genaue Berechnung wird an dieser Stelle verzichtet, das Ergebnis lautet:
+    \begin{equation*}
+        \lambda_1 = 16, \quad 
+        \lambda_2 = 6, \quad
+        \lambda_3 = 0.
+    \end{equation*}
+    Mit \(\sigma_j = \sqrt{\lambda_j}\) für \(j = 1, 2\) (da \(\text{rg}(A)=2\)) erhalten wir
+    \begin{equation*}
+        \renewcommand{\arraystretch}{0.9}
+        \Sigma=
+        \begin{bmatrix}
+            4 & \phantom{\surd}0 & 0 \\
+            0 & \sqrt{6} & 0
+        \end{bmatrix} \in \R^{2 \times 3}.
+    \end{equation*}
+    Durch die Lösungen \(\R^{3} \ni v_i \neq 0\) von
+    \begin{equation*}
+        (A^{T}A - \lambda\symbfit{I}_{3})v = \symbf{0}
+    \end{equation*}
+    ergeben sich die normierten Eigenvektoren
+    \begin{equation*}
+        \renewcommand{\arraystretch}{1.3}
+        v_1 =
+        \begin{bmatrix}
+            \frac{1}{\sqrt{2}} \\
+            0 \\
+            \frac{1}{\sqrt{2}} \\
+        \end{bmatrix}, \quad
+        v_2 =
+        \begin{bmatrix*}[r]
+            -\frac{1}{\sqrt{3}} \\
+            -\frac{1}{\sqrt{3}} \\
+            \frac{1}{\sqrt{3}} \\
+        \end{bmatrix*}, \quad
+        v_3 =
+        \begin{bmatrix*}[r]
+            -\frac{1}{\sqrt{6}} \\
+            \frac{2}{\sqrt{6}} \\
+            \frac{1}{\sqrt{6}} \\
+        \end{bmatrix*}
+    \end{equation*} 
+    und damit
+    \begin{equation*}
+        \renewcommand{\arraystretch}{1.3}
+        V^{T} =
+        \begin{bmatrix}
+            \phantom{-}\frac{1}{\sqrt{2}} & \phantom{-}0 & \frac{1}{\sqrt{2}} \\
+            -\frac{1}{\sqrt{3}} & -\frac{1}{\sqrt{3}} & \frac{1}{\sqrt{3}} \\
+            -\frac{1}{\sqrt{6}} & \phantom{-}\frac{2}{\sqrt{6}} & \frac{1}{\sqrt{6}} \\
+        \end{bmatrix} \in \R^{3 \times 3}.
+    \end{equation*}
+    \enlargethispage{\baselineskip}%
+    Es muss nur noch \(U \in \R^{2 \times 2}\) bestimmt werden, welches spaltenweise durch
+    \begin{equation*}
+        u_j = \frac{1}{\sigma_j}Xv_j 
+    \end{equation*}
+    ausgedrückt wird.
+    Wir erhalten also
+    \begin{equation*}
+        u_1 = \frac{1}{4}
+        \begin{bmatrix}
+            1 & -1 & 3 \\
+            3 & \phantom{-}1 & 1
+        \end{bmatrix}
+        \begingroup
+        \renewcommand{\arraystretch}{1.3}
+        \begin{bmatrix}
+            \frac{1}{\sqrt{2}} \\
+            0 \\
+            \frac{1}{\sqrt{2}} \\
+        \end{bmatrix}
+        =
+        \begin{bmatrix}
+            \frac{1}{\sqrt{2}} \\
+            \frac{1}{\sqrt{2}} \\
+        \end{bmatrix}
+        \endgroup
+    \end{equation*}
+    und
+    \begin{equation*}
+        u_2 = \frac{1}{\sqrt{6}}
+        \begin{bmatrix}
+            1 & -1 & 3 \\
+            3 & \phantom{-}1 & 1
+        \end{bmatrix}
+        \begingroup
+        \renewcommand{\arraystretch}{1.3}
+        \begin{bmatrix}
+            -\frac{1}{\sqrt{3}} \\
+            -\frac{1}{\sqrt{3}} \\
+            \phantom{-}\frac{1}{\sqrt{3}} \\
+        \end{bmatrix}
+        =
+        \begin{bmatrix}
+            \phantom{-}\frac{1}{\sqrt{2}} \\
+            -\frac{1}{\sqrt{2}} \\
+        \end{bmatrix}
+        \endgroup
+        .
+    \end{equation*}
+    Dadurch ist 
+    \begin{equation*}
+        \renewcommand{\arraystretch}{1.3}
+        U =
+        \begin{bmatrix}
+            \frac{1}{\sqrt{2}} & \phantom{-}\frac{1}{\sqrt{2}} \\
+            \frac{1}{\sqrt{2}} & -\frac{1}{\sqrt{2}}
+        \end{bmatrix}
+    \end{equation*}
+    und die Berechnung ist abgeschlossen mit
+    \begin{equation*}
+        A =
+        \begin{bmatrix}
+            1 & -1 & 3 \\
+            3 & \phantom{-}1 & 1
+        \end{bmatrix}
+        =
+        \begingroup
+        \renewcommand{\arraystretch}{1.3}
+        \begin{bmatrix}
+            \frac{1}{\sqrt{2}} & \phantom{-}\frac{1}{\sqrt{2}} \\
+            \frac{1}{\sqrt{2}} & -\frac{1}{\sqrt{2}}
+        \end{bmatrix}
+        \endgroup
+        \begin{bmatrix}
+            4 & \phantom{\surd}0 & 0 \\
+            0 & \sqrt{6} & 0
+        \end{bmatrix}
+        \begingroup
+        \renewcommand{\arraystretch}{1.3}
+        \begin{bmatrix}
+            \phantom{-}\frac{1}{\sqrt{2}} & \phantom{-}0 & \frac{1}{\sqrt{2}} \\
+            -\frac{1}{\sqrt{3}} & -\frac{1}{\sqrt{3}} & \frac{1}{\sqrt{3}} \\
+            -\frac{1}{\sqrt{6}} & \phantom{-}\frac{2}{\sqrt{6}} & \frac{1}{\sqrt{6}} \\
+        \end{bmatrix}
+        \endgroup
+        =
+        U \Sigma V^{T}.
+    \end{equation*}
+\end{example}
+Damit genauer verstanden wird, was genau durch die Singulärwertzerlegung geschieht, betrachten wir die Wirkung der Matrix \(A\) aus \zcref{ex:svd} auf einen Vektor \(v \in \R^{3}\), indem wir \(v\) und \(Av\) grafisch darstellen.  
+Da dies an einem einzelnen Vektor schwer visualisiert werden kann, multiplizieren wir \(A\) mit allen Punkten auf der Einheitssphäre, also allen 
+\begin{equation*}
+    v \in 
+    \left\{
+    \begin{bmatrix}
+        \cos(x)\sin(y) \\ \sin(x)\sin(y) \\ \cos(y)
+    \end{bmatrix}
+    \in \R^{3}
+    \mid
+    x \in [0, 2\pi], \, y \in [0, \pi]
+    \right\}.
+\end{equation*} 
+Das Ergebnis ist in \zcref{fig:sph}, zu finden in \zcref{appen}, dargestellt. 
+
+Um nachzuvollziehen, wie dieses Ergebnis zustande gekommen ist, verwenden wir die Singulärwertzerlegung und veranschaulichen die Zwischenschritte von \(Av = U \Sigma V^{T}v\) anhand von einzelner Plots (siehe \zcref{fig:svdsph}). 
+\begin{figure}[t]
+    \centering
+    \captionsetup[subfigure]{justification=centering}
+    \begin{subfigure}{0.45\textwidth}
+        \centering
+        \caption{Einheitssphäre}\label{fig:svspha}
+        \input{plots/svd_steps_1.tex}
+    \end{subfigure}
+    \begin{subfigure}{0.45\textwidth}
+        \centering
+        \caption{Rotation durch \(V^{T}\)}\label{fig:svsphb}
+        \input{plots/svd_steps_2.tex}
+    \end{subfigure}
+    \begin{subfigure}{0.45\textwidth}
+        \centering
+        \caption{Skalierung durch \(\Sigma\)}\label{fig:svdsphc}
+        \input{plots/svd_steps_3.tex}
+    \end{subfigure}
+    \begin{subfigure}{0.45\textwidth}
+        \centering
+        \caption{Rotation durch \(U\)}\label{fig:svdsphd}
+        \input{plots/svd_steps_4.tex}
+    \end{subfigure}
+    \caption{Visualisierung der Singulärwertzerlegung}\label{fig:svdsph}
+\end{figure}
+
+\enlargethispage{\baselineskip}%
+Die Grundlage für diese Visualisierung bildet das Wissen, dass im euklidischen Raum orthogonale Matrizen Drehungen und Diagonalmatrizen Skalierungen (entlang der Hauptachsen) entsprechen.
+An dieser Stelle sei angemerkt, dass in \zcref{fig:svdsphc} und \zcref{fig:svdsphd} der zu beobachtende Wertebereich vergrößert wurde, also eine größere Streckung durch \(\Sigma\) erfolgt ist, als auf dem Plot zu sehen ist.
+Außerdem ist ab \zcref{fig:svdsphc} die Darstellung der \(z\)-Achse überflüssig und eigentlich nicht zu empfehlen, da sich dort durch die Dimensionsreduktion mittels \(\Sigma\) im zweidimensionalen Raum bewegt wird.
+Zur besseren Vergleichbarkeit wird die Darstellung dennoch beibehalten.  
+
+Zusammenfassend zerlegt also die Singulärwertzerlegung eine Matrix in grundlegende geometrische Transformationen: Drehung, Skalierung und gegebenenfalls Dimensionsreduktion oder -erhöhung.
+Mit dieser Erkenntnis wird sich dem nächsten Abschnitt zugewandt, in dem die wichtigsten beiden Arten der SVD definiert werden.
+
+\section{Arten der SVD}
+
+Die Singulärwertzerlegung, die im vorherigen Teil der Arbeit beschrieben wurde, ist die klassische und vollständige Zerlegung.
+In den tatsächlichen Anwendungsgebieten, welche im nächsten Kapitel ausgeführt werden, finden häufig Variationen Verwendung.
+\begin{definition}\label{df:redsvd}
+    Seien \(m,n \in \N,\ A \in \R^{m \times n},\ \text{rg}(A)=r\) und \(A=U \Sigma V^{T}\) die vollständige SVD von \(A\) mit \(U \in R^{m \times m},\ \Sigma \in \R^{m \times n}\) und \(V \in \R^{n \times n}\). \\
+    Definiere die \textit{reduzierte SVD} von \(A\):
+    \begin{equation*}
+        A = U_r \Sigma_r V^{T}_r
+    \end{equation*}
+    mit
+    \begin{alignat*}{2}
+        &U_r &{}={}&
+        \big[
+        \begin{matrix}
+            u_1 \dots u_{r}
+        \end{matrix}
+        \big]
+        \in \R^{m \times r}, \\
+        &\Sigma_r &{}={}&
+        \diag(\sigma_1,\ldots,\sigma_r)
+        \in \R^{r \times r}, \\
+        &V_r &{}={}&
+        \big[
+        \begin{matrix}
+            v_1 \dots v_{r}
+        \end{matrix}
+        \big]
+        \in \R^{n \times r}.
+    \end{alignat*}
+\end{definition}
+Die in \zcref{df:redsvd} beschriebene Art der Singulärwertzerlegung besitzt den Vorteil, dass eine exakte Berechnung mit deutlich weniger Speicherbedarf möglich ist, insbesondere bei großen Matrizen \(X \in \R^{m \times n}\) mit \(\text{rg}(X) \ll \text{min}(m,n)\). 
+
+Bevor zur nächsten Variation übergegangen werden kann, betrachten wir eine weitere Darstellungsform von \zcref{df:redsvd}.
+\begin{remark}\label{rem:onesvd}
+    Sei 
+    \begin{equation*}
+        A = 
+        \big[
+            \begin{matrix}
+                u_1 \dots u_{r}
+            \end{matrix}
+        \big]
+        \begin{bmatrix}
+            \sigma_1 &  & \\
+            &  \rotatebox{12}{\(\ddots\)} &  \\
+            &  &  \sigma_r \\
+        \end{bmatrix}
+        \begin{bmatrix}
+            v^{T}_1 \\
+            \vdots \\
+            v^{T}_r \\
+        \end{bmatrix}
+    \end{equation*}
+    wie in \zcref{df:redsvd}.\\
+    Dann ist \({(A)}_{11} = u_{1,1} \sigma_1 v^{T}_{1,1} + u_{2,1} \sigma_2 v^{T}_{2,1} +\ \cdots \ + u_{r,1} \sigma_r v^{T}_{r,1} \). \\
+    Für die andere Komponenten von \(A\) kann die Summe analog gebildet werden. 
+    Für \(x \in \{1,\ldots,m\}\) und \(y \in \{1,\ldots,n\}\) erhalten wir also 
+    \begin{alignat*}{2}
+        (&A)_{xy} &{}={}& \sum_{k=1}^{r} \sigma_k u_{k,x} v^{T}_{k,y} \\ % chktex 3 
+        \Rightarrow \quad &A &{}={}& \sum_{i=1}^{r} \sigma_i u_i v^{T}_i. 
+    \end{alignat*}
+    Damit kann \(A\) als \textit{Summe von Rang-\num{1}-Matrizen} dargestellt werden, da für \(i \in \{1,\ldots,r\}\) die Zeilen von \((\sigma_i u_i v^{T}_i)\in \R^{m \times n}\) ein Vielfaches von \(v^{T}_i\) und die Spalten ein Vielfaches von \(u_i\) sind. \\
+    Beachte, dass \(\sigma_1 \geq \sigma_2 \geq \cdots \geq \sigma_r\) und \(\norm{u_i}=1=\norm{v_i}\), also gilt komponentenweise: \(\sigma_1 u_1 v^{T}_1 \geq \sigma_2 u_2 v^{T}_2 \geq \cdots \geq \sigma_r u_r v^{T}_r\). 
+\end{remark}
+Nun wird die womöglich interessanteste Art der Singulärwertzerlegung für diverse Anwendungsfälle definiert.
+\begin{definition}\label{df:trunsvd}
+    Seien \(m,n \in \N,\ A \in \R^{m \times n},\ \rg(A)=r\) und \(A=U_r \Sigma_r V^{T}_r = \sum_{i=1}^{r} \sigma_i u_i v^{T}_i\) die reduzierte SVD von \(A\). \\
+    Für \(k \leq r\) ist die \textit{trunkierte SVD} definiert durch:
+    \begin{equation*}
+        A_{k} \coloneq \sum_{i=1}^{k} \sigma_i u_i v^{T}_i \approx A.
+    \end{equation*}
+\end{definition}
+Zur \zcref{df:trunsvd} sei angemerkt, dass \(\rg(A_k)=k \leq r\) ist, aufgrund dessen spricht man auch von einer \emph{Niedrigrang-Approximation}.
+Außerdem sollte betont werden, dass sich \(A_k\) für größere Werte von \(k\) zunehmend \(A\) annähert.
+Da jedoch komponentenweise \(\sigma_1 u_1 v^{T}_1 \geq \cdots \geq \sigma_r u_r v^{T}_r\) gilt (siehe \zcref{rem:onesvd}), kann bereits mit \(k \ll r\) eine gute Approximation erzielt werden.
+Eine Präzisierung dieser Aussage findet im nachfolgenden und letzten Abschnitt des theoretischen Teils statt.
+
+\section{Eigenschaften der SVD}
+
+Die trunkierte Singulärwertzerlegung \(A_{k}\) ist nicht nur eine gute Approximation von \(A\), sondern die beste Rang-\(k\)-Approximation für \(A\) bezüglich der Spektralnorm und der Frobeniusnorm.
+Diese Behauptung ist auch als \emph{Eckart-Young-Satz} bekannt und wird im Folgenden nach~\cite[7]{zhangLinearAlgebraData2022} für die Spektralnorm bewiesen.
+Für den Beweis werden allerdings zunächst \zcref{lem:normorth,lem:eck} benötigt.
+\begin{lemma}\label{lem:normorth}
+    Seien \(m,n \in \N\) und \(V \in \R^{m \times n}\) orthogonal. \\
+    Dann gilt für \(x \in \R^{n}\)
+    \begin{equation*}
+        \norm{Vx} = \norm{x}.
+    \end{equation*} 
+\end{lemma}
+\begin{proof}
+    \begin{equation*}
+    \norm{Vx} = \sqrt{\langle Vx,Vx \rangle} = \sqrt{x^{T}V^{T}Vx} = \sqrt{x^{T}x} = \norm{x}.
+    \end{equation*}
+\end{proof}
+\begin{lemma}\label{lem:eck}
+    Seien \(m,n \in \N\) und \(A \in \R^{m \times n}\). \\
+    Dann gilt für die Spektralnorm
+    \begin{equation*}
+        \norm{A}_{2} \coloneq\sup\limits_{x \neq 0} \frac{\norm{Ax}}{\norm{x}} = \max\limits_{\norm{x}=1} \norm{Ax} = \sigma_{1},
+    \end{equation*}
+    wobei \(\sigma_{1}\) den größten Singulärwert von \(A\) beschreibt. 
+\end{lemma}
+\begin{proof}
+    Der Beweis orientiert sich an~\cite[7]{frazzoliDynamicSystemsControl2011}.\\
+    Sei \(A = U_{r}\Sigma_{r} V^{T}_{r}\) die reduzierte SVD von \(A\) für \(\rg(A) = r\).
+    Dann gilt für \(x \in \R^{n}\) mit \(\norm{x} = 1\)  
+    \begin{align*}
+        \norm{Ax} &= \norm{U_{r}\Sigma_{r} V^{T}_{r}x} \\
+        &= \norm{\Sigma_{r} V^{T}_{r}x} \qquad & {(\text{\small\zcref{lem:normorth}})} \\
+        &= \norm{\Sigma_{r} y} & {(\text{\small für \(y \coloneq V^{T}_{r}x\)})} \\
+        &= \sqrt{\sigma_{1}^{2}y_{1}^{2} + \cdots + \sigma_{r}^{2}y_{r}^{2}}.
+    \end{align*}
+    Nach \zcref{lem:normorth} ist \(\norm{y} = \norm{x} = 1\) und da \(\sigma_{1} \geq \cdots \geq \sigma_{r}\) wird der Ausdruck maximiert für \(y = \symbf{e}_{1}\).
+    Damit ist \(\norm{A}_{2} = \sigma_{1}\).    
+\end{proof}
+\begin{theorem}[Eckart-Young]\label{th:eckyou}
+    Seien \(m,n \in \N\) und \(A,B \in \R^{m \times n}\) mit \(\rg(B) = k \leq r = \rg(A)\).
+    Sei außerdem \(A_{k} \in \R^{m \times n}\) die trunkierte SVD von \(A\) nach \zcref{df:trunsvd}.
+    Dann gilt
+    \begin{equation*}
+        \norm{A-B}_{2} \geq \norm{A - A_{k}}_{2}.
+    \end{equation*}   
+\end{theorem}
+\begin{proof}
+    Für \(k=r\) ist \(A_{k}=A\) und 
+    \begin{equation*}
+        \norm{A-B}_{2} \geq 0
+    \end{equation*}
+    gilt nach Definition der Norm. 
+
+    Sei also \(k < r\).
+    Wir zeigen zunächst, dass \(\norm{A-A_{k}}_{2} = \sigma_{k+1}\).
+    Mit der reduzierten SVD von \(A = \sum_{i=1}^{r}\sigma_{i}u_{i}v_{i}^{T}\) gilt:
+    \begin{equation*}
+        A-A_{k} = \sum_{i=1}^{r}\sigma_{i}u_{i}v_{i}^{T} - \sum_{i=1}^{k}\sigma_{i}u_{i}v_{i}^{T} = \sum_{i=k+1}^{r}\sigma_{i}u_{i}v_{i}^{T}=\sum_{i=1}^{r-k}\sigma_{i+k}u_{i+k}v_{i+k}^{T}.
+    \end{equation*}
+    Die letzte Summe bildet dann die reduzierte SVD von \(A-A_{k}\), wodurch nach \zcref{lem:eck}: 
+    \begin{equation*}
+        \norm{A-A_{k}}_{2} = \sigma_{k+1}.
+    \end{equation*}
+    Wir wollen nun einen Widerspruchsbeweis führen.
+    Sei also angenommen, dass ein \(B \in \R^{m \times n}\) existiert mit \(\rg(B)=k\) und 
+    \begin{equation*}
+        \norm{A-B}_{2} < \norm{A-A_{k}}_{2} = \sigma_{k+1}.
+    \end{equation*}
+    Für beliebiges \(w \in \R^{n}\) gilt
+    \begin{equation*}
+        \norm{(A-B)w} \leq \norm{A-B}\norm{w} < \sigma_{k+1}\norm{w}.
+    \end{equation*}  
+    Sei zusätzlich \(w \in \ker(B)\). Dann ist 
+    \begin{equation}
+        \norm{Aw} = \norm{Aw-Bw} = \norm{(A-B)w} < \sigma_{k+1}\norm{w} \label{eq:eck1}.
+    \end{equation}
+    Wir definieren \(V_{k+1} \coloneq 
+    \big[
+        \begin{matrix}
+            v_{1} \ldots v_{k+1}
+        \end{matrix}
+    \big]
+    \) 
+    für die ersten \(k+1\) rechten Singulärvektoren von \(A\).
+    
+    Sei außerdem \(w \in \Img(V_{k+1})\).
+    Dann existieren \(c_{1},\ldots,c_{k+1} \in \R\) mit \(w = \sum_{i=1}^{k+1}c_{i}v_{i}\) und es gilt
+    \begin{equation}\label{eq:eck:w}
+        \norm{w}^{2} = \norm{\sum_{i=1}^{k+1}c_{i}v_{i}}^{2} = \sum_{i=1}^{k+1}c_{i}v_{i}^{T} \sum_{j=1}^{k+1}c_{j}v_{j} \overset{(*)}{=} \sum_{i=1}^{k+1}c_{i}^{2}\norm{v_{i}} = \sum_{i=1}^{k+1}c_{i}^{2}.
+    \end{equation}  
+    {\small (\(*\)) \textit{Da} \(v_{i},v_{j}\) \textit{orthogonal sind für} \(i \neq j\).}
+    \vspace{5pt}
+    \\
+    Damit ist
+    \begin{align}
+        \norm{Aw}^{2} = \norm{\sum_{i=1}^{k+1}c_{i}Av_{i}}^{2} = \norm{\sum_{i=1}^{k+1}c_{i}\sigma_{i}u_{i}}^{2} &= \sum_{i=1}^{k+1}c_{i}\sigma_{i}u_{i}^{T} \sum_{j=1}^{k+1}c_{j}\sigma_{j}u_{j} \notag \\
+        &= \sum_{i=1}^{k+1}c_{i}^{2}\sigma_{i}^{2} \notag \\
+        &\overset{\eqref{eq:eck:w}}{\geq} \sigma_{k+1}^{2}\norm{w}^{2} \label{eq:eck2}.
+    \end{align}
+    Da~\eqref{eq:eck1} und~\eqref{eq:eck2} nicht gleichzeitig gelten können, bleibt es zu zeigen, dass ein \(w \in \ker(B) \cap \Img(V_{k+1})\) existiert. 
+    Wir betrachten dafür:
+    \begin{align*}
+        \dim\left[\ker(B) \cap \Img(V_{k+1})\right] &= \df(B) + \rg(V_{k+1}) - \dim\left[\ker(B) + \Img(V_{k+1})\right] \\
+        &\overset{(*)}{=} (n-k) + (k + 1) - \dim\left[\ker(B) + \Img(V_{k+1})\right] \\
+        &\geq (n-k) + (k + 1) -n \\
+        &= 1,
+    \end{align*}
+    {\small \((*)\) \textit{Siehe \zcref{rep:dim}}.}
+    \vspace{5pt}
+    \\
+    da \(\ker(B),\Img(V_{k+1}) \subseteq \R^{n}\), womit auch \(\dim\left[\ker(B) + \Img(V_{k+1})\right] \leq n\) sein muss.  
+    Folglich existiert ein \(w \neq \symbf{0}\) mit den gewünschten Eigenschaften und der Widerspruch wurde gezeigt.    
+\end{proof}
+Eine weitere wichtige Eigenschaft der Singulärwertzerlegung besteht in ihrer Verbindung zu den \emph{vier fundamentalen Unterräumen}.
+Diese sind in ihren Definitionen zwar bereits bekannt, werden jedoch nach dem Vorbild von~\cite[187]{strangIntroductionLinearAlgebra2009} in der folgenden Form notiert:
+\begin{definition}\label{df:four}
+    Seien \(m,n \in \N\) und \(A \in \R^{m \times n}\). Definiere folgende Unterräume zu \(A\): 
+    \begin{alignat*}{3}
+        \text{\textbullet } &\textit{ Spaltenraum: } 
+        &&\Img(A) &{}={}& \{ b \in \R^m \mid \exists x \in \R^n, Ax = b \}. \\
+        \text{\textbullet } &\textit{ Zeilenraum: }
+        &&\Img(A^{T}) &{}={}& \{ z \in \R^n \mid \exists y \in \R^m, A^{T}y = z \}.\\
+        \text{\textbullet } &\textit{ Kern/Nullraum: }
+        &&\ker(A) &{}={}& \{ x \in \R^n \mid Ax = \symbf{0} \}.\\
+        \text{\textbullet } &\textit{ Linkskern: }
+        &&\ker(A^{T}) &{}={}& \{ y \in \R^m \mid A^{T}y = \symbf{0} \}.
+    \end{alignat*}
+\end{definition}
+Die Unterräume geben umfangreichen Aufschluss über die Wirkung einer Matrix auf verschiedene Vektoren und stehen dabei in Verbindung mit zahlreichen Themen der linearen Algebra.
+
+Die Art der Beziehung zwischen der Singulärwertzerlegung und den vier fundamentalen Unterräumen wird in \zcref{cor:svd} zusammengefasst, wobei
+der Beweis nach~\cite[S. 214~f.]{johnstonAdvancedLinearMatrix2021} geführt wird.
+\begin{corollary}\label{cor:svd}
+    Seien \(m,n\in\N,\ X \in \R^{m \times n}\)\ und \(r = \textit{rg}(X)\).  \\
+    Sei außerdem \(X = U \Sigma V^{T}\) die vollständige Singulärwertzerlegung von \(X\).\\    
+    Dann gilt:
+    \begin{itemize}
+        \item Die ersten \(r\) Spalten von \(U\) sind eine Basis des Spaltenraums von \(X\).
+        \item Die letzten \(m-r\) Spalten von \(U\) sind eine Basis des Linkskerns von \(X\).
+        \item Die ersten \(r\) Spalten von \(V\) sind eine Basis des Zeilenraums von \(X\).
+        \item Die letzten \(n - r\) Spalten von \(V\) sind eine Basis des Kerns von \(X\).          
+    \end{itemize}
+\end{corollary}
+\enlargethispage{\baselineskip}%
+\begin{proof}
+    Wir haben
+    \begin{alignat*}{2}
+        &U &{}={}&
+        \big[
+        \begin{matrix}
+            u_1 \dots u_{r}u_{r+1} \dots u_m
+        \end{matrix}
+        \big]
+        \in \R^{m \times m}, \\
+        &V &{}={}&
+        \big[
+        \begin{matrix}
+            v_1 \dots v_{r}v_{r+1} \dots v_n
+        \end{matrix}
+        \big]
+        \in \R^{n \times n} \\
+        \intertext{und} 
+        &\Sigma &{}={}&
+        \begin{bmatrix}
+            \diag(\sigma_1,\ldots,\sigma_r) & \symbf{0} \\
+            \symbf{0} & \symbf{0}
+        \end{bmatrix}
+        \in \R^{m \times n},
+    \end{alignat*} 
+    sodass
+    \(
+        X = U \Sigma V^{T}
+    \).
+    Sei \(i \in \{1,\ldots,n\}\) und betrachte 
+    \begin{equation*}
+        Xv_i = U \Sigma V^{T}v_i \overset{(*)}{=} U \Sigma \symbf{e}_i = U \sigma_i \symbf{e}_i = \sigma_i U \symbf{e}_i = \sigma_i u_i.
+    \end{equation*}
+    {\small\((*)\) \textit{Für} \(j \in \{1,\ldots,n\}\) \textit{sind} \(v_i, v_j\) \textit{orthonormal}.} 
+    \vspace{5pt}
+    \\
+    \underline{Fall 1}: \(1 \leq i \leq r\). \\
+    Damit ist \(\sigma_i > 0\) und
+    \begin{equation*}
+        X \frac{v_i}{\sigma_i} = u_i.
+    \end{equation*} 
+    Nach \zcref{df:four} sind dann \(u_1,\ldots,u_r \in \Img(X)\).
+    Nun ist \(\rg(X) = r\) und da \(\symcal{B}_S \coloneq \{u_1,\ldots,u_r\}\) genau \(r\) orthonormale Vektoren enthält, bildet \(\symcal{B}_S\) eine Basis vom \(\Img(X)\), also vom Spaltenraum. 
+    \vspace{5pt} \\
+    \underline{Fall 2}: \(i \geq r+1\). \\
+    Damit ist \(\sigma_i = 0\) und
+    \begin{equation*}
+        Xv_i = \symbf{0}.
+    \end{equation*}  
+    Nach \zcref{df:four} sind dann \(v_{r+1},\ldots,v_n \in \ker(X)\).
+    Mithilfe von \zcref{rep:dim} wissen wir, dass \(\df(X) = n - r\). 
+    Durch \(\symcal{B}_K \coloneq \{v_{r+1},\ldots,v_n\}\) haben wir \(n-r\) orthonormale Vektoren gegeben, also bildet \(\symcal{B}_K\) eine Basis vom \(\ker(X)\).
+    
+    Die Beweise für die Basen des Linkskerns und des Zeilenraums werden analog gezeigt, indem
+    \begin{equation*}
+        X^{T}u_i = V \Sigma U^{T} u_i
+    \end{equation*}
+    betrachtet wird.
+\end{proof}
+
+Es sind damit alle wesentlichen Grundlagen für die Vertiefung verschiedener Anwendungsmöglichkeiten der SVD gelegt.
+Der theoretische Teil der Arbeit wird hiermit abgeschlossen und es folgt nun die erste praktische Anwendung.
+

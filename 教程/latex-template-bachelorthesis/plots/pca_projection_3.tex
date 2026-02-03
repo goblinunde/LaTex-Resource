@@ -1,0 +1,49 @@
+\begin{tikzpicture}[baseline]
+    \begin{axis}[
+        xlabel={\(x\)},
+        ylabel={\(y\)},
+        axis y line=center,
+        axis x line=middle,
+        axis equal,
+        width=0.45\textwidth,
+        xmin=-2.5,
+        xmax=2.5
+    ]
+    \addplot[only marks,mark options={fill=black, color=black},domain=-2:2] coordinates {
+        (1.4167,-1.2667)
+        (-1.4833,1.2333)
+        (1.3167,-0.1667)
+        (-1.9833,-0.2667)
+        (0.9167,-0.2667)
+        (-0.1833,0.7333)                
+    };
+    \addplot[Gray, thick, domain=-2.5:2.5] ({0}, x);
+
+    \addplot[only marks, mark options={fill=Gray, color=Gray}] coordinates {
+        (0,-1.2667)
+        (0,1.2333)
+        (0,-0.1667)
+        (0,-0.2667)
+        (0,-0.2667)
+        (0,0.7333)
+    };
+    \addplot[dashed, gray] coordinates {
+        (1.4167, -1.2667) (0,-1.2667)
+    };
+    \addplot[dashed, gray] coordinates {
+        (-1.4833, 1.2333) (0,1.2333)
+    };
+    \addplot[dashed, gray] coordinates {
+        (1.3167, -0.1667) (0,-0.1667)
+    };
+    \addplot[dashed, gray] coordinates {
+        (-1.9833, -0.2667) (0,-0.2667)
+    };
+    \addplot[dashed, gray] coordinates {
+        (0.9167, -0.2667) (0,-0.2667)
+    };
+    \addplot[dashed, gray] coordinates {
+        (-0.1833, 0.7333) (0,0.7333)  
+    };
+    \end{axis}
+\end{tikzpicture}

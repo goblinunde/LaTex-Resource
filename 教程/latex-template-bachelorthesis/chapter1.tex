@@ -1,0 +1,24 @@
+\setchapterpreamble[u]{%
+    \dictum[Gilbert Strang]{The Singular Value Decomposition is a highlight of linear algebra.\footnotemark}%
+    \bigskip%
+}
+\chapter{Einleitung}
+\footnotetext{Zitiert nach~\cite[363]{strangIntroductionLinearAlgebra2009}.}
+In den Jahren \num{2006} bis \num{2009} zog ein Wettbewerb, ausgerufen von der Streaming-Plattform Netflix, große mediale Aufmerksamkeit auf sich.
+Es wurde ein Preisgeld von einer Million US-Dollar ausgerufen für das Team, welches den vorhanden Empfehlungsalgorithmus von Netflix zur Vorhersage von Nutzerbewertungen signifikant verbessern konnte.
+Die vielversprechendsten Ansätze basierten allesamt auf dem Prinzip der \emph{Matrixfaktorisierung}, also der Zerlegung einer Matrix in mehrere andere Matrizen~\cite{korenMatrixFactorizationTechniques2009}.
+Eine besondere Art der Matrixfaktorisierung bildet die Singulärwertzerlegung (engl.\ \emph{Singular Value Decomposition}, SVD), da sie im Gegensatz zu vielen anderen Matrixzerlegungen auf jede beliebige Matrix angewendet werden kann und dabei ebenso spezielle wie nützliche Eigenschaften mit sich bringt.
+Dank dieser Eigenschaften bildete sie eine zentrale Grundlage der leistungsfähigsten Modelle innerhalb des Netflix-Wettbewerbs.
+
+Der Verwendungszweck der Singulärwertzerlegung beschränkt sich allerdings nicht nur auf Empfehlungssysteme.
+Ein weiteres populäres Anwendungsgebiet findet sich in der \emph{Data Science}, einem rapide wachsenden Bereich, in dem große Datenmengen sinnvoll verarbeitet werden müssen.
+Andere Einsatzmöglichkeiten sind die Bildverarbeitung, Molekularbiologie, Robotik oder sogar hochspezielle Themen wie die Kristallisierungsraten von Gesteinen~\cite{martinExtraordinarySVD2012}.
+
+Das Ziel dieser Arbeit ist herauszuarbeiten, was die Singulärwertzerlegung so besonders macht und wie dieses zunächst sehr theoretisch wirkende Konzept Anwendung in der Praxis findet.
+Dafür werden zunächst die wesentlichen mathematischen Grundlagen gelegt und die oben erwähnten speziellen Eigenschaften der SVD hergeleitet.
+Anschließend betrachten wir zwei verbreitete Anwendungen der Singulärwertzerlegung ausführlicher:
+die \emph{Hauptkomponentenanalyse}, ein statistisches Verfahren der Data Science, welches komplexe Daten auf ihr Wesentliches reduziert sowie die bereits angesprochenen Empfehlungssysteme, bei denen unter anderem untersucht wird, wie eine Matrixzerlegung überhaupt mit Nutzer-Film-Bewertungen zusammenhängt.
+Den Abschluss des Hauptteils bildet die Implementierung eines eigenen Empfehlungssystems in \texttt{Python}, basierend auf realen Nutzerbewertungen aus einer Online-Datenbank.
+
+Es sei darauf hingewiesen, dass grundlegende Kenntnisse in \texttt{Python} zum Verständnis der Implementierung vorausgesetzt werden.
+Innerhalb des Textes werden zentrale Passagen des Codes erläutert, während der vollständige Programmcode --- mit Kommentaren an den nicht besprochenen Stellen --- jeweils mit Verweis im Anhang zu finden ist.

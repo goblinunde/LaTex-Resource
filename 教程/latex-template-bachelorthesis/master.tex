@@ -1,0 +1,58 @@
+% !! USE LuaLaTeX FOR COMPILING WITH CURRENT PREAMBLE !!
+
+% LTeX: enabled=false
+
+\documentclass[
+  BCOR=8mm,
+  DIV=calc,
+  twoside,
+  open=right,
+  paper=17cm:24cm,
+  bibliography=totoc,
+  listof=entryprefix,
+  pagesize=auto,
+  chapteratlists=0pt
+  ]{scrreprt}
+
+\input{preamble.tex}
+
+\begin{document}
+\input{titlepage.tex}
+\cleardoubleoddpage
+\pagenumbering{roman}
+\setcounter{page}{3}
+\begin{spacing}{1}
+\tableofcontents
+\thispagestyle{front}
+\cleardoubleoddpage
+\begingroup
+  \renewcommand\clearpage{\relax}
+  \listoffigures
+  \listoftables
+  \thispagestyle{front}
+\endgroup
+\end{spacing}
+\cleardoubleoddpage
+\begingroup
+  \renewcommand\clearpage{\relax}
+  \include{notation}
+  \include{abbreviation}
+  \enlargethispage{\baselineskip}
+  \thispagestyle{front}
+\endgroup
+\cleardoubleoddpage
+\pagenumbering{arabic}
+\include{chapter1}
+\include{chapter2}
+\include{chapter3}
+\include{chapter4}
+\include{chapter5}
+\begin{spacing}{1}
+\printbibliography[title=Literaturverzeichnis]
+\end{spacing}
+\appendix
+\include{appendix_fig}
+\include{appendix_pro}
+
+
+\end{document}

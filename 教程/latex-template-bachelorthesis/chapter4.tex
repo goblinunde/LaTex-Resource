@@ -1,0 +1,417 @@
+\chapter{Empfehlungssysteme}\label{chap:rec}
+
+Empfehlungssysteme sind eine Anwendungsart der Singulärwertzerlegung, mit der bereits die meisten Menschen in Kontakt gekommen sind.
+Seien es Filmempfehlungen bei Netflix oder Produktempfehlungen bei Amazon, die Wahrscheinlichkeit ist groß, dass diese mithilfe einer Abwandlung der SVD generiert werden.
+Es sei jedoch angemerkt, dass Empfehlungssysteme keine eindeutige mathematische Realisierung besitzen.
+Vielmehr existieren zahlreiche Formen und Varianten, wobei eine Behandlung aller Formen genügend Material für eine alleinstehende Abschlussarbeit bieten würde.
+Aus diesem Grund konzentrieren wir uns in diesem Kapitel, mit Blick auf den Rahmen dieser Arbeit, auf ein Modell, das ausschließlich auf der bereits eingeführten reinen Singulärwertzerlegung basiert.
+
+Dafür wird zunächst die grundlegende Idee von Empfehlungssystemen veranschaulicht.
+Anschließend wird der Ansatz des ausgesuchten Modells hergeleitet und anhand eines Beispiels näher erläutert.
+Um das Kapitel abzuschließen, wird mithilfe von \texttt{Python} das zuvor hergeleitete Empfehlungssystem realisiert und durch ein weiteres Konzept erweitert.
+
+\section{Grundlagen von Empfehlungssystemen}
+
+Wir verweilen in diesem Kapitel beim Beispiel der Filmempfehlungen.
+Die Ausgangslage für ein entsprechendes Empfehlungssystem wird in \zcref{tab:rec:usit} veranschaulicht.
+\begin{table}[tb]
+    \centering
+    \caption{Nutzer-Item-Matrix}\label{tab:rec:usit}
+    \input{tables/rec_usit.tex}
+\end{table}
+
+Gegeben ist eine Nutzer-Item-Matrix, in der jede Zeile einen Nutzer und jede Spalte einen Film repräsentiert, wobei die einzelnen Einträge die abgegebenen Bewertungen von \(1-5\) der Nutzer für den jeweiligen Film darstellen.
+Das Ziel des Empfehlungssystems ist, basierend auf den vorhandenen Bewertungen sinnvolle Empfehlungen zu generieren.
+Dafür wird die Annahme getroffen, dass die Bewertungen nicht unabhängig erfolgen, sondern einer bestimmten Struktur folgen.
+Es wird also angenommen, dass es zugrunde liegende Muster gibt, nach denen Nutzer mit ähnlichen Präferenzen auch tendenziell ähnliche Bewertungen vergeben.
+Ein Beispiel dafür wäre, dass Nutzer mit einer Vorliebe für Horrorfilme diese häufiger höher bewerten als andere Nutzer.
+Solche Muster werden als \emph{latente Merkmale} bezeichnet~\cite[31]{korenMatrixFactorizationTechniques2009}.
+
+Im Folgenden werden diese Merkmale genutzt, indem die Nutzer-Item-Matrix \(R\) als Produkt zweier Matrizen dargestellt wird:
+einer Nutzer-Matrix \(U^{'}\), in der die Nutzer durch die latenten Merkmale beschrieben werden, und einer Item-Matrix \(V^{'}\) mit der Beschreibung der Filme durch die Merkmale. 
+Dieses Konzept wird in \zcref{fig:rec:twomat} verdeutlicht mit den latenten Merkmalen \(X_{1}\) und \(X_{2}\).  
+\begin{figure}[bt]
+    \begin{equation*}
+        \begin{bNiceMatrix}%
+            [
+                first-row,
+                first-col,
+                code-for-first-row = \scriptstyle \Alph{jCol},
+                code-for-first-col = \scriptstyle \arabic{iRow},
+                margin = 2pt,
+            ]
+            &&&&\\
+            && 4 & 2 & 0 \\
+            &1 & 2 & 3 & 5 \\
+            &1 & 2 & \cellcolor{red!15} & \\
+            && 4 & 3 & 3 \\
+            &4 & 2 & 1 & 1 \\
+            &5 &&& 2 \\
+            \CodeAfter
+            \UnderBrace[yshift=3pt]{6-1}{6-4}{R}
+        \end{bNiceMatrix}
+        \quad
+        \approx
+        \quad
+        \begin{bNiceMatrix}%
+            [
+                first-row,
+                first-col,
+                code-for-first-row = \scriptstyle,
+                code-for-first-col = \scriptstyle \arabic{iRow},
+                margin = 2pt,
+            ]
+            \CodeBefore
+            \rectanglecolor{red!15}{3-1}{3-2}
+            \Body
+            & X_{1} & X_{2} \\
+            & ? & ?  \\
+            & ? & ?  \\
+            & ? & ?  \\
+            & ? & ?  \\
+            & ? & ?  \\
+            & ? & ?  \\
+            \CodeAfter
+            \UnderBrace[yshift=3pt]{6-1}{6-2}{U^{'}}
+        \end{bNiceMatrix}
+        \quad
+        \times
+        \quad
+        \begin{bNiceMatrix}%
+            [
+                first-row,
+                last-col = 5,
+                code-for-first-row = \scriptstyle \Alph{jCol},
+                code-for-last-col = \scriptstyle,
+                margin = 2pt,
+            ]
+            \CodeBefore
+            \columncolor{red!15}{3}
+            \Body
+            &&& \\
+            ? & ? & ? & ? & X_{1} \\
+            ? & ? & ? & ? & X_{2} \\
+            \CodeAfter
+            \UnderBrace[yshift=6pt]{2-1}{2-4}{V^{'}}
+        \end{bNiceMatrix}
+    \end{equation*}
+    \vspace{4pt}
+    \caption{Nutzer-Matrix und Item-Matrix}\label{fig:rec:twomat}
+\end{figure}
+
+Fehlende Bewertungen können als Skalarprodukt der jeweiligen Vektoren approximiert werden, wie in der Abbildung farblich hervorgehoben ist. 
+Da Nutzer und Filme durch dieselben Merkmale repräsentiert werden, lassen sie sich in einem gemeinsamen Raum abbilden, wobei die kontextuelle Bedeutung der latenten Merkmale in der Regel nicht explizit bekannt ist.
+Im Rahmen des hier behandelten Beispiels könnte allerdings \(X_{1}\) für \enquote{Horror} und \(X_{2}\) für \enquote{Drama} stehen.
+In diesem Fall wird jeder Nutzer durch seine Vorliebe für die beiden Genres beschrieben, während jeder Film durch seine Ausprägung dieser Genres charakterisiert wird.
+Wie der gemeinsame latente Raum für Nutzer und Filme dann aussehen könnte, ist in \zcref{fig:app:lat} in \zcref{appen} veranschaulicht.
+
+Es bleibt damit die Frage, wie die Matrizen \(U^{'}\) und \(V^{'}\) berechnet werden können, um sinnvolle Empfehlungen generieren zu können.
+Dafür fassen wir zusammen, welche Eigenschaften die Matrizen erfüllen sollen:
+\begin{enumerate}
+    \item Sie sollen eine sinnvolle Approximation von \(R\) darstellen, sodass die wichtigsten Zusammenhänge der Nutzer-Item-Matrix erhalten bleiben.
+    \item Die Nutzer und Items sollen durch die Zeilen von \(U^{'}\), bzw.\ durch die Spalten von \(V^{'}\) mithilfe derselben latenten Merkmale ausgedrückt werden können.
+\end{enumerate}
+
+\section{Einführung in PureSVD}
+
+Es gibt zahlreiche verschiedene Ansätze, um die entsprechenden Matrizen zu berechnen.
+Wie bereits in der Einleitung des Kapitels angesprochen, wird sich hier auf ein Modell konzentriert, welches ausschließlich auf der Singulärwertzerlegung basiert.
+Dieses Modell wird als \emph{PureSVD}~\cite{cremonesiPerformanceRecommenderAlgorithms2010} bezeichnet.
+PureSVD gehört zu den \emph{Top-N-Empfehlungssystemen}, womit das Ziel nicht darin besteht, die fehlenden Werte so präzise wie möglich vorherzusagen.
+Stattdessen wird versucht, basierend auf den vorhanden Bewertungen eine Auswahl an Empfehlungen zu generieren, die den Vorlieben des Nutzers entsprechen, wobei lediglich die Rangfolge relevant ist.
+Damit stellt beispielsweise die Approximation des Wertes in \zcref{fig:rec:twomat} keine valide Vorhersage dar, sondern beschreibt vielmehr die Ähnlichkeit zwischen dem entsprechenden Nutzer und Film.
+
+Wie auch bei der Hauptkomponentenanalyse wird das Ziel der Herleitung in \zcref{app:pure} zusammengefasst, wobei die Herleitung diesmal nicht als formaler Beweis bezeichnet werden kann.
+\begin{application}[PureSVD]\label{app:pure}
+    Seien \(m,n \in \N\) und \(R \in \R^{m \times n}\) eine Nutzer-Item-Matrix, wobei fehlende Werte als null betrachtet werden. \\
+    Sei außerdem \(R_{k} = U_{k} \Sigma_{k} V_{k}^{T}\) die \hyperref[df:trunsvd]{trunkierte SVD} von \(R\) mit \(U_{k} \in \R^{m \times k},\ \Sigma_{k} \in \R^{k \times k}\) und \(V_{k} \in \R^{n \times k}\) für \(\rg(R_{k}) = k\). \\
+    Dann ist die Nutzer-Matrix \(U^{'} \in \R^{m \times k}\) und Item-Matrix \(V^{'} \in \R^{k \times n}\) gegeben durch
+    \begin{equation*}
+        U^{'} = U_{k} \Sigma_{k}, \quad V^{'} = V^{T}_{k}.
+    \end{equation*}  
+\end{application} 
+\begin{derivation}
+    Es soll gezeigt werden, dass die definierten Matrizen die beiden im vorherigen Abschnitt genannten Eigenschaften erfüllen.
+    Die erste Eigenschaft folgt dabei direkt aus dem Eckart-Young-Satz (\zcref{th:eckyou}), da die trunkierte SVD die beste Rang-\(k\)-Approximation darstellt.  
+
+    Ein intuitives Verständnis für die zweite Eigenschaft bietet \zcref{cor:svd}:
+    Da sich die Nutzer als Linearkombination der Filme darstellen lassen, befinden sie sich im Spaltenraum von \(R_{k}\). 
+    Für diesen Raum bilden die Spalten von \(U_{k}\) eine Basis und da \(\Sigma_{k}\) als Diagonalmatrix nur einer Streckung entspricht, bleibt die Basis in \(U^{'}\) erhalten.
+    Dies spiegelt sich in \zcref{fig:rec:twomat} wider:
+    Jeder Nutzer kann ebenfalls als Linearkombination der latenten Merkmale ausgedrückt werden.
+    Die gleiche Argumentation gilt für die Filme über den Zeilenraum.
+
+    Eine etwas formalere Herleitung ergibt sich durch die Hauptkomponentenanalyse.
+    Es ist allerdings ausgesprochen wichtig zu erwähnen, dass es sich hier um eine \emph{nicht zentrierte} PCA handelt, da die Spaltenmittelwerte nicht subtrahiert werden.
+    Die Unterschiede zwischen dieser und der im vorherigen Kapitel eingeführten Analyse werden in~\cite{cadimaRelationshipsUncentredColumnCentred2009} detailliert beleuchtet, wobei hier auf eine nähere Erklärung verzichtet wird.
+    Es genügt anzumerken, dass auch die nicht zentrierte PCA mithilfe des bekannten Weges der SVD berechnet werden kann und im Kontext von PureSVD eine Vergleichbarkeit zur klassischen PCA besteht.\footnote{Da in der Praxis die meisten Bewertungen nicht bekannt sind, liegen meist sehr spärliche Matrizen vor, womit der Mittelwert der meisten Spalten ohnehin nahe null ist.}
+
+    Wird nun die (nicht zentrierte) PCA auf \(R\) angewendet sind die ersten \(k\) Hauptkomponenten, wie im vorherigen Kapitel gezeigt, gegeben durch \(U_{k}\Sigma_{k} = U^{'}\).
+    Damit stellen die latenten Merkmale die Hauptrichtungen dar, auf die die Nutzer projiziert werden.
+    Da diese wiederum als Linearkombination der verschiedenen Merkmale (hier: Filme) definiert und durch die Spalten von \(V_{k}\) gegeben sind, ergibt sich wie gewünscht \(V^{'} = V_{k}^{T}\) und die Nutzer und Filme können durch dieselben Merkmale ausgedrückt werden.
+    \vspace{6pt}\\
+    \noindent{\emph{Hinweis}}.
+    Wie wir wissen, stehen die Singulärwerte von \(R\) in enger Verbindung mit der durch die Hauptkomponenten erklärten Varianz.
+    Obwohl diese Verbindung bei der nicht zentrierten PCA nur noch eingeschränkt gilt, können wir dennoch Rückschlüsse auf die Bedeutung der Singulärwerte ziehen.
+    In diesem Kontext gibt ihre Größe Aufschluss über die Wichtigkeit oder Stärke der latenten Merkmale.
+    Falls beispielsweise das erste latente Merkmal das Genre „Horror“ und das zweite „Drama“ repräsentiert, kann daraus geschlossen werden, dass \(R\) mehr Informationen über Horrorfilme und deren bevorzugende Nutzer enthält als über das Genre Drama. 
+\end{derivation}
+Da die Herleitung, wie vorher angekündigt, keinen formalen Beweis darstellt und nicht umfänglich beantwortet, warum die Multiplikation der beiden Matrizen Werte produziert, die die Ähnlichkeit zwischen Nutzern und Filmen widerspiegeln, wird dieser Zusammenhang anhand eines Beispiels nach~\cite[62-64]{nikolakopoulosEigenRecGeneralizingPureSVD2019} verdeutlicht.  
+Dafür definieren wir zunächst ein Maß für die Ähnlichkeit zweier Vektoren.
+\begin{definition}\label{df:cos}
+    Sei \(n \in \N\) und \(a,b \in \R^{n}\backslash\{\symbf{0}\}\). \\
+    Die \emph{Kosinus-Ähnlichkeit} zweier Vektoren \(a\) und \(b\) ist definiert durch
+    \begin{equation*}
+        \cos(\theta) = \frac{\langle a,b \rangle}{\norm{a}\norm{b}} \in [-1,1]
+    \end{equation*}    
+    für den eingeschlossenen Winkel \(\theta \in [0, \pi]\) zwischen den Vektoren. \\
+    Je größer \(\cos(\theta)\), desto \enquote{ähnlicher} sind sich \(a\) und \(b\), wobei für \(\cos(\theta) = 0\) Unabhängigkeit gilt.   
+\end{definition}
+Es gelten weiterhin die Voraussetzungen aus \zcref{app:pure}.
+Sei 
+\begin{equation*}
+    R = U\Sigma V^{T}
+\end{equation*}
+die vollständige Singulärwertzerlegung von \(R\) mit \(U \in \R^{m \times m},V \in \R^{n \times n} \) und \(\Sigma \in \R^{m \times n}\).   
+Dann ist
+\begin{equation}\label{eq:pure}
+    RV_{k}V_{k}^{T} = U \Sigma V^{T}V_{k}V_{k}^{T} \overset{(*)}{=} U \Sigma
+    \begin{bNiceMatrix}
+        \symbfit{I}_{k} \\
+        \symbf{0}
+        \CodeAfter
+        \UnderBrace[yshift=4pt]{2-1}{2-1}{\raisebox{3pt}{\scalebox{0.7}{\( n \times k \)}}}
+    \end{bNiceMatrix}
+    V_{k}^{T} = U
+    \begin{bNiceMatrix}
+        \Sigma_{k} \\
+        \symbf{0}
+        \CodeAfter
+        \UnderBrace[yshift=4pt]{2-1}{2-1}{\raisebox{3pt}{\scalebox{0.7}{\( m \times k \)}}}
+    \end{bNiceMatrix}
+    V_{k}^{T}
+    =
+    U_{k}\Sigma_{k}V_{k}^{T} = R_{k}.
+\end{equation}
+{\small \((*)\) \textit{Da} \(V\) \textit{orthonormal ist}.}
+\vspace{5pt}\\
+Die Approximationsmatrix \(R_{k}\) kann also nur durch die originale Matrix \(R\) und Item-Matrix \(V_{k}\) ausgedrückt werden.
+
+Seien \(v_{i},v_{j} \in \R^{k}\) beliebige Zeilenvektoren von \(V_{k}\) für \(i,j \in \{1,\ldots,n\}\).    
+Betrachten wir nun die Matrix \(V_{k}V_{k}^{T}\) mit den latenten Merkmalen \(X_{1},\ldots,X_{k}\) und Filmen \(F_{1},\ldots,F_{n}\): 
+\begin{equation*}
+    \renewcommand{\arraystretch}{0.8}
+    V_{k}V_{k}^{T} =
+    \begin{bNiceMatrix}%
+        [
+            first-row,
+            first-col,
+            code-for-first-row = \scriptstyle,
+            code-for-first-col = \scriptstyle,
+            margin = 2pt,
+            nullify-dots
+        ]
+        \CodeBefore
+        \rectanglecolor{red!15}{4-1}{4-3}
+        \Body
+        & X_{1} & \Ldots & X_{k} \\
+        F_{1} & & & \\
+        \Vdots &  &  &  \\
+        & & & \\
+        F_{i} & \rule[.5ex]{1.5ex}{0.5pt} & v_{i} & \rule[.5ex]{1.5ex}{0.5pt} \\
+        \Vdots & & & \\
+        F_{n} &  & &
+    \end{bNiceMatrix}
+    \times
+    \begin{bNiceMatrix}%
+        [
+            first-row,
+            last-col,
+            code-for-first-row = \scriptstyle,
+            code-for-last-col = \scriptstyle,
+            margin = 2pt,
+            nullify-dots
+        ]
+        \CodeBefore
+        \columncolor{red!15}{3}
+        \Body
+        F_{1} & \Ldots & F_{j} & \Ldots & & F_{n} & \\
+        & & \vert & & & & X_{1} \\
+        &  & v_{j} &  & & & \Vdots \\
+        &  & \vert & & & & X_{k}
+    \end{bNiceMatrix}
+    =
+    \begin{bNiceMatrix}%
+        [
+            first-row,
+            last-col,
+            code-for-first-row = \scriptstyle,
+            code-for-last-col = \scriptstyle,
+            margin = 2pt,
+            nullify-dots
+        ]
+        F_{1} & \Ldots & F_{j} & \Ldots & & F_{n} & \\
+        & & & & & & F_{1} \\
+        & & & & & & \Vdots \\
+        & & & & & & \\
+        & & \cellcolor{red!15} \alpha_{ij} & & & & F_{i} \\
+        & & & & & & \Vdots \\
+        & & & & & & F_{n}
+    \end{bNiceMatrix}.
+\end{equation*}
+Damit gilt für ein beliebiges Element \(\alpha_{ij}\) von \(V_{k}V_{k}^{T}\)
+\begin{equation}\label{eq:purecos}
+    \alpha_{ij} = \langle v_{i},v_{j} \rangle = \norm{v_{i}}\norm{v_{j}}\cos(\theta_{ij})
+\end{equation}
+nach \zcref{df:cos}, wobei \(\theta_{ij}\) der eingeschlossene Winkel zwischen \(v_{i}\) und \(v_{j}\) ist.    
+Folglich repräsentiert \(\alpha_{ij}\) die Kosinus-Ähnlichkeit zwischen Film \(F_{i}\) und \(F_{j}\) bezüglich der latenten Merkmale, skaliert mit einem Wert, der abhängig von der Popularität der Filme ist.\footnote{Da die latenten Merkmale dementsprechend stark oder weniger stark ausgeprägt sind.}   
+
+Mit dieser Erkenntnis wenden wir uns der Approximationsmatrix \(R_{k}\) zu und betrachten, welche Empfehlungen für einen bestimmten Nutzer \(N_{u}\) generiert werden würden mit \(u \in \{1,\ldots,m\}\).
+Angenommen der Nutzer habe nur die Filme \(F_{1}, F_{3}\) und \(F_{5}\) bewertet mit den Bewertungen \({(R)}_{u1} = 1, {(R)}_{u3} = 2\) und \({(R)}_{u5} = 5\).
+Außerdem soll für dieses Beispiel nur entschieden werden, ob der Film \(F_{2}\) oder \(F_{4}\) empfohlen werden soll.  
+Die Approximation der beiden gesuchten Werte ist gegeben durch die entsprechenden Elemente von \(R_{k}\), hier notiert als \(\hat{r}_{u2}\) und \(\hat{r}_{u4}\).  
+Nach~\eqref{eq:pure} erfolgt die Berechnung der Elemente durch folgende Skalarprodukte:
+\begin{equation*}
+    \delimiterfactor=1000
+    \renewcommand{\arraystretch}{0.8}
+    \begin{bNiceMatrix}%
+        [
+            first-row,
+            first-col,
+            code-for-first-row = \scriptstyle,
+            code-for-first-col = \scriptstyle,
+            margin = 2pt,
+            nullify-dots
+        ]
+        \CodeBefore
+        \rectanglecolor{red!15}{3-1}{3-8}
+        \Body
+        & F_{1} & F_{2} & F_{3} & F_{4} & F_{5} & F_{6} & \Ldots & F_{n}\\
+        N_{1} & & & & & & & & \\
+        \Vdots & & & & & & & &\\
+        N_{u} & \rule[6pt]{0pt}{5pt} 1 & 0 & 2 & 0 & 5 & 0 & \cdots & 0 \\
+        \Vdots & & & & & & & & \\
+        N_{m} & & & & & & & & \\
+        \CodeAfter
+        \UnderBrace[yshift=3pt]{5-1}{5-8}{R}
+    \end{bNiceMatrix}
+    \times
+    \begin{bNiceMatrix}%
+        [
+            first-row,
+            last-col,
+            last-row,
+            code-for-first-row = \scriptstyle,
+            code-for-last-col = \scriptstyle,
+            margin = 2pt,
+            nullify-dots
+        ]
+        \CodeBefore
+        \columncolor{red!15}{2}
+        \columncolor{red!15}{4}
+        \Body
+        F_{1} & F_{2} & F_{3} & F_{4} & F_{5} & \Ldots & F_{n} & \\
+        & \alpha_{12} & &\alpha_{14} & &  & & F_{1} \\
+        & \alpha_{22} & & \alpha_{24} & & & & F_{2} \\
+        & \alpha_{32} & & \alpha_{34} & & & & F_{3}\\
+        & \alpha_{42} & & \alpha_{44} & & & & F_{4} \\
+        & \alpha_{52} & & \alpha_{54} & & & & F_{5} \\
+        & \vdots & & \vdots & & & & \Vdots \\
+        & \alpha_{n2}& & \alpha_{n4} & & & & F_{n} \\
+        \Block{1-7}{V_{k}V_{k}^{T}}
+        \rule[8pt]{0pt}{8pt}
+        \CodeAfter
+        \UnderBrace[yshift=3pt]{7-1}{7-7}{}
+    \end{bNiceMatrix}.
+\end{equation*}
+Wir erhalten also
+\begin{align*}
+    \hat{r}_{u2} &= 1\cdot\alpha_{12} + 2\cdot\alpha_{32} + 5\cdot\alpha_{52} \\
+    \hat{r}_{u4} &= 1\cdot\alpha_{14} + 2\cdot\alpha_{34} + 5\cdot\alpha_{54}.
+\end{align*}
+Wie in~\eqref{eq:purecos} gezeigt wurde, repräsentiert \(\alpha_{ij}\) die Ähnlichkeit zwischen Film \(F_{i}\) und \(F_{j}\). 
+
+Damit berechnet sich die Approximation von PureSVD für einen Nutzer \(N_{u}\) und Film \(F_{j}\) aus der gewichteten Summe der skalierten Kosinus-Ähnlichkeiten zwischen \(F_{j}\) und allen bereits bewerteten Filmen von \(N_{u}\) bezüglich der latenten Merkmale, wobei die Gewichtungen den jeweiligen abgegebenen Bewertungen entsprechen. 
+Informal ausgedrückt:
+PureSVD empfiehlt die Filme, die den bereits bewerteten am meisten ähneln, abhängig davon wie diese bewertet wurden.
+
+Mit diesem vertieften Verständnis der Funktionsweise von PureSVD kann zum Programmierteil übergegangen werden.
+
+\section{Implementierung von PureSVD}
+
+Wir verwenden das MovieLens-Datenset~\cite{harperMovieLensDatasetsHistory2015}, genauer:
+Das \texttt{ml-latest-small}, welches ca.\ \num{100000} Bewertungen von \num{610} Nutzern über knapp \num{10000} Filme enthält.\footnote{Zu finden unter: \url{https://grouplens.org/datasets/movielens/latest/}}
+Das Datenset besteht aus zwei \texttt{.csv}-Dateien, die jeweils Bewertungen anhand einer \texttt{userId} und \texttt{movieId} enthalten sowie den entsprechenden Filmnamen zur \texttt{movieId} bereitstellen.
+Die zentralen Teile des Programmcodes werden im Folgenden Schritt für Schritt nachvollzogen, wobei der vollständige Code in \zcref{app:pro} unter \zcref{app:pro:pure} zu finden ist.
+
+Zunächst erstellen wir die Nutzer-Item-Matrix \(R\), indem wir die Daten der \texttt{.csv}-Dateien mit der Bibliothek \mintinline{python}{pandas} einlesen und unbekannte Werte mithilfe von \mintinline{python}{fillna(0)} durch den Wert \num{0} ersetzen:  % chktex 36
+\begin{minted}{python}
+    # Daten einlesen
+    ratings = pd.read_csv("programming_python/ratings.csv", header=0)
+    movies = pd.read_csv("programming_python/movies.csv", header=0)
+
+    # Unrelevante Daten entfernen
+    ratings = ratings.drop(columns=["timestamp"])
+    movies = movies.drop(columns="genres")
+
+    # Nutzer-Item-Matrix erstellen
+    user_item_table = ratings.pivot(
+        index="userId", columns="movieId", values="rating"
+    ).fillna(0)
+    R = user_item_table.values
+\end{minted}
+Dabei sei angemerkt, dass die \mintinline{python}{user_item_table} einer Tabelle entspricht, bei der die Spalten durch die \texttt{movieIds} und die Zeilen durch die \texttt{userIds} gegeben sind.
+Die Spaltennummern entsprechen aber \underline{nicht} den \texttt{movieIds}, da \texttt{ml-latest-small} nicht alle Filme enthält und die \texttt{movieIds} dementsprechend nicht fortlaufend nummeriert sind.
+Für die \texttt{userId} gilt dies nicht.
+
+Wir können nun die trunkierte SVD von \(R\) mithilfe der Funktion \mintinline{python}{svds} aus der \mintinline{python}{SciPy}-Bibliothek berechnen:
+\begin{minted}{python}
+    U, S, Vt = svds(R, k=10)
+    Sigma = np.diag(S)
+
+    prediction_matrix = U @ Sigma @ Vt
+\end{minted}
+Es wurden dabei nur die ersten \(10\) latenten Merkmale beachtet, womit die \mintinline{python}{prediction_matrix} der Matrix \(R_{k=10}\) entspricht. 
+
+Als nächster Schritt wird für eine gegebene \texttt{userId} die entsprechende Zeile der \mintinline{python}{prediction_matrix} absteigend sortiert:
+\begin{minted}{python}
+    sorted_predictions = np.argsort(-prediction_matrix[user_idx])
+\end{minted}
+Zuletzt werden die Spaltennummern der ersten \mintinline{python}{num_recom} (noch nicht geschauten) Filme aus den \mintinline{python}{sorted_predictions} als \mintinline{python}{recommended_movies_indices} gespeichert:
+\begin{minted}{python}
+    unwatched_indices = np.where(R[user_idx] == 0)[0]
+    recommended_movies_indices = [
+        int(movie) for movie in sorted_predictions if movie in unwatched_indices
+    ][:num_recom]
+\end{minted}
+Die Ausgabe der Top \num{5} Empfehlungen für Nutzer \num{3} sähe nach einer Zuordnung der \mintinline{python}{recommended_movies_indices} zu den entsprechenden Filmnamen dann wie folgt aus:
+\begin{outputcode}
+    Die Top 5 Empfehlungen für Nutzer 3 sind ['Aliens (1986)', 'Star Wars: Episode V - The Empire Strikes Back (1980)', 'Star Wars: Episode IV - A New Hope (1977)', 'Terminator, The (1984)', 'Star Wars: Episode VI - Return of the Jedi (1983)']
+\end{outputcode} 
+Es lässt sich beobachten, dass bei diesem Nutzer latente Merkmale, die mit dem Genre \enquote{Sci-Fi} in Verbindung stehen wahrscheinlich besonders stark ausgeprägt sind.
+
+Das Modell kann zusätzlich durch das in \zcref{df:cos} eingeführte Maß der Kosinus-Ähnlichkeit erweitert werden.
+Das Ziel ist, zu einem gewünschten Film die ähnlichsten Filme bezüglich der latenten Merkmale zu ermitteln.
+In der Praxis könnten dementsprechend nach dem Schauen eines Films weitere, ähnliche Filme vorgeschlagen werden.
+Dafür wird zunächst die Kosinus-Ähnlichkeit implementiert:
+\begin{minted}{python}
+    def cosine_similarity(v, u):
+        return (v @ u) / (np.linalg.norm(v) * np.linalg.norm(u))
+\end{minted}
+Anschließend werden die Kosinus-Ähnlichkeiten zwischen dem Spaltenvektor der gegebenen \texttt{movieId} von \(V_{k}^{T}\) und der restlichen Filme berechnet und als \mintinline{python}{similarities} gespeichert:
+\begin{minted}{python}
+    movie_vector = Vt[:, movie_idx]
+    similarities = np.array(
+        [cosine_similarity(Vt[:, i], movie_vector) for i in range(Vt.shape[1])]
+    )
+\end{minted}
+Die \mintinline{python}{similarities} werden nun absteigend sortiert, wobei die gegebene \texttt{movieId} selbst ausgeschlossen wird:
+\begin{minted}{python}
+    similar_movie_indices = np.argsort(-similarities)[1 : num_similar + 1]
+\end{minted} 
+Indem wie zuvor die \mintinline{python}{similar_movie_indices} den Filmnamen zugeordnet werden, erhalten wir beispielsweise folgenden Output:
+\begin{outputcode}
+    Die Top 5 ähnlichsten Filme zu Film-ID 79132 (Inception (2010)) sind: ['Inglourious Basterds (2009)', 'Dark Knight, The (2008)', 'Isle of Dogs (2018)', 'Dark Knight Rises, The (2012)', 'Shutter Island (2010)']
+\end{outputcode}
+Der vorgestellte Code zeigt, dass bereits mit einer simplen Implementierung sinnvolle Empfehlungen generiert werden können, die ausschließlich auf fundamentalen mathematischen Konzepten basieren.
+Zusammen mit der Hauptkomponentenanalyse wurden damit in dieser Arbeit zwei verschiedene, weit verbreitete Anwendungsgebiete der Singulärwertzerlegung ausführlich erläutert und es kann zum Fazit übergegangen werden.
