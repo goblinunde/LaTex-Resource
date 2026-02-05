@@ -1,0 +1,135 @@
+"$schema" = 'https://starship.rs/config-schema.json'
+
+# --- 1. 全局布局配置 ---
+format = """
+[░▒▓](#a3aed2)\
+[  ](bg:#a3aed2 fg:#090c0c)\
+$sudo\
+[](bg:#769ff0 fg:#a3aed2)\
+$directory\
+[](fg:#769ff0 bg:#394260)\
+$git_branch\
+$git_status\
+[](fg:#394260 bg:#212736)\
+$nodejs\
+$rust\
+$python\
+$conda\
+$pixi\
+${custom.bazel}\
+$julia\
+$package\
+[](fg:#212736 bg:#1d2230)\
+$cmd_duration\
+$time\
+[ ](fg:#1d2230)\
+\n$character"""
+
+# --- 2. 基础模块 ---
+
+[directory]
+style = "fg:#e3e5e5 bg:#769ff0"
+format = "[ $path ]($style)"
+truncation_length = 3
+truncation_symbol = "…/"
+
+[directory.substitutions]
+"Documents" = "󰈙 "
+"Downloads" = " "
+"Music"     = " "
+"Pictures"  = " "
+"Desktop"   = " "
+"Projects"  = "󱃵 "
+
+[sudo]
+symbol = "󰀐 "
+style = "bg:#a3aed2 fg:#090c0c"
+format = "[$symbol]($style)"
+disabled = false
+
+# --- 3. Git 模块 ---
+
+[git_branch]
+symbol = ""
+style = "bg:#394260"
+format = '[[ $symbol $branch ](fg:#769ff0 bg:#394260)]($style)'
+
+[git_status]
+style = "bg:#394260"
+conflicted = "🏳 "
+ahead      = "🏎💨"
+behind     = "😰"
+diverged   = "😵"
+untracked  = "🤷 "
+stashed    = "📦 "
+modified   = "📝 "
+staged     = '[++\($count\)](green)'
+renamed    = "👅 "
+deleted    = "🗑 "
+format = '[[($all_status$ahead_behind )](fg:#769ff0 bg:#394260)]($style)'
+
+# --- 4. 语言与现代包管理模块 ---
+
+[rust]
+symbol = ""
+style = "bg:#212736"
+format = '[[ $symbol ($version) ](fg:#769ff0 bg:#212736)]($style)'
+
+[pixi]
+symbol = "󱔎 "
+style = "bg:#212736"
+format = '[[ $symbol ($environment) ](fg:#769ff0 bg:#212736)]($style)'
+
+[python]
+symbol = ""
+style = "bg:#212736"
+# 已加入 ($virtualenv) 显示，让虚拟环境名一目了然
+format = '[[ $symbol ($version) ($virtualenv) ](fg:#769ff0 bg:#212736)]($style)'
+
+[conda]
+symbol = ""
+style = "bg:#212736"
+format = '[[ $symbol $environment ](fg:#769ff0 bg:#212736)]($style)'
+
+# 自定义 Bazel 模块
+[custom.bazel]
+description = "Bazel build system"
+detect_files = ['WORKSPACE', 'BUILD', 'MODULE.bazel', 'WORKSPACE.bazel']
+symbol = " "
+style = "bg:#212736"
+command = "bazel --version | cut -d' ' -f2"
+# 修正嵌套格式
+format = '[[ $symbol($output) ](fg:#769ff0 bg:#212736)]($style)'
+
+[nodejs]
+symbol = ""
+style = "bg:#212736"
+format = '[[ $symbol ($version) ](fg:#769ff0 bg:#212736)]($style)'
+
+[julia]
+symbol = ""
+style = "bg:#212736"
+format = '[[ $symbol ($version) ](fg:#769ff0 bg:#212736)]($style)'
+
+[package]
+symbol = "󰏗"
+style = "bg:#212736"
+format = '[[ $symbol ($version) ](fg:#769ff0 bg:#212736)]($style)'
+
+# --- 5. 性能与时间模块 (已修复) ---
+
+[cmd_duration]
+min_time = 2_000
+style = "fg:#eed49f bg:#1d2230"
+# 修复了这里的方括号嵌套错误
+format = '[ 󱎫 $duration ]($style)'
+
+[time]
+disabled = false
+time_format = "%R"
+style = "bg:#1d2230"
+format = '[[  $time ](fg:#a0a9cb bg:#1d2230)]($style)'
+
+[character]
+success_symbol = "[󰄛 ](bold green)"
+error_symbol = "[󰄛 ](bold red)"
