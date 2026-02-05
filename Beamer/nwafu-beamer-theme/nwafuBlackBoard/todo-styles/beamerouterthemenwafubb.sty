@@ -1,0 +1,129 @@
+% nwafu(西北农林科技大学)Blackboard主题。
+% 版权(c) 2015-2021, 信息工程学院 耿楠<nangeng@nwafu.edu.cn>
+%
+% 该主题修改于kmaed的Blackboard主题：https://github.com/kmaed/kmbeamer
+%
+% 这是一个免费代码：发布和修改该代码，请遵守最新版的自由软件联盟发布
+% 的GNU通用公共协议
+%
+% 期望这一代码对你有用，但值得注意的是，我不对任何后续问题进行维护，
+% 请参考<http://www.gnu.org/licenses/>查看最新的协议内容。
+%%
+
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{beamerouterthemenwafubb}[2021/04/02 v2.1.00 The nwafu Blackboard Beamer Theme]
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% beamer特殊选项
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\mode<presentation>% 参考前四个模式(beamer,handout,second and trans).也就是说，除article外的所有模式
+\newbox\nwafubmr@tmpboxa
+\newbox\nwafubmr@tmpboxb
+\newbox\nwafubmr@tmpboxc
+\setbeamersize{text margin left=7mm,text margin right=10mm}
+
+\setbeamertemplate{background canvas}{%
+  \begin{tikzpicture}[x=1mm,y=1mm,overlay,remember picture]
+    \draw[draw=none,fill=bottlegreen](current page.north west)rectangle(current page.south east);    
+	\draw[step=1mm,color=bottlegreen!102] (current page.north west) grid (current page.south east);
+    % outer frame
+    \draw[draw=none,fill=kerria] 
+    (current page.north west) rectangle ([yshift=-1mm]current page.north east);
+    \draw[draw=none,fill=kerria] 
+    (current page.north west) rectangle ([xshift=1mm]current page.south west);
+    \draw[draw=none,fill=brown] 
+    (current page.south west)--++(1,1)--
+    ([xshift=-1mm,yshift=1mm]current page.south east)--
+    ([xshift=-1mm,yshift=-1mm]current page.north east)--++(1,1)--
+    (current page.south east)--cycle;
+    % frame plate
+    \fill[draw=none,even odd rule,color=goldbrown]
+    ([xshift=1mm,yshift=-1mm]current page.north west) rectangle
+    ([xshift=-1mm,yshift=1mm]current page.south east)
+    ([xshift=3mm,yshift=-3mm]current page.north west) rectangle
+    ([xshift=-3mm,yshift=3mm]current page.south east);
+    % inner frame
+    \draw[draw=none,fill=brown] 
+    ([xshift=3mm,yshift=-3mm]current page.north west) rectangle
+    ([xshift=4mm,yshift=3mm]current page.south west);
+    \draw[draw=none,fill=brown]
+    ([xshift=3mm,yshift=-3mm]current page.north west) rectangle
+    ([xshift=-3mm,yshift=-4mm]current page.north east);
+    \draw[draw=none,fill=kerria]
+    ([xshift=3mm,yshift=3mm]current page.south west)--++(1,1)--
+    ([xshift=-4mm,yshift=4mm]current page.south east)--
+    ([xshift=-4mm,yshift=-4mm]current page.north east)--++(1,1)--
+    ([xshift=-3mm,yshift=3mm]current page.south east)--cycle;
+    % % eraser
+    % \draw[draw=none,fill=navyblue]
+    % ([xshift=-21.5mm,yshift=5mm]current page.south east) rectangle
+    % ([xshift=-10.5mm,yshift=3mm]current page.south east);
+    % \draw[draw=none,fill=satsuma]
+    % ([xshift=-22mm,yshift=6.5mm]current page.south east) rectangle
+    % ([xshift=-10mm,yshift=5mm]current page.south east);
+    % \draw[draw=none,fill=sepia]
+    % ([xshift=-17mm,yshift=5mm]current page.south east) rectangle
+    % ([xshift=-15mm,yshift=8mm]current page.south east);
+    % \foreach \x in{11,13.5,16,18.5,21}
+    % {
+       % \shade[ball color=deepgreen]
+       % ([xshift=-\x mm,yshift=5.75mm]current page.south east)circle (0.4);
+    % }
+    % % chalks
+    % \foreach \x in{34,46,58}
+    % {
+      % \shade[draw=none,bottom color=gray,top color=snow]
+      % ([xshift=-\x mm,yshift=4.5mm]current page.south east) rectangle ++(10,-1.5);
+    % }
+  \end{tikzpicture}
+}
+
+% 设置页眉高度为帧标题高度的1.3倍
+\newlength{\beamer@height}%
+\usebeamerfont{frametitle} % 使用帧标题字体
+\setlength{\beamer@height}{1.3\baselineskip}%
+% 恢复字体
+\reset@font%
+
+% 帧标题
+\setbeamertemplate{frametitle}{%
+  \begin{minipage}[c][\beamer@height][c]{\textwidth}%
+    %github #2PR, 作者：muzimuzhi, 13 Oct 2019
+    %\hspace*{-1ex}{\usebeamercolor[fg]{frametitle}\usebeamerfont{frametitle}\insertframetitle}%
+    %\ |\ {\usebeamercolor[fg]{framesubtitle}\usebeamerfont{framesubtitle}\insertframesubtitle}%
+    \hspace*{-1ex}%
+    \usebeamercolor[fg]{frametitle}\usebeamerfont{frametitle}\insertframetitle%
+    \ifx\insertframesubtitle\@empty%
+    \else
+      \ |\ %
+      \usebeamercolor[fg]{framesubtitle}\usebeamerfont{frametitle}\insertframesubtitle%
+    \fi%
+  \end{minipage}%
+}%
+
+% 设置页脚
+\setbeamertemplate{footline}{%
+  \setbox\nwafubmr@tmpboxa\hbox{\ifnum\insertsectionnumber>0\boldmath\insertsectionnumber.~\insertsection\fi}%
+  \setbox\nwafubmr@tmpboxb\hbox{\boldmath\insertshorttitle{}}%
+  \setbox\nwafubmr@tmpboxc\hbox{\boldmath\insertshortinstitute{}\ \insertauthor\ \insertframenumber$/$\inserttotalframenumber}%
+  \ht\nwafubmr@tmpboxa=1mm\dp\nwafubmr@tmpboxa=0mm%
+  \ht\nwafubmr@tmpboxb=1mm\dp\nwafubmr@tmpboxb=0mm%
+  \ht\nwafubmr@tmpboxc=1mm\dp\nwafubmr@tmpboxb=0mm%
+  \vspace{5.2mm}%
+  \hspace{4mm}\noindent\box\nwafubmr@tmpboxa\hfill\box\nwafubmr@tmpboxb\hfill\box\nwafubmr@tmpboxc\hspace{4mm}%
+  \vspace{0.9mm}%
+}%
+
+
+\setbeamertemplate{sections/subsections in toc}[sections numbered]{}
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{qed symbol}{}
+
+
+
+\mode<all>
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: "main.tex"
+%%% End: 
