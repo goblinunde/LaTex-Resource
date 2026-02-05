@@ -1,0 +1,157 @@
+\documentclass{amsc}          %此模板需调用宏包amsc.cls, 请确保此宏包与tex文件在同一文件夹下
+
+\numberwithin{equation}{section} % 公式编号会随着Section而变动,如(1.1),(1.2),(2.1)...,如果不便使用,您可以将这个命令删去
+
+
+\begin{document}
+
+\Volume{201x}{1}{0}{0}               % 年、月、卷、期
+\PageNum{1}                                  % 起始页码
+\PaperID{0583-1431(20xx)0x-0xxx-0x}   % 文章编号
+\DocumentCode{A}                              % 文献标识码
+\EditorNote{收稿日期:\ 200x-xx-xx;\ 接受日期:\ 200x-xx-xx}  % 脚注
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%  作者从下面开始填写各项内容,本刊的标点符号均使用英文标点,您可以在编译前设置标点形式
+
+\EditorNote{基金项目: }            %如 基金项目:国家自然科学基金资助项目(10171074),如没有基金项目请删去此行
+
+\TitleMark{作者姓名:论文标题缩写}  % 页眉, 如有多位作者,请写为 第一作者姓名等: 论文标题缩写
+
+\BeginTitle
+
+\Title{论文标题}
+
+\Author{张三}
+ {中科院数学与系统科学研究院\  北京\ 100190\\ % 例如 中国科学院数学与系统科学研究院\ 北京\ 100190 \\
+E-mail: author1@univ.edu.cn}
+
+\Author{李四~~~王五}
+{中国科学院大学数学科学学院\  北京\ 100190\\
+E-mail: author2@univ.edu.cn;\ author3@univ.edu.cn}
+
+\Abstract{本文给出了赋范空间...}
+
+\Keywords{共轭空间; 完备; 局部凸}
+
+\MRClass{46B20}
+
+\CLClass{O177.2}
+
+
+\ETitle{Title} %英文标题
+
+\EAuthor{San \uppercase{Zhang}} % 作者姓名的拼音,名在前,姓在后
+{Academy of Mathematics and Systems Science, CAS, Beijing $100190$, P. R. China \\            % 如 Academy of Mathematics and Systems Science, Chinese Academy of Sciences, Beijing $100190$, P. R. China \\
+E-mail\,$:$ author$1$@univ.edu.cn}
+
+\EAuthor{Si \uppercase{Li}~~~Wu \uppercase{Wang}}
+{School of Mathematical Science, University of Chinese Academy of Sciences,\\ Beijing $100190$, P. R. China  \\
+E-mail\,$:$ author$2$@univ.edu.cn$;$\ author$3$@univ.edu.cn}
+
+\EAbstract{In this paper, we...}
+
+\EKeywords{conjugate space; complete; locally convex}
+
+\EMRClass{46B20}
+
+\ECLClass{O177.2}
+
+\EndTitle
+
+
+\Section{引言}
+
+ Lorenzini 和
+Tucker\supercite{LT}讨论了...,其它结论见文\cite{HB,T1,T2}.
+
+公式示例
+\begin{align}\label{eq:1.1}
+\|\mathcal{H}^pf\|^q_{L^q(|x|_p^{\alpha}dx)}&=\int_{\mathbb{R}^{n}}
+\bigg|\frac{1}{|x|_p^{n}}\int_{B(0,|x|_p)}f(t)dt\bigg|^q|x|_p^{\alpha}dx\nonumber\\
+&=\int_{\mathbb{R}^{n}}
+\bigg|\int_{B(0,1)}f(|x|_p^{-1}y)dy\bigg|^q|x|_p^{\alpha}dx.
+\end{align}
+
+
+由\eqref{eq:1.1}, % 也可以使用(\ref{eq:1.1})来引用公式编号
+可以得到
+\begin{align*}
+\|T^p_{b}f\|_{K^{\alpha, q_2}_{r}(\mathbb{Q}_{p})}\leq
+\|\mathcal{H}^p_{b}f\|_{K^{\alpha, q_2}_{r}(\mathbb{Q}_{p})}+
+\|\mathcal{H}^{p,*}_{b}f\|_{K^{\alpha, q_2}_{r}(\mathbb{Q}_{p})}.
+\end{align*}
+
+
+
+在文中,定理,引理,定义,命题,推论,注记请使用以下环境(性质property,问题question,例example亦然):
+\begin{verbatim}
+\begin{theorem/lemma/definition/proposition/corollary/remark}
+\end{theorem/lemma/definition/proposition/corollary/remark}.
+\end{verbatim}
+
+例如:
+\begin{definition} 内容
+\end{definition}
+
+
+\begin{lemma} 内容
+\end{lemma}
+
+\begin{remark} 证明环境请使用\verb|\begin{prof}...\end{prof}|
+\end{remark}
+
+
+
+
+\begin{prof}内容\end{prof}
+
+定理,证明的环境也可以使用命令 ``\verb|{\HT 定理 1.4}\quad 内容|",
+显示为
+
+{\HT 定理 1.4}\quad 内容
+
+\Section{主要定理及其证明}
+
+\begin{theorem}
+内容
+\end{theorem}
+
+
+表格示例\begin{table}[h]
+ \centering\begin{tabular}{|c|c|c|l|c|}
+\hline $P(x)$ & $i$& $(e(1),e(2),e(4))$ & $(e(3),e(6),e(12),e(24))$ & $T(E)$ \\
+\hline $P_1$  &    & & &$\emptyset$ \\
+\hline $P_2$  & 4  & & $(1,1,1,0)\rightarrow(0,0,0,1)$ &2\\
+\hline $P_3$  & 2  & &$(1,1,1,0)\rightarrow(0,0,2,0)$ &1\\
+\hline $P_4$  & 2  & $(0,1,1)\rightarrow(1,2,0)$ & &1\\
+\hline $P_5$  & 2  & $(0,1,1)\rightarrow(1,2,0)$ &$(1,1,1,0)\rightarrow(0,0,0,1)$ &1,2\\
+\hline
+\end{tabular}
+\caption{标题\label{tab}}
+\end{table}
+
+% 图示例
+%\begin{figure}[h]
+%\centering\includegraphics[scale=1.2]{figure.eps}
+%\caption{标题}
+%\end{figure}
+%其中[scale=1.2]的参数可以调节大小
+
+\Thanks{本文作者感谢XXX教授的鼓励与帮助.}
+
+\BeginRef
+\bibitem{HB} Huppert B., Blackburn N., Finite Groups II,
+Springer-Verlag,  New York, 1982.
+
+\bibitem{LT} Lorenzini D., Tucker T. J., The equations and the
+method of Chabauty--Coleman, {\it Invent. Math.}, 2002, {\bf
+148}(1): 1--46.
+
+\bibitem{T1} Test.
+
+\bibitem{T2} Test.
+
+\EndRef
+
+\end{document}
