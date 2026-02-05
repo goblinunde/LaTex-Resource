@@ -1,0 +1,142 @@
+\usepackage[a4paper,top=2cm,bottom=1.5cm,left=4cm,right=3cm]{geometry}
+\usepackage[italian]{babel}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[utf8]{inputenc}
+%\usepackage[scaled=0.95]{helvet}
+%\usepackage{mathptmx}
+\usepackage{titlesec}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\graphicspath{ {./images/} }
+\usepackage{calc}
+\usepackage{tikz}
+\usepackage[colorlinks]{hyperref}
+\hypersetup{linkcolor = black, citecolor = black, urlcolor = blue} 
+\usepackage{microtype}
+\usepackage{sectsty}
+\usepackage[font={small},labelfont={sf,bf}, margin=0cm, indention = 0cm]{caption}
+\usepackage{microtype}
+\usepackage{multicol}
+\usepackage[utf8]{inputenc}     
+\usepackage[italian]{babel}
+\usepackage[x11names]{xcolor}
+\usepackage{float}
+\usepackage{lipsum}
+\usepackage{nameref}
+\usepackage[toc]{appendix}
+\usepackage{titling}
+\usepackage{authblk}
+\usepackage{dirtytalk}
+\usepackage{hyperref}
+\usepackage{booktabs}
+\usepackage{fancyhdr}
+\usepackage{setspace}
+\usepackage[backend=biber,style=authoryear-comp,sorting=nyt,minalphanames=3,autocite=inline,natbib = true, sorting = nyt, minalphanames=3]{biblatex}
+\usepackage{csquotes}
+\usepackage{enumitem}
+\usepackage{changepage}
+\let\cleardoublepage\clearpage
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% fancy quotes
+\makeatletter
+\def\fquote{%
+    \@ifnextchar[{\fquote@i}{\fquote@i[]}%]
+           }%
+\def\fquote@i[#1]{%
+    \def\tempa{#1}%
+    \@ifnextchar[{\fquote@ii}{\fquote@ii[]}%]
+                 }%
+\def\fquote@ii[#1]{%
+    \def\tempb{#1}%
+    \@ifnextchar[{\fquote@iii}{\fquote@iii[]}%]
+                      }%
+\def\fquote@iii[#1]{%
+    \def\tempc{#1}%
+    \vspace{1em}%
+    \noindent%
+    \begin{list}{}{%
+         \setlength{\leftmargin}{0.1\textwidth}%
+         \setlength{\rightmargin}{0.1\textwidth}%
+                  }%
+         \item[]%
+         \hfill
+         \begin{picture}(0,0)%
+         \put(-15,-5){\makebox(0,0){\scalebox{3}{\textcolor{SteelBlue3}{``}}}}%
+         \end{picture}%
+         \begingroup\itshape}%
+ %%%%********************************************************************
+ \def\endfquote{%
+ \endgroup\par%
+ \makebox[0pt][l]{%
+ \hspace{0.8\textwidth}%
+ \begin{picture}(0,0)(0,0)%
+ \put(15,15){\makebox(0,0){%
+ \scalebox{3}{\color{SteelBlue3}''}}}%
+ \end{picture}}%
+ \ifx\tempa\empty%
+ \else%
+    \ifx\tempc\empty%
+       \hfill\textcolor{SteelBlue3}{\rule{100pt}{2pt}}\\\mbox{}\hfill\tempa,\ \emph{\tempb}%
+   \else%
+       \hfill\textcolor{SteelBlue3}{\rule{100pt}{2pt}}\\\mbox{}\hfill\tempa,\ \emph{\tempb},\ \tempc%
+   \fi\fi\par%
+   \vspace{0.5em}%
+ \end{list}%
+ }%
+ \makeatother
+ %%%%********************************************************************
+ %\setkomafont{chapter}{\normalfont\huge\bfseries}
+ %\setkomafont{chapterprefix}{\normalfont\large}
+% define page header and footer
+\pagestyle{fancy}
+\let\oldheadrule\headrule% Copy \headrule into \oldheadrule
+\renewcommand{\headrule}{\color{SteelBlue3}\oldheadrule}% Add colour to \headrule
+\renewcommand{\headrulewidth}{3pt}
+\fancyhf{} % clear all header and footer fields
+\fancyhead[L]{\sffamily\bfseries\scriptsize Conservatorio "G. Verdi" di Torino}
+\chead{\sffamily\bfseries\scriptsize\thepage}
+\fancyhead[R]{\sffamily\bfseries\scriptsize Paul Bley: Melodie Oblique}
+
+\setlength{\parindent}{10pt}
+\setlength{\columnsep}{0.6cm}
+\setlength{\parskip}{5pt}
+
+% reduce spacing around title
+\setlength{\droptitle}{-1.2cm}
+
+
+% remove date from title
+\predate{}
+\postdate{}
+\date{}
+\renewcommand{\chaptermark}[1]{\markboth{#1}{#1}}
+% change font of section titles
+\chapterfont{\sffamily\bfseries\huge}
+\sectionfont{\sffamily\bfseries\large}
+% font definitions for authors and affiliations
+\renewcommand\Authfont{\small}
+\renewcommand\Affilfont{\footnotesize}
+
+\newcommand\listatitolo[1]{\item{#1}\\}
+% define custom abstract environment 
+\newenvironment{customabstract}
+    {\footnotesize 
+     \begin{tabular}{p{0.95\columnwidth}} 
+     \textbf{Abstract}
+    }
+    {
+    \end{tabular} 
+    \vspace{-0.3cm}
+    }
+
+% void In before journals in references
+\renewbibmacro{in:}{}    
+\counterwithout*{footnote}{chapter}
+
+% use smaller font size for references
+\AtBeginBibliography{\normalsize}
