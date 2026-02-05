@@ -1,0 +1,188 @@
+%++++++++++++++++++++++++++++++++++++++++
+% Don't modify this section unless you know what you're doing!
+\documentclass[letterpaper,12pt]{article}
+\usepackage{hyperref}
+\usepackage{fullpage}
+\renewcommand{\baselinestretch}{1.5} 
+\usepackage{cite}
+\usepackage{placeins}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{algorithmic}
+\usepackage{graphicx}
+\usepackage{diagbox}
+\usepackage{multirow}
+\usepackage{array}
+\usepackage{comment}
+\newcolumntype{P}[1]{>{\centering\arraybackslash}p{#1}}
+\usepackage{longtable}
+\usepackage[table]{xcolor}
+\usepackage[margin=1in,letterpaper]{geometry} % decreases margins
+\usepackage{nomencl}
+
+%Appendicies 
+
+
+\makenomenclature
+\usepackage{textcomp}
+\def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
+    T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
+\makeatletter
+\let\NAT@parse\undefined
+\makeatother
+
+\hypersetup{
+	pdftitle={MSc Proposal by Student A},
+   colorlinks=true,
+   citecolor=blue,
+   linkcolor=blue,
+   urlcolor=blue
+}
+\usepackage[page,toc,titletoc,title]{appendix}
+\usepackage{tocloft}
+%++++++++++++++++++++++++++++++++++++++++++++++++++
+\begin{document}
+\begin{titlepage}
+\begin{center}
+\includegraphics[width=1\textwidth]{images/Logo.png}\\[0.1in]
+\vspace{2em}%
+% Title
+\Large Research Title\\%\\[0.5in]
+\vspace{0.5em}%
+\normalsize by\\%
+\vspace{1em}
+\textup{\small {\bf Student Name}\\
+$2022/HD--/-----U$\\
+$Email$\\
+}
+ \vspace{0.5em}%
+{\bf Department of Computer Science \\ School of Computing \& Informatics Technology}\\[0.3in]
+
+\emph{A Research Proposal Submitted to the Directorate of Research and Graduate Training 
+ in Partial Fulfilment of the
+Requirements for the Award of the Degree of Master of Science in Computer Science
+of Makerere University}
+
+       % \small \emph{Submitted in partial fulfillment of\\
+       %  the requirements for the award of the degree of}
+        \vspace{0.3in}
+
+% Supervisors
+\normalsize {\bf Supervisors} \\
+Prof. Denish Azamuke\\
+% \url{email@aimil.com }\\
+Dr. Denish Azamuke\\
+% \url{email@email.com}\\
+Mr. Denish Azamuke\\
+% \url{email@email.com}\\
+\vspace{0.3em}
+
+June 2024
+\end{center}
+
+\end{titlepage}
+
+\pagenumbering{roman}
+        
+ \tableofcontents
+ %\newpage
+ %\listoffigures
+ \newpage
+ \listoftables
+ \newpage
+ \mbox{}
+\nomenclature{AI}{Artificial Intelligence}
+
+\renewcommand{\nomname}{List of Abbreviations}
+\nomenclature{ML}{Machine Learning}
+
+\printnomenclature[3cm]
+                
+\pagebreak 
+\pagenumbering{arabic}
+\section{Introduction} \label{intro}
+\subsection{Background}
+Money laundering is a ~\cite{ali2020evaluation}~\cite{azamuke2022scenario}
+
+\subsection{Problem Statement} \label{pspr}
+
+
+
+\subsection{Objectives of the Study}
+\subsubsection{Main Objective}
+The main objective of the study is....
+
+\subsubsection{Specific Objectives}
+This research will especially 
+\begin{itemize}
+    \item[(i)] Identify properties....
+    \item[(ii)] Design and implement....
+    \item[(iii)] Evaluate and validate....
+\end{itemize}
+
+
+\subsection{Significance of the Study}
+
+%\newpage
+
+
+\newpage
+\section{Literature Review} \label{literature}
+This section discusses.....
+
+This subsection discusses some of the machine learning techniques.......
+
+Xuan et al.~\cite{xuan2018random}...
+
+\subsection{Neural Networks}
+Ebenezer et al. \cite{esenogho2022neural}...
+
+The state of art~\cite{ucc}.....
+
+%\pagebreak 
+\section{Methodology} \label{methodology}
+This section discusses the data, and some of the machine learning models that shall be....
+\subsection{Mapping of Specific Objectives to Method}
+This subsection provides a summary of the mapping of specific objectives of the research study to the methods that will be used.
+\begin{table}[hbt!]
+    \centering
+    \begin{tabular}{|m{6cm}|m{9cm}|}
+    \hline
+        \textbf{Specific Objective} & \textbf{Method}\\
+        \hline
+   & \\
+\hline
+    \end{tabular}
+    \caption{Summary of specific objectives mapped to methods.}
+    \label{tab:my_label}
+\end{table}
+\FloatBarrier
+\pagebreak
+\newpage
+\bibliography{Library_for_Automatic_References.bib} 
+\bibliographystyle{IEEEtran}
+\newpage
+\begin{appendices}
+\section{: Work Plan}
+\begin{table}[hbt!]
+    \centering
+    \begin{tabular}{|m{1cm}|m{10cm}|m{3cm}|}
+        \hline
+         SNo & Activity& Timeline (2023) \\
+         \hline
+        1 & Activity 1 & Oct - Dec \\
+         \hline
+            2 & Activity 2 & \\
+         \hline
+            3 & Activity 3 &  \\
+         \hline
+         4 & Activity 4  & \\
+         \hline
+         
+         
+    \end{tabular}
+    \caption{Summary of the work plan.}
+    \label{tab:my_label}
+\end{table}
+\FloatBarrier
+\end{appendices}
+\end{document}
