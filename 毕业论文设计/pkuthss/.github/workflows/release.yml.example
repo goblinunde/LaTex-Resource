@@ -1,0 +1,100 @@
+# pkuthss 自动发布
+# 当推送 tag 时自动构建并创建 Release
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    name: Build & Release
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📥 Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # 获取完整历史用于 changelog
+
+      - name: 🏷️ Get version from tag
+        id: version
+        run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
+
+      - name: 📄 Build example thesis
+        uses: xu-cheng/latex-action@v3
+        with:
+          working_directory: doc/example
+          root_file: thesis.tex
+          latexmk_use_xelatex: true
+          extra_system_packages: |
+            fontconfig
+            fonts-noto-cjk
+
+      - name: 📚 Build documentation
+        uses: xu-cheng/latex-action@v3
+        with:
+          working_directory: doc/readme
+          root_file: pkuthss.tex
+          latexmk_use_xelatex: true
+
+      - name: 📁 Prepare release assets
+        run: |
+          mkdir -p release
+          cp doc/example/thesis.pdf release/pkuthss-example.pdf
+          cp doc/readme/pkuthss.pdf release/pkuthss-doc.pdf
+          cp README.md release/
+          
+          # 创建源码包
+          zip -r release/pkuthss-${{ steps.version.outputs.VERSION }}-src.zip \
+            tex/ doc/ Makefile README.md \
+            -x "*.pdf" -x "*.aux" -x "*.log" -x "*.out"
+
+      - name: 📝 Generate changelog
+        id: changelog
+        run: |
+          # 简单的 changelog 生成
+          echo "## 变更内容" > RELEASE_NOTES.md
+          echo "" >> RELEASE_NOTES.md
+          
+          # 获取上一个 tag
+          PREV_TAG=$(git describe --tags --abbrev=0 HEAD^ 2>/dev/null || echo "")
+          
+          if [ -n "$PREV_TAG" ]; then
+            echo "### 自 $PREV_TAG 以来的提交" >> RELEASE_NOTES.md
+            git log --oneline ${PREV_TAG}..HEAD >> RELEASE_NOTES.md
+          else
+            echo "### 初始版本" >> RELEASE_NOTES.md
+            git log --oneline -10 >> RELEASE_NOTES.md
+          fi
+          
+          echo "" >> RELEASE_NOTES.md
+          echo "---" >> RELEASE_NOTES.md
+          echo "📦 **下载说明**:" >> RELEASE_NOTES.md
+          echo "- \`pkuthss-example.pdf\`: 编译好的示例论文" >> RELEASE_NOTES.md
+          echo "- \`pkuthss-doc.pdf\`: 模板使用文档" >> RELEASE_NOTES.md
+          echo "- \`pkuthss-*-src.zip\`: 源码包" >> RELEASE_NOTES.md
+
+      - name: 🚀 Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          name: pkuthss v${{ steps.version.outputs.VERSION }}
+          body_path: RELEASE_NOTES.md
+          draft: false
+          prerelease: ${{ contains(github.ref, 'alpha') || contains(github.ref, 'beta') || contains(github.ref, 'rc') }}
+          files: |
+            release/pkuthss-example.pdf
+            release/pkuthss-doc.pdf
+            release/pkuthss-${{ steps.version.outputs.VERSION }}-src.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: 🎉 Release Summary
+        run: |
+          echo "✅ Release v${{ steps.version.outputs.VERSION }} created successfully!"
+          echo "📦 Assets uploaded:"
+          ls -la release/

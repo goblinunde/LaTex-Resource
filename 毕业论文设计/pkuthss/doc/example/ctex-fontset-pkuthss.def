@@ -1,0 +1,123 @@
+% pkuthss 跨平台字体配置
+% 支持 Windows / macOS / Linux
+% 💡 使用 expl3 检测操作系统并选择合适的中文字体
+\ProvidesExplFile{\ExplFileName}{}{}{}
+
+\sys_if_engine_pdftex:TF
+  {
+    % pdfTeX 引擎配置（较少使用）
+    \ctex_zhmap_case:nnn
+      {
+        \ctex_punct_set:n { windows }
+        \setCJKmainfont
+          [ BoldFont = simhei.ttf , ItalicFont = simkai.ttf ] { simsun.ttc }
+        \setCJKsansfont { simhei.ttf }
+        \setCJKmonofont { simfang.ttf }
+        \setCJKfamilyfont { zhkai }  { simkai.ttf }
+        \setCJKfamilyfont { zhfs }   { simfang.ttf }
+        \setCJKfamilyfont { zhsong } { simsun.ttc }
+        \setCJKfamilyfont { zhhei }  { simhei.ttf }
+        \ctex_punct_map_family:nn { \CJKrmdefault } { zhsong }
+        \ctex_punct_map_family:nn { \CJKsfdefault } { zhhei }
+        \ctex_punct_map_family:nn { \CJKttdefault } { zhfs }
+        \ctex_punct_map_itshape:nn { \CJKrmdefault } { zhkai }
+        \ctex_punct_map_bfseries:nn { \CJKrmdefault } { zhhei }
+      }
+      {
+        \ctex_load_zhmap:nnnn { rm } { zhhei } { zhfs } { windows }
+        \ctex_punct_set:n { windows }
+        \ctex_punct_map_family:nn { \CJKrmdefault } { zhsong }
+        \ctex_punct_map_bfseries:nn { \CJKrmdefault } { zhhei }
+        \ctex_punct_map_itshape:nn { \CJKrmdefault } { zhkai }
+      }
+      {
+        \tl_set:Nn \CJKrmdefault { rm }
+        \tl_set:Nn \CJKsfdefault { sf }
+        \tl_set:Nn \CJKttdefault { tt }
+      }
+  }
+  {
+    % XeTeX / LuaTeX 引擎配置（推荐）
+    % 💡 使用 expl3 的 \sys_if_platform_* 检测操作系统
+
+    % ============================================
+    % Windows 平台
+    % ============================================
+    \sys_if_platform_windows:TF
+      {
+        % 💡 Windows: 使用 Windows 自带的中易字体
+        \setCJKmainfont
+          [ BoldFont = SimHei , ItalicFont = KaiTi ] { SimSun }
+        \setCJKsansfont { SimHei }
+        \setCJKmonofont { FangSong }
+        \setCJKfamilyfont { zhsong }  { SimSun }
+        \setCJKfamilyfont { zhhei }   { SimHei }
+        \setCJKfamilyfont { zhkai }   { KaiTi }
+        \setCJKfamilyfont { zhfs }    { FangSong }
+      }
+      {
+        % ============================================
+        % Unix-like 平台 (macOS / Linux)
+        % ============================================
+        \file_if_exist:nTF { /System/Library/Fonts/Supplemental/Songti.ttc }
+          {
+            % 💡 macOS: 使用 Apple 系统自带的中文字体
+            \setCJKmainfont
+              [ BoldFont = Heiti~SC , ItalicFont = Kaiti~SC ] { Songti~SC }
+            \setCJKsansfont { Heiti~SC }
+            \setCJKmonofont { STFangsong }
+            \setCJKfamilyfont { zhsong }  { Songti~SC }
+            \setCJKfamilyfont { zhhei }   { Heiti~SC }
+            \setCJKfamilyfont { zhkai }   { Kaiti~SC }
+            \setCJKfamilyfont { zhfs }    { STFangsong }
+          }
+          {
+            % 💡 Linux: 使用 Noto CJK 字体
+            \setCJKmainfont
+              [
+                Path = /usr/share/fonts/google-noto-serif-cjk-fonts/,
+                Extension = .ttc,
+                UprightFont = NotoSerifCJK-Regular,
+                BoldFont = NotoSerifCJK-Bold,
+                ItalicFont = NotoSerifCJK-Regular
+              ] { NotoSerifCJK-Regular }
+            \setCJKsansfont
+              [
+                Path = /usr/share/fonts/google-noto-sans-cjk-fonts/,
+                Extension = .ttc,
+                UprightFont = NotoSansCJK-Regular,
+                BoldFont = NotoSansCJK-Bold
+              ] { NotoSansCJK-Regular }
+            \setCJKmonofont
+              [
+                Path = /usr/share/fonts/google-noto-sans-cjk-fonts/,
+                Extension = .ttc
+              ] { NotoSansCJK-Regular }
+            \setCJKfamilyfont { zhsong }
+              [
+                Path = /usr/share/fonts/google-noto-serif-cjk-fonts/,
+                Extension = .ttc
+              ] { NotoSerifCJK-Regular }
+            \setCJKfamilyfont { zhhei }
+              [
+                Path = /usr/share/fonts/google-noto-sans-cjk-fonts/,
+                Extension = .ttc
+              ] { NotoSansCJK-Bold }
+            \setCJKfamilyfont { zhkai }   { STKaiti }
+            \setCJKfamilyfont { zhfs }
+              [
+                Path = /usr/share/fonts/google-noto-sans-cjk-fonts/,
+                Extension = .ttc
+              ] { NotoSansCJK-Regular }
+          }
+      }
+  }
+
+% 定义字体切换命令
+\NewDocumentCommand \songti   { } { \CJKfamily { zhsong } }
+\NewDocumentCommand \heiti    { } { \CJKfamily { zhhei } }
+\NewDocumentCommand \fangsong { } { \CJKfamily { zhfs } }
+\NewDocumentCommand \kaishu   { } { \CJKfamily { zhkai } }
+
+\endinput
+% vim:ft=tex:ts=2:sw=2:et

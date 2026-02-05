@@ -1,0 +1,80 @@
+# pkuthss CI 构建测试
+# 在多平台上测试 LaTeX 模板编译
+name: Build & Test
+
+on:
+  push:
+    branches: [master, main, develop]
+    paths:
+      - 'tex/**'
+      - 'doc/**'
+      - '.github/workflows/build.yml'
+  pull_request:
+    branches: [master, main]
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+
+    steps:
+      - name: 📥 Checkout repository
+        uses: actions/checkout@v4
+
+      - name: 🔧 Setup TeX Live
+        uses: xu-cheng/latex-action@v3
+        with:
+          working_directory: doc/example
+          root_file: thesis.tex
+          latexmk_use_xelatex: true
+          # 安装中文字体支持
+          extra_system_packages: |
+            fontconfig
+            fonts-noto-cjk
+
+      - name: 📄 Build example thesis
+        uses: xu-cheng/latex-action@v3
+        with:
+          working_directory: doc/example
+          root_file: thesis.tex
+          latexmk_use_xelatex: true
+
+      - name: 📚 Build documentation
+        uses: xu-cheng/latex-action@v3
+        with:
+          working_directory: doc/readme
+          root_file: pkuthss.tex
+          latexmk_use_xelatex: true
+
+      - name: 📤 Upload PDF artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: pdf-${{ matrix.os }}
+          path: |
+            doc/example/thesis.pdf
+            doc/readme/pkuthss.pdf
+          retention-days: 7
+
+  # 合并所有平台的构建产物
+  collect-artifacts:
+    name: Collect Artifacts
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: 📥 Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: all-pdfs
+          merge-multiple: true
+
+      - name: 📦 Create combined artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: pkuthss-all-platforms
+          path: all-pdfs/
+          retention-days: 30
