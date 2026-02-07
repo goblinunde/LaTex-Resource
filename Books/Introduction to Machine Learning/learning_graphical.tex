@@ -1,0 +1,1210 @@
+
+
+\chapter{Learning Graphical Models}
+\label{chap:learning.graphical}
+We discuss, in this chapter, several methods designed to learn parameters of graphical models, starting with the somewhat simpler case of Bayesian networks, than passing to Markov random fields on loopy graphs. 
+
+
+\section{Learning Bayesian networks}
+\label{sec:graph.estim}
+
+\subsection{Learning a Single Probability}
+Since Bayesian networks are specified by probabilities and conditional
+probabilities of configurations of variables, we start with a
+discussion of the basic problem of estimating discrete
+probability distributions.
+
+The obvious way to estimate the probability of an event $A$ based on a
+series of $N$ independent experiments is by using relative
+frequencies
+$$
+f_A = \frac{\# \{A \text{ occurs}\}}{N}.
+$$
+This estimation is unbiased ($\myE(f_A) = \myP(A)$) and its variance is
+$\myP(A)(1-\myP(A))/N$. This implies that the relative error
+$\de_A = f_A/\myP(A) -1$ has zero mean and variance
+$$
+\sig^2 = \frac{1-\myP(A)}{N\myP(A)}\,.
+$$
+
+This number can clearly become very large when $\myP(A) \simeq 0$. In particular,
+when $\myP(A)$ is small compared to $1/N$, the relative frequency 
+will often be $f_A = 0$, leading to the false conclusion that $A$ is not just rare, but
+impossible. 
+If there are reasons to expect beforehand that $A$ is indeed possible, it is
+important to inject this prior belief in the procedure, which suggest using  Bayesian estimation methods.
+
+The main assumption for these methods is to consider the unknown
+probability, $p=\myP(A)$, as a random variable, yielding a generative
+process in which a random probability is first obtained, and then $N$
+instances of $A$ or not-$A$ are generated using this probability.
+
+Assume that the ``prior distribution'' of $p$ (which determines a prior belief) has a p.d.f. $q$ (with respect to Lebesgue's measure) on the unit interval. Given on
+$N$ independent observations of occurrences of $A$, each following a
+Bernoulli distribution $b(p)$, the joint likelihood of all involved variables is given
+by
+\[
+ \binom{N}{k} p^k(1-p)^{N-k} q(p),
+\]
+where $k$ is the number of times the event $A$ has been observed.
+
+The conditional density of $p$ given the observation ($k$ occurrences
+of $A$) is called the {\em posterior distribution}. Here, it is given
+by 
+$$
+q(p\mid k) = \frac{q(p)}{C_k} p^k(1-p)^{N-k}
+$$
+where $C_k$ is a normalizing constant.
+If there was no specific prior knowledge on $p$ (so that $q(p)=1$),
+the resulting distribution is a beta distribution with parameters $k+1$
+and $N-k+1$, the beta distribution being defined as follows.
+
+\begin{definition}
+\label{def:beta}
+The beta distribution with parameters $a$ and $b$ (abbreviated
+$\beta(a,b)$) has density with respect to Lebesgue's measure
+$$
+\rho(t) = \frac{\Ga(a+b)}{\Ga(a)\Ga(b)} t^{a-1}(1-t)^{b-1} \text{ if } t\in [0,1]
+$$
+and $\rho(t) = 0$ otherwise, with
+$$
+\Ga(x) = \int_0^\infty t^{x-1} e^{-t} dt.
+$$
+\end{definition}
+
+From the definition of a beta distribution, it is clear also that, if
+we choose the prior to be $\be(a+1,\nu-a+1)$ then the
+posterior is $\be(k+a+1, N+\nu -(k+a) +1)$. The posterior therefore
+belongs to the same family of distributions as the prior, and one says
+that the beta distribution is a {\em conjugate prior} for
+the binomial distribution. The mode of the posterior distribution
+(which is the maximum a posteriori (MAP) estimator) is given by
+$$
+\hat p = \frac{k+a}{N+\nu}.
+$$
+
+This estimator now provides a positive value even if $k=0$. By
+selecting $a$ and $\nu$, one therefore includes the prior belief
+that $p$ is positive.
+
+\subsection{Learning a Finite Probability Distribution}
+
+Now assume that $F$ is a finite space and that we want to estimate a
+probability distribution $p = (p(x), x\in F)$ using a Bayesian approach as
+above. We cannot use the previous approach to estimate each $p(x)$ separately,
+since these probabilities are linked by the fact that they sum to 1. We
+can however come up with a good (conjugate) prior, identified, as done above, by computing
+the posterior associated to a uniform prior distribution.
+
+Letting $N_x$ be the number of times $x\in F$ is observed among $N$
+independent samples of a random variable $X$ with distribution $P_X(\cdot)=p(\cdot)$,
+the joint distribution of $(N_x,x\in F)$ is multinomial, given by
+$$
+\myP(N_x, x\in F\mid p(\cdot)) = \frac{N!}{\prod_{x\in F} N_x!} \prod_{x\in F}
+p(x)^{N_x}.
+$$
+The posterior distribution of $p(\cdot)$ given the observations with a
+uniform prior is proportional to $\prod_{x\in F}
+p(x)^{N_x}$. It belongs to the family of {\em Dirichlet distributions},
+described in the following definition.
+\begin{definition}
+\label{def:dirich}
+Let $F$ be a finite set and $\CS_F$ be the simplex defined by
+$$
+\CS_F = \defset{(p(x), x\in F): p(x)\geq 0, x\in F \text{ and } \sum_{x\in F}
+p(x) = 1}.
+$$
+The Dirichlet distribution with parameters $a = (a(x), x\in F)$
+(abbreviated $\mathrm{Dir}(a)$) has density
+ $$
+\rho(p(\cdot)) = \frac{\Ga(\nu)}{\prod_{x\in F} \Ga(a(x))} \prod_{x\in F}
+p(x)^{a(x)-1}, \text{ if } x\in \CS_F
+$$
+and 0 otherwise, with $\nu = \sum_{x\in F} a(x)$.
+\end{definition}
+Note that, if $F$ has cardinality 2, the Dirichlet distribution
+coincides with the beta distribution. Similarly to the beta for the
+binomial, and almost by construction, the Dirichlet distribution is a
+conjugate prior for the multinomial. More precisely, if the prior
+distribution for $p(\cdot)$ is $\mathrm{Dir}(1+a(x), x\in F)$, then the
+posterior after $N$ observations of $X$ is $\mathrm{Dir}(1+N_x+a(x),
+x\in F)$, and the MAP estimator is given by
+$$
+\hat p(x) = \frac{N_x+a(x)}{N+\nu}
+$$
+with $\nu= \sum_{x\in F} a(x)$. 
+
+\subsection{Conjugate Prior for Bayesian Networks}
+We now consider a Bayesian network on the set $\CF(V)$ containing configurations $x = (\pe xs, s\in V)$ with $\pe xs\in F_s$.
+We want to estimate the conditional probabilities
+in the representation
+$$
+\myP(X=x) = \prod_{s\in V} p_s(\pe  x {\pa{s}}, \pe xs).
+$$
+Assume that $N$ independent observations of $X$ have been made. Define
+the counts $N_s(\pe xs,  \pe x{\pa{s}})$ to be the number of times the observation
+$\pe x{\{s\}\cup \pa{s}}$ has been made. Then, it is straightforward to see
+that, assuming a uniform prior for the $p_s$, their posterior
+distribution is proportional to
+$$
+\prod_{s\in V} \prod_{\pe x{\pa{s}}\in F_{\pa{s}}} \prod_{\pe xs\in F_s} p_s(
+\pe x{\pa{s}}, \pe xs)^{N_s(\pe xs, \pe x{s^{-}})}.
+$$
+
+This implies that, for the posterior distribution, the conditional
+probabilities $p_s(\pe x{\pa{s}}, \cdot)$ are independent and follow a Dirichlet
+distribution with parameters $1+N_s(\pe xs, \pe x{\pa{s}})$, $\pe xs\in F_s$. 
+
+So, independent Dirichlet distributions indexed by configurations of
+parents of nodes provide a conjugate prior for the general Bayesian network
+model. This prior is specified by a family of positive numbers
+\begin{equation}
+\label{eq:bayes.dir.all}
+\left(a_s(\pe xs, \pe x{\pa{s}}), s\in V, \pe xs\in F_s, \pe x{\pa{s}}\in \CF(\pa{s})\right),
+\end{equation}
+yielding a prior probability proportional to 
+$$
+\prod_{s\in V} \prod_{\pe x{\pa{s}}\in F_{\pa{s}}} \prod_{\pe xs\in F_s} p_s(\pe
+x{\pa{s}}, \pe xs)^{a_s(\pe xs, \pe x{s^{-}})-1}.
+$$
+and a MAP estimator
+\begin{equation}
+\label{eq:map.bn}
+\hat p_s(\pe x{\pa{s}}, \pe xs) = \frac{N_s(\pe xs, \pe x{\pa{s}}) + a_s(\pe xs,
+\pe x{s^{-}})}{N_s(\pe x {s^{-}}) + \nu_s(\pe x{s^{-}})}
+\end{equation}
+where $N_s(\pe x{\pa{s}}) = \sum_{\pe xs\in F_s} N_s(\pe xs, \pe x{\pa{s}})$ and
+$\nu_s(\pe x{\pa{s}}) = \sum_{\pe xs\in F_s} a_s(\pe xs, \pe x{\pa{s}})$.
+
+One can restrict the huge class of coefficients described by
+\cref{eq:bayes.dir.all} to a smaller class by imposing the following
+ condition. 
+\begin{definition}
+\label{def:a.consist}
+One says that the family of coefficients
+\[
+a = (a_s(\pe xs, \pe x{\pa{s}}), s\in V, \pe xs\in F_s, \pe x{\pa{s}}\in \CF(\pa{s})),
+\]
+is consistent if there exists a positive scalar $\nu$ and a probability
+distribution $P'$ on $\CF(V)$ such that
+\[
+a_s(\pe xs, \pe x{\pa{s}})= \nu P'_{\{s\}\cup \pa{s}}(\pe x{\{s\}\cup \pa{s}}).
+\]
+\end{definition}
+The class of products of Dirichlet distributions with consistent families of coefficients still provides a
+conjugate prior for Bayesian networks (the proof being left to the
+reader). Within this class, the simplest choice (and most natural in the
+absence of additional information) is to assume
+that $P'$ is uniform, so that
+\begin{equation}
+\label{eq:prior}
+a_s(\pe xs, \pe x{\pa{s}}) = \frac{\nu'}{|\CF(\{s\}\cup \pa{s})|}.
+\end{equation}
+With this choice, $\nu'$ is the only parameter that needs to be
+specified. It is often called the equivalent sample size for the prior
+distribution.
+
+
+We can see from \cref{eq:map.bn} that using a prior distribution is
+quite important for Bayesian networks, since, when the number of
+parents increases, some configurations on $\CF(\pa{s})$ may not be
+observed, resulting in an undetermined value for the ratio 
+\[
+N_s(\pe xs, \pe x{\pa{s}})/N_s(\pe x{s^{-}}), 
+\]
+even though, for the estimated model, the
+probability of observing $\pe x{\pa{s}}$ may not be zero.
+
+\subsection{Structure Scoring}
+Given a prior defined as a family of Dirichlet distributions associated to $a = (a_s(\pe xs, \pe x{\pa{s}})$ for $s\in
+V, \pe xs\in F_s, \pe x{\pa{s}}\in \CF(\pa{s})$, the joint density of the
+observations and parameters is given by
+\[
+P( x, \th) = \prod_{s, \pe x{\pa{s}}} \mathcal D(a_s(\cdot, \pe x{\pa{s}}))
+\prod_{s, \pe xs, \pe x{\pa{s}}} p(\pe x{\pa{s}}, \pe xs)^{N_s(\pe xs, \pe x{\pa{s}}) +
+  a_s(\pe xs, \pe x{\pa{s}}) -1}
+\] 
+with 
+\[
+\mathcal D(a(\la), \la\in F) = \frac{\Ga(\nu)}{\prod_\la \Ga(a(\la))}
+\]
+and $\nu = \sum_\la a(\la)$. Here, $\th$ represents the parameters of the model, i.e., the conditional distributions
+that specify the Bayesian network. Note that $P(x, \theta)$ is a density over the product space $\CF(V) \times \Theta$ where $\Theta$ is the space of all these conditional distributions.
+The marginal of this likelihood over all
+possible parameters, i.e., 
+\[
+P( x) = \int P(\mathbf x, \th) d\th
+\]
+provides the expected likelihood of the sample relative to the
+distribution of the parameters, and only depends on the structure of
+the network. In our case, integrating with respect to $\th$ yields
+\[
+\ln P( x) = \sum_{s, x_{\pa{s}}} \ln \frac {\mathcal D(a_s(\cdot,
+\pe x{\pa{s}}))}{\mathcal D(a_s(\cdot,
+\pe x{\pa{s}}) + N_s(\cdot, \pe x{\pa{s}}))}.
+\]
+Letting 
+\[
+\ga(s, \pa{s}) = \sum_{\pe x{\pa{s}}} \ln \frac {\mathcal D(a_s(\cdot,
+\pe x{\pa{s}}))}{\mathcal D(a_s(\cdot,
+\pe x{\pa{s}}) + N_s(\cdot, \pe x{\pa{s}}))},
+\]
+the decomposition
+\[
+\ln P( x) = \sum_{s\in V} \ga(s, \pa{s})
+\]
+expresses this likelihood as a sum of ``scores'' (associated to each node
+and its parents), which depends on the observed sample. The scores
+that are computed above are often called {\em Bayesian scores} because
+they derive from a Bayesian construction. One can also consider 
+simpler scores, such as penalized likelihood:
+\[
+\ga(s, \pa{s}) = - \sum_{\pe x{\pa{s}}} \hat {\CH}(\pe X s\mid \pe X{\pa{s}})\, |\CF(\pa{s})| - \rho |\pa{s}|,
+\]  
+where $\hat {\CH}$ is the conditional entropy for the empirical
+distribution based on observed samples. Structure learning algorithms \citep{neapolitan2004learning,koller2009probabilistic} are designed to optimize such scores. 
+
+
+
+\subsection{Reducing the Parametric Dimension}
+
+In the previous section, we estimated all  conditional
+probabilities intervening in the network. This is obviously a lot of
+parameters and, even with a regularizing prior, the estimated values
+are likely to be be inaccurate for small sample sizes. It then becomes desirable to simplify the parametric complexity of the
+model. 
+
+When the sets $F_s$ are not too large, which is common in
+practice, the parametric explosion is due to the multiplicity of
+parents, since the number of conditional probabilities $p_s(\pe x{\pa{s}}, \cdot)$
+grows exponentially with $|\pa{s}|$. One way to simplify this is to assume that the conditional
+probability at $s$ only depends on $\pe x{\pa{s}}$ via some ``global-effect''
+statistic $g_s(\pe x{\pa{s}})$. The idea, of course, is that the number of
+values taken by $g_s$ should remain small, even if the number of parents is
+large.
+
+Examples of some functions $g_s$ can be $\max(\pe xt, t\in \pa{s})$, or the
+min, or some simple (quantized) function of the sum. With binary
+variables ($F_s=\{0,1\}$), logical operators are also available (``and'',
+``or'', ``xor''), as well as combinations of them. The choice made for the
+functions $g_s$ is part of building the model, and would rely on
+the specific context and prior information on the process, which
+is always important to account for, in any statistical problem.
+
+Once the $g_s$'s are fixed, learning the network distribution, which is
+now given by
+$$
+\pi(x) = \prod_{s\in V} p_s(g_s(\pe x{\pa{s}}), \pe xs)
+$$
+can be done exactly as before, the parameters being all $p_s(w, \lambda),
+\la\in F_s, w\in W_s$, where $W_s$ is the range of $g_s$, and
+Dirichlet priors can be associated to each $p_s(w, \cdot)$ for $s\in V$ and
+$w\in W_s$. The counts provided in \cref{eq:prior} now can be chosen
+as
+\begin{equation}
+\label{eq:prior2}
+a_s(x_s, w) =  \frac{\nu'}{|F|\,|g_s^{-1}(w)|}.
+\end{equation}
+
+
+
+
+\section{Learning Loopy Markov Random Fields}
+
+Like everything else, parameter estimation for loopy networks is much
+harder than with trees or Bayesian networks.  There is usually no
+closed form expression for the estimators, and their computation relies
+on more or less tractable numerical procedures.
+
+\subsection{Maximum Likelihood with Exponential Models}
+In this section, we consider a parametrized model for a Gibbs
+distribution 
+\begin{equation}
+\label{eq:exp.m}
+\pi_\th(x) = \frac{1}{Z_\th} \exp(-\th^TU(x))
+\end{equation}
+where $\th$ is a $d$-dimensional parameter and $U$ is a function from
+$\CF(V)$ to $\mR^d$. For example, if $\pi$ is an Ising model with
+\[
+\pi(x) = \frac{1}{Z} \exp\big( \al\sum_{s\in V} \pe xs + \be \sum_{s\sim t}
+\pe xs \pe xt\big),
+\]
+then $\th = (\al, \be)$ and $U(x) = - (\sum_s \pe xs,
+\sum_{s\sim t} \pe xs \pe xt)$. Most of the Markov random fields models that
+are used in practice can be put in this form. The constant $Z_\th$ in \cref{eq:exp.m} is 
+$$
+Z_\th  = \sum_{x\in \CF(V)} \exp(-\th^TU(x))
+$$
+and is usually not computable.
+
+Now, assume that an $N$-sample, $x_1, \ldots, x_N$, is observed for
+this distribution. The maximum likelihood estimator maximizes
+$$
+\ell(\th) = \frac{1}{N} \sum_{k=1}^N \ln \pi_\th(x_k) = -\th^T \bar
+U_N - \ln Z_\th
+$$
+with $\bar U_N = (U(x_1)+\cdots+U(x_N))/N$. 
+
+We have the following proposition, which is a well-known property
+of exponential families of probabilities.
+\begin{proposition}
+\label{prop:ml.exp}
+The log-likelihood, $\ell$, is a concave function of $\th$, with
+\begin{equation}
+\label{eq:ml.exp.1}
+\nabla{\ell}(\th) = E_\th(U) - \bar U_N
+\end{equation}
+and
+\begin{equation}
+\label{eq:ml.exp.2}
+\nabla^2\ell(\th) = - \text{Var}_\th(U)
+\end{equation}
+where $E_\th$ denotes the expectation with respect to $\pi_\th$ and
+$\text{Var}_\th$ the covariance matrix under the same distribution.
+\end{proposition}
+
+We skip the proof, which is just computation. 
+This proposition implies that a local  maximum of $\th \mapsto
+\ell(\th)$ must also be global. Any such maximum must be a solution of
+$$
+E_\th(U) = \bar U_N(x_0)
+$$
+and conversely.
+There are some situations in which the maximum does not exist, or is
+not unique. Let us first discuss the second case.
+
+If several solutions exist, the log-likelihood cannot be strictly
+concave: there must exist at least one $\th$ for which
+$\text{Var}_\th(U)$ is not definite. This implies that there exists a nonzero
+vector $u$ such that
+$\text{var}_\th(u^TU)= u^T \text{Var}_\th(U)u=0$. This is only
+possible when $u^TU(x) = \text{cst}$ for all $x\in F_V$. Conversely, if this
+is true, $\text{Var}_\th(U)$ is degenerate {\em for all $\th$}.
+
+So, the non-uniqueness of the solutions is only possible when a
+deterministic affine relation exists between the components of $U$,
+i.e., when the model is over-dimen\-sioned. Such situations are usually
+easily dealt with by removing some parameters. In all other cases, there exists
+at most one maximum.
+
+For a concave function like $\ell$ to have no maximum, there must exist what is
+called a {direction of recession} \citep{rockafellar1970convex}, which is a  direction
+$\alpha\in\mR^d$ such that, for all $\th$, the function
+$t\mapsto \ell(\th+t\al)$ is increasing. In this case the maximum
+is attained ``at infinity''. Denoting $U_\al(x) = \al^T U(x)$, the
+derivative in $t$ of $\ell(\th+t\al)$ is
+\[
+E_{\th+t\al}(U_\al) - \bar U_\al
+\]
+where $\bar U_\alpha = \alpha^T \bar U_N$.
+This derivative is positive for all $t$ if and only if
+\begin{equation}
+\label{eq:recess}
+\bar U_\al = U_\al^* := \min\{U_\al(x), x\in \CF(V)\}
+\end{equation}
+and $U_\al$ is not constant. 
+To prove this, assume that the derivative is positive. Then $U_\al$ is
+not constant (otherwise, the derivative would be zero). Let $\CF_\al^*\sub \CF(V)$ be the set of configurations $x$
+for which $U_\al(x) = U_\al^*$. Then
+\begin{align*}
+&E_{\th+t\al}(U_\al)\\
+ &= \frac{\sum_{x\in \CF(V)} U_\al(x)
+\exp(-\th^TU(x) - tU_\al(x))} {\sum_{x\in \CF(V)}
+\exp(-\th^T U(x) - tU_\al(x))}\\
+&= \frac{\sum_{x\in \CF(V)} U_\al(x)
+\exp(- \th^T U(x) - t(U_\al(x)-U_\al^*))} {\sum_{x\in \CF(V)}
+\exp(- \th^TU(x) - t(U_\al(x)-U_\al^*))}\\
+&= \frac{U_\al^* \sum_{x\in \CF_\al^*} \exp(- \th^TU(x))
++ \sum_{x\not\in \CF_\al^*} U_\al(x) \exp(- \th^TU(x) -
+t(U_\al(x)-U_\al^*))} { \sum_{x\in \CF_\al^*} \exp(- \th^TU(x)) +
+\sum_{x\not\in \CF_\al^*} \exp(-\th^TU(x) - t(U_\al(x)-U_\al^*))}.
+\end{align*}
+When $t$ tends to $+\infty$, the sums over $x\not\in
+\CF_\al^*$ tend to 0, which implies that 
+$E_{\th+t\al}(U_\al)$ tends to $U_\al^*$. So, if  
+$E_{\th+t\al}(U_\al) - \bar U_\al > 0$ for all $t$, then $\bar U_\al =
+U_\al^*$ and $U_\al$ is not constant. The converse statement is obvious.
+
+As a conclusion, the function $\ell$ has a finite maximum if and only
+if there is no direction $\alpha\in \mR^d$ such that $\al^T(U(x) -
+\bar U_N) \leq 0$ for all $x\in \CF(V)$. Equivalently, $\bar U_N$ must
+belong to the interior of the convex hull of the finite set
+$$
+\defset{U(x), x\in \CF(V)}\sub \mR^d.
+$$
+
+In such a case, that we hereafter assume, computing the maximum likelihood estimator boils down to
+solving the equation
+$$
+E_\th (U) = \bar U_N.
+$$
+Because the maximization problem is concave, we know that numerical
+algorithms such as gradient ascent, 
+\begin{equation}
+\label{eq:grd.des}
+\th(t+1) = \th(t) + \ep (E_{\th(t)} (U) - \bar U_N),
+\end{equation}
+%or Newton-Raphson, 
+%\begin{equation}
+%\label{eq:new.raph}
+%\th(t+1) = \th(t) + \ep \text{Var}_{\th(t)}(U)^{-1} (E_{\th(t)} (U) - \bar U_N),
+%\end{equation}
+%which is more efficient,
+converge to the optimal parameter. Unfortunately, the computation of
+the expectations and covariance matrices can only be made explicitly
+for acyclic models, for which parameter estimation is not a problem
+anyway. For general loopy graphical models, the expectation can be
+estimated iteratively using Monte-Carlo methods. It turns out that
+this estimation can be synchronized with gradient descent to obtain a
+consistent algorithm, which is described in the next section.
+
+\subsection{Maximum likelihood with stochastic gradient ascent}
+\label{sec:stoc.grad}
+
+As remarked above, for fixed $\th$, we have designed, in \cref{chap:inf.mrf}, Markov chain Monte
+Carlo algorithms that asymptotically sample form $\pi_\th$. Select one
+of these algorithms, and let $ p_\th$ be the corresponding
+ transition probabilities for a given $\th$, so that $p_\theta(x,y) = \myP(X_{n+1} = y \mid X_n=x)$ for the sampling chain. Then, define the iterative
+algorithm, initialized with arbitrary $\th_0$ and $x_0 \in \CF(V)$,
+that loops over the following two steps.
+\begin{enumerate}[label=(SG\arabic*)]
+\item Sample from the distribution $ p_{\th_t}(x_t,
+\cdot)$ to obtain a new configuration $x_{t+1}$.
+\item Update the parameter using
+\begin{equation}
+\label{eq:stoc.grad}
+\th_{t+1} = \th_t + \ga_{t+1} (U(x_{t+1}) - \bar U_N).
+\end{equation}
+\end{enumerate}
+
+This algorithm differs from the situation considered in \cref{sec:sgd} in that the distribution of the sampled variable $x_{t+1}$ depends on both the current parameter $\theta_t$ and on the current variable $x_t$. Convergence requires additional constraints on the size of the gains $\gamma(t)$ and we have the following theorem \citep{you88}.
+\begin{theorem}
+\label{th:stoc.grad}
+If $p_\th$ corresponds to the Gibbs sampler or Metropolis
+algorithm, and $\ga_{t+1} = \ep/(t+1)$ for small enough $\ep$, the
+algorithm that iterates (SG1) and (SG2) converges almost surely to the maximum
+likelihood estimator.
+\end{theorem}
+
+The speed of convergence of such algorithms depends both on the speed
+of convergence of the Monte-Carlo sampling and of the original
+gradient ascent. The latter can be improved somewhat with variants similar to those discussed in \cref{sec:sgd}, for example by choosing data-adaptive gains as in the ADAM algorithm. 
+%For high dimensional
+%systems, however, convergence may be hard to achieve, and may require some
+%tuning of the iteration gains $\ga(t)$. 
+
+\subsection{Relation with Maximum Entropy}
+
+The maximum likelihood estimator is closely related to what is called
+the maximum entropy extension of a set of constraints. Let the
+function $U$ from $\CF(V)$ to $\mR^d$ be given. An element $u\in\mR^d$ is
+said to be a consistent assignment for $U$ if there exists a
+probability distribution $\pi$ on $\CF(V)$ such that $E_\pi(U) = u$. An
+example of consistent assignment is any empirical average $\bar U$
+based on a sample $(x^{(1)}, \ldots, x^{(N)})$, since $\bar U =
+E_\pi(U)$ for
+\[
+\pi = \frac1N\sum_{k=1}^N \de_{x^{(k)}}.
+\]
+
+Given $U$ and a consistent assignment, $u$,   the associated maximum
+entropy extension is defined as a probability distribution $\pi$
+maximizing the entropy, $\CH(\pi)$, subject to the constraint $E_\pi(U)
+= u$. This is a convex optimization problem, with constraints
+\begin{equation}
+\label{eq:max.ent}
+\left\{
+\begin{aligned}
+&\sum_{x\in \CF(V)} \pi(x) = 1 \\
+&\sum_{x\in \CF(V)} U_j(x) \pi(x) = u_j, j=1, \ldots, d\\
+&\pi(x) \geq 0, x\in \CF(V)
+\end{aligned}\right. 
+\end{equation}
+Because the entropy is strictly convex, there is a unique solution to
+this problem. We first discuss non-positive solutions, i.e., solutions
+for which $\pi(x) = 0$ for some $x$. An important fact is that, if,
+for a given $x$, there exists $\pi_1$ such that $E_{\pi_1}(U) = u$ and
+$\pi_1(x) > 0$, then the optimal $\pi$ must also satisfy $\pi(x) >
+0$. This is because, if $\pi(x) = 0$, then, letting $\pi_\ep = (1-\ep)
+\pi + \ep \pi_1$, we have $E_{\pi_\ep}(U) = u$ since this constraint
+is linear, $\pi_\ep(x) > 0$ and
+\begin{eqnarray*}
+H(\pi_\ep) - H(\pi) &=& -\sum_{y, \pi(y) > 0} (\pi_\ep(y) \ln\pi_\ep(y)
+- \pi(y) \ln\pi(y)) \\
+&&-\sum_{y, \pi(y) = 0} \ep \pi_1(y) (\ln(\ep) + \ln \pi_1(y)) \\
+&=& -\ep \ln\ep \sum_{y, \pi(y) =0} \pi_1(y) + O(\ep)
+\end{eqnarray*}
+which is positive for small enough $\ep$, contradicting the fact that
+$\pi$ is a maximizer. 
+
+Introduce the set $\mathcal N_u$ containing all configurations $x\in
+\CF(V)$ such that $\pi(x)=0$ for all $\pi$ such that $E_\pi(U) = u$. Then
+we know that the maximum entropy extension satisfies $\pi(x) > 0$
+if $x\not\in \mathcal N_u$. Introduce Lagrange multipliers $\th_0, \th_1, \ldots, \th_d$ for the
+$d+1$ equality constraints in \cref{eq:max.ent}, and the Lagrangian
+\[
+L = H(\pi) +  \sum_{x\in \CF(V)\setm \CN_u} (\th_0 +
+\th^TU(x))\pi(x) 
+\]
+in which we have set $\th = (\th_1, \ldots, \th_d)$, we find that the
+optimal $\pi$ must satisfy
+\[
+\left\{
+\begin{aligned}
+\ln \pi(x) = -\th_0 - 1 -\th^TU(x)\\
+\sum_x \pi(x) = 1 \\
+E_{\pi}(U) = \bar u\\
+\end{aligned}
+\right.
+\]
+In other terms, the maximum entropy extension is characterized by
+\[
+\pi(x) = \frac{1}{Z_\th} \exp(-\th^T U(x))\bfone_{\CN_u^c}(x)
+\]
+and $E_\pi(U) = u$. 
+
+In particular, if $\CN_u = \emp$, then the maximum entropy extension
+is positive. If, in addition, $u = \bar U$ for some observed sample,
+then it coincides with the maximum likelihood estimator for
+\cref{eq:exp.m}. Notice that, in this case,  the condition $\CN_u\neq\emp$ coincide
+with the  condition that there exists $\al$ such that $\al^T U(x) \geq
+\al^T u$ for all $x$, with $\al^T U(x)$ not constant. Indeed, assume
+that the latter condition is true. Then, if $E_\pi(U) = u$, then $E_\pi(\al^T U) =
+\al^T u$, which is only possible if $\pi(x) = 0$ for all $x$ such
+that $\al^T U(x) < \al^T u$. Such $x$'s exist by assumption, and
+therefore $\mathcal N_{u}\neq \emp$. Conversely, assume $\CN_u\neq
+\emp$. If condition \cref{eq:recess} is not satisfied, then we have
+shown when discussing maximum likelihood that an optimal parameter for
+the exponential model would exist, leading to a positive distribution
+for which $E_\pi(U) = u$, which is a contradiction.  
+ 
+\subsection{Iterative Scaling}
+\label{sec:iter:scal}
+
+Iterative scaling is a method that is well-adapted to learning
+distributions given by \cref{eq:exp.m}, when $U$ can be interpreted
+as a random histogram, or a collection of them. 
+More precisely, assume that for all $x\in \CF(V)$, one has 
+\[
+U(x) =
+(U_1(x), \ldots, U_q(x))\]
+ with 
+\[
+\sum_{j=1}^q U_j(x) = 1 \text{ and } U_j(x) \geq 0.
+\]
+Let the parameter be given by $\th = (\th_1, \ldots, \th_q)$. Assume
+that $x_1, \ldots, x_N$ have been observed, and let $u\in
+\mR^d$ be a consistent assignment for $U$, with $u_j>0$ for $j=1,
+\ldots, d$ and such that $\CN_u = \emp$. Iterative scaling computes the
+maximum entropy extension of $E_\pi(U) = u$, that we will denote
+$\pi^*$. It is supported by the
+following lemma. 
+\begin{lemma}
+\label{lem:iter.sca}
+Let $\pi$ be a probability on $\CF(V)$ with $\pi >0$ and define
+\[
+\pi'(x) = \frac{\pi(x)}{\ze} \prod_{j=1}^d \left(\frac{u_j}{E_\pi(
+    U_j)}\right)^{U_j(x)}
+\]
+where $\ze$ is chosen so that $\pi'$ is a probability. Then $\pi' > 0$ and
+\begin{equation}
+\KL(\pi^*\|\pi') - \KL(\pi^*\|\pi) \leq -\KL(u\|E_\pi(U))\leq 0
+\label{eq:lem.iter.sca}
+\end{equation}
+% Using the previous notation, let $\th$ be a parameter and 
+%$\th' = \th + \ln \bar U_\th - \ln \bar U$
+%with $\bar U_\th = E_\th(U)$.
+\end{lemma}
+\begin{proof}
+Note that, since $\pi >0$,  $E_\pi(U_j)$ must also be positive for all
+$j$, since $E_\pi(U_j) = 0$ would otherwise imply $U_j=0$ and $u_j =
+0$ for $u$ to be consistent. So, $\pi'$ is well defined and obviously
+positive.
+
+We have
+\begin{eqnarray*}
+\KL(\pi^*\|\pi') - \KL(\pi^*\|\pi) &=& \ln\ze - \sum_{x\in \CF(V)}
+\pi^*(x) \sum_{j=1}^d U_j(x) \ln \frac{u_j}{E_\pi(
+    U_j)} \\
+&=&  \ln\ze - \sum_{j=1}^d u_j \ln \frac{u_j}{E_\pi(
+    U_j)} \\
+&=& \ln\ze -  \KL(u\|E_\pi(U)).
+\end{eqnarray*}
+(We have used the identity $E_{\pi^*}(U) = u$.)
+So it suffices to prove that $\ze \leq 1$. We have
+\begin{eqnarray*}
+\ze &=& \sum_{x\in \CF(V)} \pi(x) \prod_{j=1}^d \left(\frac{u_j}{E_\pi(
+    U_j)}\right)^{U_j(x)} \\
+&\leq & \sum_{j=1}^d \sum_{x\in\CF(V)} \pi(x) U_j(x) \frac{u_j}{E_\pi (U_{j})}\\
+&= & \sum_{j=1}^d E_\pi(U_{j}) \frac{u_j}{E_\pi(U_j)} = 1,
+\end{eqnarray*}
+which proves the lemma (we have used the fact that, for $x_i$, $w_i$ positive numbers with $\sum_i w_i=1$, one has $\prod_i x_i^{w_i} \leq \sum_i w_i x_i$, which is a consequence of the concavity of the logarithm).
+\end{proof}
+
+Consider the iterative algorithm
+\[
+\pi_{n+1}(x) = \frac{\pi_n(x)}{\ze_n} \prod_{j=1}^d \left(\frac{u_j}{E_{\pi_n}(
+    U_j)}\right)^{U_j(x)}
+\]
+initialized with a uniform
+distribution. Equivalently, using the exponential formulation, define,
+for $j=1, \ldots, d$,
+\begin{equation}
+\label{eq:iter.sca.th}
+\th_{n+1,j} = \th_{n,j} + \ln \frac{E_{\th_n} (U_j)}{u_j} + \KL(u\|E_{\th_n}(U)),
+\end{equation}
+with $\pi_\th$ given by \cref{eq:exp.m}, initialized with  $\th_0 =
+0$.  Note that adding a term that is independent of $j$ to $\th$
+does not change the value of $\pi_\th$, because the $U_j$'s sum to
+1. The model is in fact overparametrized, and the addition of the KL
+divergence in \cref{eq:iter.sca.th} ensures that $\sum_{i=1}^d u_i\th_i
+= 0$ at all steps. 
+
+This algorithm always 
+reduces the Kullback-Leibler distance to the maximum entropy
+extension. This distance  being always positive, it therefore converges to
+a limit, which, still according to  \cref{lem:iter.sca}, is only
+possible if $\KL(u\|E_{\pi_n}(U))$ also tends to 0, that is
+$E_{\pi_n}(U) \to u$. Since the
+space of probability distributions is compact, the Heine-Borel theorem
+implies that the sequence $\pi_{\th_n}$ has at least one accumulation
+point, that we now identify. If $\pi$ is such a point, one must have $E_{\pi}(U) =
+u$. Moreover, we have $\pi >0$, since otherwise $\KL(\pi^*\|\pi) =
++\infty$. To prove that $\pi = \pi^*$ (and therefore the limit of the
+sequence), it remains to show that it can be put in the form
+\cref{eq:exp.m}. For this, define the vector space $\CV$ of functions $v:
+\CF(V) \to \mR$ which can be written in the form
+\[
+v(x) = \al_0 + \sum_{j=1}^g \al_j U_j(x).
+\]
+Since $\ln\pi_{\th_n}\in \CV$ for all $n$, so is its limit, and this proves that $\ln \pi$ belongs to
+$\CV$. We have obtained the following proposition.
+
+\begin{proposition}
+\label{prop:iter.sca}
+Assume that for all $x\in \CF(V)$, one has $U(x) =
+(U_1(x), \ldots, U_d(x))$ with 
+\[
+\sum_{j=1}^d U_j(x) = 1 \text{ and } U_j(x) \geq 0.
+\]
+Let $u$ be a consistent assignment for the expectation of $U$ such
+that$\CN_u = \emp$. Then, the algorithm described in  \cref{eq:iter.sca.th} converges
+to the maximum entropy extension of $u$.
+\end{proposition}
+
+This is the iterative scaling algorithm. This method can be extended
+in a straightforward  way to handle the maximum entropy extension for
+a family of functions $U^{(1)}, \ldots, U^{(K)}$, such that, for all
+$x$ and for all $k$, $U^{(k)}(x)$ is a $d_k$-dimensional vector such
+that
+\[
+\sum_{j=1}^{d_k} U^{(k)}_j(x) = 1.
+\]
+The maximum entropy extension takes the form
+\[
+\pi_\th(x) = \frac1{Z_\th} \exp\Big(-\sum_{k=1}^K
+(\th^{(k)})^T U^{(k)}(x)\Big),
+\]
+where $\th^{(k)}$ is $d_k$-dimensional, and iterative scaling can then
+be implemented by updating only one of these vectors at a time, using
+\cref{eq:iter.sca.th} with $U = U^{(k)}$. 
+
+
+The restriction to $U(x)$ providing a discrete probability distribution
+for all $x$ is, in fact, no loss of generality. This is because adding
+a constant to $U$ does not change the resulting exponential model in
+\cref{eq:exp.m}, and multiplying $U$ by a constant can be also
+compensated by dividing $\th$ by the same constant in the same
+model. So, if $u_-$ is a lower bound for $\min_{j, x} U_{j}(x)$, one
+can replace $U$
+by $(U-u_-)$, and therefore assume that $U \geq 0$, and if $u_+$ is an
+upper bound for $\sum_j U_j(x)$, we can replace $U$ by $U/u_+$ and
+therefore assume that $\sum_j U_j(x) \leq 1$. Define 
+\[
+U_{d+1}(x) = 1 - \sum_{j=1}^d U_j(x) \geq 0.
+\]
+Then, the maximum entropy extension for $(U_1, \ldots, U_d)$ with
+assignment $(u_1, \ldots, u_d)$ is obviously also the extension for
+$(U_1, \ldots, U_{d+1})$, with assignment $(u_1, \ldots, u_{d+1})$,
+where
+\[
+u_{d+1} = 1 - \sum_{j=1}^d u_j,
+\]
+and the latter is in the form required in  \cref{prop:iter.sca}. Note that iterative scaling requires to compute the expectation of $U_1, \ldots, U_d$ before each update. These are not necessarily available in closed form and may have to be estimated using Monte-Carlo sampling.
+
+
+
+\subsection{Pseudo likelihood}
+\label{sec:pseudo.lik}
+Maximum likelihood estimation is a special case of {\em minimal
+contrast estimators}. These estimators are based on the definition of
+a measure of dissimilarity, say $C(\pi \| \tilde \pi)$, between two probability distributions $\pi$
+and $\tilde \pi$. The usual assumptions on $C$ are
+that $C(\pi \| \tilde \pi) \geq 0$, with equality if and only if $\pi=
+\tilde \pi$, and that $C$ is --- at least --- continuous in $\pi$ and
+$\tilde\pi$. 
+Minimal contrast estimators approximate the problem of
+minimizing $\th \mapsto C(\pi_{\mathrm{true}}\| \pi_\th)$ over a parameter $\th\in \Theta$,
+(which is not feasible, since $\pi_{\mathrm{true}}$, the true
+distribution of the data, is unknown) by the minimization of
+$\th\mapsto C(\hat \pi\| \pi_\th)$ where $\hat \pi$ is the empirical
+distribution computed from  observed data. Under mild conditions on
+$C$, these estimators are generally consistent when $N$ tends to
+infinity, which means that the estimated parameter asymptotically (in
+the sample size $N$) provides the
+best (according to $C$) approximation of $\pi_{\mathrm{true}}$ by the family $\pi_\th, \theta\in\Theta$.
+
+The contrast that is associated with maximum likelihood is the
+Kullback-Leibler divergence.
+Indeed, given a sample $x_1, \ldots, x_N$, we have
+\begin{eqnarray*}
+\KL(\hat \pi\|\pi_\th) &=& E_{\hat \pi}\ln\hat \pi - E_{\hat \pi} \ln \pi_\th\\
+&=& E_{\hat \pi}\ln\hat \pi - \sum_{k=1}^N \ln \pi_\th(x_k).
+\end{eqnarray*}
+Since $E_{\hat \pi}\ln\hat \pi$ does not depend on $\th$, minimizing
+$\KL(\hat \pi\| \pi_\th)$ is equivalent to maximizing $\sum_{k=1}^N \ln
+\pi_\th(x_k)$ which is the log-likelihood.
+
+Maximum pseudo-likelihood estimators form another class of minimal
+contrast estimators for graphical models. Given a distribution $\pi$
+on $\CF(V)$, define the
+local specifications
+$\pi_{s}(\pe xs\mid \pe xt, t\neq s)$ to be conditional distributions at one
+vertex given the others, and the contrast
+\[
+C(\pi\| \tilde \pi)  = \sum_{s\in V} E_\pi(\ln \frac{\pi_s}{\tilde \pi_s}).
+\]
+Because we can write, using standard properties of conditional expectations,
+\[
+C(\pi\| \tilde \pi) = \sum_{s\in V} E_\pi\left(E_{\pi_s}(\ln
+\frac{\pi_s}{\tilde \pi_s})\right) 
+= \sum_{s\in V} E(\KL(\pi_s(\cdot\mid \pe Xt,
+t\neq s)\|\tilde \pi_s(\cdot \mid \pe Xt, t\neq s)),
+\]
+we see that $C(\pi, \tilde\pi)$ is always positive, and vanishes (under the assumption
+of positive $\pi$) only if all the local specifications for $\pi$ and
+$\tilde\pi$ coincide, and this can be shown to imply that
+$\pi=\tilde\pi$. Indeed, for any $x, y\in \CF(V)$, and choosing some
+order $V = \{s_1, \ldots, s_n\}$ on $V$, one can write
+\[
+\frac{\pi(x)}{\pi(y)} = \prod_{k=1}^n \frac{\pi(\pe x{s_k}|\pe x{s_1},
+  \ldots, \pe x{s_{k-1}}, \pe y{s_{k+1}}, \ldots, \pe y{s_n})}
+{\pi(\pe x{s_k}|\pe x{s_1},
+  \ldots, \pe x{s_{k-1}}, \pe y{s_{k+1}}, \ldots, \pe y{s_n})}
+\]
+and the ratios $\pi(x)/\pi(y)$, for $x\in \CF(V)$, combined with the constraint that $\sum_x\pi(x)=1$ uniquely
+define $\pi$.
+
+So $C$ is a valid contrast and 
+\[
+C(\hat\pi\| \pi_\th) = \sum_{s\in V} E_{\hat\pi} \ln \hat \pi_s -
+\sum_{s\in V} \sum_{k=1}^N \ln \pi_{\th,s} (x_k^{(s)}|x_k^{(t)},
+t\neq s).
+\]
+
+This yields the {\em maximum pseudo-likelihood estimator} (or
+pseudo maximum likelihood) defined as
+a maximizer of the function (called log-pseudo-likelihood)
+$$
+\th \mapsto \sum_{s\in V} \sum_{k=1}^N \ln \pi_{\th,s} (x_k^{(s)}|x_k^{(s)},
+t\neq s).
+$$
+
+Although maximum likelihood is known to provide the most accurate
+approximations in many cases, maximum of pseudo likelihood has the
+important advantage to be, most of the time, computationally
+feasible. This is because, for a model like \cref{eq:exp.m}, local
+specifications are given by 
+$$
+\pi_{\th,s}(\pe xs\mid \pe xt, t\neq s) = \frac{\exp(-\th^TU(x))}{\sum_{\pe ys\in
+F_s} \exp(-\theta^T U(\pe ys\wedge \pe x{V\setm s}))}.
+$$
+and therefore include no intractable normalizing constant. Maximum of
+pseudo-likelihood estimators can be computed using standard
+maximization algorithms. For exponential
+models such as \cref{eq:exp.m}, the log-pseudo-likelihood is, like the
+log-likelihood, a concave function.
+
+\subsection{Continuous  variables and score matching}
+\label{sec:score.matching}
+The methods that were presented so far for discrete variables formally generalize to more general state spaces, even though consistency or convergence issues in non-compact cases can be significantly harder to address. Score matching is a parameter estimation method that was introduced in \cite{hyvarinen2005estimation} and was designed, in its original version, to estimate parameters for statistical models taking the form
+\[
+\pi_\theta(x) = \frac{1}{C(\theta)}\exp\left(- F(x, \theta)\right)
+\]
+with $x\in \mR^d$. We assume below suitable integrability and differentiability conditions, in order to justify differentiation under integrals whenever they are needed.
+The ``score function'' is defined as
+\[
+s(x, \theta) = - \nabla_x \log \pi_\theta(x) = \nabla_x F(x, \theta)
+\]
+where $\nabla_x$ denotes the gradient with respect to the $x$ variable. Letting $\pi_{\mathrm{true}}$ denote the p.d.f. of the true data distribution (not necessarily part of the statistical model), score matching minimizes
+\[
+f(\theta) = \int_{\mR^d} |s(x, \theta) - s_{\mathrm{true}}(x)|^2 \pi_{\mathrm{true}}(x) dx
+\]
+where $s_{\mathrm{true}} = - \nabla \log \pi_{\mathrm{true}}$.  This integral can be restricted to the support of $\pi_{\mathrm{true}}$, if we don't want to assume that $\pi_{\mathrm{true}}$ is non-vanishing. Note, however that $f(\theta) = 0$ implies that $\log \pi_\theta (\cdot, \theta) = \log \pi_{\mathrm{true}}$ $\pi_{\mathrm{true}}$-almost everywhere, so that $\pi_\theta(x) = c \pi_{\mathrm{true}}(x)$ for some constant $c$ and $x$ in the support of $\pi_{\mathrm{true}}$. Only if $\pi_{\mathrm{true}}(x) > 0$ for all $x\in \mR^d$, can we conclude that this requires $\pi_\theta = \pi_{\mathrm{true}}$. 
+
+Expanding the squared norm and applying the divergence theorem yield
+\begin{align*}
+f(\theta) &=  \int_{\mR^d} |\nabla_x \log \pi_\theta(x)|^2\pi_{\mathrm{true}}(x) dx  - 2\int_{\mR^d} \nabla_x \log \pi_\theta(x)^T \nabla \pi_{\mathrm{true}}(x) dx \\
+&+ \int_{\mR^d} | s_{\mathrm{true}}(x)|^2 \pi_{\mathrm{true}}(x) dx\\
+ &=  \int_{\mR^d} |\nabla_x \log \pi_\theta(x)|^2\pi_{\mathrm{true}}(x)dx  + 2\int_{\mR^d} \Delta \log \pi_\theta(x)^T  \pi_{\mathrm{true}}(x) dx + \int_{\mR^d} | s_{\mathrm{true}}(x)|^2 dx
+ \end{align*}
+ To justify the use of the divergence theorem, one needs to assume two derivatives in the log-likelihoods with sufficient decay at infinity (see \citet{hyvarinen2005estimation} for details).  
+ This shows that minimizing $f$ is equivalent to minimizing 
+ \begin{align*}
+ g(\theta) &= \int_{\mR^d} |\nabla_x \log \pi_\theta(x)|^2\pi_{\mathrm{true}}(x)dx  + 2\int_{\mR^d} \Delta \log \pi_\theta(x)^T  \pi_{\mathrm{true}}(x) dx\\
+ & = \myE(|\nabla_x \log \pi_\theta(X)|^2  + 2\Delta \log \pi_\theta(X)).
+ \end{align*}
+ In this form, the objective function can be approximated by a sample average, so that, given observed data $x_1, \ldots, x_N$, one can define the score-matching estimator as a minimizer of 
+ \begin{equation}
+ \label{eq:scorematch.obj}
+ \sum_{k=1}^N \left(|\nabla_x \log \pi_\theta(x_k)|^2  + 2\Delta \log \pi_\theta(x_k)\right).
+ \end{equation}
+ 
+ \begin{remark}
+ \label{rem:score.discrete}
+The method can be adapted to deal with discrete variables replacing derivatives with differences. Let $X$ take values in a finite set, $\CR_X$, on which a graph structure can be defined, writing $x\sim y$ if  $x$ and $y$ are connected by an edge. For example, if $X$ is itself a Markov random field on a graph $\CG = (V, E)$, so that $\CR_X = \CF(V)$, one can define $x\sim y$ if and only if $\pe x s = \pe y s$ for all but one $s\in V$. One can then define the score function
+\[
+s_\theta(x, y) = 1 - \frac{\pi_\theta (y)}{\pi_\theta(x)}
+\]
+defined over all $x, y\in \CR_X$ such that $x\sim y$. Now the score matching functional is  
+\[
+f(\theta) = \sum_{x\in \CR_X} \left(\sum_{y\sim x} |s_\theta(x,y) - s_*(x,y)|^2\right) \pi_*(x),
+\]
+whose minimization is, after reordering terms, equivalent to that of 
+\[
+g(\theta) = \sum_{x\in \CR_X} \sum_{y\sim x} \left| 1 - \frac{\pi_\theta (y)}{\pi_\theta(x)}\right|^2 \pi_*(x) + 2 \sum_{x\in \CR_X} \sum_{y\sim x} 
+\left( \frac{\pi_\theta(x)}{\pi_\theta(y)} - \frac{\pi_\theta(y)}{\pi_\theta(x)}\right) \pi_*(x).
+\]
+Based on training data, a discrete score matching estimator is a minimizer of
+ \begin{equation}
+ \label{eq:scorematch.obj.disc}
+\sum_{k=1}^N \sum_{y\sim x_k} \left| 1 - \frac{\pi_\theta (y)}{\pi_\theta(x_k)}\right|^2 + 2 \sum_{k=1}^N \sum_{y\sim x_k} 
+\left( \frac{\pi_\theta(x_k)}{\pi_\theta(y)} - \frac{\pi_\theta(y)}{\pi_\theta(x_k)}\right).
+\end{equation}
+
+ \end{remark}
+ 
+ 
+
+
+
+
+
+
+\section{Incomplete observations for graphical models}
+\subsection{The EM Algorithm}
+
+ Missing variable sin the context of graphical models may
+correspond to real processes that cannot be measured, which is common, for example, with biological data. They may be more conceptual
+objects that are interpretable but are not parts of the data
+acquisition process, like phonemes in speech recognition, or edges and
+labels in image processing and object recognition. They may also be
+variables that have been added to the model to increase its parametric
+dimension without increasing the complexity of the graph. However, as we will see, dealing with incomplete or imperfect observations  brings the parameter estimation problem to a new level
+of difficulty.
+
+
+Since it is the most common approach to address incomplete or noisy observations, we start with a description of how the EM algorithm (\cref{alg:EM}) applies to graphical models, and of its limitations.  
+We assume a graphical model on an undirected graph $G = (V, E)$, in which we assume that $V$ is separated in two non-intersecting subsets, $V = S\cup H$. Letting $X$ be a $G$-Markov random field, the part $\pe XS$ is assumed to be observable, and $\pe XH$ is hidden.
+
+We assume that $X$ takes values in $\CF(V)$, where we still denote by $F_s$ the sets in which $X_s$ takes values for $s\in V$. We let the model distribution belong to an exponential family, with  
+\begin{equation}
+\label{eq:exp.fam}
+\pi_\th(x) = \frac{1}{Z(\th)} \exp\big( -\th^TU(x)\big), \ x\in \CF(V).
+\end{equation}
+Assume that an $N$-sample $\pe {x_1} S, \ldots, \pe {x_N}S$ is observed over $S$.
+Since 
+\[
+\log \pi_\th(x) = - \log Z(\th) - \th^TU(x) ,
+\]
+the transition from $\th_n$ to $\th_{n+1}$ in \cref{alg:EM} is done by maximizing
+\begin{equation}
+\label{eq:em.exp.1}
+-\log Z(\th) -  \th^T\bar U_n
+\end{equation}
+where
+\begin{equation}
+\label{eq:em.exp.2}
+\bar U_n = \frac1N\sum_{k=1}^N E_{\th_n}(U(X)\mid \pe XS=\pe {x_k}S).
+\end{equation}
+So, the M-step of the EM, which maximizes \cref{eq:em.exp.1},
+coincides with the complete-data maximum-likelihood problem
+for which the empirical average of $U$ is replaced by the average of its conditional
+expectations given the observations, as given in
+\cref{eq:em.exp.2}, which constitutes the E-step. As a consequence, a strict application of the EM algorithm for graphical models is unfeasible, since each step requires running an algorithm of similar complexity maximum likelihood for complete data, that we already identified as a challenging, computationally costly problem. The same remark holds for the SAEM algorithm of \cref{sec:saem}, which also requires solving a maximum likelihood problem at each iteration.
+
+\subsection{Stochastic gradient ascent}
+
+The stochastic gradient ascent described in \cref{sec:stoc.grad} can be extended to partial observations \citep{you89}, even though it loses the global convergence guarantee that resulted from the concavity of the log-likelihood for complete observations. Indeed, applying the computation of \cref{sec:direct.min.incomplete}, to a model given by \cref{eq:exp.fam}, we get using  \cref{prop:ml.exp},
+\[
+\prt_\th \ln \psi_\th = E_\th(E_\th(U) - U \mid \pe XS =\pe xS) = E_\th(U) -
+E_\th(U \mid \pe XS=\pe xS)
+\]
+where we $\psi_\theta(\pe xS)$ denotes the marginal distribution of $\pi_\theta$ on $S$.
+
+
+%
+%We first prove a proposition that describes the derivatives of the log
+%likelihood.
+%\begin{proposition}
+%\label{prop:lik.hid}
+%Let $(\xi, \ze) \mapsto \pi_\th(\xi, \ze)$ be a probability density
+%function with respect to a product measure $\mu_\xi\otimes \mu_\zeta$. Let 
+%\[
+%\psi_\th(\xi) = \int \pi_\th(\xi, \zeta) \mu_\zeta(d\zeta).
+%\]
+%Then
+%\begin{equation}
+%\label{eq:lik.hid.1}
+%\prt_\theta \log \psi_\th(\xi) = E_\th\Big(\prt_\theta\log\pi_\th(\boldsymbol \xi,
+%\boldsymbol\zeta ) \mid \boldsymbol \xi= \xi\Big)
+%\end{equation}
+%where $(\boldsymbol\xi, \boldsymbol\zeta)$ are two random variables with joint distribution $\pi_\theta$. 
+%\end{proposition}
+%\begin{proof}
+%Indeed,
+%\begin{eqnarray*}
+%\prt_\th \log \psi_\th(\xi) &=& \int \frac{\prt_\th\pi_\th(\xi,
+%  \zeta)}{\psi_\th(\xi)} \mu_\zeta(d\zeta)\\
+%&=& \int \prt_\th \ln \pi_\th(\xi, \zeta) \frac{\pi_\th(\xi, \zeta)}{\psi_\th(\xi)} \mu_\zeta(d\zeta)\\
+%&=& E_\th(\prt_\th\ln\pi_\th(\boldsymbol \xi,
+%\boldsymbol \zeta) \mid \boldsymbol \xi=\xi).
+%\end{eqnarray*}
+%\end{proof}
+
+
+%Given the observed sample $\pe {x_1}S, \dots, \pe{x_N}S$, one can build a stochastic gradient algorithm similar to the one provided in \cref{sec:stoc.grad}, in which Monte-Carlo simulations are used
+%for both expectations. 
+
+Let $\pi_\theta(\pe xH \mid \pe xS)$ denotes the conditional probability $P(\pe XH = \pe xH\mid \pe XS =\pe sS)$ for the distribution $\pi_\theta$, therefore taking the form
+\[
+\pi_\theta(\pe xH\mid \pe xS) = \frac{1}{\tilde Z(\theta, \pe xS)}\exp\left(-\theta^TU(\pe xS \wedge \pe xH)\right).
+\]
+Assume given an ergodic
+transition probability $p_\th$ on $\CF(V)$, and a family of
+ergodic transition probabilities
+$p_\th^{\pe xS}$, $\pe xS\in \CF(S)$, such that the invariant
+distribution of $p_\th$ is $\pi_\th$, and the one of $p_\th^{\pe xS}$ is
+$\pi_\th(\cdot\mid \pe xS)$. Then the following SGA algorithm can be used to estimate $\theta$
+
+\begin{algorithm}
+\label{alg:mrf.sga.incomplete}
+Start the algorithm with an initial parameter
+$\th(0)$ and initial configurations $x(0)$ and
+$\pe {x_k}H (0)$, $k=1, \ldots, N$. Then, at step $n$, 
+\begin{enumerate}[label=(SGH\arabic*)]
+\item Sample from the distribution $ p_{\th(n)}(x(n) ,
+\cdot)$ to obtain new configurations $x(n+1) \in \CF(V)$.
+\item For $k=1, \ldots, N$, sample from the distribution $ p_{\th(n)}^{\pe {x_k}S}(\pe{x_k}H(n) ,
+\cdot)$ to obtain a new configuration $\pe {x_k}^H(n+1)$ over the hidden vertexes.
+\item Update the parameter using
+\begin{equation}
+\label{eq:stoc.grad.h}
+\th(n+1) = \th(n) + \ga(n+1) \left(U(x(n+1)) - \frac1N \sum_{k=1}^N
+U(\pe{x_k}S\wedge \pe{x_k}H(n+1))\right).
+\end{equation}
+\end{enumerate}
+\end{algorithm}
+
+
+
+
+\subsection{Pseudo-EM Algorithm}
+
+The EM update
+\[
+\th_{n+1} = \argmax_\th \Big(\sum_{k=1}^N E_{\th_n}\left(\ln\pi_\th(X)\mid \pe XS = \pe {x_k}S\right)\Big).
+\]
+being challenging for Markov random fields, it is tempting to replace the log-likelihood in the expectation by an other contrast, such as the log-pseudo-likelihood. A similar approach to that described here was introduced in \citet{chalmond1989iterative}, for situations  when the  conditional distribution
+of $\pe XS$ given $\pe XH$ is ``simple enough'' (for example, if the variables $X_s, s\in S$ are conditionally  independent given $\pe XH$) and when the cardinality of the sets $F_s$, $s\in H$ is small (binary, or ternary, variables). 
+%The ``pseudo-EM'' algorithm updates
+%\[
+%\th_{n+1} = \argmax_\th \Big(\sum_{k=1}^N \sum_{s\in H} E_{\th_n}\left(\ln\pi_{\th, s}(\pe {x_k}S\wedge \pe xs \mid \pe x{H\setminus \{s\}} )\mid \pe XS = \pe {x_k}S\right)\Big).
+%\]
+%with the notation $\pi_{\th, A}(\pe xA\mid \pe x {A^c} )$ for the conditional probability that $\pe XA = \pe xA$ given $\pe X {A^c} = \pe x {A^c}$ when $X$ follows $\pi_\theta$.
+
+The algorithm has the following variational interpretation. Fix $\pe xS \in \CF(S)$ and $s\in H$. Also denote $\mu_s = 1/|\CF(H\setminus \{s\})|$. If $q$ is a transition probability from $\CF(H\setminus \{s\})$ to $F_s$, let
+\begin{equation}
+\label{eq:d.xi.2}
+ \Delta^{(s)}_\th(q, \pe xS) = \sum_{y\in \CF(H)}
+\left(
+\log \left(
+\frac{\pi_{\th, s}(\pe ys \wedge \pe xS \mid \pe y{H\setminus \{s\}})}{q(\pe y{H\setminus \{s\}}, \pe ys)\mu_s}
+\right) 
+q(\pe y{H\setminus \{s\}}, \pe ys) \mu_s 
+\right).
+\end{equation}
+This function is concave in $q$, since its first partial derivative with respect to $q(\pe y{H\setminus \{s\}}, \pe ys)$ (for each $y\in \CF(H)$) is given by
+\[
+\mu_s\log 
+\pi_{\th, s}(\pe ys \wedge \pe xS \mid \pe y{H\setminus \{s\}}) \mu_s(\pe y{H\setminus \{s\}})
+- \mu_s \log( q(\pe y{H\setminus \{s\}}, \pe ys) \mu_s) - \mu_s
+\]
+so that its Hessian is the  diagonal matrix with negative entries $-\mu_s/ q(\pe y{H\setminus \{s\}}, \pe ys)$. Using Lagrange multipliers to express the constraints
+$\sum_{\pe ys \in F_s} q(\pe y{H\setminus \{s\}}, \pe ys) = 1$ for all $\pe  y{H\setminus \{s\}}$, we find  that $\Delta^{(s)}_\th(q, \pe xS)$ is maximized when $q(\pe y{H\setminus \{s\}}, \pe ys)$ is proportional to 
+$\pi_{\th, s}(\pe ys \wedge \pe xS \mid \pe y{H\setminus \{s\}})$, yielding
+\[
+q(\pe y{H\setminus \{s\}}, \pe ys) = \pi_{\th, s}(\pe ys \mid \pe xS \wedge \pe y{H\setminus \{s\}}).
+\]
+
+Now, consider the problem of maximizing 
+\begin{equation}
+\label{eq:pseudo.em.obj}
+\sum_{k=1}^N \sum_{s\in H} \Delta^{(n)}_\theta(q_k^{(s)}, \pe {x_k}s)
+\end{equation}
+with respect to $\theta$ and $\pe{q_k}s$, $k=1, \ldots, N$, $s\in H$. Consider an iterative  maximization scheme in which, from a current parameter $\theta_n$, one first, maximizes \cref{eq:pseudo.em.obj} with respect to transition probabilities $\pe {q_k}s$, then with respect to $\theta$ to obtain $\theta_{n+1}$. This scheme provides the iteration
+\begin{multline*}
+\theta_{n+1} = \\
+\argmax_\theta \sum_{k=1}^N \sum_{s\in H} 
+\sum_{y\in \CF(H)}
+\left(\log \pi_{\th, s}(\pe ys \wedge \pe {x_k}S \mid \pe y{H\setminus \{s\}})
+\right) \pi_{\th_n, s}(\pe ys \mid \pe {x_k}S \wedge \pe y{H\setminus \{s\}})\mu_s.
+\end{multline*}
+
+
+\subsection{Partially-observed Bayesian networks on trees}
+
+We now consider the situation in which the joint distribution of
+$X = \pe XS\wedge \pe XH$ is a Bayesian network over a directed acyclic graph
+$G=(V,E)$.  
+
+Assume that $x_1^{(S)}, \ldots, x^{(S)}_N$ are observed. The
+parameter $\th$ is the collection of all $p(\pe x{\pa{s}}, \pe xs)$ for $s\in
+V$. Define the random variables $I_{s, x}(y)$ equal to one if
+$\pe y{\{s\}\cup \pa{s}} = \pe x{\{s\}\cup \pa{s}}$ and zero otherwise. We can write
+\[
+\ln \pi(y) = \sum_{s\in S} \ln p_s(\pe y{\pa{s}}, \pe ys)
+= \sum_{s\in S}\sum_{\pe x{\{s\}\cup \pa{s}}\in \CF(\{s\}\cup \pa{s})} \ln
+p_s(\pe x{\pa{s}}, \pe xs) I_{s,x}(y)
+\]
+This implies that 
+\begin{align*}
+& \sum_{k=1}^N E_{\th_n}\left(\ln\pi(\pe {x_k}S,
+\pe XH)\mid  \pe XS = \pe {x_k}S\right)  \\
+&= \sum_{\pe x{\{s\}\cup \pa{s}}\in \CF(\{s\}\cup \pa{s})} \ln
+p_s(\pe x{\pa{s}}, \pe xs)  \sum_{k=1}^N E_{\th_n}(I_{s,x}(X)\mid  \pe XS = \pe {x_k}S)
+\\
+&= \sum_{\pe x{\{s\}\cup \pa{s}}\in \CF(\{s\}\cup \pa{s})} \ln
+p_s(\pe x{\pa{s}}, \pe xs)  \sum_{k=1}^N \pi_{\th_n}(\pe x{\{s\}\cup \pa{s}}\mid  \pe XS = \pe {x_k}S).
+\end{align*}
+The EM iteration at step $n$ then is
+$$
+p^{(n+1)}_s(\pe x{\pa{s}}, \pe xs) = \frac{1}{Z_s(\pe x{s^{-}})} \sum_{k=1}^N
+\pi_{\th_n}(\pe x{\{s\}\cup \pa{s}}\mid  \pe XS = \pe {x_k}S)
+$$
+with 
+$$
+\pi_{\th_n}(x) = \prod_{s\in V} p^{(n)}(\pe x{\pa{s}}, \pe xs),
+$$
+$Z_s$ being a normalization constant.
+
+If the estimation is solved with a Dirichlet prior $\text{Dir}(1+a_s(\pe xs,
+\pe x{\pa{s}}))$, the update formula becomes
+\begin{equation}
+\label{eq:em.tree}
+p^{(n+1)}_s(\pe x{\pa{s}}, \pe xs) =  \frac{1}{Z_s(\pe x{s^{-}})} \left(a_s(\pe xs, \pe x{\pa{s}})
++ \sum_{k=1}^N
+\pi_{\th_n}(\pe x{\{s\}\cup \pa{s}} \mid \pe XS = \pe {x_k}S)\right).
+\end{equation}
+
+%\subsubsection*{Trees and Hidden Markov Models}
+This algorithm is very simple when the conditional distributions
+$\pi_{\th_n}(\pe x{s\cup \pa{s}}\mid  \pe XS = \pe {x_k}S)$ can be easily
+computed, which is not always the case for a
+general Bayesian network, since  conditional distributions do not
+always have a structure of Bayesian network. The computation is simple
+enough for trees, however, since conditional tree distributions are
+still trees (or forests). More
+precisely, the conditional distribution given the observed variables
+can be written in the form
+$$
+\pi(\pe yH\mid \pe xS) = \frac{1}{Z(\pe xS)} \prod_{s\in H} \phi_{s,x}(\pe ys)
+\prod_{t\sim s, \{s,t\} \sub H} \phi_{st}(\pe ys, \pe yt)
+$$
+with  $\phi_{s,\pa{s}}(\pe ys, \pe y{\pa{s}}) = p_s(\pe y{\pa{s}}, \pe ys)$ and, letting
+$\phi_s(\pe ys) = p_s(\pe ys)$ if $\pa{s} = \emp$ and 1 otherwise,
+$$
+\phi_{s,x}(\pe ys) =\phi_s(\pe ys) \prod_{t\sim s, t\in S}
+\phi_{st}(\pe ys, \pe xt).
+$$
+So, the marginal joint distribution of a vertex
+and its parents are directly given by  belief propagation, using the
+just defined interactions. This training algorithm is summarized below.
+
+\begin{algorithm}[Learning tree distributions with hidden variables]
+Start with some initial
+guess of the conditional probabilities (for example, those given by
+the prior). The iterate the following two steps providing the transition from  $\theta_n$ to step $\theta_{n+1}$.
+
+\begin{itemize}
+\item[(1)] For $k=1, \ldots, N$, use belief propagation (or sum-prod) to compute 
+all $\pi_{\th_n}(\pe x{\{s\}\cup \pa{s}}\mid  \pe XS = x_k^{(S)})$. Note that these
+probabilities can be 0 or 1 when $s\in S$ and/or $\pa{s}\subset S$.
+\item[(2)] Use \cref{eq:em.tree} to compute the next set of
+parameters.
+\end{itemize}
+\end{algorithm}
+
+
+The tree case includes the important example of hidden Markov models,
+which are defined as follows. $S$ and $H$ are ordered, with same
+cardinality, say $S=\{s_1, \ldots, s_q\}$ and $H=\{h_1, \ldots,
+h_q\}$. Edges are $(h_1,h_2), \ldots, (h_{q-1}, h_q)$ and $(h_1,s_1),
+\ldots, (h_q, s_q)$. The interpretation generally is that the hidden
+variables, $h_s$, are the variables of interest, and behave like a
+Markov chain, and that the observations, $x_s$, are either noisy or
+transformed versions of them. A major application is in speech
+recognition, where the $h_s$'s are labels that represent specific
+phonemes (little pieces of spoken words) and the $x_s$'s are measured
+signals. The transitions between hidden variables then describe how phonemes are likely
+to appear in sequence for a given language, and those between hidden and observed variables
+describe how each phoneme is likely to be pronounced and heard.
+
+\subsection{General Bayesian networks}
+
+The algorithm in the general case can move from tractable to
+intractable depending on the situation. This must generally be
+handled in a case by case basis, by analyzing the conditional
+structure, for a given model, knowing the observations.
+
+In practice, it is always possible to use loopy belief propagation to
+obtain some approximation of the conditional probabilities, even if it
+is not sure that the algorithm will converge to the correct
+marginals. When feasible, junction trees can be used, too.  
+ Monte-Carlo sampling is also an option, although quite
+computational.
+
+
+
+
+%\section{References and further reading}
+%The literature on graphical models, Markov random fields and Bayesian
+%networks is huge, and this section will not  provide an extensive
+%description of its current state. We will instead refer the reader to
+%textbooks, in which the authors did make the effort of providing an
+%accurate list of references, and to a small selection of papers,
+%obviously partial and definitely subjective.
+%
+%Here are a few textbooks on graphical models that contributed to the
+%writing of these notes: Pearl's book \cite{pea88} is a basic
+%reference, at least for historical purposes. The book by Cowell et. al. \cite{cdls07} is a good
+%introduction to the field, and so is the one written by Neapolitan
+%\cite{nea04}, and the book from Koller and Friedman \cite{koller2009probabilistic}. Winkler's book, on Markov random fields \cite{win95} is
+%also a good choice. Other references are
+%\cite{jen96,frey98,bk02,pnm08}.
+%
+%Here is a list of research papers that can also be of interest. On
+%Markov random fields, \cite{bes74,gg84,gem90,gid91} for the basic theory,
+%\cite{bes74,you88,you89,gt92} for parametric estimation; On MCMC sampling
+%(a few out of a huge literature) \cite{pes73,sok89}, with
+%\cite{pp96,pp98,fill98} on perfect sampling; On belief propagation
+%\cite{wei00,wf01,kfl01,yfw05}; see also \cite{jgjs99}; On Bayesian
+%networks: \cite{gvp90,hgc95} and the numerous references in the cited
+%textbooks.
+%
+%The original reference for the EM algorithm is \cite{dlr77}, the
+%presentation in these notes being inpired by \cite{nh98}. Extension on
+%parametric estimation for Bayesian networks, including the estimation
+%of the structure can be found in \cite{nea04} and in \cite{hgc95}.
+%
+%

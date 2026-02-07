@@ -1,0 +1,469 @@
+% !TEX root = machine_learning.tex
+\chapter{Nearest-Neighbor Methods}
+\label{chap:nearest.neighbors}
+
+Unlike linear models,  nearest-neighbor methods  are completely non-parametric and
+assume no regularity on the decision rule or the regression
+function. In their simplest version, they require no training and rely
+on the proximity of a new observation to those that belong to the
+training set. We will discuss in this chapter how these methods are used for regression and classification, and study some of their theoretical properties.
+
+\section{Nearest neighbors for regression}
+\subsection{Consistency}
+We let $\CR_X$ denote the input space, and $\CR_Y=\mR^q$ be the output space. We assume that a distance, denoted $\dist$ is defined on $\CR_X$. This means that $\dist: \CR_X\times \CR_X\to [0, +\infty]$ (we allow for infinite values) is a symmetric function such that $\dist(x, x') = 0$ if and only if $x=x'$ and, for all $x,x',x''\in \CR_X$
+\[
+\dist(x,x') \leq \dist(x,x'') + \dist(x'',x'),
+\]
+which is the triangle inequality.
+
+
+
+Let $T = (x_1, y_1, \ldots, x_N, y_N)$ be the
+training set. For $x\in\CR_X$, let 
+\[
+D_T(x) = (\dist(x, x_k), k=1, \ldots, N)
+\]
+ be the collection of all distances between $x$ and the inputs in the training set. 
+We consider  regression estimators taking the form 
+\begin{equation}
+\label{eq:nn.general}
+\hat f(x) = \sum_{k=1}^N W_k(x) y_k
+\end{equation}
+where $W_1(x), \ldots, W_N(x)$ is a family of coefficients, or weights, that only depends on $D_T(x)$.
+
+We will, more precisely, use the following construction \cite{stone1977consistent}. Assume that a family of numbers $w_1 \geq w_2 \geq \cdots \geq w_N \geq 0$ is chosen, with $\sum_{j=1}^N w_j = 1$. Given $x\in \mR^d$ and $k\in\{1, \ldots, N\}$, we let 
+$r_k^+(x)$ denote the number of indexes $k'$ such  that $\dist(x,x_{k'}) \leq \dist(x, x_k)$ and $r_k^-(x)$ the number of such indexes such  that $d(x,x_{k'}) < d(x, x_k)$. The coefficients defining  $\hat f$ in \cref{eq:nn.general} are then chosen as:
+\begin{equation}
+\label{eq:wj}
+W_k(x) = \frac{\sum_{k' = r^-_k(x)+1}^{r^+_k(x)} w_{k'}}{r^+_k(x) - r^-_k(x)}.
+\end{equation}
+To emphasize the role of $(w_1, \ldots, w_N)$ is this definition, we will denote the resulting estimation as $\hf_w$.
+If there is no tie in the sequence of distances between $x$ and elements of the training set, then $r^+_k(x) = r^-_k(x) + 1$ is the rank of $x_k$ when training data is ordered according to their proximity to $x$, and $W_k(x) = w_{r_k^+(x)}$. In this case, defining $l_1, \ldots, l_N$ such that $d(x, x_{l_1}) < \cdots < d(x, x_{l_N})$, we have
+\[
+\hf_w(x) = \sum_{j=1}^N w_j y_{l_j}.
+\]
+In the general case, the weights $w_j$ associated with tied observations are averaged.
+
+If $p$ is an integer,  the $p$-nearest neighbor ($p$-NN) estimator (that we will denote $\hat f_p$) is associated to the weights $w_j = 1/p$ for $j = 1, \ldots, p$ and 0 otherwise. If there is no tie for the definition of the $p$th nearest neighbor of $x$, $W_k(x) = 1/p$ if $k$ is among the $p$ nearest-neighbors and $W_k(x) = 0$ otherwise, so that $\hf_p$ is the average of the output values over these $p$ nearest neighbors. If the $p$th nearest neighbors are tied, their output value is averaged before being used in the sum. For example, assume that $N = 5$ and $p=2$ and let the distances between $x$ and $x_k$ for $k=1, \ldots, 5$ be respectively $9, 3, 2, 4, 6$. Then $\hf_2(x) = (y_2+y_3)/2$. If the distances were $9, 3, 2, 3, 6$, then we would have $\hf_2(x) = (y_2+y_4)/4 + y_3/2$. 
+
+
+When $\CR_X = \mR^d$ and  $d(x,x') = |x-x'|$, the following result is true.
+\begin{theorem}[\cite{stone1977consistent}]
+\label{th:stone}
+Assume that
+$\myE(Y^2) < \infty$. Assume that, for each $N$, a sequence $w^{(N)} = w^{(N)}_1 \geq  \cdots \geq w^{(N)}_N \geq 0$ is chosen with $\sum_{j=1}^N w^{(N)}_j =1$. Assume, in addition, that 
+\begin{enumerate}[label=(\roman*)]
+\item $\lim_{N\to\infty} w^{(N)}_1 = 0 $ 
+\item $\lim_{N\to\infty} \sum_{j\geq \al N}w_j^{(N)} \to 0$, for some $\al\in (0,1)$. 
+\end{enumerate}
+Then the corresponding classifier $\hf_{w^{(N)}}$ converges in the $L^2$ norm to $\myE(Y\mid X)$: 
+$$
+\myE\left(|\hf_{w^{(N)}}(X) - \myE(Y\mid X)|^2\right) \to 0.
+$$
+For nearest-neighbor regression, (i) and (ii) mean that the number of nearest neighbors $p_N$ must be chosen such that $p_N \to \infty$ and $p_N/N \to 0$.
+\end{theorem}
+
+\begin{proof}
+We give a proof under the assumption that $f: x \mapsto \myE(Y\mid X=x)$ is uniformly continuous and
+bounded (one can, in fact, prove that it is always possible to reduce to this case).
+%We are giving a partial proof of this result. Write
+%$$
+%F_N(X) = \sum_{i=1}^N W^{(N)}_{i}(X) Y_i
+%$$
+%with $W_{Ni}(x) = 1/|V_k(x)|$ if $i\in V_k(x)$ and 0 otherwise. 
+
+To lighten the notation, we will not make explicit the dependency on $N$ in of quantities such as $W$ or $w$. One has
+\begin{equation}
+\label{eq:nn.proof}
+\hf_w(X) - \myE(Y\mid X) =
+\sum_{k=1}^N
+W_{k}(X) (f(X_k) - f(X)) +
+  \sum_{k=1}^N W_{k}(X) (Y_k - f(X_k)) 
+\end{equation}
+and the two sums can be addressed separately. 
+%Starting with the second one, we have
+%\[
+%\abs{\sum_{i=1}^N
+%W_{i}(X) (E(Y|X_i) - E(Y|X))} \leq \sum_{i=1}^N
+%W_{i}(X) (E(Y|X_i) - E(Y|X))^2\,.
+%\]
+
+%
+%The proof then consists in showing that
+%$$
+%E\left(\left|\sum_{i=1}^N W_{Ni}(X) (Y_i - E(Y|X_i))\right|^2\right)  \to 0
+%$$ and
+%$$
+%E\left(\sum_{i=1}^N
+%W_{Ni}(X) (E(Y|X_i) - E(Y|X))^2\right)  \to 0.
+%$$
+%Consider the second sum.
+%The latter result proves the convergence of the second sum to 0 since
+%We have
+%$$
+%\abs{\sum_{i=1}^N
+%W_{i}(X) (E(Y|X_i) - E(Y|X))} \leq \sum_{i=1}^N
+%W_{i}(X) (E(Y|X_i) - E(Y|X))^2
+%$$
+%from Cauchy-Schwartz inequality.
+We start with the first sum  and write, by Schwartz's inequality:
+$$
+\left(\sum_k W_{k}(X)(f(X_k) - f(X))\right)^2 \leq \sum_k
+W_{k}(X)(f(X_k) - f(X))^2.
+$$
+It therefore suffices to study the limit of 
+$E(\sum_k W_{k}(X) (f(X_k)- f(X))^2$. Fix $\ep>0$. By assumption, there
+exists $M,a>0$ such that $|f(x)| \leq M$ for all $x$ and $|x-y|\leq a
+\Ria |f(x)-f(y)|^2 \leq \ep$.  Then
+\begin{align*}
+\myE\left(\sum_k W_{k}(X) (f(X_k)- f(X))^2\right) =& \myE\left(\sum_k W_{k}(X) (f(X_k)- f(X))^2\ \bfone_{|X_k-X|\leq
+a}\right) \\
+& + \myE\left(\sum_k W_{k}(X) (f(X_k)- f(X))^2\ \bfone_{|X_k-X|> a}\right) \\
+&\leq \ep^2 + 4M^2 \myE\left(\sum_k W_{k}(X)  \bfone_{|X_k-X|> a}\right).
+\end{align*}
+Since $\ep$ can be made arbitrarily small, we need to show that, for any positive $a$, the second term in the upper-bound tends to 0  when $N\to\infty$.
+We will use the following fact, which requires some minor measure theory argument to prove rigorously. Define
+$$
+S  = \defset{x: \forall \de > 0, \myP(|X-x|<\de) > 0}.
+$$
+This set  is called the support of $X$. Then, one can show that $\myP(X\in S) = 1$. This means
+that, if $\tilde X$ is independent from $X$ with the same
+distribution, then, for any $\de >0$,
+$\myP(|X-\tilde X| <\de|X) > 0$ with probability one.
+\footnote{This statement is proved  as follows (with the assumption that $X$ is Borel measurable). Let $S^c$ denote the complement of $S$. 
+Then $S^c$ is open. 
+Indeed if $x\not\in S$, there exists $\de_x>0$ such that, letting $B(x, \de_x)$ denote the open ball with radius $\de_x$, $\myP(X\in {B}(x, \de_x)) = 0$. Then $\myP(X\in B(x', \de_x/3)) = 0$ as soon as $|x-x'|<\de_x/3$, so that $B(x, \de_x/3)\sub S^c$.
+
+If $K \subset S^c$ is compact, then  $K \subset \bigcup_{x\in K}  B(x, \de_x)$ and one can find a finite subset $M\subset K$ such that $K \subset \bigcup_{x\in M}  B(x, \de_x)$, which proves that $\myP(X\in K) = 0$. Since $\myP(X\in S^c) = \max_K \myP(X\in K)$ where the maximum is over all compact subsets of $S^c$, we find $\myP(X\in S^c) = 0$ as required.
+}
+
+Let $N_a(x) = |\defset{k: |X_k - x|\leq a} |$. We have, for all $x\in S$ and $a>0$,
+and using the law of large numbers,
+$$
+\frac{N_a(x)}{N} = \frac{1}{N} \sum_{k=1}^N
+\bfone_{|X_k-x|\leq a} \to P(|X-x| \leq a) > 0.
+$$
+
+If $|X-X_k| > a$, then $r^-_k(X) > N_a(x)$ so that 
+\[
+\sum_k W_{k}(X)  \bfone_{|X_k-X|> a} \leq \sum_{j\geq N_a(X)} w_j,
+\]
+and we have, taking $0 < \al < P(|X-x| \leq a)$,  
+\[
+\myE\left(\sum_{j\geq N_a(X)} w_j\right)\leq
+\sum_{j\geq \al N} w_j + \myP(N_a(X) < \al N)
+\]
+and both terms in the upper bound converge to 0. This shows that the first sum in \eqref{eq:nn.proof} tends to 0.
+\bigskip
+%
+%But, $\De_{k_N, N} \geq a$ implies $N_a(X)/N  \geq k_N/N$ so that
+%$$P(\De_{N,k_N} > a) \leq P\left(\frac{N_a(X)}{N} \leq \frac{k_N}{N}\right).$$
+%This tends to 0 as soon as $k_N/N\to 0$, since $N_a/N$ converges to a
+%positive number with probability 1. \\
+
+We now consider the second sum in \eqref{eq:nn.proof}. Let $Z_k = Y_k - \myE(Y\mid X_k)$. We have
+$\myE(Z_k\mid X_k) = 0$ and $\myE(Z_k^2) <\infty$. We can write
+\begin{eqnarray*}
+\myE\left(\left|\sum_{k=1}^N W_{k}(X) Z_k\right|^2\right)  &=&\myE\left(\myE\left(\left|\sum_{k=1}^N W_{k}(X)
+Z_k\right|^2\, \Big|\,X,X_1, \ldots, X_N\right)\right)\\
+&=& \myE\left(\sum_{k=1}^N W_{k}(X)^2 \myE(Z_k^2 \mid X_k)\right) \\
+&&+ \sum_{k\neq l=1}^N \myE(W_{k}(X)
+W_{l}(X) \myE(Z_kZ_l \mid X_i, X_j))
+\end{eqnarray*}
+The cross products in the last term vanish because $\myE(Z_k\mid X_k) = 0$ and the samples are
+independent. So it only remains to consider
+$$
+\myE\left(\sum_{k=1}^N W_{k}(X)^2 \myE( Z_k^2 \mid X_k)\right)
+$$
+The random variable $\myE(Z_k\mid X_k) = \myE(Y_k^2\mid X_k) - \myE(Y_k\mid X_k)^2$ is a fixed non-negative
+function of $X_k$, that we will denote $h(X_k)$. 
+%Since 
+%$W_{N,i}(X) $ is either  0 { or } $1/|V_k(X)| \leq 1/k$, we can write
+We have
+$$
+\myE\left(\sum_{k=1}^N W_{k}(X)^2 h(X_k)\right)\leq w_1
+\myE\left(\sum_{k=1}^N W_{k}(X) h(X_i)\right)
+$$
+with $w_1\to 0$ and the proof is concluded by showing that $\myE\left(\sum_{k=1}^N W_{k}(X) h(X_k)\right)$ is bounded. 
+
+Recall that the weights $W_k$ are functions of $X$ and of the whole training set, and we will need to make this dependency explicit and
+write $W_i(X, \mT_X)$ where $\mT_X = (X_1, \ldots, X_N)$. Similarly, the ranks in \eqref{eq:wj} will be written $r^+_j(X, \mT_X)$ and $r^-_j(X, \mT_X)$.
+
+Because $X, X_1, \ldots, X_N$ are i.i.d., we can switch the role of $X$ and $X_k$ in the $k$th term of the sum, yielding
+\[
+\myE\left(\sum_{k=1}^N W_{k}(X, \mT_X) h(X_k)\right) = \myE\left(\left(\sum_{i=1}^N W_{k}(X_k, \mT_X^{(k)})\right) h(X)\right)
+\]
+with $\mT_X^{(k)} = (X_1, \ldots, X_{k-1}, X, X_{k+1}, \ldots, X_N)$. We now show that 
+$\sum_{k=1}^N W_{k}(X_k, \mT_X^{(k)})$ is bounded independently of $X, X_1, \ldots, X_N$. 
+
+For this purpose, we group $X_1, \ldots, X_N$ according to approximate alignment with $X$. For $u\in\mR^d$ with $|u|=1$ and for $\de \in (0, \pi/4)$, denote by $\Ga(u, \de)$ the cone formed by all vectors $v$ in $\mR^d$ such that $\scp{v}{u} > |v|\cos\de $ (i.e., the angle between $v$ and $u$ is less than $\de$).  Notice that if $v, v'\in \Ga(u, \de)$, then $\scp{v}{v'} \geq \cos(2\de) |v|\,|v'|$ and if $|v'| \leq |v|$, then
+\begin{equation}
+\label{eq:nn.ineq}
+|v|^2 - |v-v'|^2   = |v'|(2|v|\cos(2\de) - |v'|) > 0
+\end{equation}
+because $\cos(2\de) > 1/2$.
+
+
+Fixing $\de$, let $C_d(\de)$ be the minimal number of such cones needed to cover $\mR^d$. Choosing such a covering $\Ga(u_1, \de), \ldots, \Ga(u_M, \de)$ where $M = C_d(\de)$, we define the following subsets of $\{1, \ldots, M\}$:
+\begin{align*}
+I_0 &= \defset{k: X_k = X}\\
+I_q &= \defset{k\not \in I_0: X_k-X\in \Ga(u_q, \de)},\quad q=1, \ldots, M
+\end{align*}
+(these sets may overlap). We have
+\[
+\sum_{k=1}^N W_{k}(X_k, \mT_X^{(k)}) \leq \sum_{q=0}^M \sum_{k\in I_q} W_{k}(X_k, \mT_X^{(k)})
+\]
+If $k\in I_0$, then $r^-_k(X_k, \mT_X^{(k)}) = 0$ and $r^+_k(X_k, \mT_X^{(k)}) = c$ with $c = |I_0|$. This implies that, for $k\in I_0$, we have
+$W_{k}(X_k, \mT_X^{(k)}) = \sum_{j=1}^c w_j/c$ and 
+\[
+\sum_{k\in I_0} W_{k}(X_k, \mT_X^{(k)}) = \sum_{j=1}^c w_j.
+\]
+
+We now consider $I_q$ with $q\geq 1$. Write $I_q = \{i_1, \ldots, i_r\}$ ordered so that $|X_{i_j} - X|$ is non-decreasing. If $j'<j$, we have (using \eqref{eq:nn.ineq})
+$|X_{i_j}-X_{i_{j'}}| < |X-X_{i_j}|$. This implies that $r^-_{i_j}(X_{i_j}, \mT_X^{(i_j)}) \geq j-1$ and $r^+_{i_j}(X_{i_j}, \mT_X^{(i_j)}) - r^-{i_j}(X_{i_j}, \mT_X^{(i_j)}) \geq c+1$. Therefore,
+\[
+ W_{i_j}(X_{i_j}, \mT_X^{(i_j)}) \leq \frac1{c+1}{\sum_{j'=j}^{c+j} w_{j'}}
+ \]
+ and
+\[
+\sum_{k\in I_q} W_{k}(X_k, \mT_X^{(k)}) \leq \frac1{c+1}\sum_{j=1}^N \sum_{j'=j}^{c+j} w_{j'} = \frac1{c+1} \left(\sum_{j'=1}^c j'w_{j'} + (c+1) \sum_{j'=c+1}^N w_{j'}\right).
+\]
+This yields
+\[
+\sum_{k=1}^N W_{k}(X_k, \mT_X^{(k)}) \leq \sum_{j=1}^c w_j + C_d(\de) \left(\frac1{c+1}\sum_{j'=1}^c j'w_{j'} + \sum_{j'=c+1}^N w_{j'}\right)
+\leq C_d(\de) +1.
+\]
+We therefore have 
+\[
+\myE\left(\sum_{k=1}^N W_{k}(X)^2 \myE( Z_k^2 \mid X_k)\right)\leq w_1(C_d(\de) +1) \myE(h(X)) \to 0,
+\]
+which concludes the proof.
+ \end{proof}
+
+
+Theorem \ref{th:stone} is proved in \citet{stone1977consistent} with weaker hypotheses allowing for more flexibility in the computation of distances, in which, for example, differences $X-X_i$ can be normalized by dividing them by a factor $\sig_i$ that may depend on the training set. These relaxed assumptions slightly complicate the proof, and we refer the reader to \citet{stone1977consistent} for a complete exposition. 
+
+
+\subsection{Optimality}
+The NN method can be shown to be optimal over some classes of
+functions. Optimality is in the min-max sense, and works as follows. We assume that the regression function $f(x) = \myE(Y\mid X=x)$
+belongs to some set $\CF$ of real-valued functions on $\mR^d$. Most of
+the time, the estimation methods must be adapted to a given choice of
+$\CF$, and various choices have arisen  in the literature: classes of
+functions with $r$ bounded derivatives, Sobolev or related spaces,
+functions whose Fourier transforms has given properties, etc.
+
+Consider now an estimator of $f$, denoted $\hat f_N$, based on a
+training set of size $N$. We can measure the error by, say:
+$$
+\norm{\hat f_N - f}_2 = \left(\int_{\mR^d} (\hat f_N(x) - f(x))^2
+dx\right)^{1/2}
+$$
+
+Since $\hat f_N$ is computed from a random sample, this error is a
+random variable. One can study, when $b_N\to 0$, the probability
+$$
+\myP_f\left(\|\hat f_N - f\|^2_2 \geq c b_N\right)
+$$
+for some constant $c$ and, for example, for the model: $Y = f(X) +
+\text{noise}$. Here, the notation $\myP_f$ refers to the model assumption indicating the unobserved function $f$.
+
+The min-max method considers the worst case and computes
+$$
+M_N(c) = \sup_{f\in \CF}  \myP_f\left(\|\hat f_N - f\|^2_2 \geq c b_N\right).
+$$
+This quantity now only depends on the estimation algorithm. One defines the notion of 
+``lower convergence rate'' as a  sequence $b_N$
+such that, for any choice of the estimation algorithm,  $M_N(c)$ can be found arbitrarily close to 1 (i.e., $\|\hat
+f_N - f\|^2_2 \geq c b_N$ with arbitrarily high probability for all
+$f\in \CF$), for
+arbitrarily large $N$ (and for some choice of $c$). The mathematical
+statement is
+$$
+\exists c > 0: \liminf_{N\to\infty} M_N(c) = 1.
+$$
+So, if $b_N$ is a lower convergence rate, then, for every estimator,
+there exists a constant
+$c$ such that the accuracy $cb_N$ cannot be achieved. 
+
+On the other hand, one says that $b_N$ is an achievable rate of
+convergence if there exists an estimator such that, for some $c'$,
+$$
+\limsup_{N\to\infty} M_N(c') = 0.
+$$
+This says that for large $N$, and for some $c'$, the accuracy is
+higher than $c'b_N$ for the given estimator. Notice the difference: a
+lower rate holds for all estimators, and an achievable rate for at
+least one estimator.
+
+The final definition of a min-max optimal rate is that it is both a
+lower rate and an achievable rate (obviously for different constants
+$c$ and $c'$). And an estimator is optimal in the min-max sense if it
+achieves an optimal rate.
+
+
+One can show that the $p$-NN estimator is optimal (under some assumptions
+on the ratio $p_N/N$) when $\CF$ is the class
+of Lipschitz functions on $\mR^d$, i.e., the class of functions such that
+there exists a constant $K$ with
+$$
+|f(x) - f(y)|\leq K |x-y|
+$$
+for all $x,y\in\mR^d$. In this case, the optimal rate is $b_N =
+N^{-1/(2+d)}$ (notice again the ``curse of dimensionality'': to achieve
+a given accuracy in the worst case, the number of data points must grow exponentially with
+the  dimension).
+
+If the function class consists of smoother functions (for example,
+several derivatives), the $p$-NN method is not optimal. This is
+because the local averaging method is too crude when one knows already
+that the function is smooth. But it can be modified (for example by
+fitting, using least squares, a polynomial of some degree instead of computing an average)
+in order to obtain an optimal rate.
+
+\section{$p$-NN classification}
+
+Let $(x_1,
+y_1, \ldots, x_N, y_N)$ be the training set, with $x_i\in\mR^d$ and
+$y_i\in \CR_Y$ where $\CR_Y$ is a finite set of classes. Using the same notation as in the previous section, define
+\[
+\widehat \pi_w(y|x) = \sum_{k=1}^N W_k(x) \bfone_{y_k=y}.
+\]
+Let the corresponding classifier be 
+\[
+\hf_w(x) = \argmax_{y\in \CR_Y} \widehat\pi_w(y|x).
+\]
+
+\Cref{th:stone} may be applied, for $y\in \CR_Y$, to
+the function $f_y(x) = \pi(y\mid x) = \myE(\bfone_{Y=y} \mid X=x)$, which allows
+one to interpret the estimator $\what\pi(y \mid x)$ as a nearest-neighbor
+predictor of the random variable  $\bfone_{Y=y}$ as a function of $X$. We therefore obtain
+the consistency of the estimated posteriors when $N\to\infty$ under the same assumption as those of \cref{th:stone}.
+ This implies that, for large $N$, the classification will
+be close to Bayes's rule.
+
+An asymptotic comparison with Bayes's rule can already be made  with
+$p=1$. Let $\hat y_N(x)$ be the 1-NN  estimator of $Y$
+given $x$ and a training set of size $N$, and let $\hat y(x)$ be the
+Bayes estimator. We can compute the Bayes error by
+\begin{eqnarray*}
+\myP(\hat y(X) \neq Y) &=& 1 - \myP(\hat y(X) = Y)\\
+&=& 1 - \myE(\myP(\hat y(X) = Y|X))\\
+&=& 1 - \myE(\max_{y\in\CR_Y} \pi(y|X))
+\end{eqnarray*}
+
+For the 1-NN rule, we have
+\begin{eqnarray*}
+\myP(\hat y_N(X) \neq Y) &=& 1 - \myP(\hat y_N(X) = Y)\\
+&=& 1 - \myE(\myP(\hat y_N(X) = Y|X))\\
+\end{eqnarray*}
+Let us make the assumption that nearest neighbors are not tied (with probability one). Let $k^*(x, T)$ denote the index of  the nearest neighbor to $x$ in the training set $T$. We have
+%Since $\hat y_N$ depends on the training set, the previous expectation
+%can be written
+\begin{eqnarray*}
+\myP(\hat y_N(X) = Y\mid X) & = & \myE(\myP(\hat y_N(X) = Y\mid X, \mT))\\
+& = & \myE\Big(\sum_{k=1}^N \myP( Y = Y_k\mid X, \mT) \bfone_{k^*(X, \mT) = k}\Big)\\
+& = & \myE\Big(\sum_{k=1}^N \myP( Y = Y_k \mid X, X_k) \bfone_{k^*(X, \mT) = k}\Big)\\
+& = & \myE\Big(\sum_{k=1}^N \sum_{g\in \CR_Y} \myP( Y = g,  Y_k=g\mid X, X_k) \bfone_{k^*(X, \mT) = k}\Big)\\
+& = & \myE\Big(\sum_{k=1}^N \sum_{g\in \CR_Y} \pi( g\mid X) \pi(g\mid X_k) \chi_{k^*(X, \mT) = k}\Big)\\
+& = & \myE\Big(\sum_{g\in \CR_Y} \pi( g\mid X) \pi(g\mid  X_{k^*(X,\mT)}) \Big)
+\end{eqnarray*}
+
+Now, assume the continuity of $x\mapsto \pi(g\mid x)$ (although the result
+can be proved without this
+simplifying assumption). We know that $X_{k^*(X,\mT)} \to X$ when
+$N\to\infty$ (see the proof of \cref{th:stone}), which implies that
+$\pi(g\mid X_{k^*(X,\mT)}) \to \pi(x\mid X)$ and at the limit
+$$\myP(\hat y_N(X) = Y\mid X) \to \sum_{g\in \CR_Y} \pi( g\mid X)^2 .$$
+
+This implies that the asymptotic 1-NN misclassification error is always smaller
+than 2 times the Bayes error, that is
+$$
+1- \myE\Big(\sum_{g\in \CR_Y} \pi( g\mid X)^2 \Big) \leq 2(1- \myE(\max_g \pi(
+g\mid X) ))
+$$
+Indeed, the left-hand term is smaller than $1- \myE(\max_g \pi(g|x)^2)$
+and the result comes from the fact that for any $t\in\mR$. $1-t^2
+\leq 2 - 2t$.
+
+\begin{remark}
+\label{rem:nn.comp}
+Nearest neighbor methods may require large computation time, since, for a given $x$, the number of
+comparisons which are needed is the size of the training set. However,
+efficient (tree-based) search algorithms can be used in many cases to
+reduce it to a logarithm in the size of the database, which is
+acceptable. A reduction of the size of the training set by clustering also
+is a possibility for improving the efficiency.
+
+The computation time is also generally proportional to the dimension
+$d$ of the input $x$. When $d$ is large, a reduction of dimension is
+often a good idea. Principal components (see \cref{chap:dim.red}), or LDA directions (see \cref{chap:lin.class})
+can be
+used for this purpose.
+\end{remark}
+
+\section{Designing the distance}
+
+\paragraph{LDA-based distance}
+The most important factor in the design of a NN procedure probably is
+the choice of the distance, something we have not discussed
+so far. Intuitively, the distance should increase fast in the directions
+``perpendicular'' to the regions of constancy of the class variables,
+and slowly (ideally not at all) within these regions. The following construction uses  discriminant
+analysis \cite{htf03}.
+
+For $g\in \CR_Y$, let $\Sig_g$ be the covariance matrix in class $g$, and $\Sig_w =
+\sum_{g\in \CR_Y}\pi_g \Sig_g$ be the within-class variance, where $\pi_g$ is the
+frequency of class $g$. Let $\Sig_b$ denote the between-class covariance matrix (see \cref{sec:lda}).
+
+For $x\in\mR^d$, define the spherized vector
+$x^* = \Sig_w^{-1/2} x$. The between-class variance computed for spherized
+data is $\Sig_b^* = \Sig_w^{-1/2} \Sig_b \Sig_w^{-1/2}$. A direction is discriminant if it
+is close to the principal eigenvectors of $\Sig_b^*$. This suggests the
+introduction of the norm
+$$
+|x|_*^2  = (x^*)^T \Sig_b^* x^* = x^T \Sig_w^{-1/2}
+(\Sig_w^{-1/2}\Sig_b\Sig_w^{-1/2})\Sig_w^{-1/2}x = x^T \Sig_w^{-1}\Sig_b\Sig_w^{-1}x.
+$$
+This replaces the standard Euclidean norm (the method can be made more
+robust by adding $\ep\Id[d]$ to $\Sig_b^*$.)
+
+\paragraph{Tangent distance}
+Designing the distance, however, can sometimes be based on {\it a
+priori} knowledge on some invariance properties associated with the classes. A successful example comes from
+character recognition, where it is known that transforming images by
+slightly rotating, scaling, or translating the character should not
+change its class. This corresponds to the following general framework.
+
+For each input $x\in\mR^d$, assume that one can make small transformations without
+changing the class of $x$. We model these transformations as
+parametrized functions $x \mapsto x_\th = \phi(x, \th)\in\mR^d$, such that $\phi(x,
+0) = x$ and $\phi$ is smooth in $\th$, which is a $q$-dimensional parameter. The assumption is that $\phi(x, \th)$
+and $x$ should be from the same class, at least for small $\th$. This
+will be used to improve on the Euclidean distance on $\mR^d$.
+
+Take $x, x'\in\mR^d$. Ideally, one would like to use the distance $D(x,x') =
+\inf_{\th, \th'} \dist(x_\th, x_{\th'})$ where $\th$ and $\th'$ are
+restricted to a small neighborhood of 0. A more tractable
+expression can be based on first-order approximations
+\begin{align*}
+&x_\th \simeq x + \nabla_{\th} \phi(x,0) u = x + \sum_{i=1}^q u_i \prt_{\th_i}\phi(x,0)\\
+\text{and}\quad & x'_\th \simeq x' + \nabla_{\th} \phi(x',0) u' =x' + \sum_{i=1}^q u'_i \prt_{\th_i}\phi(x',0)
+\end{align*}
+yielding the approximation (also called the tangent distance)
+$$
+D(x, x')^2 \simeq \inf_{u,u'\in\mR^q} \norm{x - x' + \nabla_{\th} \phi(x,0) u - \nabla_{\th} \phi(x',0)
+u'}^2.
+$$
+The computation now is a simple least-squares problem, for which the solution is
+given by the system
+$$
+\begin{pmatrix} \nabla_\th \phi(x,0)^T\nabla_\th \phi(x,0) & -\nabla_\th \phi(x,0)^T\nabla_{\th}\phi(x',0)\\
+-\nabla_{\th}\phi(x',0)^T\nabla_\th \phi(x,0) & \nabla_{\th}\phi(x',0)^T\nabla_{\th}\phi(x',0)\end{pmatrix} 
+\begin{pmatrix}u\\ v\end{pmatrix} = 
+\begin{pmatrix} \nabla_\th \phi(x,0)^T (x'-x) \\ \nabla_{\th} \phi(x',0)^T (x-x')\end{pmatrix}.
+$$
+A slight modification, to ensure that the norms of $u$ and $u'$ are
+not too large, is to add a penalty $\la (|u|^2 + |u'|^2)$, which
+results in adding $\la \Id[q]$ to the diagonal blocs of the above matrix.
+

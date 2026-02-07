@@ -1,0 +1,341 @@
+\section[Markovian Stochastic Approximation]{Application: Stochastic approximation with Markovian transitions}
+
+Using the material developed in this chapter, we now discuss the convergence of stochastic approximation methods (such as stochastic gradient descent) when the random random variable in the update term follows Markovian transitions. In \cref{sec:sgd}, we considered algorithms in the form
+\[
+\left\{
+\begin{aligned}
+\boldsymbol\xi_{t+1} &\sim \pi_{X_t}\\
+X_{t+1} &= X_t + \al_{t+1} H(X_t, \boldsymbol\xi_{t+1})
+\end{aligned}
+\right.
+\]
+where $\bfxi_t: \Omega \to \CR_\xi$ is a random variable. We now want to addres situations in which the random variable $\xi_{t+1}$ is obtained through a transition probability, therefore considering the algorithm
+\begin{equation}
+\label{eq:sa.markov}
+\left\{
+\begin{aligned}
+\boldsymbol\xi_{t+1} &\sim P_{X_t}(\xi_t, \cdot)\\
+X_{t+1} &= X_t + \al_{t+1} H(X_t, \boldsymbol\xi_{t+1})
+\end{aligned}
+\right.
+\end{equation}
+Here  $P_x$ is, for all $x$, a transition probability from $\CR_\xi$ to $\CR_\xi$. We will assume that, for all $x\in \mR^d$, the Markov chain with transition $P_x$ is geometrically ergodic, and we denote by $\pi_x$ its invariant distribution. We let, as in \cref{sec:sgd}, $\bar H(x) = E_{\pi_x}(H(x, \cdot))$. We will use the notation for a function $f: \mR^d \times \CR_\xi \to \mR$
+\[
+P_xf: (x', \xi)\in \mR^d \times \CR_\xi  \mapsto P_xf(x', \xi)= \int_{\CR_\xi} f(x', \xi') P_x(\xi, d\xi')
+\]
+and
+\[
+\pi_x f: x'\in \mR^d \mapsto \pi_x f(x') = \int_{\CR_\xi} f(x', \xi) \pi_x(d\xi).
+\]
+In particular, $\bar H(x) = \pi_x H(x)$. We also define $h(x, \xi) = H(x, \xi) - \bar H(x)$ and $\tilde h(x, \xi) = P_x h(x, \xi)$. 
+We make the following assumptions.
+\begin{enumerate}[label=(H\arabic*)]
+\item There exists constants $C_0, C_1, c_2$ such that, for all $x, y\in \mR^d$,
+\begin{subequations}
+\begin{align}
+\label{eq:sgdm.h1.a}
+&\sup_{\xi\in \CR_\xi}|H(x, \xi)| \leq C_0,\\
+\label{eq:sgdm.h1.b}
+&\sup_{\xi\in \CR_\xi}|\tilde h(x, \xi)| \leq C_1,\\
+\label{eq:sgdm.h1.c}
+& \sup_{\xi\in \CR_\xi} |\tilde h(x, \xi) - \tilde h(y, \xi)| \leq C_1 |x-y|,\\
+\label{eq:sgdm.h1.d}
+& D_{\mathit{var}}(\pi_x, \pi_y) \leq C_2 |x-y|
+%\\
+%\label{eq:sgdm.h1.e}
+%&|\bar H(x) - \bar H(y)| \leq C_0 |x-y|.
+\end{align}
+\end{subequations}
+\item There exists $x^*\in\mR^d$ and $\mu > 0$ such that, for all $x\in \mR^d$ 
+\begin{equation}
+\label{eq:sgdm.h2}
+(x - x^*)^T \bar H(x) \leq - \mu |x - x^*|^2.
+\end{equation}
+%\item We assume that, there exists a non-decreasing function $\zeta: [0, +\infty) \to [1, +\infty)$, such that, for all $R>0$, for all $x,y\in \mR^d$ with $\max(|x|, |y|) \leq R$, 
+%\begin{align*}
+%&|\bar H(x) - \bar H(y)| \leq \zeta(R)\\
+%&\sup_{\xi\in \CR_\xi} |P_x H(x, \xi) - P_y) \leq \zeta(x)
+%\end{align*}
+\item We assume that there exists a constant $M$ and a non-decreasing function $\rho: [0, +\infty) \to [0, 1)$ such that, for all probability distributions $Q$ and $Q'$ on $\CR_\xi$,
+\begin{equation}
+\label{eq:sgdm.h3}
+D_{\mathrm{var}}(QP_x^n, Q'P_x^n) \leq M\rho(|x|)^n D_{\var}(Q, Q').
+\end{equation}
+\item The sequence $\alpha_1, \alpha_2, \ldots$ is non-increasing, with 
+\begin{subequations}
+\begin{equation}
+\label{eq:sgdm.h4.a}
+\sum_{t=1}^\infty \alpha_t = +\infty \quad \text{ and } \quad
+\sum_{t=1}^\infty \alpha^2_t < +\infty.
+\end{equation}
+Let $\sigma_t = \sum_{s=1}^t \alpha_s$. If $C_1 >0$, we also require that
+\begin{equation}
+\label{eq:sgdm.h4.b}
+\lim_{t\to\infty} \alpha_{t} \sigma_{t} (1-\rho(\sigma_t))^{-1} = 0
+\end{equation}
+and
+\begin{equation}
+\label{eq:sgdm.h4.c}
+\sum_{s=2}^t \alpha^2_{s} \sigma_{s} (1-\rho(\sigma_s))^{-2} <\infty.
+%\lim_{t\to\infty}  \frac{\alpha_{t+1} \sigma_t}{1-\rho(\sigma_t)} = 0.
+\end{equation}
+\end{subequations}
+
+
+\end{enumerate}
+
+Given this, the following theorem holds.
+\begin{theorem}
+\label{th:sgdm}
+Assuming (H1) to (H4), the sequence defined by \cref{eq:sa.markov} is such that
+\[
+\lim_{t\to\infty} \myE(|X_t-x_*|^2) =0
+\]
+\end{theorem}
+
+\begin{remark}
+\label{rem:sgdm}
+Condition (H1) assumes that $H$ is bounded and uniformly Lipschitz in $x$, which is more restrictive than what was assumed in \cref{sec:sgd.convergence}, but applies, for example, to situations considered in \citet{you88} and later in this book in \cref{sec:stoc.grad}. 
+
+Condition (H3) implies that the Markov chain with transition $P_x$ is uniformly geometrically ergodic, but the ergodicity rate may depend on $x$ and in particular converge to $1$ when $x$ tends to $\infty$, which is the situation targeted in this theorem. 
+
+
+The reader may refer to \cite{younes1999convergence} for a general discussion of this problem with relaxed hypotheses and almost sure convergence, at the expense of significantly longer proofs. 
+\end{remark}
+
+\begin{proof}
+We note that, from \cref{eq:sgdm.h1.a}, one has
+\begin{equation}
+\label{eq:sgd.prior.bound}
+|X_t-x_*| \leq C_0\sigma_t  |X_0 - x_*|.
+\end{equation}
+
+
+
+Similarly to \cref{sec:sgd.convergence}, we let 
+$A_t = |X_t - x_*|^2$ and $a_t = \myE(A_t)$. One can then write
+\[
+A_{t+1} = A_t +  2\alpha_{t+1} (X_t - x_*)^T \bar H(X_t) + 2\alpha_{t+1}  
+(X_t - x_*)^T (H(X_t, \bfxi_{t+1}) - \bar H(X_t)) + \alpha_{t+1}^2 |H(X_t, \xi_{t+1})|^2
+\]
+but we do not have
+ \[
+\myE( (X_t - x_*)^T (H(X_t, \bfxi_{t+1}) - \bar H(X_t))\mid \CU_t) = 0
+\]
+anymore, where $\CU_t$ is the $\sigma$-algebra of all past events up to time $t$ (all events depending of $X_s, \bfxi_s$, $s\leq t$). Indeed the Markovian assumption implies that
+\begin{align*}
+\myE( (X_t - x_*)^T (H(X_t, \bfxi_{t+1}) - \bar H(X_t))\mid \CU_t) &= 
+(X_t - x_*)^T \left(\int_{\CR_\xi} H(X_t, \xi) P_{X_t}(\bfxi_t, d\xi)  - \bar H(X_t)\right)\\
+&= (X_t - x_*)^T ((P_{X_t} H(X_t, \cdot))(\xi_t) - \bar H(X_t)),
+\end{align*}
+which does not vanish in general. Following \citet{benveniste2012adaptive}, this can be addressed by introducing the solution $g(x, \cdot)$ of the ``Poisson equation''
+\begin{equation}
+\label{eq:sgd.poisson}
+ g(x, \cdot) - P_x g(x, \cdot) = h(x, \cdot).
+ \end{equation}
+(Recall that $h(x, \xi) = H(x, \xi) - \bar H(x)$.) One can then write
+ \[
+ (X_t - x_*)^T h(X_t, \bfxi_{t+1}) =  
+(X_t - x_*)^T ( g(X_t, \bfxi_{t+1}) - P_{X_t} g(X_t, \bfxi_{t+1})\\
+%&= (X_t - x_*)^T ( g(X_t, \bfxi_{t+1}) - P_{X_t} g(X_t, \bfxi_{t}))) \\
+%& + (X_t - x_*)^T(P_{X_t} g(X_t, \bfxi_{t})- P_{X_t} g(X_t, \bfxi_{t+1})
+\]
+and 
+\begin{align*}
+A_{t+1}  &\leq (1-2\alpha_{t+1}\mu) A_t +  2\alpha_{t+1} (X_t - x_*)^T ( g(X_t, \bfxi_{t+1}) - P_{X_t} g(X_t, \bfxi_{t}))) \\
+&+ 2\alpha_{t+1} (X_{t} - x_*)^TP_{X_{t}} g(X_{t}, \bfxi_{t})
+ - 2\alpha_{t+1} (X_t- x_*)^TP_{X_t} g(X_t, \bfxi_{t+1})
+ +  \alpha_{t+1}^2 |H(X_t, \xi_{t+1})|^2
+\end{align*}
+Introducing the notation
+\[
+\eta_{st} = \myE((X_{s} - x_*)^TP_{X_{s}} g(X_{s}, \bfxi_{t})).
+\]
+Using the fact that 
+\[
+\myE\left((X_t - x_*)^T ( g(X_t, \bfxi_{t+1}) - P_{X_t} g(X_t, \bfxi_{t}))) \mid \CU_t\right) = 0
+\]
+and 
+%we see that
+%\begin{align}
+%\label{eq:sgd.markov.main}
+%&\myE(A_{t+1}) + 2\alpha_{t+2} \myE((X_{t+1} - x_*)^TP_{X_{t+1}} g(X_{t+1}, \bfxi_{t+1})) \\
+%\nonumber
+%& \leq (1-2\alpha_{t+1}\mu)\myE(A_t) + 2\alpha_{t+1} \myE((X_{t} - x_*)^TP_{X_{t}} g(X_{t}, \bfxi_{t})) \\
+%\nonumber
+%&+ 2\alpha_{t+2} \myE((X_{t+1} - x_*)^TP_{X_{t+1}} g(X_{t+1}, \bfxi_{t+1})) - 2\alpha_{t+1} \myE((X_t- x_*)^TP_{X_t} g(X_t, \bfxi_{t+1}))\\
+%\nonumber
+%& +  \alpha_{t+1}^2 \myE( |H(X_t, \xi_{t+1})|^2)
+%\end{align}
+%
+%%Let 
+%%\[
+%%a_t = \myE(A_t) + 2\alpha_{t+1} \myE((X_{t} - x_*)^TP_{X_{t}} g(X_{t}, \bfxi_{t})).
+%%\]
+%Let us introduce some notation that will simplify the next expressions. We already have $a_t = \myE(A_t)$. Let
+and noting that $|H(X_t, \xi_{t+1})|^2\leq C_0^2$, this gives, after taking expectations,
+ \begin{align*}
+a_{t+1} & \leq (1-2\alpha_{t+1}\mu)a_t + 2\alpha_{t+1} \eta_{tt}  - 2\alpha_{t+1} \eta_{t,t+1}
+ +  \alpha_{t+1}^2 C_0^2.
+\end{align*}
+Applying \cref{lem:sg.upper.bound}, and letting $v_{s,t} = \prod_{j=s+1}^t (1-2\alpha_{j+1}\mu)$, we get 
+\[
+a_t \leq a_0 v_{0,t} + 2 \sum_{s=1}^t v_{s,t} \alpha_{s+1} (\eta_{ss}  - \eta_{s,s+1}) + C_0^2\sum_{s=1}^t v_{s,t} \alpha_{s+1}^2.
+\]
+We now want to ensure that each term in the upper bound converges to 0. Similarly to \cref{sec:sgd.convergence}, \cref{eq:sgdm.h4.a} implies that this holds the first and last terms and we therefore focus on the middle one, writing
+\begin{align}
+\label{eq:sgd.markov.main.2}
+\sum_{s=1}^t v_{s,t} \alpha_{s+1} (\eta_{ss}  - \eta_{s,s+1})
+&= v_{1, t} \alpha_2 \eta_{11} - \alpha_{t+1} \eta_{t,t+1} + \sum_{s=2}^t
+(v_{s,t} \alpha_{s+1} - v_{s-1,t} \alpha_{s}) \eta_{ss}  \\
+\nonumber
+&+ \sum_{s=2}^t v_{s-1,t} \alpha_{s} (\eta_{ss} - \eta_{s-1,s}) 
+\end{align}
+
+We will need the following estimates on the function $g$ in \cref{eq:sgd.poisson}, which is defined by
+\[
+g(x, \xi) = \sum_{n=0}^\infty P_x^n h(x, \xi) = h(x, \xi) + \sum_{n=0}^\infty P_x^n \tilde h(x, \xi).
+\]
+\begin{lemma}
+\label{lem:sgdm.g}
+We have
+\begin{subequations}
+\begin{align}
+\label{eq:sgdm.g.1a}
+|g(x, \cdot)| &\leq C_0 + 2C_1M (1- \rho(x))^{-1},\\
+\label{eq:sgdm.g.1b}
+|P_xg(x, \cdot)| &\leq 2C_1M (1- \rho(x))^{-1}.
+\end{align}
+\end{subequations}
+and, for all $x,y\in \mR^d$ and $\xi\in \CR_\xi$
+\begin{equation}
+\label{eq:sgdm.g.2}
+|P_x g(x, \xi) - P_y(g(y, \xi)| = M^2C_1C_2 (1-\bar\rho)^{-2} + MC_1(1+C_2) (1-\bar \rho)^{-1}.
+\end{equation}
+with $\bar \rho = \max(\rho(|x|), \rho(|y|))$.
+
+\end{lemma}
+
+Using lemma \cref{lem:sgdm.g} (which is proved at the end of the section), we can control the terms intervening in   \cref{eq:sgd.markov.main.2}. Note that the first term, $v_{1t} \alpha_2 \eta_{11}$, converges to 0 since \cref{eq:sgdm.h4.a} implies that $v_{1t}$ converges to 0. 
+
+We have,
+\[
+\alpha_{t+1} |\myE((X_{t} - x_*)^TP_{X_{t}} g(X_{t}, \bfxi_{t+1}))| \leq 2MC_1 \alpha_{t+1} \sigma_t (1-\rho(\sigma_t))^{-1},
+\]
+so that \cref{eq:sgdm.h4.b} implies that $\alpha_{t+1}\eta_{t,t+1} \to 0$. 
+
+and since $\alpha_{s+1}\leq \alpha_s$, we have
+\begin{align*}
+\left|\sum_{s=2}^t
+(v_{s,t} \alpha_{s+1} - v_{s-1,t} \alpha_{s}) \eta_{ss}\right| &\leq 
+\sum_{s=2}^t
+|v_{st}\alpha_{s} - v_{s,t} \alpha_{s+1} |\, |\eta_{ss}|\\
+&\leq MC_1 \sum_{s=2}^t |v_{s-1,t} \alpha_{s} - v_{s,t} \alpha_{s+1}|\,\alpha_{s+1} \sigma_s (1-\rho(\sigma_s))^{-1}\\
+&\leq C \sum_{s=2}^t |v_{s-1,t} \alpha_{s} - v_{s,t} \alpha_{s+1}|
+\end{align*}
+for some constant $C$, since $\alpha_{s+1} \sigma_s (1-\rho(\sigma_s))^{-1}$ is bounded.
+Writing
+\[
+v_{s,t} \alpha_{s+1} - v_{s-1,t} \alpha_{s} = v_{st} (\alpha_{s+1} - \alpha_s + 2\mu \alpha_s^2),
+\]
+we get (using $\alpha_{s+1}\leq \alpha_s$)
+\[
+\sum_{s=2}^t |v_{s-1,t} \alpha_{s} - v_{s,t} \alpha_{s+1}| \leq \sum_{s=2}^t  v_{st} (\alpha_s - \alpha_{s+1}) + \sum_{s=2}^t  v_{st}2\mu \alpha_s^2.
+\]
+Since both $\sum_s (\alpha_s - \alpha_{s+1})$ and $\sum_{s=2}^t  \alpha_s^2$ converge (the former is just $\alpha_1$), \cref{lem:sgd.simple} implies that 
+\[
+\sum_{s=2}^t
+(v_{s,t} \alpha_{s+1} - v_{s-1,t} \alpha_{s}) \eta_{ss}
+\]
+tends to zero.
+The last term to consider is
+\begin{align*}
+\sum_{s=2}^t v_{s-1,t} \alpha_{s} (\eta_{ss} - \eta_{s-1,s}) & = 
+\sum_{s=2}^t v_{s-1,t} \alpha_{s}
+\myE((X_{s} - X_{s-1})^TP_{X_{s}} g(X_{s}, \bfxi_{s}))\\
+&+\sum_{s=2}^t v_{s-1,t} \alpha_{s}
+\myE((X_{s-1} - x_*)^T(P_{X_{s}} g(X_{s}, \bfxi_{s})) - P_{X_{s-1}} g(X_{s-1}, \bfxi_{s}))).
+\end{align*}
+We have
+\[
+\left|\sum_{s=2}^t v_{s-1,t} \alpha_{s}
+\myE((X_{s} - X_{s-1})^TP_{X_{s}} g(X_{s}, \bfxi_{s}))\right|
+\leq 
+2C_0C_1M \sum_{s=2}^t v_{s-1,t} \alpha^2_{s} (1-\rho(\sigma_s))^{-1}
+\]
+and
+\begin{multline*}
+\left|\sum_{s=2}^t v_{s-1,t} \alpha_{s}
+\myE((X_{s-1} - x_*)^T(P_{X_{s}} g(X_{s}, \bfxi_{s})) - P_{X_{s-1}} g(X_{s-1}, \bfxi_{s})))\right|\\
+ \leq 2M^2C_0C_1(1+C_2) |X_0-  x_*| \sum_{s=2}^t v_{s-1,t} \alpha^2_{s} \sigma_{s} (1-\rho(\sigma_s))^{-2} 
+\end{multline*}
+and \cref{lem:sgd.simple} implies that both terms vanish at infinity. This concludes the proof of \cref{th:sgdm}.
+\end{proof}
+
+
+\begin{proof}[Proof of \cref{lem:sgdm.g}]
+
+Condition (H3) and  \cref{prop:var.dist} and imply that (since $\pi_x \tilde h  = 0$)
+\[
+|P_x^n \tilde h(x, \xi)| \leq D_{\mathit{var}}(P_x^n(\xi, \cdot), \pi_x) \mathit{osc}(\tilde h(x, \cdot))\leq 2 C_1 M \rho(x)^n
+\]
+so that $g$ is well defined with 
+\begin{align*}
+|g(x, \cdot)| &\leq C_0 + 2C_1M (1- \rho(x))^{-1},\\
+|P_xg(x, \cdot)| &\leq 2C_1M (1- \rho(x))^{-1}.
+\end{align*}
+We will also need to control differences of the kind
+\[
+P_x g(x, \xi) - P_yg(y, \xi).
+\]
+We consider the $n$th term in the series, writing 
+\begin{align*}
+P_x^n \tilde h(x, \xi) - P_y^n \tilde h(y, \xi) & = \sum_{k=0}^{n-1} (P_x^{n-k}P_y^k \tilde h(y, \xi)  - (P_x^{n-k-1}P_y^{k+1} \tilde h(y, \xi))\\
+&+ P_x^n \tilde h(x, \xi) - P_x^{n}\tilde  h(y, \xi).
+\end{align*}
+This gives
+\begin{align*}
+P_x^n \tilde h(x, \xi) - P_y^n \tilde h(y, \xi) & = \sum_{k=0}^{n-1} P_x^{n-k-1}(P_xP_y^k \tilde h(y, \xi) - P_y^{k+1} \tilde h(y, \xi) - \pi_xP_y^k \tilde h(y) + \pi_xP_y^{k+1} \tilde h(y) )\\
+&+ \sum_{k=0}^{n-1} (\pi_xP_y^k \tilde h(y) - \pi_xP_y^{k+1} \tilde h(y))+ P_x^n \tilde h(x, \xi) - P_x^{n} \tilde  h(y, \xi)\\
+& = \sum_{k=0}^{n-1} P_x^{n-k-1}(P_xP_y^k \tilde h(y, \xi) - P_y^{k+1} \tilde h(y, \xi) - \pi_xP_y^k \tilde h(y) + \pi_xP_y^{k+1} \tilde h(y) )\\
+&+ \pi_x \tilde h(y) - \pi_xP_y^{n} \tilde h(y) + P_x^n \tilde h(x, \xi) - P_x^{n} \tilde  h(y, \xi)
+\end{align*}
+Finally
+\begin{align*}
+P_x^n h(x, \xi) - P_y^n h(y, \xi) & =
+ \sum_{k=0}^{n-1} P_x^{n-k-1}(P_xP_y^k \tilde h(y, \xi) - P_y^{k+1} \tilde h(y, \xi) - \pi_xP_y^k \tilde h(y) + \pi_xP_y^{k+1} \tilde h(y) )\\
+&+ P_x^{n} (\tilde h(x, \xi) - \tilde h(y, \xi) + \pi_x \tilde h(y)) - (\pi_x - \pi_y) P_y^{n} \tilde h(y)  
+\end{align*}
+
+Using \cref{prop:var.dist}, we can write, letting $\bar \rho = \max(\rho(|x|), \rho(|y|))$,
+\begin{align*}
+&|P_x^{n-k-1}(P_xP_y^k \tilde h(y, \xi) - P_y^{k+1} \tilde h(y, \xi) - \pi_xP_y^k \tilde h(y, \xi) + \pi_xP_y^{k+1} \tilde h(y, \xi) )| \\
+&\leq
+M {\bar \rho}^{n-k-1} \mathit{osc} (P_xP_y^k \tilde h(y, \xi) - P_y^{k+1} \tilde h(y, \xi))\\
+&\leq C_2M {\bar \rho}^{n-k-1} |x-y| \mathit{osc} (P_y^k \tilde h(y, \xi))\\
+&\leq C_2C_1 M^2 {\bar \rho}^{n-1} |x-y|
+\end{align*}
+We also have
+\[
+|P_x^n (\tilde h(x, \xi) - \tilde h(y, \xi) + \pi_x \tilde h(y, \xi)) |\leq MC_1 {\bar \rho}^n |x-y|
+\]
+and
+\[
+ |(\pi_x - \pi_y) P_y^{n} \tilde h(y, \xi)| \leq MC_2C_1 {\bar \rho}^n |x-y|
+ \]
+ so that
+\[
+|P_x^n h(x, \xi) - P_y^n h(y, \xi)| \leq MC_1 \bar\rho^{n-1} (nMC_2 + (1+C_2)\bar \rho)|x-y|
+\]
+From this, it follows that 
+\begin{align*}
+|P_x g(x, \xi) - P_y(g(y, \xi)| & \leq MC_1 \sum_{n=1}^\infty \bar\rho^{n-1} (nMC_2 + (1+C_2)|x-y|\\
+&= M^2C_1C_2 (1-\bar\rho)^{-2} + MC_1(1+C_2) (1-\bar \rho)^{-1}.
+\end{align*}
+
+
+\end{proof}
+
+
+
+ 

@@ -1,0 +1,937 @@
+% !TEX root = machine_learning.tex
+\chapter[Tree-based algorithms]{Tree-based Algorithms, Randomization and Boosting}
+\label{chap:trees}
+
+\section{Recursive Partitioning}
+
+ Recursive partitioning methods implement a ``divide and conquer'' strategy to address the prediction problem.
+They separate the input space $\CR_X$  into
+small regions on which prediction is ``easy,'' i.e., such that the observed values of 
+the output variable are (almost) constant for input values in these regions.
+The regions  are estimated
+by recursive divisions until they become either too small or
+homogeneous. These divisions are conveniently represented in the form of binary trees.
+
+\subsection{Binary prediction trees}
+ Define a \alert{binary node} to be a structure $\nu$ that contains the following information (note that the definition is recursive):
+\begin{enumerate}[label=$\bullet$]
+\item A \alert{label} $L(\nu)$ that uniquely identifies the node.
+\item A \alert{set of children}, $C(\nu)$, which is either empty or a pair of nodes $(l(\nu), r(\nu))$.
+\item A \alert{binary feature}, i.e., a function $\ga_\nu: \CR_X \to \{0,1\}$, which is ``None'' (i.e., irrelevant) if the node has no children.
+\item A \alert{predictor}, $f_\nu: \CR_X\to \CR_Y$, which is ``None'' if the node has children.
+\end{enumerate}
+ A node without children is called a {\em terminal node}, or a leaf.
+\medskip
+
+A \alert{binary prediction tree} $\CTR$  is a finite set of nodes, with the following properties:
+\begin{enumerate}[label=(\roman*)]
+\item Only one node has no parent (the root, denoted $\rho$ or $\rho_{\CTR}$);
+\item Each other node has exactly one parent;
+\item  No node is a descendent of itself.
+\end{enumerate}
+
+\subsection{Training algorithm}
+Assume that  a family $\Gamma$ of binary features $\ga: \CR_X \to \{0,1\}$ is chosen, together with 
+ a family $\CF$ of predictors $f: \CR_X \to \CR_Y$.
+Assume also the existence of two ``algorithms'' as follows:
+\begin{enumerate}[label=$\bullet$]
+\item Feature selection: Given the feature set $\Gamma$ and a training set $T$, return an optimized binary feature $\what \gamma_{T, \Gamma} \in \Gamma$.
+\item Predictor optimization: Given the predictor set $\CF$ and a training set $T$, return an optimized predictor $\hf_{T, \CF}\in \CF$.
+\end{enumerate}
+ Finally, assume that a stopping rule is defined, as a  function of training sets $\sigma: T \mapsto \sigma(T)\in \{0, 1\}$, where  0 means ``continue'', and 1 means ``stop''.
+
+ Given a training set $T_0$, the algorithm builds a binary tree $\CTR$ using a recursive construction.
+ Each node $\nu\in \CTR$ will  be associated to a subset of $T_0$, denoted $T_\nu$.
+ We  define below a recursive operation, denoted $\mathrm{Node}(T, j)$ that adds a node $\nu$ to a tree $\CTR$ given a subset $T$ of $T_0$ and a label $j$.
+ Starting with $\CTR= \emptyset$, calling $\mathrm{Node}(T_0, 0)$ will then create the desired tree. 
+
+\begin{algorithm}[Node insertion: $\mathrm{Node}(T, j)$]
+\begin{enumerate}[label=(\alph*)]
+\item Given $T$ and $j$, let $T_\nu = T$ and $L(\nu) = j$.
+\item If $\sigma(T) = 1$, let $C(\nu) = \emptyset$, $\ga_\nu =\text{``None''}$ and $f_\nu = \hf_{T, \CF}$.
+\item If $\sigma(T) = 0$, let $f_\nu =\text{``None''}$, $\ga_\nu = \what \ga_{T, \Ga}$ and $C(\nu) = (l(\nu), r(\nu))$ with 
+\[
+l(\nu) = \mathrm{Node}(T_l, 2j+1), \quad r(\nu) = \mathrm{Node}(T_r, 2j+2)
+\]
+where 
+\[
+T_l = \{(x,y)\in T: \ga_\nu(x) = 0\}, \quad
+T_r = \{(x,y)\in T: \ga_\nu(x) = 1\}
+\]
+\item Add $\nu$ to $\CTR$ and return.
+\end{enumerate}
+\end{algorithm}
+
+\begin{remark}
+Note that, even though the learning algorithm for prediction trees can be very conveniently described in recursive form as above, efficient computer implementations should avoid recursive calls, which may be inefficient and memory demanding. Moreover, for large trees, it is likely that recursive implementations will reach the maximal number  of recursive calls imposed by compilers.
+\end{remark}
+
+\subsection{Resulting predictor}
+Once the tree is built, the predictor $x \mapsto \hf_{\CTR}(x)$ is  recursively defined as follows.
+ \begin{enumerate}[label=(\alph*)]
+ \item Initialize the computation with $\nu=\rho$. 
+ \item At a given step of the algorithm,  let $\nu$ be the current node.
+ \begin{itemize}[wide=0.5cm]
+ \item If $\nu$ has no children: then let $\hf_{\CTR} (x) = f_\nu(x)$.
+ \item Otherwise: replace $\nu$ by $l(\nu)$ if $\ga_\nu(x) = 0$ and by $r(\nu)$ if $\ga_\nu(x) = 1$ and go back to (b). 
+ \end{itemize}
+\end{enumerate}
+
+
+\subsection{Stopping rule}
+ The function $\sigma$, which decides whether a node is terminal or not is generally defined based on very simple rules. Typically, $\sigma(T)=1$  when one the following conditions is satisfied:
+\begin{enumerate}[label=$\bullet$]
+\item The number of training examples in $T$  is small (e.g., less than 5).
+\item The values $y_k$ in $T$ have a small variance (regression) or are constant (classification). 
+\end{enumerate}
+
+\subsection{Leaf predictors}
+ When one reaches a terminal node $\nu$ (so that $\sig(T_\nu) = 1$), a predictor $f_\nu$ must be determined. 
+This function can be optimized within any set $\CF$ of predictors, using any learning algorithm, but in practice, one usually makes this fairly simple and defines $\CF$ to be the family of constant functions taking values in $\CR_Y$. The function
+ $\hf_{T, \CF}$ is then defined as:
+\begin{enumerate}[label=$\bullet$]
+\item the average of the values of $y_k$, for $(x_k, y_k)\in T$ (regression);
+\item the mode of the distribution of $y_k$, for $(x_k, y_k)\in T$ (classification).
+\end{enumerate}
+
+
+
+\subsection{Binary features}
+  The space $\Gamma$ of possible binary features must be specified in order to partition non-terminal nodes. A standard choice, used in the CART model \citep{breiman1984classification} with $\CR_X = \mR^d$, is 
+\begin{equation}
+\label{eq:cart}
+\Gamma = \defset{\ga(x) = \bfone_{[\pe x i \geq \th]}, i=1, \ldots, d,
+\th \in\mR}
+\end{equation}
+where $\pe x i$ is the $i$th coordinate of $x$.
+ This corresponds to
+splitting the space using a hyperplane parallel to one of the coordinate
+axes.
+
+ The binary function $\what\ga_{T, \Ga}$ can be optimized over $\Ga$ using a greedy evaluation of the risk, assuming that the prediction is based on the two nodes resulting from the split. 
+ For $\ga\in \Gamma$, $f_0, f_1\in \CF$, define 
+\[
+F_{\ga, f_0, f_1}(x) = 
+\left\{
+\begin{aligned}
+f_0(x) \text{ if } \ga(x) = 0\\
+f_1(x) \text{ if } \ga(x) = 1
+\end{aligned}
+\right.
+\]
+  Given a risk function $r$, one then evaluates 
+\[
+\CE_{T}(\ga) = \min_{f_0, f_1\in \CF} \sum_{(x,y)\in T} r(y, F_{\ga, f_0,f_1}(x))
+\]
+ One then chooses $\what\ga_{T, \Ga} = \argmin_{\ga\in\Ga} (\CE_{T}(\Ga))$.
+
+\begin{example}[Regression]
+%\paragraph{Example: Regression.}
+Consider the regression case, taking squared differences as risk and letting $\CF$ contain only constant functions.
+ Then
+\[
+\CE_{T}(\ga) = \min_{m_0, m_1} \sum_{(x,y)\in T} \left((y-m_0)^2
+\bfone_{\ga(x) = 0} + (y-m_1)^2
+\bfone_{\ga(x) = 1}\right).
+\]
+Obviously, the optimal $m_0$ and $m_1$ are the averages 
+of the output values, $y$, in each of the subdomains defined by $\ga$.
+For CART (see \cref{eq:cart}), this cost must be minimized over all choices $(i, \th)$ with $i=1, \dots, d$ and $\th\in \mR$ where $\ga_{i,\th}(x) = 1$ if $x(i) > \th$ and 0 otherwise.
+\end{example}
+ 
+\begin{example}[Classification.]
+For classification, one can apply the same method, with the 0/1 loss, letting
+\[
+\CE_{T}(\ga) = \min_{g_0, g_1} \sum_{(x,y)\in T} \left(\bfone_{y\neq g_0}
+\bfone_{\ga(x) = 0} + \bfone_{y\neq g_1}
+\bfone_{\ga(x) = 1}\right).
+\]
+ The optimal $g_0$ and $g_1$ are the majority classes in $T \cap \{\ga = 0\}$ and $T \cap \{\ga = 1\}$.
+ \end{example}
+
+\begin{example}[Entropy selection for classification]
+For classification trees, other splitting criteria may be used based on  the empirical probability $p_T$ on the set $T$, defined as 
+\[
+p_T(A) = \frac1 N |\{k: (x_k, y_k) \in A\}|
+\]
+for $A\subset \CR_X \times \CR_Y$.
+ The previous criterion, $\CE_{T}(\ga)$, is proportional to 
+\[
+p_T(\ga = 0) (1- \max_{g} p_T(g\mid\ga=0)) + p_T(\ga = 1) (1- \max_{g} p_T(g\mid \ga=1)) .
+\]
+ One can define alternative objectives in the form
+\[
+p_T(\ga = 0) \mathcal H (p_T(g\mid \ga=0)) + p_T(\ga = 1) \mathcal H (p_T(g\mid \ga=1))
+\]
+where $\pi \to \mathcal H(\pi)$ associates to a probability distribution $\pi$ a ``complexity measure'' that is minimal when $\pi$ is concentrated on a single class (which is the case for $\pi \mapsto 1 - \max_g \pi(g)$).
+
+ Many such measures exists, and many of them are defined as various forms of entropy designed in information theory.
+ The most celebrated   is Shannon's entropy \citep{shannon1949communication}, defined by
+\[
+\mathcal H(p) =- \sum_{g\in \CR_Y} p(g) \log p(g)\,.
+\]
+It 
+is always positive, and minimal when the distribution is concentrated on a single class. Other entropy measures include:
+\begin{enumerate}[label=$\bullet$]
+\item The Tsallis entropy: $\mathcal H(p) = \frac1{1-q} \sum_{g\in \CR_Y} (p(g)^q - 1)$, for $q\neq 1$. (Tsallis entropy for $q=2$ is sometimes called the Gini impurity index.)
+\item The Renyi entropy: $\mathcal H(p) = \frac1{1-q} \log \sum_{g\in \CR_Y} p(g)^q $, for $q\geq 0, q\neq 1$. 
+\end{enumerate}
+\end{example}
+
+
+
+
+%The set splitting functions is an important component of the algorithm. They should be relatively simple, because they have to be computed at every node. When $\CR_X = \mR^d$, a typical choice, used in the CART model (Classification and Regression Trees \cite{breiman1984classification}), is 
+%$$
+%\Gamma = \defset{\ga(x) = \chi_{[x(i) \geq c]}, i=1, \ldots, d,
+%c\in\mR}
+%$$
+%where $x(i)$ is the $i$th coordinate of $x$. This corresponds to
+%splitting the space with a hyperplane parallel to one of the coordinate
+%axes. Similarly, the set of predictors $\CF$ can also be very simple, because regions associated with terminal nodes are small and should (if the algorithm is successful) correspond to almost constant values $Y$. Because of this, the most standard choice for $\CF$ is simply a set of constant functions $f: \mR^d \to \mR$ or $\CR_Y$. In such a case, the optimal predictor within a terminal cell can be estimated as the average value of $y$ variables for training data within the cell, for regression, or by the most represented class, for classification.
+%\bigskip
+%
+%In order to find optimal  splitting functions, one needs to quantify  the quality of the partition it induces.  For regression, a least square criterion
+%can be used: 
+%$$
+%\CE_R(\ga) = \min_{m_1, m_2} \sum_{k, x_k\in R} \left((y_k-m_1)^2
+%\chi_{[\ga(x_k) = 0]} + (y_k-m_2)^2
+%\chi_{[\ga(x_k) = 1]}\right).
+%$$
+%This cost measures the quality of the approximation of the data by a
+%function which is constant on each of the two regions delimited by
+%$\ga$ (and is therefore consistent with constant predictors in $\CF$). This criterion only takes into account the data within the
+%cell. Obviously, the optimal $m_1$ and $m_2$ are the averages 
+%of the $y_k$'s in each of the subdomains. For example, if the CART strategy of
+%splitting parallel to axes is used, splitting a node requires to estimate a best threshold, $c$,  for each of the $d$
+%dimensions, and then take the best across the dimensions, which can be done efficiently with exhaustive or dyadic search. This results in a  fast procedure, which
+%is important, since it has to be applied at each step of the
+%recursion. 
+%
+%For classification, one can use a similar rule based on the resulting error within the cell, i.e., 
+%$$
+%\CE_R(\ga) = \min_{g_0, g_1} \sum_{k: x_k\in R} \left(\chi_{y_k\neq g_0}
+%\chi_{\ga(x_k) = 0} + \chi_{y_k\neq g_1}
+%\chi_{\ga(x_k) = 1}\right).
+%$$
+%The optimal $g_0$ and $g_1$ are the majority classes in $R$ when $\ga$ is 0 or 1.  For classification trees, other splitting criteria have been used, based on the normalized frequencies of classes in the region $R$, denoted $(p_R(g), g\in \CR_Y)$.
+%They include, in particular, the entropy
+%$$
+%H(p_R) =- \sum_{g\in \CR_Y} p_R(g) \log p_R(g),
+%$$
+%which is always positive, and minimal when the probability distribution $p_R$ is concentrated on a single class.
+%The splitting criterion $\CE_R$ can then be defined as the resulting entropy once the current cell is divided. More precisely, given a splitting function $\ga$, defining two sub-cells $R_0$ and $R_1$ (for $\ga(x) = 0$ and $\ga(x) =1$), we can define
+%$$
+%\CE_R(\ga) =   \frac{|R_1|}{|R|} H(p_{R_1}) + \frac{|R_2|}{|R|} H(p_{R_2}).
+%$$
+%
+%\subsection{Stopping Criteria}
+%The simplest stopping  criterion is to detect whether the number of training data in the current cell is small (say,
+%5) and is the one generally used. As mentioned, a simple choice for the regression function at terminal nodes is to take a constant function equal to the average of the values $y_k$ for $x_k$ in the cell.  For classification, it is natural to return the class that is
+%mostly represented.
+%
+%
+\subsection{Pruning}
+
+
+Growing  a decision tree to its maximal depth (given the amount of
+available data) generally leads to predictors that overfit the data. The training algorithm is usually  followed by a pruning step that removes some some nodes based on a complexity penalty.
+
+Letting $\tau(\CTR)$ denote the set of terminal nodes in the tree $\CTR$ and $\hat f_{\CTR}$ the associated predictor, pruning is represented as an optimization problem, where one minimizes, given the training set $T$,
+\[
+U_\lambda(\CTR, T) =  \hat R_T(\hat f_{\CTR}) +\lambda |\tau(\CTR)|
+\]
+where $\hat R_T$ is as usual the in-sample error measured on the training set $T$. 
+
+To prune a tree, one selects one or more internal nodes and remove all their descendants (so that these nodes become terminal). Associate to each node $\nu$ in $\CTR$ its local in-sample error $\CE_{T_\nu}$ equal to the error made by the optimal classifier estimated from the training data associated with $\nu$. Then, 
+\[
+U_\lambda(\CTR, T) = \sum_{\nu\in \tau(\CTR)} \frac{|T_\nu|}{|T|} \CE_{T_\nu} + \lambda |\tau(\CTR)|
+\]
+
+If $\nu$ is a node in $\CTR$ (internal or terminal), let $\CTR_\nu$ be the subtree of $\CTR$ containing $\nu$ as a root and all its descendants. Let $\CTR^{(\nu)}$ be the tree $\CTR$ will all descendants of $\nu$ removed (keeping $\nu$). Then
+\[
+U_\lambda(\CTR, T) = U_0(\CTR^{(\nu)}, T) - \frac{|T_\nu|}{|T|} (\CE_{T_\nu} - U_0(\CTR_\nu, T_\nu))  + \lambda (|\tau(\CTR_\nu)|-1).
+\]
+
+Note also that, if $\nu$ is internal,  and $\nu'$, $\nu''$ are its children, then
+\[
+U_0(\CTR_\nu, T_\nu) = \frac{|T_{\nu'}|}{|T_\nu|} U_0(\CTR_{\nu'}, T_{\nu'}) + \frac{|T_{\nu''}|}{|T_\nu|} U_0(\CTR_{\nu''}, T_{\nu''})
+\]
+This formula can be used to compute $U_0(\CTR_\nu) $ recursively for all nodes,  starting with leaves for which  $U_0(\CTR_\nu)  = \CE(T_\nu)$. (We also have $|\tau(\CTR_\nu)| = |\tau(\CTR_{\nu'})| + |\tau(\CTR_{\nu''})|$.)  The following algorithm converges  to a \alert{global minimizer} of $U_\lambda$. 
+
+\begin{algorithm}[Pruning]
+\label{alg:pruning} 
+\begin{enumerate}
+\item Start with a complete tree $\CTR(0)$ built without penalty. 
+\item Compute, for all nodes $U_0(\CTR_\nu)$ and $|\tau(\CTR_\nu)|$. Let 
+\[
+\psi_\nu = \frac{|T_\nu|}{|T|} (\CE_{T_\nu} - U_0(\CTR_\nu))  - \lambda (|\tau(\CTR_\nu)|-1).
+\]
+\item Iterate the following steps.
+\begin{itemize}
+\item If $\psi_\nu <0$ for all internal nodes $\nu$, exit the program and return the current $\CTR(n)$.
+\item Otherwise choose an internal node $\nu$ such that $\psi_\nu$ is largest. 
+\item Let $\CTR(n+1) = \CTR^{(\nu)}(n)$.  Subtract $ \lambda (|\tau(\CTR_\nu(n))|-1)$ to  $\rho_{\nu'}$ for all $\nu'$ ancestor of $\nu$.
+\end{itemize}
+\end{enumerate}
+\end{algorithm}
+
+ \section{Random Forests}
+ \subsection{Bagging}
+A random forest \cite{amit1997shape,breiman2001random} is a special case of composite predictors (we will see other examples later in this chapter when describing boosting methods) that train multiple individual predictors under various conditions and combine them, through averaging, or majority voting.  
+  With random forests, one generates individual trees by randomizing the parameters of the learning
+process. One way to achieve this is to randomly  sample from the training set before running the training algorithm.
+
+Letting as before $T_0 = (x_1, y_1, \ldots, x_N, y_N)$ denote the original set, with size $N$, one can create ``new'' training data by sampling with replacement from $T_0$. More precisely, consider the family of independent random variables 
+$\bfxi = (\bfxi_1, \ldots, \bfxi_N)$, with each $\bfxi_j$ following a uniform distribution over $\{1, \ldots, N\}$. One can then form the random training set 
+\[
+T_0(\bfxi)   = (x_{\bfxi_1},y_{\bfxi_1}, \ldots, x_{\bfxi_N},y_{\bfxi_N}).
+\]
+Running the training algorithm using $T_0(\bfxi)$ then provides a random tree, denoted $\CTR(\bfxi)$. Now, by sampling $K$ realizations of $\bfxi$, say $\xi^{(1)}, \ldots, \xi^{(K)}$, one obtains a collection of $K$ random trees (a random forest) $\CTR^* = (\CTR_1, \ldots, \CTR_K)$, with $\CTR_j = \CTR(\xi^{(j)})$ that can be combined to provide a final predictor. The simplest way to combine them is to average the predictors returned by each tree (assuming, for classification, that this predictor is a probability distribution on classes), so that
+\begin{equation}
+\label{eq:rf.mean}
+f_{\CTR^*}(x) = \frac 1 K \sum_{j=1}^K f_{\CTR_j}(x).
+\end{equation}
+For classification, one can alternatively let each individual tree ``vote'' for their most likely class.
+
+Obviously, randomizing training data and averaging the predictors is a general approach that can be applied to any prediction algorithm, not only to decision trees.  In the literature, the approach described above has been called  \alert{bagging} \citep{breiman1996bagging}, which is an acronym for ``bootstrap aggregating'' (bootstrap itself being a general resampling method in statistics that samples training data with replacement to determine some properties of  estimators). Another way to randomize predictors (especially when $d$, the input dimension is large), is to randomize input data by randomly removing some of the coordinates, leading to a similar construction. 
+
+With decision trees one can in addition randomize the binary features use to split nodes, as described next. While bagging may provide some enhancement to predictors, feature randomization for decision trees often significantly improves the performance, and is the typical randomization method used for random forests.
+
+\subsection{Feature randomization}
+  When one decides to split a node during the construction of a prediction tree,  one can optimize the binary feature $\ga$ over a random subset of $\Gamma$ rather than exploring the whole set. 
+  For CART, for example, one can select a small number of dimensions $i_1, \ldots, i_q\in \{1, \ldots, d\}$ with $q\ll d$, and optimize $\ga$ by thresholding one of the coordinates $x^{(i_j)}$ for $j\in \{1, \ldots, q\}$.
+  This results in a randomized version of the node insertion function. 
+
+\begin{algorithm}[Randomized node insertion: $\mathrm{RNode}(T, j)$]
+\begin{enumerate}[label=(\alph*), wide = 0.5cm]
+\item Given $T$ and $j$, let $T_\nu = T$ and $L(\nu) = j$.
+\item If $\sigma(T) = 1$, let $C(\nu) = \emptyset$, $\ga_\nu =\text{``None''}$ and $f_\nu = \hf_{T, CF}$.
+\item If $\sigma(T') = 0$, \alert{sample (e.g., uniformly without replacement) a subset $\Ga_\nu$ of $\Ga$} and let  $f_\nu =\text{``None''}$, $\ga_\nu = \hat \ga_{T,\Ga_\nu}$ and $C(\nu) = (l(\nu), r(\nu))$ with 
+\[
+\begin{aligned}
+l(\nu) &= \mathrm{Node}(T_l, 2j+1)\\
+r(\nu) &= \mathrm{Node}(T_r, 2j+2)
+\end{aligned}
+\]
+where 
+\[
+\begin{aligned}
+T_l &= \{(x,y)\in T: \ga_\nu(x) = 0\}\\
+T_r &= \{(x,y)\in T: \ga_\nu(x) = 1\}
+\end{aligned}
+\]
+\item Add $\nu$ to $\CTR$ and return.
+\end{enumerate}
+\end{algorithm}
+
+Now, each time the function $\mathrm{RNode}(T_0, 0)$ is run, it returns a different, random,  tree.
+  If it is called $K$ times, this results in a random forest  $\CTR^* = (\CTR_1, \ldots \CTR_K)$, with a  predictor $\CF_{\CTR^*}$ given by \eqref{eq:rf.mean}.  Note that trees in random forests are generally not pruned, since this operation has been observed to bring no improvement in the context of randomized tress. 
+
+
+
+\section{Top-Scoring Pairs}
+Top-Scoring Pair (TSP) classifiers were introduced in \citet{geman2004classifying} and can be seen as forests formed with depth-one classification trees in which splitting rules are based on the comparison of pairs of variables. More precisely, define
+\[
+\ga_{ij}(x) = \bfone_{x^{(i)} > x^{(j)}}.
+\]
+A decision tree based on these rules only relies on the order between the features, and is therefore  well adapted to situations in which the observations are subject to  increasing transformations, i.e., when the observed variable $X$ is such that $X^{(j)} = \phi(Z^{(j)})$, where $\phi: \mR\to\mR$ is random and increasing and $Z$ is a latent (unobserved) variable. Obviously, in such a case, order-based splitting rules do not depend on $\phi$. Such an assumption is relevant, for example, when experimental conditions (such as temperature) may affect the actual data collection, without changing their order, which is the case when measuring high-throughput biological data, such as microarrays, for which the approach was introduced.
+
+Assuming two classes, a depth-one tree in this context is simply the classifier $f_{ij} = \ga_{ij}$. Given a training set, the associated empirical error is 
+\[
+\CE_{ij} = \frac1N \sum_{k=1}^N \bfone_{\ga_{ij}(x_k) \neq y_k} =\frac1N  \sum_{k=1}^N |y_k - \ga_{ij}(x_k)|
+\]
+and the balanced error (better adapted to situations in which one class is observed more often than the other) is
+\[
+\CE^b_{ij} = \sum_{k=1}^N w_k |y_k - \ga_{ij}(x_k)|
+\]
+with $w_k = 1/(2N_{y_k})$, where $N_0$, $N_1$ are the number of observations with $y_k=0$, $y_k=1$. Pairs $(i,j)$ with small errors are those for which the order between the features switch with high probability when passing from class 0 to class 1.
+
+In its simplest form, the TSP classifier defines the set
+\[
+\CP = \argmin_{ij} \CE^b_{ij}
+\]
+of global minimizers of the empirical error (which may just be a singleton) and predicts the class based on a majority vote among the family of predictors  $(f_{ij}, (i,j) \in \CP)$. Equivalently, selected variables maximize the score $\De_{ij} = 1 - \CE^b_{ij}$, leading to the method's name.
+
+Such classifiers, which are remarkably simple, have been found to be competitive among a wide range of ``advanced'' classification algorithms for large-dimensional problems in computational biology. The method has been refined in \citet{tan2005simple}, leading to the $k$-TSP classifier, which addresses the following remarks.  First, when $j,j'$ are highly correlated, and $(i,j)$ is a high-scoring pair, then $(i,j')$ is likely to be one too, and their associated decision rules will be redundant. Such cases should preferably be pruned from the classification rules, especially if one wants to select a small number of pairs. Second, among pairs of features that switch with the same probability, it is natural to prefer those for which the magnitude of the switch is largest, e.g., when the pair of variables switches from a regime in which one of them is very low and the other very high to the opposite. In \citet{tan2005simple}, a rank-based tie-breaker is introduced, defined as
+\[
+\rho_{ij} = \sum_{k=1}^N w_k (R_k(i) - R_k(j))(2y_k-1),
+\]
+where $R_k(i)$ denotes the rank of $x_k^{(i)}$ in $x_k^{(1)}, \ldots, x_k^{(d)}$.
+One can now order pairs $(i,j)$ and $(i', j')$ by stating that the former scores higher if (i) $\De_{ij} > \De_{i'j'}$, or (ii) $\De_{ij} =\De_{i'j'}$ and $\rho_{ij} > \rho_{i'j'}$. The $k$-TSP classifier is formed by selecting pairs, starting from the highest scoring one, and use as $l$th pair (for $l\leq k$)  the highest scoring ones among all those that do not overlap with the previously selected ones. In \cite{tan2005simple}, the value of $k$ is optimized using cross-validation. 
+
+\section{Adaboost}
+
+Boosting methods refer to algorithms in which classifiers are enhanced by
+recursively making them focus on harder data. We first address the issue
+of classification, and describe one of the earliest  algorithms (Adaboost). We will then
+interpret it as a greedy gradient descent algorithm, as this interpretation will lead to further extensions. 
+
+\subsection{General set-up}
+%\subsubsection{Notation}
+We first consider binary classification problems, with $\CR_Y=\{-1,1\}$. We want to design a function $x \mapsto F(x) \in \{-1, 1\}$ on the
+basis of a training set $T = (x_1, y_1, \ldots, x_N, y_N)$. With the 0-1
+loss, minimizing the  empirical error is equivalent to maximizing
+$$
+\CE_T(F) = \frac{1}{N} \sum_{k=1}^N y_k F(x_k).
+$$
+
+Boosting algorithms build the function $F$ as a linear combination of
+``base classifiers,'' $f_1, \ldots, f_M$, taking
+$$
+F(x) = \text{sign}\left(\sum_{j=1}^M \al_j f_j(x)\right)\,.
+$$
+We assume that each base classifier, $f_j$, takes values in $[-1, 1]$ (the interval). 
+\medskip
+
+The sequence of base classifiers is learned by progressively focusing on the hardest examples.  We will therefore assume that the training algorithm for base classifiers takes as input the training set $T$ as well a family of positive weights $W = (w_1, \ldots, w_N)$. More precisely, letting
+\[
+p_W(k) = \frac{w_k}{\sum_{k=1}^N w_k}, 
+\]
+the weighted algorithm should implement (explicitly or implicitly) the equivalent of an unweighted algorithm on a simulated training set obtained by sampling with replacement $K\gg N$ elements of $T$  according to $p_W$ (ideally letting $K\to \infty$). Let us take a few examples.
+\begin{enumerate}[label=$\bullet$, wide=0.5cm]
+\item Weighted LDA: one can use LDA as described in \cref{sec:lda} with
+\[
+c_g =  \sum_{k: y_k = g} p_W(k),\quad \mu_g = \frac{1}{c_g}\sum_{k: y_k = g} p_W(k) x_k,\quad {\mu} = \sum_{g\in\CR_Y} c_g \mu_g
+\]
+ and the covariance matrices:
+\[
+\Sigma_w = \sum_{k=1}^N p_W(k) (x_k - \mu_{y_k})(x_k-\mu_{y_k})^T,
+\quad
+\Sigma_b = \sum_{g\in\CR_Y} c_g (\mu_g - \bar \mu)(\mu_g - \bar \mu)^T.
+\]
+\item Weighted logistic regression: just maximize
+\[
+\sum_{k=1}^N p_W(k) \log \pi_\theta(y_k|x_k)
+\]
+where $\pi_\theta$ is given by the logistic model.
+\item Empirical risk minimization algorithms can  be modified in order to minimize
+\[
+\hat R_{T, W}(f)  = \sum_{k=1}^N w_k r(y_k, f(x_k)).
+\]
+\item Of course, any algorithm can be run on a training set resampled using $p_W$.
+\end{enumerate}
+
+
+\subsection{The Adaboost algorithm}
+Boosting algorithms keep track of a family of weights and modify it after the $j$th classifier $f_j$ is computed, increasing the importance of misclassified examples, before computing the next classifier. The following algorithm, called Adaboost \cite{schapire1990strength,freund1997decision-theoretic}, describes one such approach.
+\begin{algorithm}[Adaboost]
+\label{alg:boosting}
+\begin{enumerate}[label=$\bullet$]
+\item Start with uniform weights, letting  $W(1) = (w_1(1), \ldots, w_N(1))$ with $w_k(1) = 1/N$, $k=1, \ldots, N$. Fix a number $\rho\in (0,1]$ and an integer $M>0$. 
+\item Iterate, for $j=1, \ldots, M$:
+\begin{enumerate}[wide=0.5cm]
+\item Fit a base classifier $f_j$ using the weights $W(j) = (w_1(j), \ldots, w_N(j))$. Let
+\begin{subequations}
+\begin{align}
+\label{eq:sw.1}
+S_w^+(j) &= \sum_{k=1}^N w_k(j) (2-|y_k- f_j(x_k)|)\\
+%\end{align}
+%\begin{align}
+\label{eq:sw.2}
+S_w^-(j) &= \sum_{k=1}^N w_k(j) |y_k -  f_j(x_k)|
+\end{align}
+\end{subequations}
+and define $\al_j = \rho \log\big(S_w^+(j)/S_w^-(j)\big)$
+\item Update the weights by
+\[
+w_k(j+1) = w_k(j) \exp\big(\al_j |y_k -  f_j(x_k)|/2\big).
+\]
+\end{enumerate} 
+\item Return the classifier:
+$$
+F(x) = \text{sign}\left(\sum_{j=1}^M \al_j f_j(x)\right)\,.
+$$
+\end{enumerate}
+\end{algorithm}
+If $f_j$ is binary, i.e., $f_j(x) \in \{-1,1\}$, then $|y_k- f_j(x_k)| = 2 \bfone_{y_k \neq f_j(x_k)}$, so that $S_W^+/2$ is the weighted number of correct classifications and $S_W^-/2$ is the weighted number of incorrect ones.
+
+For $\al_j$ to be positive, the $j$th classifier must do
+better than pure chance on the weighted training set. If not, taking $\al_j \leq 0$ reflects the fact that, in that case, $-f_j$ has better performance on training data.
+
+%\subsection{Training based on weak learners}
+ Algorithms that  
+ do slightly better than chance with high probability are called ``weak learners'' \cite{schapire1990strength}. The following proposition \citep{freund1997decision-theoretic} shows that, if the base classifiers reliably perform strictly better than chance (by a fixed, but not necessarily large, margin), then the boosting algorithm can make the training-set error arbitrarily close to 0.
+ 
+\begin{proposition}
+\label{prop:boosting}
+Let $\CE_T$ be the training set error of the  estimator $F$ returned by \cref{alg:boosting}, i.e., 
+\[
+\CE_T = \frac1N  \sum_{k=1}^N \bfone_{y_k\neq F(x_k)}.
+\]
+ Then
+\[
+\CE_T \leq \prod_{j=1}^M \Big(\ep_j^\rho(1-\ep_j)^{1-\rho} + \ep_j^{1-\rho}(1-\ep_j)^{\rho}\Big)
+\]
+where
+\[
+\ep_j =  \frac{S_W^-(j)}{S_W^+(j)+S_W^-(j)}.
+\]
+\end{proposition}
+\begin{proof}
+We note that example $k$ is misclassified by the final classifier if and only if
+\[
+\sum_{j=1}^M \alpha_j y_kf_j(x_k) \leq 0
+\]
+or
+\[
+\prod_{j=1}^M e^{-\alpha_j y_k f_j(x_k)/2} \geq 1
+\]
+Noting that $|y_k - f_j(x_k)| = 1 - y_k f_j(x_k)$, we see that example $k$ is misclassified when
+\[
+\prod_{j=1}^M e^{\alpha_j |y_k - f_j(x_k)|/2} \geq \prod_{j=1}^M e^{\alpha_j/2}.
+\]
+This shows that
+\begin{align*}
+\CE_T &= \frac1N  \sum_{k=1}^N \bfone_{y_k\neq F(x_k)}\\
+&= \frac1N  \sum_{k=1}^N \bfone_{\prod_{j=1}^M e^{\alpha_j |y_k - f_j(x_k)|/2} \geq \prod_{j=1}^M e^{\alpha_j/2}}\\
+&\leq \frac1N  \sum_{k=1}^N \prod_{j=1}^M e^{\alpha_j |y_k - f_j(x_k)|/2}  \prod_{j=1}^M e^{-\alpha_j/2}.
+\end{align*}
+Let, for $q\leq M$,
+\[
+U_q = \frac1N  \sum_{k=1}^N \prod_{j=1}^q e^{\alpha_j |y_k - f_j(x_k)|/2}.
+\]
+Since
+\[
+w_k(q) =  \frac1N \prod_{j=1}^{q-1} e^{\alpha_j |y_k - f_j(x_k)|/2},
+\]
+we also have $U_q = \sum_{k=1}^N w_k(q+1) = (S_W^+(q+1) + S_W^-(q+1))/2$.
+
+We will use the inequality\,\footnote{This inequality is clear for $\alpha=0$. Assuming $\alpha\neq 0$,
+the difference between the upper and lower bound is
+\[
+q(t) = 1 - e^{\alpha t} - (1 - e^\al)t.
+\]
+The function $q$ is concave (its second derivative is $-\alpha^2 e^{\al t}$) with $q(0) = q(1) = 0$ and therefore non-negative over $[0,1]$. 
+} 
+\[
+e^{\alpha t} \leq 1 - (1-e^\alpha) t, 
+\]
+which is true for all $\al\in\mR$ and $t\in [0,1]$, to write
+\begin{align*}
+U_q &\leq  \frac1N  \sum_{k=1}^N \prod_{j=1}^{q-1} e^{\alpha_j |y_k - f_j(x_k)|/2} (1 - (1-e^{\alpha_q})|y_k - f_q(x_k)|/2)\\
+&= \sum_{k=1}^{N} w_k(q) (1 - (1-e^{\alpha_q})|y_k - f_q(x_k)|/2)\\
+&= \sum_{k=1}^{N} w_k(q)  - (1-e^{\alpha_q})\sum_{k=1}^{N} w_k(q)|y_k - f_q(x_k)|/2\\
+&= U_{q-1} (1 - (1-e^{\alpha_q}) \epsilon_q)
+\end{align*}
+This gives (using $U_0 = 1$)
+\[
+U_M \leq \prod_{j=1}^M \Big(1 - (1-e^{\alpha_j}\Big) \epsilon_j)
+\]
+and
+\[
+\CE_T \leq \prod_{j=1}^M \Big(1 - (1-e^{\alpha_j}) \epsilon_j\Big)e^{-\alpha_j/2}.
+\]
+It now suffices to replace $e^{\alpha_j}$ by $(1-\epsilon_j)^\rho\epsilon_j^{-\rho}$ and note that 
+\[
+\Big(1 - (1-(1-\epsilon_j)^\rho\epsilon_j^{-\rho}) \epsilon_j\Big)(1-\epsilon_j)^{-\rho/2}\epsilon_j^{\rho/2} = \ep_j^\rho(1-\ep_j)^{1-\rho} + \ep_j^{1-\rho}(1-\ep_j)^{\rho}
+\]
+to conclude the proof.
+\end{proof}
+For $\ep \in [0,1]$, one has
+\[
+\ep^\rho(1-\ep)^{1-\rho} + \ep^{1-\rho}(1-\ep)^{\rho} = 1 - (\ep^\rho - (1-\ep)^\rho)(\ep^{1-\rho} - (1-\ep)^{-1-\rho}) \leq 1
+\]
+with equality if and only if $\ep = 1/2$, so that each term in the upper-bound reduces the error unless the corresponding base classifier does not perform better than pure chance. The parameter $\rho$ determines the level at which one increases the importance of misclassified examples for the next step. Let $\tilde S_W^+(j)$ and $\tilde S^-_W(j)$ denote the expressions in \cref{eq:sw.1,eq:sw.2} with $w_k(j)$ replaced by $w_k(j+1)$. 
+Then, in the case when the base classifiers are binary, ensuring that $|y_k - f_j(x_k)|/2 = \bfone_{y_k\neq f_j(x_k)}$, one can easily check that $\tilde S_W^+(j)/\tilde S^-_W(j) = (S_W^+(j)/ S^-_W(j))^{1-\rho}$. So, the ratio is (of course) unchanged if $\rho = 0$, and pushed to a pure chance level if $\rho = 1$. 
+We provide below an interpretation of boosting as a greedy optimization procedure that will lead to the value $\rho=1/2$.
+
+
+% The boosting effect comes from the fact that misclassified data at step $j$
+%are provided with a higher weight for the next step. This forces
+%the algorithm focuses on the hardest cases. If one lets $w'_k = w_k \exp(-\al_j \bfone_{y_k\neq f_j(x_k)})$, then 
+%\begin{align*}
+%\sum_{k=1}^N w'_k \bfone_{y_k\neq f_j(x_k)}  &= \sum_{k=1}^N w_k e^{-\al_j \bfone_{y_k\neq f_j(x_k)}} \bfone_{y_k\neq f_j(x_k)} \\
+%&= e^{-\al_j} \sum_{k=1}^N w_k  \bfone_{y_k\neq f_j(x_k)} \\
+%& \frac{\sqrt{1
+
+%We now provide an interpretation of this algorithm. 
+
+\subsection{Adaboost and greedy gradient descent}
+We here restrict to the case of binary base classifiers and denote their linear combination  by
+\[
+h(x) = \sum_{j=1}^M \alpha_j f_j(x).
+\]
+Whether an observation $x$ is correctly classified in the true class $y$ is associated to the sign of the product $yh(x)$, but the value of this product also has an
+important interpretation, since, when it is positive, it can be thought of as a margin with which
+$x$ is correctly classified. 
+
+Assume that the function $F$ is evaluated, not only on the basis of
+its classification error, but also based on this margin,
+using a loss function of the kind
+\begin{equation}
+\label{eq:boosting.margin}
+\Psi(h) = \sum_{k=1}^N \psi(y_kh(x_k))
+\end{equation}
+where $\psi$ is decreasing. The boosting algorithm can then be interpreted as an classifier which
+incrementally improves this objective function.
+
+Let, for $j<M$,
+$$
+h^{(j)} = \sum_{q=1}^j \al_q f_q\,.
+$$
+The next combination $h^{(j+1)}$  is equal to $h^{(j)} + \al_{j+1}
+f_{j+1}$, and we now consider the problem of minimizing, with respect to   
+$f_{j+1}$ and $\al_{j+1}$, the function $\Psi(h^{(j+1)})$, without modifying the previous classifiers (i.e., performing a greedy optimization). So, we want to minimize, with respect
+to the base classifier $\tilde f$ and to $\al \geq 0$, the function
+$$
+U(\al, \tilde f) = \sum_{k=1}^N \psi\left(y_kh^{(j)}(x_k) + \al y_k \tilde
+f(x_k)\right)
+$$
+
+Using the fact that $\tilde f$ is a binary classifier, this can be written
+\begin{align}
+U(\al, \tilde f) =& \sum_{k=1}^N \psi(y_kh^{(j)}(x_k) + \al) \bfone_{y_k
+= \tilde f(x_k)} + \sum_{k=1}^N \psi(y_kh^{(j)}(x_k) - \al) \bfone_{y_k
+\neq \tilde f(x_k)}
+\label{eq:boosting.uu}
+\\
+\nonumber
+=& \sum_{k=1}^N (\psi(y_kh^{(j)}(x_k) - \al) - \psi(y_kh^{(j)}(x_k) + \al)) \bfone_{y_k
+\neq \tilde f(x_k)} \\
+\nonumber
+&+ \sum_{k=1}^N \psi(y_kh^{(j)}(x_k) + \al).
+\end{align}
+This shows that $\alpha$ and $\tilde f$ have  inter-dependent optimality conditions.
+For a given $\al$, the best classifier $\tilde f$ must
+minimize a weighted empirical error with non-negative weights (since $\psi$ is decreasing)
+$$ w_k  = \psi(y_kh^{(j)}(x_k) - \al) - \psi(y_kh^{(j)}(x_k) + \al).$$
+Given $\tilde{f}$, $\alpha$ must minimize the expression in \cref{eq:boosting.uu}. One can use an alternative minimization procedure to optimize both $\tilde f$ (as a weighted basic classifier) and $\alpha$. However, for the special choice $\psi(t) = e^{-t}$, this optimization turns out to only require one step.
+
+In this case, we have
+\begin{align*}
+U(\al, \tilde f) &= \sum_{k=1}^N (e^{\al} - e^{-\al}) e^{-y_kh^{(j)}(x_k)} \bfone_{y_k
+\neq \tilde f(x_k)} 
++ e^{-\al} \sum_{k=1}^N e^{-y_kh^{(j)}(x_k)}\\
+&=e^{-\al^{(j)}} (e^{\al} - e^{-\al})  \sum_{k=1}^N w_k(j) \bfone_{y_k
+\neq \tilde f(x_k)} 
++ e^{-\al^{(j)}} e^{-\al} \sum_{k=1}^N w_k(j)\\
+\end{align*}
+with 
+$w_k(j+1) = e^{\al^{(j)}-y_kh^{(j)}(x_k)} $
+and $\al^{(j)} = \al_1 + \cdots + \al_j$. 
+This shows that $\tilde{f}$ should minimize
+\[
+\sum_{k=1}^N w_k(j+1)  \bfone_{y_k \neq \tilde f(x_k)}.
+\]
+We note that 
+\[
+w_k(j+1) = w_k(j) e^{\al_j(1-y_k f_{j}(x_k))} = w_k(j) e^{ \al_j |y_k - f_k(x_k)|},
+\]
+which is identical to the weight updates in algorithm \cref{alg:boosting} (this is the reason why the term $\alpha^{(j)}$ was introduced in the computation). The new value of $\alpha$ must minimize (using the notation of \cref{alg:boosting})
+\[
+e^{-\al}S_W^+(j)  + e^{\al} S_W^-(j),
+\]
+which yields $\alpha = \frac12 \log S_W^+(j)/S_W^-(j)$. This is the value $\alpha_{j+1}$ in \cref{alg:boosting} with $\rho=1/2$.
+
+
+
+%\bigskip
+%One critic that can be addressed to this algorithm is that it does
+%not properly handles the maximization of the margin, since the
+%$f^{(j)}$'s  are not normalized. One possibility is to require that
+%the $\al_q$ are positive and sum to 1.
+%The new classifier $f^{(j+1)}$ will then have the form $(1-\al_{j+1})f^{(j)} + \al_{j+1}
+%f_{j+1}$, and the function to minimize would be
+%$$
+%U(\al, \tilde f) = \sum_{k=1}^N g((1-\al) y_kf^{(j)}(x_k) + \al y_k \tilde
+%f(x_k)).
+%$$
+%
+%Taking as before an exponential $g$: $g(t) = e^{-\la t}$, the final
+%problem becomes less simple because $\al$ and $\tilde f$ do not
+%separate: the weights are    
+%$$w_k = (e^{\la \al} - e^{-\la \al})   e^{-\la(1-\al) y_k f^{(j)}(x_k)}$$
+%and $\al$ cannot be factorized out. The solution has to be computed
+%numerically, which can be costly in some cases. The general algorithm
+%for creating a new component $f_{j+1}$ is to loop over the following
+%two steps, starting with an initial guess $f_{j+1}$ (computed, for
+%example, with the weights provided by the standard boosting algorithm).
+%\begin{enumerate}[label=(\arabic*),wide]
+%\item Minimize $U$ with respect to $\al$.
+%\item Update $f_{j+1}$ using the new weights 
+%$$
+%w_k = g((1-\al) y_kf^{(j)}(x_k) - \al) - g((1-\al) y_kf^{(j)}(x_k) + \al)
+%$$
+%\end{enumerate}
+%One can compute the derivatives of $U$ with respect to $\al$; we have
+%\begin{eqnarray*}
+%\prt_\al{U} & = & \sum_{k=1}^N y_k (f(x_k)-f^{(j)}(x_k)) g'((1-\al) y_kf^{(j)}(x_k) + \al y_k \tilde
+%f(x_k))\\
+%{\prt^2_\al U} & = & \sum_{k=1}^N (f(x_k)-f^{(j)}(x_k))^2 g''((1-\al) y_kf^{(j)}(x_k) + \al y_k \tilde
+%f(x_k))
+%\end{eqnarray*}
+%One sees in particular that $U$ is convex as a function of $\al$ as
+%soon as $g$ is convex (as is the exponential). A typical Newton-Raphson algorithm to solve
+%step 1 is
+%$$
+%\alpha(t+1) = \alpha(t) - \frac{1}{2} \prt_\al {U}/
+%{\prt^2_\al U}.
+%$$
+
+
+%\subsection{Choice of $f_j$}
+%The `` classifiers'' $f_j$ can be anything that accepts
+%weights. Notice that, for the algorithm to work, the
+%classifier does not have to minimize the weighted  classification error, but
+%simply to reduce it: the cost in the Adaboost algorithm is 
+%\begin{eqnarray*}
+%\CE{(j+1)}  &=& (e^{\al_{j+1}} - e^{-\al_{j+1}}) \sum_{k=1}^N w_k^{(j+1)} \chi_{[y_k
+%\neq \tilde f_{j+1}(x_k)]} + e^{-\al_{j+1}} \CE^{(j)}\\
+%&=&  \left((e^{\al_{j+1}} - e^{-\al_{j+1}}) \ep_{j+1} +
+%e^{-\al_{j+1}}\right)\CE^{(j)}
+%\end{eqnarray*}
+%where $\ep_{j+1}$ is the error corresponding to the $(j+1)$th
+%classifier alone and $\CE^{(j+1)}$ the combined cost. So, to have a
+%reduction of the cost, it suffices that 
+%$$(e^{\al_{j+1}} - e^{-\al_{j+1}}) \ep_{j+1} +
+%e^{-\al_{j+1}} < 1\,.$$
+%This is exactly the expression minimized by the boosting algorithm, and
+%at the optimal, $\al_{j+1} = \frac{1}{2}
+%\log((1-\ep_{j+1})/\ep_{j+1})$, this factor is $2
+%\sqrt{\ep_{j+1}(1-\ep_{j+1})}$, which is always smaller than 1, and
+%strictly smaller as soon as the error is strictly smaller than
+%$1/2$. So, exact minimization of the error is not needed at each step.
+%
+%This implies that estimators such as LDA, linear separating hyperplanes,
+%etc. can be used as soon as they do better than chance. They do not
+%directly minimize the error, but weights on the training set always
+%have a natural way to be incorporated in their learning algorithms. For
+%example, assuming that weights sum to 1, a weighted LDA would use the class
+%centroids
+%$$
+%\mu_g = \sum_{k, y_k=g} w_k x_k
+%$$
+%and within-class covariance matrix
+%$$
+%\sum_{k=1}^N w_k (x_k - \mu_{y_k})(x_k - \mu_{y_k})^T.
+%$$ 
+%
+%Similarly, a weighted SVM would minimize
+%$$
+%\norm{\be}^2 + \lambda N \sum_{k=1}^N w_k \xi_k
+%$$
+%under the constraints $\xi_k \geq 0$, $y_k(\be_0 + \scp{\be}{x_k})
+%\geq 1 - \xi_k$. In the dual variables, the problem becomes: maximize
+%$$
+%\sum_{k=1}^N \al_k - \frac{1}{2} \sum_{k,l=1}^N \al_k\al_l y_ky_l
+%K(x_k, x_l)
+%$$
+%under the constraints $0\leq \al_k\leq N\ga w_k$, $\sum_{k=1}^N \al_k y_k =
+%0$. One retrieves the usual SVM formulation with the change of
+%variables $\al_k \to \al_k/w_k$ and $y_k \to w_ky_k$.
+
+\section{Gradient boosting and regression}
+\subsection{Notation}
+The boosting idea, and in particular its interpretation as a greedy gradient procedure,  can be extended to non-linear regression problems \citep{friedman2001greedy}. 
+Let us denote by $\CF_0$ the set of base predictors, therefore functions from $\CR_X= \mR^d$ to $ \CR_Y = \mR^q$, since we are considering regression problems. The final predictor is  a linear combination
+\[
+F(x) = \sum_{j=1}^M \alpha_j f_j(x)
+\]
+with $\alpha_1, \ldots, \alpha_M\in \mR$ and $f_1, \ldots, f_M\in \CF_0$. Note that the 
+the coefficients  $\al_j$ are redundant when the class $\CF_0$ is invariant by multiplication by a scalar. Replacing if needed $\CF_0$ by $\defset{f = \alpha g, \alpha\in \mR, g\in \CF_0}$, we will assume that this property holds and therefore remove the coefficients $\alpha_j$ from the problem.
+
+
+In accordance  with the principle  of performing greedy searches, we let 
+\[
+F^{(j)}(x) = \sum_{q=1}^j  f_q(x),
+\]
+and consider the problem of minimizing over $f\in \CF_0$,
+\[
+U( f) = \sum_{k=1}^N r(y_k, F^{(j)}(x_k) + f(x_k)),
+\]
+where $T = (x_1, y_1, \ldots, x_N, y_N)$ is the training data and $r$ is the loss function. 
+
+
+\subsection{Translation-invariant loss}
+In the case, which is frequent in regression, when $r(y,y')$ only depends on $y-y'$, the problem is equivalent to minimizing
+\[
+U( f) = \sum_{k=1}^N r(y_k- F^{(j)}(x_k), f(x_k)),
+\]
+i.e., to let $f_{j+1}$ be the optimal predictor (in $\CF_0$ and for the loss $r$) of the residuals $y_k^{(j)} = y_k- F^{(j)}(x_k)$. In this case, this provides a conceptually very simple algorithm.
+\begin{algorithm}[Gradient boosting for regression with translation-invariant loss]
+\begin{enumerate}[label=$\bullet$]
+\item Let $T = (x_1, y_1, \ldots, x_N, y_N)$ be a training set and $r$ a loss function such that $r(y,y')$ only depends on $y-y'$.
+\item Let $\CF_0$ be a function class such that $f\in\CF_0\Rightarrow \alpha f\in \CF_0$ for all $\al\in \mR$.
+\item Select an integer $M>0$ and let $F^{(0)} = 0$, $y_k^{(0)} = y_k$, $k=1, \ldots, N$.
+\item For $j=1, \ldots, M$:
+\begin{enumerate}[wide=0.5cm]
+\item Find the optimal predictor $f_{j}\in \CF_0$ for the training set $(x_1, y_1^{(j-1)}, \ldots, x_N, y_N^{(j-1)})$.
+\item Let $y_k^{(j)} = y_{k}^{(j-1)} - f_j(x_k)$ 
+\end{enumerate}
+\item Return $F = \sum_{k=1}^M f_j$.
+\end{enumerate}
+
+\end{algorithm}
+
+\begin{remark}
+Obviously, the class $\CF_0$ should not be a linear class for the boosting algorithm to have any effect. Indeed, if $f,f'\in\CF_0$ implies $f+f'\in\CF_0$, no improvement could be made to the predictor after the first step. 
+\end{remark}
+
+
+
+A successful example of this algorithm uses regression trees as base predictors. Recall that the functions 
+output by such trees take the form
+\[
+f(x) = \sum_{A \in \CC} w_A \bfone_{x\in A}
+\]
+where $\CC$ is a finite partition of $\mR^d$. Each set in the partition is specified by the value taken by a finite number of binary features (denoted by $\gamma$ in our discussion of prediction trees)  and the maximal number of such features is the depth of the tree. We assume that the set $\Gamma$ of binary features is shared by all regression trees in $\CF_0$, and that the depth of these trees is bounded by a fixed constant. These restrictions prevent $\CF_0$ from forming a linear class.\footnote{If $f$ and $g$ are representable as trees, $f+g$ can be represented as a tree whose depth is the sum as those of the original trees,  simply by inserting copies of $g$ below each leaf of $f$.} Note that the maximal depth of tree learnable from a finite training set is always bounded, since such trees cannot have more nodes than the size of the training set (but one may want to restrict the maximal depth of base predictors to be way less than $N$).
+
+
+\subsection{General loss functions}
+
+We now consider situations in which the loss function is not necessarily a function of the difference between true and predicted output. We are still interested in the problem of minimizing $U(f)$, but we now approximate this problem using the first-order expansion
+\[
+U(f) = \sum_{k=1}^N r(y_k, F^{(j)}(x_k)) + \sum_{k=1}^N \prt_2 r(y_k, F^{(j)}(x_k))^T f(x_k) + o(f) ,
+\]
+where $\prt_2 r$ denotes the derivative of $r$ with respect to its second variable. This suggests (similarly to gradient descent) to choose $f$ such that $f(x_k) = -\alpha \prt_2 r(y_k, F^{(j)}(x_k))$ for some $\alpha>0$ and all $k=1, \ldots, N$. However, such an $f$ may not exist in the class $\CF_0$, and the next best choice is to pick $f = \alpha \tilde f$ with $\tilde f$ minimizing
+\[
+\sum_{k=1}^N |\tilde f(x_k) + \prt_2 r(y_k, F^{(j)}(x_k))|^2
+\] 
+over all $\tilde f\in \CF_0$. This is similar to projected gradient descent in optimization, and $\alpha$ such that $f = \alpha \tilde f$ should  minimize  
+\[
+\sum_{k=1}^N r(y_k, F^{(j)}(x_k) + \alpha \tilde f(x_k) ).
+\]
+This provides a generic ``gradient boosting'' algorithm \citep{friedman2001greedy}, summarized below.
+\begin{algorithm}[Gradient boosting]
+\label{alg:grad.boost}
+\begin{enumerate}[label=$\bullet$]
+\item Let $T = (x_1, y_1, \ldots, x_N, y_N)$ be a training set and $r$ a differentiable loss function.
+\item Let $\CF_0$ be a function class such that $f\in\CF_0\Rightarrow \alpha f\in \CF_0$ for all $\al\in \mR$.
+\item Select an integer $M>0$ and let $F^{(0)} = 0$.
+\item For $j=1, \ldots, M$:
+\begin{enumerate}[wide=0.5cm]
+\item Find  $\tilde f_{j}\in \CF_0$ minimizing
+\[
+\sum_{k=1}^N |\tilde f(x_k) + \prt_2 r(y_k, F^{(j-1)}(x_k))|^2
+\] 
+over all $\tilde f\in \CF_0$.
+\item Let $f_j = \alpha_j \tilde{f}_j$ where $\alpha_j$ minimizes
+\[
+\sum_{k=1}^N r(y_k, F^{(j-1)}(x_k) + \alpha \tilde f_j(x_k) ).
+\]
+\item Let $F^{(j)} = F^{(j-1)} + f_j$.
+\end{enumerate}
+\item Return $F = F^{(M)}$.
+\end{enumerate}
+\end{algorithm}
+
+\begin{remark}
+Importantly, the fact that $\CF_0$ is stable by scalar multiplication implies that the function $\tilde f_j$ satisfies 
+\[
+\sum_{k=1}^N \tilde f(x_k)^T \prt_2 r(y_k, F^{(j-1)}(x_k)) \leq 0, 
+\] 
+that is, excepted in the unlikely case in which the above sum is zero, it is a direction of descent for the function $U$ (because one could otherwise replace $\tilde f_j$ by $-\tilde f_j$ and improve the approximation of the gradient).
+%The proposed procedure is a restricted projected gradient descent procedure. Consider the space $\CF = \vspan(\CF_0)$ formed by all finite linear combinations of elements of $\CF_0$ (so that the final predictor $F$ belongs to $\CF$). Associate to sequences $\boldsymbol \alpha = (\alpha_1, \alpha_2, \ldots)$ its $\ell_0$ norm given by its number of non-vanishing elements. For $F\in\CF$, let $\|F\|_0$ be the minimum number of non-zero coefficients in a representation of $F$ as a linear combination of elements of $\CF_0$.
+%
+%We can consider a penalized estimation problem in which one minimizes $\hat{R}(F)$ over all $F\in \CF$, subject to the constraint $\|F\|_0 \leq M$. With this in mind
+%
+%
+%Let $\CF_T$ denote the space of all restrictions to $\{x_1, \ldots, x_N\}$ of elements of $\CF$. While $\CF$ may be infinite dimensional $\CF_T\subset \mR^N$ is finite dimensional. If $f\in\CF$, $\hat R(f)$ only depends on its restriction, $f_T$, to $\{x_1, \ldots, x_N\}$ and the cost can therefore be seen as defined on $\CF_T$. In other terms, we can reinterpret the considered problem as a minimization over the finite-dimensional space $\CF_T$. 
+%
+%In typical situations, arbitrary large linear combinations of 
+
+\end{remark}
+
+\subsection{Return to classification}
+A slight modification of this algorithm may also be applied to classification, provided that the classifier $f$ is obtained by learning the conditional distribution, denoted $g \mapsto p(g|x)$, of the output variable (assumed to take values in a finite set $\CR_Y$) given the input (assumed to take values in $\CR_X = \mR^d$). 
+
+Our goal is to estimate an unknown target conditional distribution, $\mu$, therefore taking the form $\mu(g|x)$ for $g\in \CR_Y$ and $x\in\mR^d$. We assume that a family $\mu_k, k=1, \ldots, N$ of distributions on the set $\CR_Y$ is observed, where each $\mu_k$ is assumed to be an approximation of the unknown $\mu(\cdot|x_k)$ (typically, $\mu_k(g) = \bfone_{g=y_k}$, i.e., $\mu_k = \delta_{y_k}$). The risk function must  take the form $r(\mu, \mu')$ where $\mu, \mu'\in \CS(\CR_Y)$, the set of probability distributions on $\CR_Y$. We will work with 
+\[
+r(\mu, \mu') = - \sum_{g\in\CR_Y} \mu(g) \log\mu'(g).
+\]
+One can note that 
+\[
+r(\mu, \mu') = \KL(\mu\|\mu') + r(\mu, \mu),
+\]
+which is therefore minimal when $\mu'=\mu$.
+Moreover, in the special case $\mu_k = \delta_{y_k}$, the empirical risk is 
+\[
+\hat R(p) = \sum_{k=1}^N r(\mu_k, p(\cdot|x_k)) = - \sum_{k=1}^N \log p(y_k|x_k),
+\]
+so that minimizing it is equivalent to maximizing the conditional likelihood that was used for  logistic regression.
+
+Before applying the previous algorithm, one must address the issue that probability distributions do not form a vector space, and cannot be added to form new probability distributions. In \citet{friedman2001greedy,htf03}, it is suggested to use the representation, which can be associated with any function $F: (g,x) \mapsto F(g|x)\in \mR$,
+\[
+p_F(g|x) = \frac{e^{F(g|x)}}{\sum_{h\in\CR_Y} e^{F(h|x)}}.
+\]
+Because the representation if not unique ($p_F = p_{F'}$ if $F-F'$ only depends on $x$), we will require in addition that
+\[
+\sum_{h\in\CR_Y} F(h|x) = 0
+\]
+for all $x\in \mR^d$. The space formed by such functions $F$ is now linear, and we can consider the empirical risk
+\[
+\hat R(F) = -\sum_{k=1}^N \sum_{g\in \CR_Y} \mu_k(g)\log p_F(g|x_k) = -\sum_{k=1}^N \sum_{g\in \CR_Y} \mu_k(g)F(g|x_k) + \sum_{k=1}^N \log\left(\sum_{g\in \CR_Y}  e^{F(g|x_k)}\right).
+\]
+
+One can evaluate the derivative of this risk with respect to a change on $F(g|x_k)$, and a short computation gives
+\[
+\frac{\partial R}{\partial F(g|x_k)} = - \sum_{k=1}^N (\mu_k(g) - p_F(g|x_k)).
+\]
+
+\bigskip
+
+Now assume that a basic space $\CF_0$ of functions $f: (g,x) \mapsto f(g|x)$ is chosen, such that all function in $\CF_0$ satisfy
+\[
+\sum_{g\in \CR_Y} f(g|x) = 0
+\]
+for all $x\in \mR^d$.
+The gradient boosting algorithm then requires to minimize (in Step (1)):
+\[
+\sum_{k=1}^N \sum_{g\in \CR_Y} (\mu_k(g) - p_{F^{(j-1)}}(g|x_k) - \tilde f(g|x_k))^2
+\]
+with respect to all functions $\tilde f \in \CF_0$. Given the optimal $\tilde f_j$, the next step requires to minimize, with respect to $\alpha \in \mR$:
+\[
+-\alpha \sum_{k=1}^N \sum_{g\in \CR_Y} \mu_k(g)\tilde f_j(g|x_k) + \sum_{k=1}^N \log\left(\sum_{g\in \CR_Y}  e^{F^{(j-1)}(g|x_k) + \alpha \tilde f_j(g|x_k)}\right).
+\]
+This is a scalar convex problem that can be solved, e.g., using gradient descent.
+
+ 
+\subsection{Gradient tree boosting}
+
+We now specialize to the situation in which the set $\CF_0$ contains regression trees. In this situation, the general algorithm can be improved by taking advantage of the fact that the predictors returned by such trees are piecewise constant functions, where the regions of constancy are associated with partitions $\CC$ of $\mR^d$ defined by the leaves of the trees. In particular, $\tilde{f}_j(x)$ in Step (1) takes the form
+\[
+\tilde f_j(g|x) = \sum_{A\in \CC}^J \tilde f_{j,A}(g) \bfone_{x\in A}.
+\]
+The final $f$ at Step (2) should therefore take the form
+\[
+\sum_{A\in\CC} \alpha \tilde f_{j,A}(g) \bfone_{x\in A}
+\]
+but not much additional complexity is introduced by freely optimizing the values of $f_j$ on $A$, that is, by looking at $f$ in the form 
+\[
+\sum_{A\in\CC} f_{j,A}(g) \bfone_{x\in A}
+\]
+where the values $f_{j,A}(g)$ optimize the empirical risk. This risk becomes
+\[
+- \sum_{k=1}^N \sum_{A\in\CC} \sum_{g\in \CR_Y} \mu_k(g) f_{j,A}(g) \bfone_{x_k\in A} + \sum_{k=1}^N \sum_{A\in\CC} \log\left(\sum_{g\in \CR_Y}  e^{F^{(j-1)}(g|x_k) +   f_{j,A}(g)}\right) \bfone_{x_k\in A}.
+\]
+The values $f_{j,A}(g), g\in \CR_Y$ can therefore be optimized separately, minimizing
+\[
+- \sum_{k=1: x_k\in A}  \sum_{g\in \CR_Y} \mu_k(g) f_{j,A}(g)  + \sum_{k: x_k\in A} \log\left(\sum_{g\in \CR_Y}  e^{F^{(j-1)}(g|x_k) +   f_{j,A}(g)}\right) \bfone_{x_k\in A}.
+\]
+This is still a convex program, which has to be run at every leaf of the optimized tree. If computing time is limited (or for large-scale problems), the determination of $f_{j,A}(g)$ may be restricted to one step of gradient descent starting at $f_{j,A} = 0$. A simple computation indeed shows that the first derivative of the function above with respect to $f_{j,A}(g)$ is
+\[
+a_A(g) = - \sum_{k: x_k\in A} (\mu_k(g) - p_F(g|x_k)).
+\]
+The derivative of this expression with respect to $f_{j,A}(g)$ (for the same $g$) is
+\[
+b_A(g) = \sum_{k: x_k\in A} p_F(g|x_k)(1-p_F(g|x_k)).
+\]
+The off-diagonal terms in the second derivative are, for $g\neq h$,
+\[
+- \sum_{k: x_k\in A} p_F(g|x_k)p_F(h|x_k).
+\]
+In \citet{friedman2000additive}, it is suggested to use an approximate Newton step, where the off-diagonal terms in the second derivative are neglected. This corresponds to minimizing 
+\[
+\sum_{g\in \CR_Y} a_A(g) f_{j,A}(g) + \frac12 \sum_{g\in\CR_Y}  b_A(g) f_{j,A}(g)^2.
+\]
+The solution is (introducing a Lagrange multiplier for the constraint $\sum_g f_{j,A}(g) = 0$)
+\[
+f_{j,A}(g) = -  \frac{a_A(g) - \lambda}{b_A(g)}
+\]
+with
+\[
+\lambda = \frac{\sum_{g\in\CR_Y} a_A(g)/b_A(g)}{\sum_{g\in\CR_Y} 1/b_A(g)}.
+\]
+A small value $\epsilon$ can be added to $b_A$ to avoid divisions by zero. We refer the reader to \citet{friedman2000additive,friedman2001greedy,htf03} for several variations on this basic idea. Note that an approximate but highly efficient implementation of boosted trees, called XGBoost, has been developed in \citet{chen2016xgboost}.
+

@@ -1,0 +1,603 @@
+\chapter{Deep Generative Methods}
+\label{chap:generative}
+
+
+\section{Normalizing flows}
+\label{sec:norm.flows}
+\subsection{General concepts}
+We develop, in this chapter, methods that model stochastic processes using  a feed-forward approach that generates complex random variables using non-linear transformations of simpler ones. Many of these methods can be seen as instances of structural equation models (SEMs), described in \cref{sec:sem}, with, for deep-learning implementations, high-dimensional parametrizations of \cref{eq:sem}. 
+
+With start with the formally simple case where the modeled variable takes values in $\mathbb R^d$ and is modeled as
+\[
+X = g(Z)
+\]
+where $Z$ also takes values in $\mR^d$, with a known distribution and $g$ is $C^1$, invertible, with a $C^1$ inverse on $\mathbb R^d$, i.e., is a {\em diffeomorphism} of $\mR^d$. Let us denote by $h$ the inverse of $g$.
+
+If $Z$ has a p.d.f. $f_Z$ with respect to Lebesgue's measure, then, using the change of variable formula, the p.d.f. of $X$ is 
+\[
+f_X(x) = f_Z(h(x))\ |\det{\partial_x h(x)}|.
+\]
+
+Now, given a training set $T = (x_1, \ldots, x_N)$, the log-likelihood, considered as a function of $h$, is given by
+\begin{equation}
+\label{eq:norm.flow.lik}
+\ell(h) = \sum_{k=1}^N \log f_Z(h(x_k)) + \sum_{k=1}^N \log |\det{\partial_x h(x_k)}|\,.
+\end{equation}
+This expression should then be maximized with respect to $h$, subject to some restrictions or constraints to avoid overfitting.
+
+%which can be implemented using standard optimization techniques if $h$ (and its differential) is known explicitly. Note that both $g$ and $h$ are needed in this framework: $g$ to sample from the distribution of $X$ and $h$ to estimate the parameter $\theta$.
+
+\subsection{A greedy computation}
+One can define a rich class of diffeomorphisms through iterative compositions of simple transformations. This framework was introduced in \citep{tabak2010density}, where a greedy approach was suggested to build such compositions. The method was termed ``normalizing flows,'' since it create a discrete flow of diffeomorphisms that transform the data into a sample of a normal distribution.
+
+We quickly describe the basic principles of the algorithm. One starts with a 
+parametrized family, say $(\psi_\alpha, \alpha \in A)$ of diffeomorphisms of $\mR$. Such families are relatively easy to design, one example proposed in \citep{tabak2010density} being a smoothed version of the piecewise linear function
+\[
+u \mapsto v_0 + (1-\sigma) u + \gamma |(1-\sigma) u - u_0|
+\]
+which is increasing as soon as $0\leq \max(\sigma, \gamma) < 1$. The smoothed version has an additional parameter, $\epsilon$, and takes the form
+\[
+u \mapsto v_0 + (1-\sigma) u + \gamma \sqrt{\epsilon^2 + ((1-\sigma) u - u_0)^2}.
+\]
+This transformation is parametrized by $\alpha = (v_0, \sigma, \gamma, u_0, \epsilon)$. 
+Other families of parametrized transformations can be designed. A multivariate transformation $\phi_{\boldsymbol\alpha, U}: \mR^d\to\mR^d$ can then be associated to families $\boldsymbol\alpha = (\alpha_1, \ldots, \alpha_d)$ and orthogonal matrices $U$  by taking
+\[
+\phi_{\boldsymbol\alpha, U}(x) = \begin{pmatrix}
+\psi_{\alpha_1}(\pe y1)\\ \vdots \\ \psi_{\alpha_d}( \pe yd)
+\end{pmatrix}
+\]
+with $y = Ux$. 
+
+
+The algorithm in \citep{tabak2010density} is initialized with $h_0 = \id[d]$ and update the transformation at step $n$ according to 
+\[
+h_{n} = \phi_{\boldsymbol\alpha_n, U_n}\circ h_{n-1}.
+\] 
+
+In this update, $U_n$ is generated as a random rotation matrix, and $\boldsymbol\alpha_n$ is determined as a gradient ascent update (starting from $\boldsymbol\alpha = 0$) for the maximization of 
+\[
+\boldsymbol\alpha \mapsto \ell(\phi_{\boldsymbol\alpha, U_n}\circ h_{n-1}).
+\]
+(Here, the current value $h_{n-1}$ is not revisited, therefore providing a ``greedy'' optimization method.)
+
+Letting $z_{n,k} = h_n(x_k)$, the chain rule implies that   
+\begin{multline*}
+\ell(\phi_{\boldsymbol\alpha, U_n}\circ h_{n-1})) = \sum_{k=1}^N \log f_Z(\phi_{\boldsymbol\alpha, U_n}(z_{n-1,k})) + \sum_{k=1}^N \log |\det{\phi_{\boldsymbol\alpha, U_n}(z_{n-1,k})}| \\+ \sum_{k=1}^N \log |\det{\partial_x h_{n-1}(x_k)}|\,.
+\end{multline*}
+Since the last term does not depend on $\boldsymbol\alpha$, we see that it suffices to keep track of the ``particle'' locations,  $z_{n-1, k}$ to be able to compute $\boldsymbol\alpha_n$. Note also that these locations are easily updated with
+$z_{n, k} = \phi_{\boldsymbol\alpha_n, U_n}(z_{n-1, k})$.
+
+\subsection{Neural implementation}
+This iterated composition of diffeomorphisms obviously provides a neural architecture  similar to those discussed in \cref{chap:neural.nets}. Fixing the number of iterations to be, say, $m$, one can consider families of diffeomorphisms $(\phi_\theta)$ indexed by a parameter $w$ (we had $w = (\boldsymbol\alpha, U)$ in the previous discussion), and optimize 
+\cref{eq:norm.flow.lik} over all functions $h$ taking the form $h = \phi_{w_m} \circ \cdots \circ \phi_{w_1}$. Letting $z_{j,k} =  \phi_{w_j} \circ \cdots \circ \phi_{w_1}(x_k)$ for $j\leq m$ (with $z_{0,k} = x_k$), we can write
+\[
+\ell(h) = \sum_{k=1}^N \log f_Z(z_{m,k}) + \sum_{k=1}^N \sum_{j=1}^m \log |\det{\partial_x \phi_{w_j}(z_{j-1,k})}|.
+\]
+
+Normalizing flows in this form are described in \citep{rezende2015variational,kobyzev2020normalizing,
+papamakarios2021normalizing}. The gradient of $\ell$ with respect to the parameters $w_1, \ldots, w_m$ can be computed by backpropagation. We note however that, unlike typical neural implementations, the parameters may come with specific constraints, such as $U\in \CO_d(\mR)$ when $w = (\boldsymbol\alpha, U)$, so that the gradient and associated displacement may have to be adapted compared to standard gradient ascent implementations (see \cref{sec:grad.orthogonal} for a discussion of first-order implementations of gradient methods for functions of orthogonal matrices, and \citep{absil2008optimization} for more general methods on optimization over matrix groups).
+
+\subsection{Time-continuous version}
+In \cref{sec:continuous.nn}, we described how diffeomorphisms could be generated as flows of differential equations, and this remark can be used to provide a time-continuous version of normalizing flows. Using \cref{eq:neural.ode}, one generates trajectories $z(\cdot)$ by solving over, say, $[0, T]$
+\[
+\partial_t z(t) = \psi_{w(t)}(z(t))
+\]
+with $z(0) = x$ for some function $w: t\mapsto w(t)$. Letting $z(t) = h_{w}(t, x)$ (which defines $h_w$), we know that, under suitable assumptions on $\psi$, the mapping $x \mapsto h_w(t, x)$ is a diffeomorphism of $\mR^d$. 
+%Denoting by $h_{w}(T, \cdot)$ the inverse of $g_w(T,\cdot)$, 
+One can then maximize  
+\[
+\ell(h_w(T, \cdot)) = \sum_{k=1}^N \log f_Z(h_w(T, x_k)) + \sum_{k=1}^N \log |\det{\partial_x h_w(T, x_k)}|
+\]
+with respect to the function $w$. Let $z_k(t) = h_w(t, x_k)$ and $J_k(t) = \log |\det{\partial_x h_w(t, x_k)}|$. We have, by definition 
+\[
+\partial_t z_k(t) = \psi_{w(t)}(z_k(t))
+\]
+with $z_k(0) = x_k$. One can also show that
+\[
+\partial_t J_k(t) = \nabla\cdot \psi_{w(t)}(z_k(t))
+\]
+with $J_k(0) = 0$,
+where the r.h.s. is the divergence of $\psi_{w(t)}$ evaluated at $z_k(t)$. We provide a quick (and formal) justification of this fact. First note that differentiating $\partial_t h_w(t,x) = \psi_{w(t)}(h_w(t,x))$ with respect to $x$ yields
+\[
+\partial_t \partial_x h_w(t,x) = \partial_x \psi_{w(t)}(h_w(t,x)) \partial_x h_w(t,x).
+\] 
+The mapping $\mathcal J: A \mapsto \log |\det(A)|$ is differentiable on the set of invertible matrices and is such that $d\mathcal J(A) H = \trace(A^{-1}H)$. Applying the chain rule, we find
+\begin{align*}
+\partial_t \log|\det{\partial_x h_w(t,x)}| &= \trace(\partial_x h_w(t,x)^{-1} \partial_x \psi_{w(t)}(h_w(t,x)) \partial_x h_w(t,x))\\
+& = 
+\trace(\partial_x \psi_{w(t)}(h_w(t,x))) = \nabla\cdot \psi_{w(t)}(h_w(t,x)).
+\end{align*}
+
+From this, it follows that the time-continuous normalizing flow problem can be reformulated as maximizing
+\[
+\sum_{k=1}^N \log f_Z(z_k(T)) + \sum_{k=1}^N J_k(T)
+\]
+subject to $\partial_t z_k(t) = \psi_{w(t)}(z_k(t))$, 
+$\partial_t J_k(t) = \nabla\cdot \psi_{w(t)}(z_k(t))$, $z_k(0)=x_k$, $J_k(0) = 0$. This is an optimal control problem, whose analysis can be done similarly to that made in \cref{sec:neural.ode}, provided that $\nabla\cdot \psi_{w(t)}$ can be expressed in closed form.
+
+Note that the inverse of $h_w(T, \cdot)$, which provides the generative model going from $Z$ to $X$ can also be obtained as the solution of an ODE. Namely, if one solves the differential equation
+\[
+\partial_t x(t) = - \psi_{w(T-t)}(x(t))
+\]
+with initial condition $x(0) = z$, then $x(T)$ solves the equation $h_w(T, \cdot) = z$.
+
+\section{Non-diffeomorphic models and variational autoencoders}
+\label{sec:gen.nondiff}
+\subsection{General framework}
+The previous discussion addressed the situation  $X = g(Z)$ when $g$ is a diffeomorphism, which required, in particular, that $X$ and $Z$ are real vectors with identical dimensions. This may not always be desirable, as one may prefer a small-dimensional variable $Z$ (in the spirit of the factor analysis methods discussed in \cref{chap:dim.red}), or a high-dimensional $Z$ to increase, for example the modeling power. In addition, the observation variables may be discrete, which precludes the use of the change of variables formula. In such cases, $Z$ has to be treated as a hidden variable using one of the methods discussed in \cref{chap:var.bayes}.  
+
+It will convenient  to model the generative process in the form of a conditional distribution of $X$ given $Z$ rather than a deterministic function. We place ourselves in the framework of \cref{chap:var.bayes} (with slightly modified notation) and let $\CR_X$ and $\CR_Z$ denote the measured spaces over where $X$ and $Z$ take their values, with measures $\mu_X$ and $\mu_Z$, and assume that the conditional distribution of $X$ given $Z=z$ has density $f_X(x\mid z, \theta)$ with respect to $\mu_X$, for some parameter $\theta$. We also assume that $Z$ has a distribution with density $f_Z$ with respect to $\mu_Z$, that we assume given and unparametrized. One can then directly apply the algorithms provided in \cref{chap:var.bayes}, and in particular the variational methods described in \cref{sec:var.approx} with an appropriate definition of the approximation of the conditional density of $Z$ given $X$. An important example in this context is provided by variational autoencoders (VAEs) that we now present.
+
+
+\subsection{Generative model for VAEs}
+\label{sec:vae}
+VAEs \citep{kingma2014auto-encoding,kingma2019introduction} model $X\in \mR^d$ as $X = g(Z, \theta) + \ep$ where $\ep$ is a centered Gaussian noise with covariance matrix $Q$. The function $g$ is typically non-linear, and VAEs have been introduced with this function modeled as a deep neural network (see \cref{chap:neural.nets}). Letting $\phi_\CN(\ccdot;\,0, Q)$ denote the p.d.f. of the Gaussian distribution $\CN(0, Q)$, the conditional distribution of $X$ given $Z=z$ has density
+\[
+f_X(x\mid z, \theta) = \phi_\CN(x - g(z, \theta))\,;\, 0, Q)
+\]
+with respect to Lebesgue's measure on $\mR^d$.
+
+Following the procedure in \cref{sec:var.approx}, we define an approximation of the conditional distribution of $Z$ given $X$. Assuming that $Z\in \mR^p$, we let this distribution be $\CN(\mu(x, w), \Sigma(x, w))$ for some functions $\mu$ and $\Sigma$, $w$ being a parameter. To ensure that $\Sigma \succeq 0$, we will represent it in the form $\Sigma(x, w) = S(x, w)^2$ where $S$ is a symmetric matrix. In \citep{kingma2014auto-encoding}, both functions $\mu$ and $S$ are represented as neural networks parametrized by $w$. The joint density of $X$ and $Z$ is such that
+\begin{align*}
+\log f_{X,Z}(x,z\,;\,\theta, Q) &= \log \phi_\CN(x - g(z, \theta))\,;\, 0, Q) + \log f_Z(z)\\
+&= -\frac12 (x - g(z, \theta))^T Q^{-1} (x - g(z, \theta)) - \frac12 \log \det Q - \frac d2 \log 2\pi + \log f_Z(z)
+\end{align*}
+We also have
+\[
+\log \phi_\CN(z\,;\, \mu(x, w), S(x, w)^2) = -\frac12 (z - \mu(x,w))^T S(x, w)^{-2} (z - \mu(x,w)) - \log\det S(x, w) - \frac p2 \log 2\pi.
+\]
+
+We can then rewrite the algorithm in \cref{eq:sga.var.2} as
+\begin{equation}
+\label{eq:sga.vae}
+\left\{
+\begin{aligned}
+\theta_{n+1} &= \theta_n +\gamma_{n+1} \partial_\theta \log f_{X,Z}(X_{n+1},Z_{n+1};\theta_n, Q_n)
+\\
+Q_{n+1} &= Q_n +\gamma_{n+1} \partial_Q \log f_{X,Z}(X_{n+1},Z_{n+1};\theta_n, Q_n)
+\\
+w_{n+1} &= w_n + \gamma_{n+1} \log \left( \frac{f_{X,Z}(X_{n+1},Z_{n+1};\theta_n, Q_n)}{\phi_\CN(X_{n+1}\,;\, \mu(X_{n+1}, w_n), S(X_{n+1}, w_n)^2)}\right) \\
+& \qquad\qquad \times \partial_w \log \phi_\CN(X_{n+1}\,;\, \mu(X_{n+1}, w_n), S(X_{n+1}, w_n)^2)
+\end{aligned}
+\right.
+\end{equation}
+where $X_{n+1}$ is drawn uniformly from the training data and 
+\[
+Z_{n+1} \sim \CN(\mu(X_{n+1}, w_n), S(X_{n+1}, w_n)^2).
+\]
+The derivatives in this system can be computed from those of $g, \mu$ and $S$ (typically involving back-propagation) and the  expression of the derivatives of the  determinant and inverse of a matrix provided in \cref{eq:det.der,eq:inv.der}. 
+%Of course, one can modify the algorithm by sampling a minibatch of more than one training samples and their associated $Z$ variable.
+
+The computation can be simplified if one  assumes that $f_Z$ is the p.d.f. of a standard Gaussian, i.e., $f_Z = \phi_\CN(\cdot;0, \Id[p])$. Indeed, in that case, the integral in \cref{eq:em.var}, which is, using the current notation
+\begin{equation}
+\label{eq:var.vae}
+\int_{\mR^p}\log \frac{\phi_\CN(x-g(z,\theta)\,;\, 0, Q)
+\phi_\CN(z\,;\,0, \Id[p])}{\phi_\CN(z\,;\, \mu(x, w), S(x,w)^2)}
+ \phi_\CN(z\,;\, \mu(x, w), S(x,w)^2) dz,
+ \end{equation}
+can be partially computed. For any two $p$-dimensional Gaussian p.d.f.'s, one has
+\begin{multline}
+\label{eq:gauss.kl}
+\int_{\mR^p} \log \phi_\CN(z\,;\,\mu_1, \Sigma_1)\ \phi_\CN(z\,;\,\mu_2, \Sigma_2)\, dz = -\frac12\trace(\Sigma_1^{-1} \Sigma_2) - \frac{1}{2} (\mu_2-\mu_1)^T \Sigma_1^{-1} (\mu_2-\mu_1)\\ - \frac12 \log \det(\Sigma_1) - \frac{p}{2} \log(2\pi).  
+\end{multline}
+As a consequence, \cref{eq:var.vae} becomes
+\begin{multline}
+\label{eq:var.vae.2}
+-\frac{1}{2} \myE_w\left((X-g(Z, \theta))^T Q^{-1}(X-g(Z, \theta))\right) - \frac12 \log \det Q - \frac{d}2 \log 2\pi \\ - \myE_w\left(\frac12 \trace(S(X,w)^2) + \frac{1}{2} |\mu(X,w)|^2 - \log \det(S(X,w))\right) + \frac p2,
+\end{multline}
+where $\myE_w$ denotes the expectation for the random variable $(X,Z)$ where $X$ follows a uniform distribution over training data and the  conditional distribution of $Z$ given $X=x$ is $\CN(\mu(x,w)\,,\,S(x,w)^2)$.
+
+The algorithm proposed in \citet{kingma2014auto-encoding} introduces a change of variable $Z = \mu(X, w) + S(X,w) U$ where $U\sim\CN(0, \Id[p])$, rewriting \cref{eq:var.vae.2} as
+\begin{multline}
+\label{eq:var.vae.3}
+-\frac{1}{2} \myE\left((X-g(\mu(X,w) + S(X,w)U, \theta))^T Q^{-1}(X-g(\mu(X,w) + S(X,w)U, \theta))\right) \\  - \myE_w\left(\frac12 \trace(S(x,w)^2) + \frac{1}{2} |\mu(X,w)|^2   - \log \det(S(X,w))\right)\\
+- \frac12 \log \det Q - \frac{d}2 \log 2\pi + \frac p2,
+\end{multline}
+with a modified version of \cref{eq:sga.vae}. Letting
+\begin{multline*}
+F(\theta, Q, w, x, u) = -\frac{1}{2} (x-g(\mu(x,w) - S(x,w)U, \theta))^T Q^{-1}(x-g(\mu(x,w) - S(x,w)U, \theta))\\ - \frac12 \log \det Q  - \frac12 \trace(S(x,w)^2) - \frac{1}{2} |\mu(x,w)|^2   +  \log \det(S(x,w))
+\end{multline*}
+the resulting algorithm is
+\begin{equation}
+\label{eq:sga.vae.4}
+\left\{
+\begin{aligned}
+\theta_{n+1} &= \theta_n +\gamma_{n+1} \partial_\theta F(\theta_n, Q_n, w_n, X_{n+1},U_{n+1})\\
+Q_{n+1} &= Q_n +\gamma_{n+1} \partial_Q F(\theta_n, Q_n, w_n, X_{n+1},U_{n+1})
+\\
+w_{n+1} &= w_n - \gamma_{n+1} \partial_w F(\theta_n, Q_n, w_n, X_{n+1},U_{n+1})
+\end{aligned}
+\right.
+\end{equation}
+where $X_{n+1}$ is drawn uniformly from the training data and 
+$U_{n+1} \sim \CN(0, \Id[p])$.
+
+\subsection{Discrete data}
+This framework can be easily adapted to situations in which the observations are discrete. Consider, as an example, the situation in which $X$ takes values in $\{0,1\}^V$, where $V$ is a set of vertexes, i.e., $X$ is a binary Markov random field on $V$. Assume, as a generative model, that  conditionally to the latent variable $Z\in \mR^p$, the variables $\pe Xs, s\in V$ are independent and $\pe Xs$ follows a Bernoulli distribution with parameter $g_s(z, \theta)$, where $g: \mR^p \to [0,1]^V$. Assume also that $Z \sim \CN(0, \Id[p])$, and define, as above, an approximation of the conditional distribution of $Z$ given $X=x$ as a Gaussian with mean $\mu(x,w)$ and covariance matrix $S(x, w)^2$. Then, the joint density of $X$ and $Z$ (with respect to the product of the counting measure on $\{0,1\}^V$ and Lebesgue's measure on $\mR^p$) is
+\[
+\log f_{X,Z}(x,z\,;\,\theta) = x \log g(z, \theta)+ (1-x)\log(1-g(z,\theta)) + \log \phi_\CN(z\,;\, 0, \Id[p])
+\]
+and \cref{eq:sga.vae} becomes
+\begin{equation}
+\label{eq:sga.vae.disc}
+\left\{
+\begin{aligned}
+\theta_{n+1} &= \theta_n +\gamma_{n+1} \partial_\theta \log f_{X,Z}(X_{n+1},Z_{n+1};\theta_n, Q_n)
+\\
+\\
+w_{n+1} &= w_n + \gamma_{n+1} \log \left( \frac{f_{X,Z}(X_{n+1},Z_{n+1};\theta_n)}{\phi_\CN(X_{n+1}\,;\, \mu(X_{n+1}, w_n), S(X_{n+1}, w_n)^2)}\right) \\
+& \qquad\qquad \times \partial_w \log \phi_\CN(X_{n+1}\,;\, \mu(X_{n+1}, w_n), S(X_{n+1}, w_n)^2)
+\end{aligned}
+\right.
+\end{equation}
+
+
+
+\section{Generative Adversarial Networks (GAN)}
+\label{sec:gan}
+
+\subsection{Basic principles}
+Similarly to the methods discussed so far, GANs \citep{goodfellow2014generative}, use a one-step nonlinear generator
+$X = g(Z, \theta)$, with $\theta\in \mR^K$, to model observed data (we here switch back to a deterministic relation), where $Z$ has a known distribution, with p.d.f. $f_Z$, for example $Z\sim \CN(0, \Id[p])$. However, unlike the exact or approximate likelihood maximization that were discussed in \cref{sec:norm.flows,sec:gen.nondiff}, GANs us a different criterion for estimating the parameter $\theta$ by minimizing metrics that can be approximated by optimizing a classifier.
+ The classifier is a function $x \mapsto f(x, w)$, parametrized by $w\in \mR^M$, whose goal is to separate simulated samples from real ones: it takes values in $[0,1]$ and estimates the (posterior) probability that its input $x$ is real.  GANs' adversarial paradigm consists in estimating $\theta$ and $w$ together so that generated data, using $\theta$, are indistinguishable from real ones using the optimal $w$.
+Their basic structure is summarized in Figure \ref{fig:gan.1}.
+
+\begin{figure}[h]
+
+	\begin{center}
+		\begin{tikzpicture}[roundnode/.style={rectangle, draw=green!60, fill=green!5, thin, minimum size=20mm}, squarednode/.style={rectangle, draw=black!60, fill=gray!5, very thick},]
+		\node[squarednode, minimum height=1cm] (C) {Classifier} ;
+		\node[squarednode, minimum height= 1cm, minimum width = 1cm] (P) [above=.5cm of C] {Prediction} ;
+		\node[squarednode, minimum height= 1cm, minimum width = 1cm] (W) [below=.5cm of C] {$W$} ;
+		\node[squarednode, minimum height= 1cm, minimum width = 2cm] (T) [above right=-.4cm and .75cm of C] {Data} ;
+		\node[squarednode, minimum height= 1cm, minimum width = 2cm] (S) [below right=-.4cm and .75cm of C] {Simulation} ;
+		\node[squarednode, minimum height= 1cm, minimum width = 1cm] (G) [above right=-.4cm and .75cm of S] {Generator} ;
+		\node[squarednode, minimum height= 1cm, minimum width = 1cm] (TH) [below=.5cm of G] {$\theta$} ;
+		\node[squarednode, minimum height= 1cm, minimum width = 1cm] (N) [right=.75cm of G] {Noise} ;
+		\draw[blue, thick,->] (C.north) -- (P.south) node[midway, above] {};
+		\draw[blue, thick,->] (W.north) -- (C.south) node[midway, above] {};
+		\draw[blue, thick,->] (T.west) -- (C.east) node[midway, above] {};
+		\draw[blue, thick,->] (S.west) -- (C.east) node[midway, above] {};
+		\draw[blue, thick,->] (G.west) -- (S.east) node[midway, above] {};
+		\draw[blue, thick,->] (N.west) -- (G.east) node[midway, above] {};
+		\draw[blue, thick,->] (TH.north) -- (G.south) node[midway, above] {};
+		\end{tikzpicture}
+\caption{\label{fig:gan.1}
+Basic structure of		
+GANs: $W$ is optimized to improve the prediction problem: ``real data'' vs. ``simulation''. Given $W$, $\th$ is optimized to worsen the prediction.}
+		\end{center}
+\end{figure}
+
+
+\subsection{Objective function}
+ Let $P_\th$ denote the distribution of $g(Z, \th)$, and $P_{\mathrm{true}}$ the target distribution of ``real data.'' 
+One can formalize the ``real data'' vs. ``simulation'' problem with a  pair of random variables $(X, Y)$ where $Y$ follows a Bernoulli distribution with parameter $1/2$, and the conditional distribution of $X$ given $Y$ is $P_{\mathrm{true}}$ when $Y=1$ and $P_\th$ when $Y=0$. 
+ Given a loss function $r: \{0,1\} \times [0,1] \to [0, +\infty)$, one can define 
+\[
+U(\th, w) = E_\th(r(Y, f(X, w)))
+\]
+and 
+\[
+U^*(\th) = \min_{w\in \mR^M} U(\th, w).
+\]
+ We want to maximize $U^*$ or, equivalently,  solve the optimization problem
+\[
+\th^* = \mathrm{argmax}_\th \min_{w\in \mR^M} U(\th, w).
+\]
+
+Note that
+\[
+2 U(\th, w) = E_{\mathrm{true}}(r(1, f(X, w))) + E_{\th}(r(0, f(X, w)))
+\]
+so that choosing the cost requires to specify the two functions $t\mapsto r(1, t)$ and $t\mapsto r(0, t)$. 
+ In \citet{goodfellow2014generative}, they are:
+\begin{equation}
+\label{eq:gan.original.cost}
+\begin{aligned}
+r(1,t) &=  -\log t\\
+r(0,t) & = -\log (1-t).
+\end{aligned}
+\end{equation}
+
+\subsection{Algorithm}
+Using costs in \cref{eq:gan.original.cost}, one must compute
+\[
+\begin{aligned}
+\th^* &= \mathrm{argmin} \max_{w\in \mR^M} \Big(E_{\mathrm{true}}(\log f(X, w)) + E_{\th}(\log(1-f(X, w)))\Big)\\
+ &= \mathrm{argmin} \max_{w\in \mR^M} \Big(E_{\mathrm{true}}(\log f(X, w)) + E(\log(1-f(g(Z, \th), w)))\Big).
+ \end{aligned}
+\]
+
+Such min-max, or saddle-point problem are numerically challenging. The following algorithm was proposed in \citet{goodfellow2014generative}, and also includes a stochastic approximation component. Indeed,  in practice, $E_{\mathrm{true}}$ is only known through the observation of training data, say $x_1, \ldots, x_N$. Moreover, 
+ $E_\th$ is only accessible through Monte-Carlo simulation, so that both  expectations can only be approximated through finite-sample averaging. 
+
+
+\begin{algorithm}[GAN training algorithm]
+\label{alg:gan}
+\begin{enumerate}[label = \arabic*., wide=0.5cm]
+\item Extract a batch of $m$ examples from training data, simulate $m$ samples according to $P_\th$ and run a few (stochastic) gradient ascent steps with fixed $\th$ to update $w$, replacing expectations by averages.
+\item Generate $m$ new samples of $Z$ and update $\th$ with fixed $w$ by iterating a few steps of (stochastic) gradient descent.
+\end{enumerate}
+\end{algorithm}
+\bigskip
+
+\subsection{Associated probability metric and Wasserstein GANs}
+Let $\CF$ be the family of all measurable functions: $f: \mR^d\to [0,1]$.
+Given two possible probability distributions $P_1, P_2$ (with associated expectations denoted $E_1, E_2$) of a random variable $X$ taking values in $\mR^d$, consider the function
+\[
+D(P_1, P_2) = 2\log 2 + \max_{f\in\CF} \Big(E_1(\log f(X)) + E_2(\log(1-f(X)))\Big)
+\]
+ Assume that $X$ under $P_1$ (resp.  under $P_2$) has p.d.f. $g_1$ (resp. $g_2$) with respect to Lebesgue's measure (this  assumption is not needed for the following to hold, but makes the discussion more elementary).
+ Then
+\[
+E_1(\log f(X)) + E_2(\log(1-f(X))) = \int_{\mR^d} (g_1\log f + g_2\log(1-f)) dx
+\]
+which is maximal at $f^* = g_1/(g_1+g_2)$.
+ For this $f^*$, 
+\[
+\begin{aligned}
+2\log 2 + E_1(\log f^*(X)) + E_2(\log(1-f^*(X))) 
+&= \int_{\mR^d} g_1 \log \frac{2g_1}{g_1+g_2} dx + \int_{\mR^d} g_2 \log \frac{2g_2}{g_1+g_2} dx\\
+&= \KL\left(\frac{g_1+g_2}2, g_1\right) + \KL\left(\frac{g_1+g_2}2, g_2\right)
+\end{aligned}
+\]
+ This expression is called the {\em Jensen-Shannon divergence} between $g_1$ and $g_2$. It is always non-negative, and vanishes only when $g_1=g_2$.
+
+ So, $D: (P_1, P_2) \mapsto D(P_1, P_2)$ can be interpreted as  a way to evaluate the difference between two probability distributions on $\mR^d$.
+ One can then define
+\[
+\hat D(P_1, P_2) = 
+\max_{w\in \mR^M} \Big(E_{1}(\log f(X, w)) + E_{2}(\log(1-f(X, w)))\Big)
+\]
+as an approximation of $D$ in which the set of all possible functions with values in $[0,1]$ is replaced by those arising from the GAN classification network, parametrized by $w$.
+ This approximation is useful when $g_1, g_2$ are only observable through random sampling or simulation.
+ With this interpretation, GANs minimize $\hat D(P_{\mathrm{true}}, P_\th)$.
+
+
+ This discussion suggests that new types of GAN may be designed using other discrepancy functions between probability distributions, provided they can be expressed in terms of the maximization of some quantity over some space of functions.
+  Consider, for example the norm in total variation, defined by (for discrete distributions)
+\[
+D_{\mathrm{var}}(P_1,P_2) = \frac 12 \sum_{x} |P_1(x) - P_2(x)|.
+\]
+or, in the general case $D_{\mathrm{var}}(P_1,P_2)  = \max_A(P_1(A) - P_2(A))$.
+
+ If $\CF$ is the space of continuous functions $f: \mR^d \to [0,1]$, then we also have (under mild assumptions on $P_1$ and $P_2$)
+\[
+D_{\mathrm{var}}(P_1,P_2)  = \max_{f\in\CF} (E_1(f) - E_2(f)).
+\]
+ Since neural nets typically generate continuous functions with values in $[0,1]$, one could train GANs by maximizing 
+\[
+\hat D_{\mathrm{var}}(P_1, P_2) = 
+\max_{w\in \mR^M} \Big(E_{1}(f(X, w)) - E_{2}(f(X, w))\Big)
+\]
+ However, the total variation distance is too crude to allow for meaningful comparisons between distributions. For example, the distance between two Dirac distributions at, say,  $x_1$ and $x_2$ in $\mR^d$ is always 1, whatever the distance between $x_1$ and $x_2$, unless $x_1=x_2$. A more sensitive distance can be defined based on the notion of optimal transport.
+
+
+ The Monge-Kantorovich, also called Wasserstein, and sometimes also called ``earth-mover'', distance evaluates the minimal total distance along which ``mass'' needs to be transported to transform a distribution, $P_1$, into another, $P_2$.
+ Its mathematical definition is
+\[
+D_w(P_1, P_2) = \inf_{Q} \int_{\mR^d\times\mR^d} |x_1-x_2| Q(dx_1,dx_2)
+\]
+where the $\inf$ is computed over all joint distributions on $\mR^d\times\mR^d$ whose first marginal is $P_1$ and second marginal $P_2$.
+ Note that  the distance $D_w$ between $\de_{x_1}$ and $\de_{x_2}$ now is $|x_1-x_2|$.
+
+The Wasserstein distance can also be defined by 
+\[
+D_{w}(P_1,P_2)  = \max_{f\in\CF} (E_1(f) - E_2(f))
+\]
+where $\CF$ is now the space of contractive (or 1-Lipschitz) functions, i.e., $f\in\CF$ if and only if, for all $x_1, x_2\in\mR^d$, 
+$|f(x_1) - f(x_2)| \leq |x_1-x_2|$.
+
+ Using the fact that a neural network with all weights bounded by a constant $K$ generates a function whose Lipschitz constant is controlled solely by $K$, one can then approximate (up to a  multiplicative constant) the Wasserstein distance by
+\[
+\hat D_{w}(P_1,P_2)  = \max_{w\in \mathbb W} \Big(E_{1}(f(X, w)) - E_{2}(f(X, w))\Big)
+\]
+where $\mathbb W$ is the set of all weights bounded by a fixed constant. Given the distribution $P_{\mathrm{true}}$ and the model $P_\th$, Wasserstein GANs (WGANs \citep{arjovsky2017wasserstein}) must then solve the saddle-point problem 
+\[
+U(\th, w) = \max_{w\in \mathbb W} \Big(E_{\mathrm{true}}(f(X, w)) - E_{\th}(f(X, w))\Big)
+\]
+and 
+\[
+U^*(\th) = \min_{w\in \mR^M} U(\th, w), 
+\]
+with an algorithm similar to that described earlier.
+
+As a final reference, we note the improved WGAN algorithm introduced in \citet{gulrajani2017improved} in which the boundedness constraint in the weights is replaced by an explicit control of the derivative in $x$ of the function $f$. More precisely, introduce a random variable $Z$ with distribution $\tilde P_\th$ equal $(1-U) X + U X'$ where $U$ is uniformly distributed over $[0, 1]$ and $X$ and $X'$ are independent  respectively following the distribution $P_{\mathrm{true}}$ and $P_\th$. Then, the following approximation of the Wasserstein distance between $P_{\mathrm{true}}$ and $P_\th$  that is used in \citet{gulrajani2017improved}:
+\[
+\hat D_{w}(P_{\mathrm{true}},P_\th)  = \max_{w\in \mathbb W} \Big(E_{\mathrm{true}}(f(X, w)) - E_{\th}(f(X, w)) - \tilde E_\th((|\prt_z f(Z, w)| - 1)^2) 
+\Big).
+\]
+
+\section{Reversed Markov chain models}
+
+\subsection{General principles}
+The discussions in \cref{sec:gen.nondiff,sec:gan} can be applied to sequences of structural equations (describing finite Markov chains) in the form
+\[
+\left\{
+\begin{aligned}
+Z_0 &= \bfxi_0\\
+Z_{k+1} &= g(Z_k, \bfxi_k; \theta_k), \ k=0, \ldots, m-1\\
+X &= Z_m
+\end{aligned}
+\right.
+\]
+where $\bfxi_0, \ldots, \bfxi_{m-1}$ are random variables with fixed distribution.
+
+Indeed, letting $\tilde Z = (\bfxi_0, \ldots, \bfxi_{n-1})$ and $\tilde \theta = (\theta_0, \ldots, \theta_{m-1})$ the whole system can be considered as a function $X = G(\tilde Z, \tilde{\theta})$ as considered in these sections. This representation, however, includes a large number of hidden variables, and it is unclear whether much improvement can be added to the case $m=1$ to justify the additional computational load. 
+
+Reversed Markov chain models use a different generative approach in that they first model a forward Markov chain $Z_n, n\geq 0$ which is ergodic with known (and easy to sample from) limit distribution $Q_\infty$, and initial distribution $Q_{\mathrm{true}}$, the true distribution of the data. If one fixes  a large enough number of steps, say, $\tau$, then it is reasonable to assume that $Z_\tau$ approximately follows the limit distribution, $Q_\infty$. One can then (approximately) sample from $Q_{\mathrm{true}}$ by sampling $\tilde Z_0$ according to $Q_\infty$ and then applying $\tau$ steps of the time-reversed Markov chain.  
+
+Reversed chains were discussed in \cref{sec:mcmc.reversible}. Assuming that $Q_{\mathrm{true}}$ and $P(z, \cdot)$ have a density with respect to a fixed measure $\mu$ on $\CR_Z$,  we found that $\tilde Z_k = Z_{\tau-k}$ is a non-homogeneous Markov chain whose transition probability $\tilde P_k(x, A) = P(\tilde Z_{k+1} \in A\mid \tilde Z_k = x)$ has density
+\[
+\tilde p_k(x,y) =  \frac{p(y,x)q_{\tau-k-1}(y)}{q_{\tau-k}(x)}
+\]
+with respect to $\mu$, where $q_n$ is the p.d.f. of $Q_n = Q_{\mathrm{true}} P^n$, the distribution of $Z_n$.
+
+The distributions $Q_n, n\geq 0$ are unknown, since they depend on the data distribution $P_{\mathrm{true}}$, and the transition probabilities above must be estimated from data to provide a sampling algorithm from the reversed Markov chain. While, at first glance, this does not seem like a simplification of the problem, because one now has to sample from a potentially large number ($\tau$) of distributions instead of one, this leads, with proper modeling and some intensive learning, to efficient and accurate sampling algorithms.
+
+Several factors can indeed make this approach achievable. First, the forward chain should be making small changes to the current configuration at each step (e.g., adding a small amount of noise). This ensures that the reversed transition probabilities $\tilde p_k(x, \cdot)$ are close to Dirac distributions and are therefore likely to be well approximated by simple unimodal distributions such as Gaussians. Second, the estimation problem does not have hidden data: given an observed sample, one can simulate $\tau$ steps of the forward chain to obtain, after reversing the order, a full observation of the reversed chain. Third, in some cases, analytical considerations can lead to partial computations that facilitate the modeling of the reversed transitions.
+
+\subsection{Binary model}
+We now take some examples, starting with a discrete one. Let $Q_{\mathrm{true}}$ be the distribution of a binary random field with state space $\{0, 1\}$ over a set of vertexes $V$, i.e., with the notation of \cref{sec:random.fields}, $\CR_X = \CF(V)$ with $F = \{0,1\}$. Fix a small $\ep>0$ and define the transition probability $p(x,y)$ for $x,y \in \CF(V)$ by
+\[
+p(x,y) = \prod_{s\in V} \left((1-\epsilon) \bfone_{\pe y s = \pe x s} + \epsilon\bfone_{\pe y s = 1 - \pe x s}\right).
+\]
+Since $p(x,y) >0$ for all $x$ and $y$, the chain converges (uniformly geometrically) to its invariant probability $Q_\infty$ and one easily checks that this probability is such that all variables are independent Bernoulli random variables with success probability $1/2$. Assuming that $\tau$ is large enough so that $Q_\tau \simeq Q_\infty$, the sampling algorithm initializes the reversed chain as independent Bernoulli$(1/2)$ variables and runs $\tau$ steps using the transitions $\tilde p_k$ which must be learned from data. 
+
+For this model, we have 
+\[
+q_k(x) = \sum_{y\in \CF(V)} q_{k-1}(y) p(y,x).
+\]
+For this transition, the probabililty of flipping two or more values of $y$ is 
+\[
+1 - (1-\epsilon)^N - N\epsilon (1-\epsilon)^{N-1}  = \frac{N(N-1)}2 \epsilon^2 + o(\epsilon^2)
+\]
+with $N = |V|$. We will write $x\sim_s y$ if $\pe ys = 1 - \pe x s$ and $\pe yt = \pe xt$ for $s\neq t$, and we will write $x\sim y$ if $x\sim_s y$ for some $s$.
+With this notation, we have 
+\[
+q_k(x) = (1-N\epsilon) q_{k-1}(x) + \epsilon \sum_{y: y\sim x} q_{k-1}(y) + O(\epsilon^2)
+\]
+
+Since it implies that $q_k(x) = q_{k-1}(x) + o(\epsilon)$, this expression can be reversed as
+\[
+q_{k-1}(y) = (1+N\epsilon) q_{k}(y) - \epsilon \sum_{x: x\sim y} q_{k}(x) + O(\epsilon^2)
+\]
+Similarly, we have
+\[
+p(y,x) = (1-N\epsilon) \bfone_{x=y} + \epsilon \bfone_{x \sim y } + O(\epsilon^2).
+\]
+This gives
+\[
+p(y,x)q_{k-1}(y) =  q_{k}(x) \bfone_{x=y} - \epsilon \bfone_{x=y}  \sum_{x': x'\sim y} q_{k}(x' ) + \epsilon
+q_k(y) \bfone_{x\sim y } + O(\epsilon^2),
+\]
+and we finally get
+\[
+\tilde p_k(x,y) = \left(1 - \epsilon   \sum_{x': x'\sim y} \frac{ q_{\tau-k}(x' )}{q_{\tau-k}(x)}\right) \bfone_{x=y} + \epsilon
+\frac{q_{\tau-k}(y)}{q_{\tau-k}(x)} \bfone_{x\sim y } + O(\epsilon^2)
+\]
+
+If one lets $\pe{\sigma_k}s(x) = \frac{q_{\tau-k}(y)}{q_{\tau-k}(x)}$ with $y\sim_s x$, and defines
+\[
+\hat p_k(x,y) = \prod_{s\in V} \left((1-\epsilon \pe{\sigma_k}s(x)) \bfone_{\pe y s = \pe x s} + \epsilon \pe{\sigma_k}s(x)\bfone_{\pe y s = 1 - \pe x s}\right),
+\]
+one checks easily that $\hat p_k(x,y) = \tilde p_k(x,y) + O(\epsilon^2)$. This suggests modeling the reversed chain using transitions $\hat p_k$, for which the mapping $x\mapsto (\pe{\sigma_k}s(x), s\in V)$ needs to be learned from data (for example using a deep neural network).  Note that $1 - \sigma_k(x)$ is precisely the score function introduced for discrete distributions in \cref{rem:score.discrete}. 
+
+\subsection{Model with continuous variables}
+We now switch to an example with vector-valued variables, $\CR_X = \mR^d$, and assume that the forward Markov chain is such that, conditionally to $X_n=x$,  
+\[
+X_{n+1} \sim \CN(x + h f(x), \sqrt h\Id[d]),
+\]
+ where $f$ is $C^1$. We saw in \cref{sec:mcmc.rd} that, when $f = -\nabla H/2$ for a $C^2$ function $H$ such that $\exp(-H)$ is integrable, this chain converges (approximately for small $h$) to a limit distribution with p.d.f. (with respect to Lebesgue's measure) proportional to $\exp(-H)$.  In the linear case, in which $f(x) = -Ax/2$ for some positive-definite symmetric matrix $A$, so that $H(x) = \frac12 x^TAx$, the limit distribution can be identified exactly as $\CN(0, \Sigma_h)$ where $\Sigma_h$ satisfies the equation
+\[
+A\Sigma_h + \Sigma_h A - \frac{h}{2} A^2 - 2\Id[d] = 0
+\]  
+whose solution is $\Sigma_h = (A - hA^2/4)^{-1}$
+(details being left to the reader). This implies that this limit distribution can be easily sampled from for any choice of $A$. 
+
+We now return to general $f$'s and make, like in the discrete case, a first-order identification of the reversed chain. We note that, for any smooth function $\gamma$, 
+\[
+\myE(\gamma(X_{n+1})\mid X_n = x) = \myE(\gamma(x + h f(x) + \sqrt hU))
+\]
+where $U \sim \CN(0, \Id[d])$. Making the second order expansion
+\[
+\gamma(x + h f(x) + hU) = \gamma(x)  + \sqrt h \nabla \gamma(x)^T U + h \nabla \gamma(x)^Tf(x) + \frac{h}{2} U^T \nabla^2\gamma(x) U + o(h)
+\]
+and taking the expectation gives
+\begin{equation}
+\label{eq:forward.markov}
+\myE(\gamma(X_{n+1})\mid X_n = x) = \gamma(x) + h \nabla \gamma(x)^Tf(x) +\frac{h}{2} \Delta \gamma(x) + o(h).
+\end{equation}
+
+Considering the reversed chain, and letting $q_k$ denote the p.d.f. of $X_k$ for the forward chain, we have
+\begin{align*}
+\myE(\gamma(X_{k-1}) \mid X_{k} = x) & = \int_{\mR^d} \gamma(y) \tilde p_{k}(x,y) dy\\
+& = \int_{\mR^d} \gamma(y)  p(y,x)  \frac{q_{k-1}(y)}{q_k(x)}dy\\
+& = \frac{1}{(2\pi h)^{d/2}}\int_{\mR^d} \gamma(y)    \frac{q_{k-1}(y)}{q_k(x)} e^{-\frac1{2h} |x - y - h f(y)|^2} dy\\
+& = \frac{1}{(2\pi)^{d/2}}\int_{\mR^d} \gamma(x - \sqrt h u)    \frac{q_{k-1}(x - \sqrt h u)}{q_k(x)} e^{-\frac1{2} |u - \sqrt h f(x - \sqrt h u)|^2} dy,
+\end{align*}
+with the change of variable $u = (x - y)/\sqrt h$. We make a first-order expansion of the terms in this integral, with
+\[
+\gamma(x - \sqrt h u)  q_{k-1}(x - \sqrt h u) = \gamma(x)  q_{k-1}(x) - \sqrt h \nabla (\gamma q_{k-1})(x)^T u + \frac h2 u^T \nabla^2(\gamma q_{k-1})(x) u + o(h)
+\]
+and
+\begin{align*}
+e^{-\frac1{2} |u - \sqrt h f(x - \sqrt h u)|^2} &=  e^{-\frac1{2}|u|^2} e^{ \sqrt h u^T f(x) - h u^Td f(x) u - \frac12 |f(x)|^2 + o(h)}\\
+&=  e^{-\frac1{2}|u|^2} \left(1 + \sqrt h u^T f(x) - h u^Td f(x) u - \frac h2 |f(x)|^2 + \frac h2  |u^T f(x)|^2 + o(h)\right).
+\end{align*}
+Taking products
+\begin{align*}
+&\gamma(x - \sqrt h u)  q_{k-1}(x - \sqrt h u) e^{-\frac1{2} |u - \sqrt h f(x - \sqrt h u)|^2} \\
+&=  e^{-\frac1{2}|u|^2} \gamma(x)  q_{k-1}(x) \left(1 + \sqrt h u^T f(x) - h u^Td f(x) u - \frac h2 |f(x)|^2 + \frac h2  |u^T f(x)|^2\right)\\
+& + e^{-\frac1{2}|u|^2}\left(-\sqrt h \nabla (\gamma q_{k-1})(x)^T u - h (\nabla (\gamma q_{k-1})(x)^T u)(f(x)^Tu) + \frac h2 u^T \nabla^2(\gamma q_{k-1})(x) u \right) + o(h)
+\end{align*}
+We now take the integral with respect to $u$ (recall that $\myE(U^T A U) = \trace(A)$ if $A$ is any square matrix and $U$ is standard Gaussian), so that
+\begin{align*}
+&\frac{1}{(2\pi)^{d/2}}\int_{\mR^d}\gamma(x - \sqrt h u)  q_{k-1}(x - \sqrt h u) e^{-\frac1{2} |u - \sqrt h f(x - \sqrt h u)|^2} du\\
+&=  \gamma(x)  q_{k-1}(x) + h \left( -\gamma(x)  q_{k-1}(x) \nabla \cdot f(x) 
+- \nabla (\gamma q_{k-1})(x)^T f(x) + \frac 12 \Delta(\gamma q_{k-1})(x)\right) + o(h)\\
+&=  q_{k-1}(x) \left(\gamma(x)  + h \left( -\gamma(x)  \nabla \cdot f(x) 
+- \left(\frac{\nabla (\gamma q_{k-1})(x)}{q_{k-1}(x)}\right)^T f(x) + \frac 12 \frac{\Delta(\gamma q_{k-1})(x)}{q_{k-1}(x)}\right)\right) + o(h)
+\end{align*}
+To compute an expansion of  $q_k(x)$, it suffices to take $\gamma = 1$ above, so that
+\[
+q_k(x) =   q_{k-1}(x) \left(1  + h \left( - \nabla \cdot f(x) 
+- \left(\frac{\nabla q_{k-1}(x)}{q_{k-1}(x)}\right)^T f(x) + \frac 12 \frac{\Delta q_{k-1}(x)}{q_{k-1}(x)}\right)\right) + o(h).
+\]
+We now take the first-order expansion of the ratio, removing terms that cancel, and get 
+\[
+\myE(\gamma(X_{k-1}) \mid X_{k} = x) = \gamma(x) - h \nabla \gamma(x)^T f(x) + h\nabla \gamma(x)^T\left(\frac{\nabla q_{k-1}(x)}{q_{k-1}(x)} \right) + \frac{h}{2} \Delta \gamma(x) + o(h)
+\]
+
+Comparing with \cref{eq:forward.markov}, we find that  $\tilde X_k = X_{\tau-k}$ behaves, for small $h$, like the non-homogeneous Markov chain
+such that the conditional distribution of $\tilde X_{k+1}$ given $\tilde X_{k} = x$ is $\CN(x - h f(x) - h s_{\tau-k-1}(x), \sqrt h \Id[d])$, with $s_{\tau-k-1}(x) = - \nabla \log q_{\tau-k-1}$, the score function introduced in \cref{sec:score.matching}, and score-matching methods from that section can be used to estimate it from observations of the forward chain initialized with training data. 
+
+\subsection{Continuous-time limit}
+\label{sec:reversed.diffusion}
+
+The forward schemes described in the previous examples can be interpreted as continuous time processes over discrete or continuous variables. In the latter case, the example $X_{k+1} \sim \CN(x + h f(x), \sqrt h \Id[d])$ conditionally to $X_k = x$ is a discretization of the stochastic differential equation 
+\[
+dx_t = f(x_t) dt + dw_t
+\]
+(see \cref{rem:langevin}), where $w_t$ is a Brownian motion and the diffusion is initialized with $Q_{\mathrm{true}}$. We found that going backward meant (at first order and conditionally to $X_k=x$)
+\[
+X_{k-1} \sim \CN(x - h f(x) - h s_{k-1}(x), \sqrt h \Id)
+\]
+that we can rewrite as
+\[
+x_\tau - X_{k-1} \sim \CN(x_\tau - x + h f(x) + h s_{k-1}(x), \sqrt h \Id).
+\]
+Following the definition in \citet{anderson1982reverse}, this corresponds to a first-order discretization of the {\em reverse diffusion}
+\[
+dx_t = (f(x_t) + s_t(x_t)) dt + d\tilde w_t,\ t\leq \tau
+\]
+where $\tilde w_t$ is also a Brownian motion. This reverse diffusion with $X_\tau \sim Q_\infty$ will therefore approximately sample from $Q_{\mathrm{true}}$. (With this terminology, forward and reverse diffusions have similar differential notation, but mean different things.) Note that, in the continuous-time limit, the reverse Markov process follows the distribution of the reversed diffusion exactly.
+
+
+\subsection{Differential of neural functions}
+
+As we have seen in the previous two examples, estimating the reversed Markov chain requires computing the score functions of the forward probabilities. In the case of continuous variables, this score function is typically parametrized as  a neural network, so that the function $s_k(x) = -\nabla \log q_k(x)$ is computed as $s_k(x) = F(x;\CW_k)$, with the usual definition $F(x, \CW_k) = z_{m+1}$ with $z_{j+1} = \phi_j(z_j, w_{jk})$, $z_0 = x$ and $\CW_k =  (w_{0k}, \ldots, w_{mk})$. 
+
+Assume that a training set $T$ is observed. Running the forward Markov chain initialized with elements of $T$ generates a new training step at each time step, that we will denote $T_k$ at step $k$. We have seen in \cref{sec:score.matching} that the score function $s_k$ could be estimated by minimizing, with respect to $\CW$
+\[
+ \sum_{x\in T_k} \left(|F(x,\CW) |^2  - 2\nabla \cdot  F(x,\CW)\right).
+\]
+This term involves the differential of $F$, which is defined recursively by (simply taking the derivative at each step)
+\[
+dF(x, \CW) = \zeta_{m+1}, \ \zeta_{j+1} = d\phi_j(z_j, w_{j})\zeta_j,
+\]
+ with $\zeta_0 = \Id[d]$. From this recursive definition, back-propagation can be applied, in principle, to compute the derivative of $dF(x, \CW)$ with respect to $\CW$.  The feasibility of this computation, however, is limited when $d$ is large ($d$ could be tens of thousands if one models images) computing the $d\times d$ matrix $dF(x, \CW)$ is intractable. 
+ 
+We can note that, for any $h\in \mR^d$, the vector $dF(x, \CW) h$ also satisfies the recursion
+\[
+dF(x, \CW)h = \zeta_{m+1}h, \ \zeta_{j+1}h = d\phi_j(z_j, w_{j})\zeta_jh,
+\]
+with $\zeta_0h = h$ and 
+\[
+\nabla \cdot  F(x,\CW) = \sum_{i=1}^d \mathfrak e_i^T dF(x,\CW) \mathfrak e_i
+\]
+where $\mathfrak e_1, \ldots, \mathfrak e_d$ is the canonical basis of $\mR^d$. Putting the divergence of $F$ in this form does not reduce the computation cost (which is, roughly $d^2 m$, assuming that all $z_j$'s have the same dimension), but expresses the divergence term in a form that is amenable to stochastic gradient descent (which is typically already used to approximate the sum over $x$). Indeed, if $U$ follows any distribution with zero mean and covariance matrix equal to the identity (such as a standard Gaussian, or the uniform distribution on the unit sphere), then
+\[
+\nabla \cdot  F(x,\CW) = \myE(U^T dF(x,\CW) U)
+\]
+so that $U$ can be sampled from in minibatches in SGD implementations (see \citep{song2020sliced}, where this approach is called ``sliced score matching'').

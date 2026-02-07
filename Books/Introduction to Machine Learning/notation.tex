@@ -1,0 +1,373 @@
+\chapter{General Notation and Background Material}
+%\addcontentsline{toc}{chapter}{General Notation}
+
+\section{Linear algebra}
+\begin{enumerate}[label={\bf \arabic*.}]
+
+\item The set of all subsets of a given set $A$ is denoted $\twop{A}$.
+If $A$ and $B$ are two sets, the notation $B^A$ refers to the set of all functions $f:A\to B$. In particular, $\mR^A$ is the space of real-valued functions, and forms a vector space. When $A$ is finite, this space is finite dimensional and can be identified with $\mR^{|A|}$, where $|A|$ denotes the cardinality (number of elements) of $A$.
+
+The indicator function of a subset $C$ of $A$ will be denoted $\bfone_C: A \to \{0,1\}$, with $\bfone_C(x) = 1$ if $x\in C$ and 0 otherwise. We will sometimes write $\bfone_{x\in C}$ for $\bfone_C(x)$.
+
+
+\item
+Elements of the $d$-dimensional Euclidean space $\mR^d$ will be denoted with letters such as $x,y,z$, and their coordinates will be indexed as parenthesized exponents, so that
+\[
+ x = \begin{pmatrix}
+ \pe{x}{1}\\
+ \vdots
+ \\
+ \pe{x}{d}
+ \end{pmatrix}
+ \]
+ (we will always  identify element of $\mR^d$ with column vectors). We will not distinguish in the notation between ``points'' in  $\mR^d$, seen as an  affine space, and ``vectors'' in  $\mR^d$, seen as a vector space. The vectors ${\mathbf 0}_d$ and $\dsone_d$ will denote the $d$-dimensional vectors with all coordinates equal to 0 and 1, respectively. 
+ The identity matrix in $\mR^d$ will be denoted $\Id[d]$. The canonical basis of $\mR^d$, provided by the columns of $\Id[d]$ will be denoted $\mathfrak e_1, \ldots, \mathfrak e_d$. 
+ 
+ 
+ \item
+ The Euclidean norm of a vector $x\in \mR^d$ is denoted $|x|$ with 
+ \[
+ |x| = \big((\pe{x}{1})^2 + \cdots + (\pe{x}{d})^2\big)^{1/2}.
+ \]
+ It will sometimes be denoted $|x|_2$, identifying it as a member of the family of $\ell^p$ norms
+ \begin{equation}
+ |x|_p = \big((\pe{x}{1})^p + \cdots + (\pe{x}{d})^p\big)^{1/p}
+\label{eq:lp} 
+ \end{equation}
+ for $p\geq 1$. One can also define $|x|_p$ for $0<p<1$, using \cref{eq:lp}, but in this case one does not get a norm because the triangle inequality $|x+y|_p \leq |x|_p + |y|_p$ is not true in general. The family is interesting, however, because it approximates, in the limit $p\to 0$,  the number of non-zero components of $x$, denoted $|x|_0$, which is a measure of { sparsity}. Note that we  also use the notation $|A|$ to denote the cardinality (number of elements) of a set $A$, hopefully without risk of confusion.
+ 
+While we use single bars ($|x|$) to represent norms of finite-dimensional vectors, we will use double bars ($\|h\|$) for infinite-dimensional objects.
+ 
+ \item 
+ The set of $m\times d$ real matrices with real entries is denoted $\CM_{m,d}(\mR)$, or simply $\CM_{m,d}$ ($\CM_{d,d}$ will also be denoted $\CM_d$).  The set of invertible $d\times d$ matrices will be denote $\CG\CL_d(\mR)$.
+
+ Given $m$ column vectors $x_1, \ldots, x_m\in \mR^d$, the notation $[x_1, \ldots, x_m]$ refers to the $d$ by $m$ matrix with $j^{\mathrm{th}}$ column equal to $x_j$, so that, for example, $\Id[d] = [\mathfrak e_1, \ldots, \mathfrak e_d]$.
+
+Entry $(i,j)$ in a matrix $A\in \CM_{m,d}(\mR)$ will either be denoted $A(i,j)$ or $\pe {A_j} i$. The rows of $A$ will be denoted $\pe A 1, \ldots,\pe A m$ and the columns $A_1, \ldots, A_m$.    
+
+
+ The operator norm of a matrix $A\in \CM_{m,d}$ is defined by
+ \[
+ |A|_{\mathrm{op}} = \max\{|Ax|: x\in \mR^d, |x|=1\}.
+ \]
+ 
+\item  The space of  $d \times d$ real symmetric matrices is denoted $\CS_d$, and its subsets containing positive semi-definite  (resp. positive definite) matrices is denoted $\CS^+_d$ (resp. $\CS^{++}_d$). If $m\leq d$, $\CO_{m,d}$ denotes the set of $m\times d$ matrices $A$ such that $AA^T = \Id[m]$, and one writes $\CO_d$ for $\CO_{d,d}$, the space of $d$-dimensional orthogonal matrices. Finally, $\CS\CO_d$ is the subset $\CO_d$ containing orthogonal matrices with determinant 1, i.e., rotation matrices.
+ 
+ 
+ \item 
+ A $k$-multilinear mapping is a function $a: (x_1, \ldots, x_k) \mapsto a(x_1, \ldots, x_k)$ defined on $(\mR^d)^k$ with values in $\mR^q$ which is linear in each of its variables. The mapping is symmetric if its value is unchanged after any permutation of the variables. If $k=2$ and $q=1$, one also says that $a$ is a bilinear form. The norm of a $k$-multilinear mapping is defined as
+ \[
+ |a| = \max\{a(x_1, \ldots, x_k): |x_j|\leq 1,  j=1, \ldots, k\}
+ \]
+ so that 
+ \[
+ |a(x_1, \ldots, x_k)| \leq |a| \, \prod_{j=1}^k |x_j|
+ \]
+ for all $x_1, \ldots, x_k\in \mR^d$.
+ 
+A symmetric bilinear form $a$ is called positive semidefinite if $a(x,x) \geq 0$ for all $x\in \mR^d$, and positive definite if it is positive semi-definite and $a(x,x)=0$ if and only if $x=0$. Symmetric bilinear forms can always be expressed in the form $a(x,y) = x^TAy$ for some symmetric matrix $A$, and $a$ is positive (semi-)definite if and only $A$ is also. Analogous statements hold for negative (semi-)definite forms and matrices. We will use the notation $A \succ 0$ (resp. $\succeq 0$) to indicate that $A$ is positive definite (resp. positive semidefinite). Note that, if $a(x,y) = x^TAy$ for $A\in \CS_d$, then $|a| = |A|_{\mathrm{op}}$.
+ \end{enumerate}
+ 
+ \section{Topology}
+ 
+ \begin{enumerate}[label={\bf \arabic*.}]
+\item
+The open balls in $\mR^d$ will be denoted
+\[
+B(x, r) = \{y\in \mR^d: |y-x| < r\},
+\]
+with $x\in \mR^d$ and $r>0$. The closed balls are denoted $\bar B(x,r)$ and contain all $y$'s such that $|y-x|\leq r$. A set $U \subset \mR^d$ is open if and only if for any $x\in U$, there exists $r>0$ such that $B(x,r) \subset U$. A set $\Gamma \subset \mR^d$ is closed if its complement, denoted
+\[
+\Gamma^c = \{x\in \mR^d: x\not\in\Gamma\}
+\]
+is open. The topological interior of a set $A\sub \mR^d$ is the largest open set included in $A$. It will be denoted either by $\mathring A$ or $\mathrm{int}(A)$. A point  $x$ belongs to $\mathring A$ if and only if   $B(x,r)\subset A$ for some $r>0$. 
+
+\item
+The closure of $A$ is the smallest closed set that contains $A$ and will be denoted either $\bar A$ or $\mathrm{cl}(A)$.  A point $x$ belongs to $\bar A$ if and only if $B(x, r) \cap A \neq \emptyset$ for all $r>0$. Alternatively, $x$ belongs to $\bar A$ if and only if there exists a sequence $(x_k)$ that converges to $x$ with $x_k\in A$ for all $k$.
+
+\item
+A compact set in $\mR^d$ is a set $\Gamma$ such that  any sequence of points in $\Gamma$ contains a subsequence that converges to some point in $\Gamma$. An alternate definition is that, whenever $\Gamma$ is covered by a collection of open sets, there exists a finite subcollection that still covers $\Gamma$.
+
+
+One can show that compact subsets of $\mR^d$ are exactly its bounded and closed subsets. 
+
+\item A metric space is a space $\CB$ equipped with a distance, i.e., a function $\rho:\CB\times \CB \to [0, +\infty)$ that satisfies the following three properties.
+\begin{subequations}
+\begin{equation}
+\label{eq:distance.a}
+\forall x,y\in \CB: \rho(x,y)=0 \Leftrightarrow x=y,
+\end{equation}
+\begin{equation}
+\label{eq:distance.b}
+\forall x,y\in\CB: \rho(x,y) = \rho(y,x),
+\end{equation}
+\begin{equation}
+\label{eq:distance.c}
+\forall x,y,z\in\CB: \rho(x,z) \leq \rho(x,y) + \rho(y,z).
+\end{equation}
+\end{subequations} 
+\Cref{eq:distance.c} is called the triangle inequality.
+The norm of the difference between two points: $\rho(x,y) = |x-y|$, is a distance on $\mR^d$. The definition of open and closed subsets in metric spaces is the same as above, with $\rho(x,y)$ replacing $|x-y|$, and one says that $(x_n)$ converges to $x$ if and only if $\rho(x_n, x)\to 0$. 
+
+Compact subsets are also defined in the same way, but are not necessarily characterized as bounded and closed.
+\end{enumerate}
+
+\section{Calculus}
+\begin{enumerate}[label={\bf \arabic*.}]
+ \item 
+ If $x,y\in \mR^d$, we will denote by $[x,y]$ the closed segment delimited by $x$ and $y$, i.e., the set of all points $(1-t) x + t y$ for $0\leq t \leq 1$. One denotes by $[x,y)$, $(x,y]$ and $(x,y)$ the semi-open or open segments, with appropriate strict inequality for $t$. (Similarly to the notation for open intervals, whether $(x,y)$ denotes an open segment or a pair of points will always be clear from the context.)
+ 
+
+\item The derivative of  a differentiable function $f: t \mapsto f(t)$ from an interval $I\subset \mR$ to $\mR$ will be denoted by $\prt f$, or $\prt_t f$ if the variable $t$ is well identified. Its value at $t_0\in I$ is denoted either as $\prt f(t_0)$ or $\prt f{|_{t=t_0}}$.  Higher derivatives are denoted as $\prt^k f$, $k\geq 0$, with the usual convention $\prt^0f = f$. Note that notation such as $f', f'', f^{(3)}$ will {\em never} refer to derivatives.
+
+In the following, $U$ is an open subset of $\mR^d$.
+If $f$ is a function from $U$ to $\mR^m$, we let $\pe{f}{i}$ denote the $i^{\mathrm{th}}$ component of $f$, so that
+\[
+f(x) = \begin{pmatrix}
+\pe{f}{1}(x)\\
+\vdots\\
+\pe{f}{m}(x)
+\end{pmatrix}
+\]
+for  $x\in U$. If $d=1$, and $f$ is differentiable, the derivative of $f$ at $x$ is the column vector of the derivatives of its components,   
+\[
+\prt f(x) = \begin{pmatrix}
+\prt \pe{f}{1}(x)\\
+\vdots\\
+\prt \pe{f}{m}(x)
+\end{pmatrix}
+\]
+
+
+For $d\geq 1$ and $j\in \{1,\ldots, d\}$, the $j^{\mathrm{th}}$ partial derivative of $f$ at $x$ 
+is
+\[
+\prt_j f(x) = \prt(t\mapsto f(x+t \mathfrak e_j))|_{t=0} \in \mR^m,
+\]
+where $\mathfrak e_1, \ldots, \mathfrak e_d$ form  the canonical basis of $\mR^d$.
+If the notation for the variables on which $f$ depends is well understood from the context, we will alternatively use $\prt_{x_j} f$. (For example, if $f: (\alpha, \beta) \mapsto f(\alpha, \beta)$, we will prefer $\prt_\alpha f$ to $\prt_1f$.) The differential of $f$ at $x$ is the linear mapping from $\mR^d$ to $\mR^m$ represented by the matrix
+\[
+d\!f(x) = [\prt_1f(x), \ldots, \prt_d f(x)].
+\]
+ It is defined so that, for all $h\in \mR^d$
+\[
+d\!f(x) h = \prt(t\mapsto f(x+th))|_{t=0}
+\]
+where the right-hand side is the directional derivative of $f$ at $x$ in the direction $h$. Note that, if $f:\mR^d \to \mR$ (i.e., $m=1$), $df(x)$ is a row vector. If $f$ is differentiable on $U$ and $df(x)$ is continuous as a function of $x$, one says that $f$ is continuously differentiable, or $C^1$. 
+
+Differentials obey the product rule and the chain rule. If $f,g: U \to \mR$, then
+\[
+d(fg)(x) = f(x) dg(x) + g(x) df(x).
+\] 
+If $f : U \to \mR^m$, $g: \tilde U \subset \mR^k \to U$, then
+\[
+d(f\circ g)(x) = df(g(x)) dg(x).
+\]
+
+If $d=m$ (so that $df(x)$ is a square matrix), we let $\nabla \cdot f (x) = \trace(df(x)) $, the divergence of $f$.
+
+
+The Euclidean gradient of a differentiable function  $f: U \to \mR$ is $\nabla f(x) = df(x)^T$. More generally, one defines the gradient of $f$ with respect to a tensor field $x\mapsto A(x)$ taking values in $\CS^{++}_d$,  as the vector $\nabla_Af(x)$ that satisfies the relation
+\[
+df(x) h = \nabla_Af(x)^T A(x) h
+\]
+for all $h\in \mR^d$, so that 
+\begin{equation}
+\label{eq:gradient.A}
+\nabla_Af(x) = A(x)^{-1} df(x)^T.
+\end{equation}
+In particular, the Euclidean gradient is associated with $A(x) = \Id[d]$ for all $x$.  With some abuse of notation, we will denote $\nabla_A f = A^{-1} \nabla f$ when $A$ is a fixed matrix, therefore identified with the constant tensor field $x\mapsto A$.
+
+\item We here compute, as an illustration and because they will be useful later, the differential of the determinant and the inversion in matrix spaces.
+
+Recall that, if $A = [a_1, \ldots, a_d]\in \CM_d$ is a $d$ by $d$ matrix,, with $a_1, \ldots, a_d\in \mR^d$, $\det(A)$ is a $d$-linear form 
+$\delta(a_1, \ldots, a_d)$
+which vanishes when two columns coincide and such that $\delta(\mathfrak e_1, \ldots, \mathfrak e_d) = 1$. In particular $\delta$ changes signs when two of its columns are inverted. It follows from this that
+\begin{multline*}
+\partial_{a_{ij}} \det(A) = \delta(a_1, \ldots, a_{i-1}, \mathfrak e_j, a_{j+1}, \ldots, a_d) \\
+= (-1)^{i-1} \delta(\mathfrak e_j, a_1, \ldots, a_{i-1}, \ldots, a_d) = (-1)^{i+j} \det \pe A {ij},
+\end{multline*}
+where $\pe A {ij}$ is the matrix $A$ with row $i$ and column $j$ removed. We therefore find that the differential of $A \mapsto \det(A)$ is the mapping
+\begin{equation}
+\label{eq:det.der}
+H \mapsto \trace(\mathrm{cof}(A)^T H)
+\end{equation}
+where $\mathrm{cof}(A)$ is the matrix composed of co-factors $ (-1)^{i+j} \det \pe A {ij}$. As a consequence, if $A$ is invertible, then the differential of $\log |\det(A)|$ is the mapping
+\begin{equation}
+\label{eq:det.log.der}
+H \mapsto \trace(\det(A)^{-1}\mathrm{cof}(A)^T H) = \trace(A^{-1} H)
+\end{equation}
+
+
+Consider now the function $\mathfrak I(A) = A\mapsto A^{-1}$ defined on $\CG\CL_d(\mR)$, which is an open subset of $\CM_d(\mR)$. Using $A\mathfrak I(A) = \Id[d]$ and the product rule, we get
+\[
+A (d\mathfrak I(A) H) + H \mathfrak I(A) = 0
+\]
+or
+\begin{equation}
+\label{eq:inv.der}
+d\mathfrak I(A) H = - A^{-1} H A^{-1}.
+\end{equation}
+
+\item 
+Higher-order partial derivatives $\prt_{i_k} \cdots \prt_{i_1} f : U \to \mR^m$ are defined by iterating the definition of first-order derivatives, namely 
+\[
+\prt_{i_k} \cdots \prt_{i_1} f(x) = \prt_{i_k} (\prt_{i_{k-1}} \cdots \prt_{i_1} f)(x)
+\]
+If all order $k$ partial derivatives of $f$ exist and are continuous, one says that $f$ is $k$-times continuously differentiable, or $C^k$ and, when true, the order in which the derivatives are taken does not matter. In this case,  one typically groups derivatives with the same order using a power notation, writing, for example
+\[
+\prt_1 \prt_2 \prt_1 f = \prt_1^2 \prt_2 f
+\]
+for a $C^3$ function.
+
+If $f$ is $C^k$, its $k^{\mathrm{th}}$ differential at $x$ is a symmetric $k$-multilinear map that can also be iteratively defined by (for $h_1, \ldots, h_k\in \mR^d$)
+\[
+d^k f(x)(h_1, \ldots, h_k) = d(d^{k-1}f(x)(h_1, \ldots, h_{k-1})) h_k  \in \mR^m.
+\]
+It is related to partial derivatives through the relation:
+\[
+d^k f(x)(h_1, \ldots, h_k) = \sum_{i_1, \ldots, i_k=1}^d  \pe{h_1}{i_1} \cdots \pe{h_k}{i_k}\,\prt_{i_k} \cdots \prt_{i_1} f(x).
+\]
+
+When $m=1$ and $k=2$, one denotes by $\nabla^2 f(x) = (\prt_i\prt_j f(x), i,j=1, \ldots, n)$ the symmetric  matrix formed by partial derivatives of order 2 of $f$ at $x$. It is called the {\em Hessian} of $f$ at $x$ and satisfies
+\[
+h_1^T \nabla^2 f(x) h_2 =  d^2 f(x)(h_1, h_2).
+\]
+
+The Laplacian of $f$ is the trace of $\nabla^2 f$ and denoted $\Delta f$.
+
+\item
+Taylor's theorem, in its integral form, generalizes the fundamental theorem of calculus to higher derivatives. It expresses the fact that, if $f$ is $C^k$ on $U$ and $x,y\in U$ are such that the closed segment $[x,y]$ is included in $U$, then, letting $h = y-x$:
+\begin{multline}
+f(x+h) = f(x) + df(x) h + \frac12 d^2 f(x)(h,h) + \cdots + \frac1{(k-1)!} d^{k-1}f(x)(h, \ldots, h) \\
++ \frac1{(k-1)!} \int_0^1 (1-t)^{k-1}d^kf(x+th)(h, \ldots, h)\, dt
+\label{eq:taylor}
+\end{multline}
+
+The last term (remainder) can also be written as
+\[
+\frac1{k!} \frac{\int_0^1 (1-t)^{k-1}d^kf(x+th)(h, \ldots, h)\, dt}{\int_0^1 (1-t)^{k-1}\, dt}.
+\]
+If $f$ takes scalar values, then $d^kf(x+th)(h, \ldots, h)$ is real and the intermediate value theorem implies that there exists some $z$ in $[x,y]$ such that 
+\begin{multline}
+\label{eq:taylor.z}
+f(x+h) = f(x) + df(x) h + \frac12 d^2 f(x)(h,h) + \cdots + \frac1{(k-1)!} d^{k-1}f(x)(h, \ldots, h) \\
++ \frac1{k!} d^kf(z)(h, \ldots, h).
+\end{multline}
+
+This is not true if $f$ takes vector values. However,  for any $M$ such that $|d^kf(z)| \leq M$ for $z \in [x,y]$  (such $M$'s always exist because $f$ is $C^k$), one has 
+\[
+\frac1{(k-1)!} \int_0^1 (1-t)^{k-1}d^kf(x+th)(h, \ldots, h)\, dt \leq \frac{M}{k!} |h|^k.
+\]
+
+\Cref{eq:taylor} can be written as
+\begin{multline}
+f(x+h) = f(x) + df(x) h + \frac12 d^2 f(x)(h,h) + \cdots + \frac1{k!} d^{k}f(x)(h, \ldots, h) \\
++ \frac1{(k-1)!} \int_0^1 (1-t)^{k-1}(d^kf(x+th)(h, \ldots, h)-d^k f(x)(h,\cdots, h))\, dt\,.
+\label{eq:taylor.diff}
+\end{multline}
+Let 
+\[
+\epsilon_x(r) = \max\defset{|d^kf(x+h) - d^kf(x)|:|h| \leq r}.
+\]
+ Since $d^k f$ is continuous, $\epsilon_x(r)$ tends to 0 when $r\to 0$ and we have
+ \[
+ \int_0^1 (1-t)^{k-1}|d^kf(x+th)(h, \ldots, h)-d^k f(x)(h,\cdots, h)|\, dt \leq \frac{|h|^k}{k}\epsilon_x(|h|).
+ \]
+This shows that \cref{eq:taylor} implies that 
+\begin{align}
+\label{eq:taylor.epsilon}
+f(x+h) &= f(x) + df(x) h + \frac12 d^2 f(x)(h,h) + \cdots + \frac1{k!} d^{k}f(x)(h, \ldots, h) + \frac{|h|^k}{k!}\epsilon_x(|h|)&\\
+&= f(x) + df(x) h + \frac12 d^2 f(x)(h,h) + \cdots + \frac1{k!} d^{k}f(x)(h, \ldots, h)+ o(|h|^k)&
+\label{eq:taylor.o}
+\end{align}
+ 
+
+\end{enumerate}
+
+\section{Probability theory}
+ \begin{enumerate}[label={\bf \arabic*.}]
+\item 
+
+When discussing probabilistic concepts, we will make the convenient assumption that all random variables are defined on a fixed probability space $(\Om, \myP)$. This means that $\Omega$ is large enough to include enough randomness to generate all required variables (and implicitly enlarged when needed).
+
+We assume that the reader is familiar with concepts related to discrete random variables or continuous variables (with values in  $\mathbb R^d$ for some $d$) and their probability density functions, or p.d.f.'s. In particular,  $X: \Om\to \mR^d$ is a random variable with  p.d.f. $f$ if and only if the expectation of $\phi(X)$ is given by
+\[
+\myE(\phi(X)) = \int_{\mR^d} \phi(x) f(x) dx
+\]
+for all bounded and continuous functions $\phi: \mR^d \to [0, +\infty)$.
+
+\item
+With a few exceptions, we will use capital letters for random variables and small letters for scalars and vectors that  represent realizations of these variables. One of these exceptions will be our notation for training data, defined as an independent and identically distributed (i.i.d.) sample of a given random variable. A realization of such a sample will always be denoted  $T = (x_1, \ldots, x_N)$, which is therefore a series of observations. We will use the notation $\mT = (X_1, \ldots, X_N)$ for the collection of i.i.d. random variables that generate the training set, so that $T = (X_1(\om), \ldots, X_N(\om)) = \mT(\om)$ for some $\om\in \Om$. Another exception will apply to variables denoted using Greek letters, for which we will use boldface fonts (such as $\boldsymbol\alpha, \boldsymbol\beta, \ldots$). 
+
+For a random variable $X$, the notation $[X=x]$, or $[X\in A]$ refers to subsets of $\Omega$, for example,
+\[
+[X=x] = \defset{\om\in \Om: X(\om) = x}.
+\]
+
+\item
+ As much as possible---but not always---we will avoid making explicit  reference to measure theory, leaving to readers familiar with this theory the task to complete the notation and sometimes assumption gaps in order to make some of our statements fully rigorous. 
+
+However, there will be situations in which the flexibility of the measure-theoretic formalism is needed for the exposition. The following notions may  help the reader navigate through these situations (basic references in measure theory are \citet{rudin1966real,dudley2018real,billingsley2013convergence}).
+
+ A measurable space is a pair $(S, \boldsymbol{\CS})$ where $S$ is a set and $\boldsymbol{\CS} \subset \twop{S}$ contains $S$, is stable by complementation (if $A\in \boldsymbol{\CS}$, then $A^c = S\setminus A\in \boldsymbol{\CS}$), by countable unions and intersections. Such an $\boldsymbol{\CS}$ is called a $\sigma$-algebra and elements of $\boldsymbol{\CS}$ form the measurable subsets of $S$ (relative to the $\sigma$-algebra).
+
+A (positive) measure $\mu$ on $(S, \boldsymbol{\CS})$ in a mapping from $\boldsymbol{\CS} \to [0, +\infty)$ that associates to $A\in \boldsymbol{\CS}$ its measure $\mu(A)$, such that the measure of a countable union of disjoint sets is the countable sum of their measures. A function $f:\Omega \to \mR^d$ is called measurable if the inverse images by $f$ of open subsets of $\mR^d$ are mesurable.
+
+A measurable set $A$ (or event) is negligible (for $\myP$) if $\myP(A) = 0$ and events are said to happen almost surely if their complements are negligible, i.e.,  $\myP(A^c) = 0$. 
+
+\item
+The integral of a function $f: \Omega \to \mR^d$ with respect to a measure (such as $\myP$) is denoted
+$\int_S f(x) \mu(dx)$. This integral is defined, using a limit argument, as a  function which is linear in $f$ and such that
+\[
+\int_A \mu(dx) = \int_S \bfone_A(x) \mu(dx) = \mu(A).
+\]
+
+The Lebesgue measure, $\CL_d$, on $\mR^d$ provides an important example. For this measure $\boldsymbol{\CS}$ is the $\sigma$-algebra generated by open subsets,  $\int_{\mR^d} f(x) \CL_d(dx)$ extends the Riemann integral and is denoted $\int_{\mR^d} f(x) dx$. Another important example, when $S$ is finite or countable, is the counting measure, denoted $\mathit{card}$, that return the number of elements of a set, so that $\mathit{card}(A) = |A|$. In this case, $\boldsymbol{\CS} = \twop{S}$ and the integral is simply the sum:
+\[
+\int_S f(x) \mathit{card}(dx) = \sum_{x\in \CF} f(x).
+\]
+
+\item
+If $\mu$ and $\nu$ are measures on $(S , \boldsymbol{\CS})$, one says that $\nu$ is absolutely continuous with respect to $\mu$ and write $\nu \ll \mu$ if,
+\begin{equation}
+\label{eq:abs.cont}
+\forall A\in \boldsymbol{\CS}:
+\mu(A) = 0 \Rightarrow \nu(A) = 0.
+\end{equation}
+ The Radon-Nikodym theorem states that $\nu\ll \mu$ if and only if $\nu$ has a density with respect to $\mu$, i.e., there exists a measurable function $\phi: S\to [0, +\infty)$ such that 
+\[
+\int_S f(x) \nu(dx) = \int_S f(x) \phi(x) \mu(dx)
+\]
+for all measurable $f:S \to[0, +\infty)$.
+
+\item
+If $\mu_1$ is a measure on  $(S_1 , \boldsymbol{\CS}_1)$ and $\mu_2$ a measure on  $(S_2 , \boldsymbol{\CS}_2)$, their tensor product is denoted $\mu_1 \otimes \mu_2$. It is a measure on $S_1\times S_2$ defined by $\mu_1\otimes\mu_2(A_1 \times A_2) = \mu_1(A_1) \mu_2(A_2)$ for $A_1 \in \boldsymbol{\CS}_1$ and $A_2 \in \boldsymbol{\CS}_2$ (the $\sigma$-algebra on $S_1 \times S_2$ is the smallest one that contains all sets $A_1 \times A_2$, $A_1 \in \boldsymbol{\CS}_1$, $A_2 \in \boldsymbol{\CS}_2$). 
+
+The integral, with respect to the product measure, of a function $f: S_1 \times S_2 \to \mR^d$ is denoted
+\[
+\int_{S_1\times S_2} f(x_1, x_2) \mu_1(dx_1)  \mu_2(dx_2) = 
+\int_{S_1\times S_2} f(x_1, x_2) \mu_1\otimes \mu_2(dx_1, dx_2).
+\]
+The tensor product between more that two measures is defined similarly, with notation
+\[
+\mu_1 \otimes \cdots \otimes \mu_n = \bigotimes_{k=1}^n \mu_k.
+\] 
+
+\item When using measure-theoretic probability, we will therefore assume that the  pair $(\Omega, \myP)$ is completed to a triple $(\Omega, \boldsymbol{\mathcal A}, \myP)$ where $\mathcal A$ is a $\sigma$-algebra and $\myP$ a probability measure, that is a positive measure on  $(\Omega, \boldsymbol{\mathcal A})$ such that $\myP(\Omega) = 1$. This triple is called a {\em probability space}.
+
+A random variable $X$ must then also take values in a measurable space, say $(S, \boldsymbol{\CS})$, and must be such that, for all $C\in \boldsymbol{\CS}$, the set $[X\in C]$ belongs to $\boldsymbol{\CA}$. This justify the computation of $\myP(X\in C)$, which will also be denoted $P_X(C)$. 
+
+A random variable $X$ taking values in $\mR^d$ has a p.d.f. if and only if $P_X \ll \CL_d$ and the  p.d.f. is the density provided by the Radon-Nikodym theorem. For a discrete random variable (i.e., taking values in a finite or countable set), the p.m.f. of $X$ is also the density of $P_X$ with respect to the counting measure $\mathit{card}$.
+
+If $X$ is a random variable with values in $\mR^d$, the integral of $X$ with respect to $\myP$ is the expectation of $X$,  denoted $\myE(X)$. More generally, if $(S, \boldsymbol{\CS}, P)$ is a probability space, we will use the notation
+\[
+E_P(f) = \int_S f(x) P(dx).
+\]
+If $P = P_X$ for some random variable $X:\Omega\to S$, we will use $E_X$ rather than $E_{P_X}$.
+
+\item One more technical consideration. Whenever we will consider measurable spaces, and sometimes without additional mention, we will assume that these spaces are complete metric spaces that have a dense countable subset (i.e., that are separable). If not specified otherwise, their $\sigma$-algebras are given by the smallest ones containing all open sets (the Borel $\sigma$-algebra). 
+
+
+
+\end{enumerate}

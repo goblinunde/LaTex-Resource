@@ -1,0 +1,1547 @@
+% !TEX root = machine_learning.tex
+
+
+
+
+
+\chapter{Linear Models for Regression}
+We study, in this chapter and in the following one, linear models for regression and
+classification. The  term ``linear models'' roughly refers to ``models in which the quantity of
+interest can be, after an explicit transformation, put into a form
+which depends linearly on the parameters of the model.'' Notice that
+this does not imply that the solution of the problem (the method) is
+also linear (ie. expressed as a solution of a linear system), and we
+will review in fact several nonlinear methods in this chapter. 
+
+
+
+\section{Mean square estimators}
+\subsection{Linear regression}
+As usual, $Y$ and $X$ are random variables, with $Y\in \mR$ and
+$X\in\mR^d$, and  we first consider  the case when the cost function is
+the mean square error, so that the optimal Bayes estimator is the
+conditional expectation. We assume here that, for $x\in\mR^d$
+$$
+f(x) := E(Y|X=x) = \be_0 + \sum_{j=1}^d b_j x(j) = \tilde x^T \beta\,.
+$$
+with the notation $\tilde   x = (1, x(1), \ldots, x(d))^T$ and $\beta =
+(\beta_0, b_1\ldots, b_d)^T$.
+
+Based on a training set $(y_1, x_1), \ldots, (y_N, x_N)$, the mean
+square estimator for $\tilde\be$ minimizes
+$$
+RSS(\tilde\be) = \sum_{k=1}^N (y_k - f(x_k))^2  = \sum_{k=1}^N (y_k - \tilde
+x_k^T \be)^2 
+$$
+Introduce the $N\ti (d+1)$ matrix $\mathcal X$ the rows of which
+being $\tilde x_1^T, \ldots, \tilde x_N^T$, and the column vector
+$\mathcal Y$ with coefficients $y_1, \ldots, y_N$, we have
+$$
+RSS(\be) = |\mathcal Y - \mathcal X \tilde\be|^2.
+$$
+The solution of this problem, provided by the following theorem, is
+standard.
+\begin{theorem}
+\label{th:ls.reg}
+Assume that the matrix $\mathcal X$ has rank $d+1$. Then the RSS is
+minimized for 
+$$
+\hat \beta = (\CX^T\CX)^{-1} \CX^T Y
+$$
+\end{theorem}
+This can be proved with an elementary optimization argument, or by simply
+checking that
+$$
+RSS(\be) = RSS(\hat\be) + |\mathcal X(\hat\be - \be)|^2.
+$$
+
+
+The estimator $\hat\be$ depends on the random observation and
+therefore is a random variable. Its expectation can be computed {\em
+under the assumption that the linear model is valid} as follows:  
+\begin{eqnarray*}
+E(\hat \beta) &=& E\left[E((\CX^T\CX)^{-1} \CX^T Y|\CX)\right]\\
+&=& E\left[(\CX^T\CX)^{-1} \CX^T E(Y|\CX)\right]\\
+&=& E\left[(\CX^T\CX)^{-1} \CX^T \CX\tilde\be \right]\\
+&=& \tilde\be.
+\end{eqnarray*}
+This implies that $\hat\be$ is unbiased. Assume that the conditional distribution of $Y$ given $X=x$ has
+constant variance, $\sigma^2$. Then
+\begin{eqnarray*}
+E(\hat \beta \hat\beta^T) &=& E\left[E((\CX^T\CX)^{-1} \CX^T YY^T\CX(\CX^T\CX)^{-1} |\CX)\right]\\
+&=& \sig^2 E\left[(\CX^T\CX)^{-1} \CX^T \CX(\CX^T\CX)^{-1} \right]\\
+&=& \sig^2 E\left[(\CX^T\CX)^{-1} \right]\\
+\end{eqnarray*}
+
+Here is another classical result on the least square regression
+estimator. Recall that a symmetric matrix $A$ is said to be larger than another
+symmetric matrix, $B$, if $A-B$ is nonnegative.
+\begin{theorem}[Gauss-Markov]
+%Assume that $\CX$ is deterministic. 
+Assume that an estimator $\be^* $ takes the form $\be^* = A(\CX)Y$ (it is
+linear) and is unbiased conditionally to $\CX$: $E_{\tilde \be}(\be^*|\CX) =
+\tilde \be$ (for all $\tilde \be$).
+Then the variance of $\be^*$ cannot be smaller than the variance
+of the least square estimate, $\hat\be$.
+\end{theorem}
+\begin{proof}
+The constraint
+that $E(A\CY|\CX) = \tilde\be$ for all $\tilde\be$ yields $A\CX \tilde\be = \tilde\be$
+or $A\CX = \Id_{\mR^{d+1}}$ ($A$ is a $(d+1) \times N$ matrix). The variance is $\sig^2 E(A^TA)$. What
+must be shown is that, for any $u\in\mR^{d+1}$, 
+$$ u^T E(AA^T)  u \geq u^TE[(\CX^T\CX)^{-1}] u$$
+when $A\CX = \Id$. We in fact have the stronger result: 
+$$
+A\CX = \Id \Ria u^T AA^T  u \geq u^T(\CX^T\CX)^{-1} u \text{ for all }
+u.
+$$
+
+To see this, consider the problem of minimizing  $A \mapsto u^T AA^T
+u$ subject to the constraint $A\CX = \Id$. The Lagrange multipliers for
+this constraint can be organized in a matrix $C$ and the
+Lagrangian is
+$$ u^T AA^T u - \trace(C^T A\CX)$$
+Consider a variation $A\to A+ \ep H$ to obtain the Euler-Lagrange equation
+$$ 2 u^T AH^T u - \trace(C^T H\CX) = 0$$
+which yields $\trace(H^T (2 uu^TA - C \CX^T)) = 0$ for all $H$ at the
+minimum, so that $2 uu^TA - C \CX^T = 0$. In
+particular, this implies that 
+$2 uu^TA\CX =   C \CX^T\CX$, which yields, using the constraint,
+$$
+C  = 2 uu^T (\CX^T\CX)^{-1}
+$$
+so that
+$uu^TA = uu^T (\CX^T\CX)^{-1} \CX^T$.
+This implies that $A = (\CX^T\CX)^{-1} \CX^T$ is a minimizer for all
+$u$ (and the only one in this case).
+\end{proof}
+
+One can avoid introducing the intercept $\beta_0$ by centering all variables.
+Denote 
+$$\bar y = \frac{1}{N} \sum_{k=1}^N y_k \text{ and } \bar x =
+\frac{1}{N} \sum_{k=1}^N x_k.
+$$
+It is easy to prove that the solution of the regression problem with  
+observations $y_k-\bar y$, $k=1, \ldots, N$ and predictive variables
+$x_k-\bar x$, $k=1, \ldots, N$ has least square solution $\hat\be^c$
+such that  $\hat\be^c_0 =
+0$, and that the solution of the original problem satisfies $\hat b
+= \hat b^c$ and $\hat \be_0 = \bar y - \bar x^T b$. Given this fact,
+we can, when convenient, assume that all variables are centered and
+use a model without intercept.
+
+
+\subsection{Ridge regression}
+
+Ridge regression adds a penalty to the RSS in order to limit the size of the regression coefficients. The resulting estimator minimizes
+\begin{equation}
+\label{eq:rr.1}
+\sum_{k=1}^N (y_k - \tilde x_k^T \be)^2 + \la \sum_{i=1}^d \be_i^2
+\end{equation}
+
+More generally, we can consider the problem of minimizing 
+$$
+|CY - \CX\tilde\be|^2 + \la \be^T\De\be
+$$
+for some matrix $\De$, so that \eqref{eq:rr.1} corresponds to
+$\De = \text{diag}(0, 1, \ldots, 1)$.  Another popular choice is 
+$\De = \text{diag}(0, \hat\sig^2_1, \ldots, \hat\sig^2_N)$, where $\hat\sig_i^2$ is the empirical variance of the $i$th coordinate of $X$ in the training set.
+
+Using the same argument as with
+linear regression, one finds the optimal solution to be given by
+$$
+\hat\be^\la = (\CX^T\CX + \la \De)^{-1}\CX^T \CY\,.
+$$
+
+
+We obviously retrieve the original formula for regression when
+$\la=0$. We now analyze the prediction error for this estimator. In the
+following computation, we assume that the training set is fixed, or,
+more precisely, that probabilities and expectations are made
+conditional to it.
+Also, to simplify notation, we
+denote
+$$
+S_\la = \CX^T\CX + \la \De = \sum_{k=1}^N \tx_k^T\tx_k + \la\De
+$$
+and 
+$\Sig = E(\tX^T\tX)$ for a single realization of $X$. 
+%Also, with little
+%loss of generality, let us assume that all variables are centered and
+%that the training set is centered too, so that we can use $X$ instead of $\tX$.
+
+The mean square prediction error is 
+\begin{eqnarray*}
+R(\la) &=& E((Y - \tX^T \hat\be_\la)^2)\\
+& =& E((\tX^T(\be - \hat\be_\la) + \ep)^2\\
+&=& (\hat\be_\la- \be)^T \Sig (\hat\be_\la - \be) + \sig^2.
+\end{eqnarray*}
+Now, we have
+\begin{eqnarray*}
+\hat\be_\la &=& S_\la^{-1}\CX^T\CY \\
+&=& S_\la^{-1}S_0 \be + S_\la^{-1}\CX^T\eta\\
+&=& \be - \la S_\la^{-1}\De \be + S_\la^{-1}\CX^T\eta
+\end{eqnarray*}
+in which we have denoted $\eta_k$ the noise residual $\eta_k = y_k -
+\tx_k \be$ over the training set.
+So we can rewrite
+$$
+R(\la) = \la^2 \be^T \De S_\la^{-1} \Sig S_\la^{-1} \De \be -2\la \eta^T\CX
+S_\la^{-1} \Sig S_\la^{-1}\De \be + \eta^T\CX S_\la^{-1} \Sig
+S_\la^{-1} \CX^T\eta + \sig^2.
+$$
+Let us analyze the quantities that depend on the training set in this
+expression. The first one is $S_\la = S_0 + \la \De$. From the law of
+large numbers, $S_0/N \to \Sig$ when $N$ tends to infinity, so that
+$S_\la^{-1} = O(1/N)$ (provided the order of $\la$ is no more than
+$N$). The second one is 
+$$
+\eta^T\CX = \sum_{k=1}^N \eta_k \tx_k
+$$
+which, according to the central limit theorem, is such that
+$N^{-1/2}\eta^T\CX \sim \CN(0, \sig^2 \text{Cov}(\tX))$ when
+$N\to\infty$. So, we can expect the coefficient of $\la^2$  in
+$R(\la)$ to have order $N^{-2}$, the coefficient of $\la$ to have
+order $N^{-3/2}$ and the constant coefficient of have order
+$N^{-1}$. This suggests taking $\la = \mu \sqrt{N}$ so that all
+coefficients have roughly the same order when expanding in powers of
+$\mu$. So $S_\la = N(S_0/N + \mu\De/\sqrt N) \sim N\Sig$ and we will
+make the approximation, letting $\xi = N^{-1/2} \sig^{-1/2}\eta \CX^T$
+and $\ga = \Sig^{-1/2} \De\be$,
+$$
+N(R(\la) - \sig^2) \simeq \mu^2  |\ga|^2 - 2 \mu \xi^T
+\ga  + \xi^T \xi.
+$$
+So the optimal $\mu$ should be 
+$$
+\mu = \frac{\xi^T\ga}{|\ga|^2}.
+$$
+Of course, this one cannot be computed from  data, but we can see
+that, since $\xi$ converges to a centered Gaussian random variable,
+its value cannot be too large. It is therefore natural to choose it to
+be constant and use ridge regression in the form
+$$
+\sum_{k=1}^N (y_k - \tilde x_k^T \be)^2 + \sqrt N\mu \be^T \De \be
+$$ 
+
+\section{The Lasso and other sparsity estimators}
+
+\subsection{Equivalence of constrained and penalized formulations}
+ 
+Let us consider an alternate formulation
+of the ridge regression estimator. Let $\mathit{ridge}(\la)$ denote
+the ridge regression problem for some parameter $\la$. Consider the
+following problem, which will be called $\mathit{ridge}'(C)$:
+minimize $\sum_{k=1}^N (y_k - \tx_k^T\be)^2$ subject to the constraint
+$\sum_{i=1}^d \be_i^2 \leq C$. We claim that this problem is
+equivalent to the ridge regression problem, in the following sense:
+for any $C$, there exists a $\la$ such that the solution of
+$\mathit{ridge}'(C)$ coincides with the solution of
+$\mathit{ridge}(\la)$ and vice-versa. 
+
+Indeed, fix a $C>0$. To solve $\mathit{ridge}'(C)$, we first look for
+a solution such that $\sum_i \be_i^2 < C$. If such a solution exists,
+it provides a local minimum of the unconstrained least-square problem; but the
+only local minimum is the least square solution itself, which corresponds to 
+$\mathit{ridge}(\la)$ for $\la=0$. Now consider the other case, when the solution
+satisfies $\sum_i \be_i^2 = C$. This solution can be computed with
+Lagrange multipliers, via the stationary
+points of the Lagrangian
+$$
+\sum_{k=1}^N (y_k - \tx_k^T\be)^2 - \mu \sum_{i=1}^d \be_i^2.
+$$
+The resulting computation is similar to ridge regression, and the stationary points must take the
+form
+$$
+\hat\be_\mu  = (\CX^T\CX -\mu \De)^{-1} \CX^T Y.
+$$
+By hypothesis, the mean square estimator, $\hat\be_0$ is such that
+$\hat\be_0^T\De\hat\be_0 \geq C$. On the other hand, when $\mu \to
+-\infty$, then $\be_\mu \to 0$ so that there must exist a $\mu = \mu_C
+\leq 0$ such that $\hat \be_\mu^T\De\hat \be_\mu = C$. This provides the
+solution of $\mathit{ridge}'(C)$ and also of $\text{ridge}(\la)$ for
+$\la = -\mu_C$.
+
+The converse statement is obvious: a solution $\hat\be$ of
+$\mathit{ridge}(\la)$ is solution of $\mathit{ridge}'(C)$ for $C =
+\hat\be^T \De\hat\be$. 
+
+\bigskip
+
+This fact is more general than just ridge regression. Consider a
+general penalized optimization problem, denoted $\mathit{var}(\la)$
+which consists in minimizing in $\be$ some objective function of the form $E(\be)
++ \la \phi(\be), \la \geq 0$. 
+
+We assume that $E$ and $\phi$ are continuous and $\phi(\be) \to
+\infty$ when $\be\to\infty$. We also assume that the problem is
+all but convex, namely that, for any $\la$, there is a unique solution
+of $\mathit{var}(\la)$, that will be denoted  $\be_\la$, and that $\be_0$ is the unique local minimum of $E$.
+
+Consider the family of problems $\mathit{var}'(C)$, $C>\min(\phi)$ which minimize
+$E(\be)$ subject to $\phi(\be) \leq C$ and let $\be'_C$ be the
+minimizer, also assumed to be uniquely defined. As done with ridge
+regression, we want to show that these
+two families of problems are equivalent.
+
+We first discuss the penalized problems and prove the following
+proposition, which has its own interest.
+\begin{proposition}
+\label{prop:pen.prop}
+The function $\la \mapsto E(\be_\la)$ is nondecreasing, and
+$\la\mapsto \phi(\be_\la)$ is non-increasing.
+
+Moreover, $\be_\la$ varies continuously as a function of $\la$.
+\end{proposition} 
+\begin{proof}
+Consider two parameters $\la$ and $\la'$. By definition, we have
+\begin{eqnarray*}
+E(\be_\la) + \la \phi(\be_\la) &\leq& E(\be_{\la'}) + \la
+\phi(\be_{\la'})\\
+\text{and } E(\be_{\la'}) + \la'
+\phi(\be_{\la'}) &\leq& E(\be_\la) + \la' \phi(\be_\la) 
+\end{eqnarray*}
+since both left sides are minimizers. This implies
+\begin{equation}
+\label{eq:pen.gen}
+\la (\phi(\be_\la) - \phi(\be_{\la'})) \leq E(\be_{\la'}) - E(\be_{\la})
+\leq \la' (\phi(\be_\la) - \phi(\be_{\la'})).
+\end{equation}
+
+In particular: $(\la'-\la) (\phi(\be_\la) - \phi(\be_{\la'})) \geq
+0$. Assume that $\la < \la'$. Then this last inequality implies
+$\phi(\be_\la) \geq \phi(\be_{\la'})$ and \eqref{eq:pen.gen} then
+implies that $E(\be_\la) \leq E(\be_{\la'})$, which proves the first
+part of the proposition.
+
+We now prove that $\la \mapsto \be_\la$ is continuous.
+Define $G(\be,
+\la)  = E(\be) + \la\phi(\be)$. 
+Since we assume that $\phi(\be)\to\infty$ when $\be\to \infty$, and we
+have just proved that $\phi(\be_\la) \leq \phi(\be_0)$ for any $\la$,
+we obtain the fact that the set $(|\be_\la|, \la\geq 0)$ is bounded, say by a
+constant $B\geq 0$. 
+
+Consider a sequence $\la_n$ that converges to $\la$. We want to prove
+that $\be_{\la_n} \to \be_\la$, for which (because $\be_\la$ is bounded)
+it suffices to show that if $\be_{\la_n}$ converges to some
+$\tilde \be$, then $\tilde \be = \be_\la$.
+
+So assume that  $\be_{\la_n}$ converges to $\tilde \be$. Since 
+$G$ is continuous, this implies that $G(\be_{\la_n}, \la_n) \to G(\tilde\be , \la)$ when $n$ tends
+to infinity. Let us prove that $G(\be_\la, \la)$ is continuous {\em in $\la$}.
+For any pair $\la, \la'$ and any $\be$, we have
+$$
+G(\be_{\la'}, \la')\leq G(\be, \la') = G(\be, \la) + (\la'-\la) \phi(\be) \leq G(\be, \la) + 
+|\la'-\la| \phi(\be)
+$$
+which implies (taking the minimum of the upper bound over $\be$ such
+that $\phi(\be) \leq \phi(\be_0)$) that $G(\be_{\la'}, \la') \leq
+G(\be_\la, \la) + B|\la'-\la|$. This yields, by symmetry,
+$|G(\be_{\la'}, \la') - G(\be_\la, \la)| \leq B|\la-\la'|$, proving
+the continuity in $\la$.
+
+So we must have $G(\tilde\be, \la) = G(\be_\la, \la)$. This implies
+that both $\tilde\be$ and $\be_\la$ are solutions of
+$\mathit{var}(\la)$, so that $\be_\la = \tilde \be$ because we assume
+that the solution is unique. 
+\end{proof}
+
+We now prove
+that the classes of problems
+$\mathit{var}(\la)$ and $\mathit{var}'(C)$ are  equivalent. First,
+$\be_\la$ is obviously a minimizer of $E(\be)$ subject to the
+constraint $\phi(\be) \leq C$, with $C =
+\phi(\be_\la)$. Indeed, if $E(\be) <E(\be_\la)$ for some $\be$ with $\phi(\be)
+\leq C = \phi(\be_\la)$, then
+$E(\be) + \la \phi(\be) < E(\be_\la) + \la \phi(\be_\la)$ which is a
+contradiction. So $\be_\la = \be'_C$ for $C = \phi(\be_\la)$. This
+proves the equivalence of the problems when $C$ is in the range $(a,
+\phi(\be_0))$ where $a = \lim_{\la\to\infty} \phi(\be_\la)$, which is
+easily shown to equal $\min(\phi)$. 
+
+So, the only remaining case is with $C>
+\phi(\be_0)$, but for such a $C$,  the solution of $\mathit{var}'(C)$
+must be $\be_0$ since it is a solution of the unconstrained
+problem, and satisfies the constraint.
+
+\subsection{The Lasso}
+The lasso's formulation is a simple variation of constrained
+ridge regression. Let $\hat \sig_i^2$ be the empirical variance of the
+$i$th variable $X(i)$. Then, the lasso estimator is defined as
+a minimizer of
+$\sum_{k=1}^N (y_k - \tx_k^T\be)^2$ subject to the constraint
+$\sum_{i=1}^d \hat \sig_i|\be(i)| \leq C$. So, compared to ridge regression, the sum of squares for $\be$ is
+simply replaced by a weighted sum of absolute values. Such a simple change,
+however, can drastically modify the nature of the solutions.
+
+To simplify the exposition, and without loss of generality, we will
+assume that the variables have been normalized so that $\sig(i) = 1$
+and the constraint simply is the sum of absolute values.
+The minimization for the lasso can be written as a quadratic programing problem by introducing
+slack variables, $\xi_i$, $i=1, \ldots, d$ and noting that the
+constrained 
+formulation above is equivalent to minimizing 
+$\sum_{k=1}^N (y_k - \tx_k^T\be)^2$ subject to the constraints
+$\sum_{i=1}^d\xi_i \leq C$, $\xi_i+\be_i \geq 0$, $\xi_i-\be_i\geq 0$
+and $\xi_i \geq 0$. This can be solved using widely available optimization
+routines. 
+
+Although convex programming algorithms can be very efficient, there is
+a more direct way to compute a solution to the lasso problem. For
+this, it is interesting to first analyze how the solution changes when
+$C$ varies, or how the solution of the equivalent penalization problem
+varies with $\la$.
+
+Interesting situations
+are , of course, when $C$ is small enough to ensure that the solution
+differs from ordinary least squares. In this case, the solution is on
+the set $\sum_{i=1}^d |\be_i| = C$, and it coincides, as we have just shown, with one of the
+solutions of the penalized problem that minimizes 
+$$
+G(\be) = \sum_{k=1}^N (y_k - \tx_k^T\be)^2 + \la \sum_{k=1}^d |\be(i)|.
+$$
+
+Let us study the penalized problem. For a vector $h$, we can compute the limit of $(G(\be+th) -
+G(\be))/t$ when $t$ tends to 0, $t>0$; $\be$ is a minimizer if and
+only if this limit is non-negative for all $h$. The expression of this
+limit, however, depends on whether $\be_i=0$ or not, so let's denote
+$J = J(\be)$ the set of $i$ in $\defset{1, \ldots, d}$ such that
+$\be_i \neq 0$. Then, letting $\prt^+ G(\be, h)$ denote the limit, we
+have
+$$
+\prt^+ G(\be, h) = -2\sum_{k=1}^N \sum_{i=0}^d (y_k - \tx_k^T\be)
+\tx_k(i)h(i) + \la \sum_{i\in J} \mathrm{sign}(\be(i)) h(i) + \la
+\sum_{i\not\in J, i\neq 0} |h(i)|.
+$$
+The conditions for optimality therefore are
+$$
+\sum_{k=1}^N (y_k - \tx_k^T\be) = 0,
+$$
+
+$$
+2\sum_{k=1}^N (y_k - \tx_k^T\be)
+\tx_k(i) = \la \mathrm{sign}(\be(i)) \text{ if } i\in J
+$$
+and
+$$
+- 2\sum_{k=1}^N (y_k - \tx_k^T\be)
+\tx_k(i)h(i) + \la |h(i)| \geq 0 \text{ for all $h(i)$ if } i\not\in J
+$$
+which is equivalent to
+$$
+2\Big|\sum_{k=1}^N (y_k - \tx_k^T\be)
+\tx_k(i)\Big| \leq  \la  \text{ if } i\not\in J.
+$$
+We see that the condition for optimality is just an inequality when
+$\be_i=0$, which is easier to satisfy. This is why typical solutions
+to the lasso problem are {\em sparse}, which means that they contain
+many zero coordinates.
+
+ We can rewrite the consistency conditions for the
+equations in a more convenient form. We introduce some notation.
+Denote $\be(J) = (\be_0, b(i), i\in J)$. Let $\de = \de^J$ be the vector
+starting with 0 and followed by the signs of $b(i)$ for $i\in J$. Let
+$\tx_k(J)$ be the vector $(1, x_k(i), i\in J)^T$. Let
+$$
+S_{XX}^J = \frac{1}{N} \sum_{k=1}^N \tx_k(J)\tx_k(J)^T
+$$
+and 
+$$
+S_{XY}^J = \frac{1}{N} \sum_{k=1}^N \tx_k(J)y_k.
+$$
+Then, the equality constraints give
+\begin{equation}
+\label{eq:cons.lasso.0}
+\be_\la(J) = \hat \be^J + \frac\la2 u^\de
+\end{equation}
+where
+$\hat\be^J = (S_{XX}^J)^{-1}S_{XY}^J$ is the least square estimator
+for the model restricted to the set $J$, and $u^\de =
+(S_{XX}^J)_{-1}\de$. This solution is consistent with the signs in
+$\de$ if and only if
+\begin{equation}
+\label{eq:cons.lasso.1}
+\de(i)(\hat \be^J(i) + \frac\la2 u^\de(i)) > 0, i\in J.
+\end{equation}
+
+To write the inequality constraints, define
+$$
+r^J(i) = \frac1N \sum_{k=1}^N (y_k - \tx_k(J)^T\hat\be^J) x_k(i)
+$$
+to be the empirical correlation between the residual for the least
+square estimator on $J$ and the variable $X(i)$ for $i\not\in
+J$. Define also
+$$
+d^J(i) = \frac{1}{N} \sum_{k=1}^N \tx_k(J)^Tu^\de x_k(i).
+$$
+Then, the second set of conditions is
+\begin{equation}
+\label{eq:cons.lasso.2}
+|2r^J(i) + \la d^J(i)| \leq \la, i\not\in J.
+\end{equation}
+
+If conditions \eqref{eq:cons.lasso.1} and \eqref{eq:cons.lasso.2} are
+satisfied, then the parameter provided by \eqref{eq:cons.lasso.0} is
+the solution of the penalized lasso problem for the given value of
+$\la$. It is important to notice that \eqref{eq:cons.lasso.1} and
+\eqref{eq:cons.lasso.2} only involve $\la$, $J$, $\de$. 
+
+If $J$ and $\de$ are consistent for a given value of $\la$, it will
+remain so, by continuity, for small variations of $\la$, provided that no
+equality occurs in \eqref{eq:cons.lasso.2}. So, when $\la$
+varies, changes in $J$ and $\de$ occur as discrete
+events, corresponding to equalities in the consistency conditions.
+
+
+The simplest situation is with $J = \emp$ which corresponds
+to large $\la$'s. Indeed, the consistency conditions are satisfied
+with $J=\emp$ as soon as
+$$
+\la \geq 2\max_{i=1, \ldots, d} |r^\emp(i)|
+$$
+since $d^\emp = 0$. If we now let $\la$ decrease from these large
+values, the set $J$ and the signs, $\de$ will change when one of the
+following events occurs:
+\begin{itemize}
+\item[1.] For some $i\in J$, $\hat \be^J(i) + \frac\la2 u^\de(i) = 0$,
+in which case $i$ must be removed from $J$.
+\item[2.] For some $i\not\in J$, $|2r^J(i) + \la d^J(i)| = \la$, in which
+case we must add $i$ to $J$ and 
+$\de(i) = \mathrm{sign}(2r^J(i) + \la d^J(i))$.
+\end{itemize}
+
+This directly leads to an algorithm that computes a solution of the
+penalized problem by progressively adding and removing elements to $J$
+until the correct set is found for the desired value of $\la$. For
+this, start with $J_0 = \emp$ $\de_0 = 0$ and $\la_0 = 2\max_{i=1, \ldots, d} |r^\emp(i)|$. Let $J_n$ be the current
+set in the algorithm, with signs provided by $\de_n$, and let
+$\la_{n}$ be the last transition value. Denote $\hat \be_n = \hat\be^{J_n}$, the least square
+estimator for $J_n$, $u_n = u^{\de_n}$, $r_n = r^{J_n}$ and $d_n =
+d^{J_n}$ using the formulae above.
+We want to compute $J_{n+1}$,
+$\de_{n+1}$  and $\la_{n+1}$. 
+
+The latter will be the first value
+smaller than $\la_n$ at which one of the events in items 1. and
+2. above occurs. Consider the first case. We have, for each $i\in J$:
+$$
+\de_n(i) \hat\be_n + \frac{\la_n}{2} u_{n}(i)\de_n(i) > 0
+$$
+this will remnain true for $\la <\la_n$ if $u_n(i)\de_n(i) \leq
+0$ so that only indices with $u_n(i)\de_n(i) > 0$ are relevant
+and a null value occurs with $\la = -\hat \be_n(i) /
+u_n(i)$. 
+
+For 2., we have 
+$$
+-\la_n < 2r_n(i) + \la_n d_n(i) < \la_n
+$$
+for all $i\not\in J$ and we must find the largest $\la <\la_n$ for
+which the upper of the lower bound becomes an equality. Like in the
+previous discussion, we see that an equality is possible in the lower
+bound only if $(1+d_n(i))>0$ and in the upper-bound only if
+$(1-d_n(i))>0$, the corresponding value being $\la = -2r_n(i)
+/(1+d_n(i))$ in the frst case and $\la = 2r_n(i)
+/(1-d_n(i))$ in the second case. So the update algorithm proceeds as follows:
+ Compute 
+$$\la'_n = \max\defset{- \frac{\hat\be_n(i)}{u_n(i)}: i\in J_n, \de_n(i)
+  u_n(i) \geq 0};$$
+Then compute
+\begin{eqnarray*}
+\la''_n &=& \max\defset{-\frac{2r_n(i)}{1+d_n(i)}, (1+d_n(i))>0,
+  i\not\in J_n} \text{ and } \\
+\la^{(3)}_n &=& \max\defset{\frac{2r_n(i)}{1-d_n(i)}, (1-d_n(i))>0,
+  i\not\in J_n} \text{ and }
+\end{eqnarray*}
+We have the following cases (in which we assume, to simplify, that no
+tie occurs in the determination of the maxima):
+\begin{itemize}
+\item[1.] $\max(\la'_n, \la''_n, \la^{(3)}_n) \leq \la$: stop the procedure; the solution
+  is given by \eqref{eq:cons.lasso.0} with $J=J_n$.
+\item[2.] $\la_n' >\max(\la, \la''_n, \la^{(3)}_n)$. Let $i^*$ be the index achieving
+  the maximum in the definition of $\la'_n$: define $\la_{n+1} = \la'_n$
+  and $J_{n+1} = J_n \setm \{i^*\}$.
+\item[3.] $\la_n''  >\max(\la, \la^{(3)}_n, \la'_n)$ (resp. $\la_n^{(3)}  >\max(\la, \la^{''}_n, \la'_n)$). Let $i^*$ be the index achieving
+  the maximum in the definition of $\la''_n$ (resp.  $\la^{(3)}_n$):
+  define $\la_{n+1} = \la''_n$ (resp. $\la_{n+1}  =  \la^{(3)}_n$)
+  and $J_{n+1} = J_n \cup \{i^*\}$, with $\de_{n+1}(i^*) =
+  \mathrm{sign}(2r_n(i^*) + \la_n'' d_n(i^*))$. 
+\end{itemize}
+
+To solve the constrained problem, with constant $C$, it suffices to
+compute, at each step $n$, the value $C_n = \sum_{i=1}^d |\be(i)|$. As
+soon as $C_{n+1} \geq C$, we know that the correct set $J$ is $J_n$
+with correct signs given by $\de_n$. It remains to find $\la$ such that
+$$
+C = \sum_{i\in J_n} \de_n(i)(\hat \be_n(i) + \la u_n(i)) = \sum_{i\in
+  J_n} |\hat \be_n(i) + \la u_n(i)|
+$$
+and use \eqref{eq:cons.lasso.0} to obtain the solution.
+
+
+\subsection{LARS estimator}
+LARS, which holds for {\em Least Angle Regression}, is a variant of the
+lasso in which only the incremental part of the set of active
+variables is implemented. We now provide the interpretation that led
+to the acronym. If $\mu$ denote the residual after regression, i.e.,
+$$
+\mu_k = y_k - \tx_k\be_\la,
+$$
+so that $r_\la(i)$ is the empirical correlation between $mu$ and $X(i)$.
+The consistency equations imply that $|r(i)|$ is constant over all
+variables $i\in J$, and larger than any $r(j)$ for $j\not\in J$. Since
+we have normalized the variables, $r(i)$ is proportional to the cosine
+of the angle between the residual and the selected variables. The
+algorithm then chooses the next variable as the one which maximizes
+this cosine, i.e., as the one which provides the least angle with the
+current residual.
+
+\subsection{The Dantzig selector}
+
+The Dantzig selector is a regression method adapted to
+underconstrained situations in which the number of predictive
+variables, $d$, is large compared to the observations. Before
+describing it, let us consider the noise-free case and the ill-posed problem of
+solving the equation
+$\CX \be = \CY$ when the dimension of $\CY$ ($N$) is small compared to
+number of columns in $\CX$ ($d$). To simplify the discussion, we
+assume that all variables are centered and do not consider the
+intercept.
+
+To select a solution that is well defined, additional constraints
+are needed. A particularly appealing one is that the solution should
+be sparse, i.e., have a small number of non-zero coefficients. This
+naturally leads to the issue of finding a solution of $\CX \be
+= \CY$ which  has the largest number of vanishing coefficients, but this problem,
+is numerically intractable. Given that, as we have seen with
+the lasso, minimizing the sum of absolute values often provides sparse
+solutions, the problem can be replaced with the more tractable one
+consisting in minimizing 
+$$
+\sum_{i=1}^d |b_i|
+$$
+subject to the constraint $\CX \be = \CY$ (as done with the lasso, we
+assume that the empirical variance of each variable is normalized, so
+that, denoting $\CX(i)$ the $ith$ column of $\CX$, we have $|\CX(i)| = 1$.)
+
+This results in  a linear
+programming problem. Introducing slack variables, it is 
+equivalent to minimizing $\sum_{i=1}^d \xi_i$ subject to constraints
+$\xi_i \geq b_i$, $\xi_i\geq -b_i$ and $\CX \be = \CY$.
+
+
+Besides the numerical advantages of this method, there are interesting
+theoretical properties that are satisfied, too. The natural issue is 
+whether using the sum of absolute values permits to recover a sparse
+solution when it exists. More precisely, let $\hat\be$ be the solution
+of the linear programming problem and assume that there is a set $J\sub\{1,
+\ldots, d\}$ such that $\CX\be = \CY$ for some $\be \in \mathbb R^d$
+with $\be(i) = 0$ if $i\not\in J$;  under which conditions will
+$\hat\be$ be equal to
+$\be$? 
+
+Sufficient conditions for this are provided in \cite{ct05} and involve
+the correlation between the columns of $\CX$ and the size of $J$.
+That the size of $J$ must be considered is
+clear, since, for the statement to make sense, there cannot exist two
+$\beta$'s satisfying $\CX\be = \CY$ and $\be(i) = 0$ for $i\not\in
+J$. Uniqueness is obviously not true if $|J|>N$, because the condition
+would become under-constrained for $\be$. Furthermore, the set
+$J$ is not known, and we want to avoid any other solution associated
+to a set of same size. So, there
+cannot exist $\be$ and $\tilde\be$ respectively vanishing outside of $J$ and
+$\tilde J$, where $J$ and $\tilde J$ have same cardinality, such that $\CX\be = \CY = \CX\tilde \be$. Having
+$\CX(\be-\tilde\be) = 0$ is possible as soon as the number of non-zero
+coefficients of $\be-\tilde\be$ is larger than $N$, and since this
+number can be as large as $|J|+|\tilde J|$, we see that we should
+impose at least $|J| \leq N/2$ in the statement. 
+
+
+Another obvious remark is that, if the set $J$ on which $\be$ does not
+vanish is known, with $|J|$ small enough, then $\CX\be = \CY$ is
+underconstrained and the solution is (typically) unique. So the issue really is
+whether one can identify $J$. 
+
+The linear program we consider has an
+equivalent dual form, which is also a linear program, and
+its solution can be deduced from the one of the dual and
+vice-versa. This dual problem admits a very simple form. Introducing
+new variables $\al_1, \ldots, \al_N$, it requires
+to maximize
+$\al^T\CY$
+subject to the constraints $|\al^T\CX(i)|\leq 1$ for $i=1, \ldots,
+d$. Given a solution to this problem, one can find the Dantzig
+selector by solving $\CX\hat\be = \CY$ with $\be(i) = 0$ for $i\not\in
+J_\al$, where $J_\al = \defset{i:|\al^T\CX(i)| = 1}$. So the Dantzig
+selector provides the correct answer as soon as $J_\al = J$.
+
+Now, since $\al^T\CY = \al^T\CX\be = \sum_{i=1}^d \be(i) \al^T\CX(i)$,
+it can be no larger than $\sum_{i\in J} |\be(j)|$, and such a value is
+possible only if $\al^T\CX(i) = \mathit{sign}(\be(i))$ for $i\in
+J$. If such an $\al$ can be found with, in addition $|\al^T\CX(j)|<1$
+for $j\not \in J$, then it is a solution of the dual problem with
+$J_\al = J$ and therefore provides the correct $\be$. For $T,T'\sub
+\{1, \ldots, d\}$, define 
+$\Sig_{TT'}$ to be the $|T|$ by $|T'|$ matrix formed by the dot
+products $X(j)^TX(j')$, $j\in T$, $j'\in T'$.
+
+Letting $s_J =
+(s_j, j\in J)$ be defined by  $s_j = \mathit{sign} \be(j)$, a little
+algebra proves that $\al$ should take the form
+$$
+\al = \sum_{j\in J} \rho(j) \CX(j) + w
+$$
+for some $w\perp \mathrm{span}(\CX(j), j\in J)$, with $\rho = \Sig_{JJ}^{-1}
+s$. Letting $\al_J$ be the solution with $w=0$, the question is
+therefore whether one can fond $w$ such that
+$$
+\left\{\begin{array}{ll}
+w^\CX(j) = 0, & j\in J\\
+|\al_J\cdot X(k) + w\cdot X(k)| < 1, & k\not \in J
+\end{array}
+\right.
+$$
+One can show that such a solution exists when the matrices
+$\Sig_{TT}$ are close to the identity for $|T|$ smaller than a
+constant \cite{ct05}. More precisely, denote, for $q\leq d$
+$$
+\de(q) =\max_{|T| \leq q} \max(\|\Sig_{TT}\|, \|\Sig_{TT}\|^{-1}) - 1
+$$
+and
+$\th(q,q') = \max_{|z| = |z'| = 1} z^T \Sig_{TT'} z'$. Then, the
+following proposition is true
+\begin{proposition}[Candes-Tao]
+Let $q = |J|$ and $s = (s_i, j\in J)\in \mR^q$. Assume that $\de(2q)
++ \th(q,2q) <1$. Then there exists $\al\in \mR^N$ such that
+$\al^T\CX(j) = s(j)$ for $j\in J$ and
+$$
+|\al^T\CX(j)| \leq \frac{\th(q,q)}{1-\de(2q) - \th(q,2q)} \text{ if }
+j\not\in J.
+$$
+\end{proposition}
+So $\al$ has the desired property as soon as $\de(2q) + \th(q,q) +
+\th(q,2q) \leq 1$. The interesting conclusion is that one only needs
+to control subsets of variables of size less than $3q$ to obtain the
+conclusion, which is important, of course, when $q$ is small compared to
+$d$.
+
+
+\bigskip
+
+Consider now the noisy case, which is the situation for which the
+Dantzig selector is defined. We here again introduce quantities that
+were pivotal for the lasso and LARS estimator, namely, the correlation
+between the variables and the residual error. So, we define, for a
+given $\be$
+$$
+r_\be(i) = \CX(i)^T(\CY - \CX\be)
+$$
+which depends linearly on $\be$. Then, the {\em Dantzig selector} is defined
+by the linear program: Minimize
+$$
+\sum_{j=1}^d |\be(j)|
+$$
+subject to the constraint 
+$$
+\max\limits_{j=1, \ldots, d} |r_\be(j)| \leq C.
+$$
+The explicit expression of this problem as a linear program is as
+before by introducing slack variables $\xi(j), j=1, \ldots, d$ and
+minimizing 
+$$
+\sum_{j=1}^d \xi(j)
+$$
+with constraints $\xi \geq \be$, $\xi\geq -\be$, $
+\max\limits_{j=1, \ldots, d} |r_\be(j)| \leq C.
+$
+
+Similar to the noise-free case, the Dantzig selector can identify sparse
+solutions (up to a small error) if the columns of $\CX$ are nearly orthogonal, with the same
+type of conditions \cite{ct07}. Interestingly enough, the accuracy of
+this algorithm can be proved to be comparable to the lasso in the
+presence of sparse solution \cite{brt08}.
+
+\section{Support Vector Machines for regression}
+
+We will discuss support vector machines (SVM) in several steps, starting in
+this section with the case of regression, without kernel (linear
+SVM). Instead of least square, SVM uses the  loss function:
+\begin{equation}
+\label{eq:svm.v}
+V(t) = \left\{
+\begin{aligned}
+ 0 & \text{ if } |t| < \ep\\ 
+ |t-\ep| &
+\text{ otherwise}\end{aligned}\right.
+\end{equation}
+
+
+Such a loss function is an example of what is often called a robust
+loss function. The quadratic error used in linear regression had the
+advantage to provide closed form expressions for the solution, but is
+very sensitive to outliers. It is often preferable to use loss
+functions that increase linearly at infinity. One generally choose
+them as smooth convex functions, for example $V(t) = (1-\cos\ga
+t)/(1-\cos\ga\ep)$ for $|t|<\ep$ and $f(t) = |t|$ for $t \geq \ep$,
+where $\ga$ is chosen so that $\ga\ep\sin\ga\ep /(1-\cos\ga\ep) =
+1$. In such a case, minimizing
+$$
+F(\be) = \sum_{k=1}^N V(y_k - \be_0 - x_k^T b)
+$$
+can be done using smooth convex programming methods. 
+
+Because $V$ in \eqref{eq:svm.v} is piecewise linear, an interesting
+additional reduction of the problem may be obtained in that case. The SVM regression problem is formulated as the minimization of
+$$ 
+F(\be) = \sum_{k=1}^N V(y_k - \be_0 - x_k^T b) + \la |b|^2
+$$
+where $b = (\be_1, \ldots, \be_d)^T$. This function exhibits the
+following features:
+\begin{itemize}
+\item A penalty on the coefficients of $\be$ (other than the
+intercept), similar to ridge regression.
+\item A linear penalty (instead of quadratic) for large errors in the
+prediction.
+\item An $\ep$-tolerance for small errors, often referred to as {\em the margin} of the SVM.
+\end{itemize}
+
+We now  describe the various steps in the analysis and reduction of
+the problem. They will lead to simple minimization algorithms, and
+possible extensions to nonlinear problems.
+
+\subsection{Step 1: Reduction to a quadratic programming problem} 
+Introduce the slack
+variables $\xi_k, \xi_k^*, k=1, \ldots, N$. One
+show that the original problem
+is equivalent to the minimization, with respect to $\be, \xi, \xi^*$, of
+$$
+\sum_{k=1}^N (\xi_k+ \xi_k^*) + \la |b|^2
+$$
+under the constraints:
+$$
+\left\{\begin{array}{l} \xi_k, \xi_k^* \geq 0\\ \xi_k - y_k + \tilde
+x_k^T\be +\ep \geq 0\\
+\xi_k + y_k - \tilde
+x_k^T\be +\ep \geq 0
+       \end{array}
+\right.
+$$
+The simple proof of the equivalence between the new and the original problems
+is left to the reader. What we have obtained is a reduction to a
+quadratic programming problem (minimize a quadratic 
+function under linear constraints). We will refer to it as the primal
+problem. Interesting insight, and possible nonlinear generalization, comes from reformulating this problem in
+terms of what are called the dual variables. 
+
+\subsection{Dual formulation}
+There are 4N constraints, and we introduce 4N Lagrange multipliers for
+them, $\eta_k, \eta_k^*$ for the positivity constraints, and $\al_k,
+\al_k^*$ for the last two. The resulting Lagrangian is
+\begin{multline*}
+\mathcal L (b , \xi, \xi^*, \alpha, \alpha^*, \eta, \eta^*) = \sum_{k=1}^N (\xi_k+ \xi_k^*) + \la |b|^2 - \sum_{k=1}^N
+(\eta_k\xi_k + \eta_k^*\xi_k^*) \\
+- \sum_{k=1}^N \al_k (\xi_k - y_k +
+\tilde x_k^T\be - \ep)  - \sum_{k=1}^N \al_k^* (\xi_k + y_k -
+\tilde x_k^T\be - \ep) .
+\end{multline*}
+$(b, \xi, \xi^*)$ are the primal variables, and $\alpha, \alpha^*,
+\eta, \eta^*$ the dual variables.
+
+
+The solutions of the problem are characterized by the fact that, for
+some set of dual variables, the
+partial derivatives of $\mathcal L$ with respect to the primal
+variables vanish, and the KKT conditions are satisfied, namely
+$\al_k, \al_k^*, \eta_k, \eta_k^* \geq
+0$ and 
+$$
+\left\{\begin{array}{l}
+\al_k (\ep + \xi_k - y_k + \tilde x_k^T\beta) = 0  \\
+\al_k^* (\ep + \xi_k^* + y_k - \tilde x_k^T\beta) = 0  \\
+\eta_k\xi_k = \eta_k^*\xi_k^* = 0
+       \end{array}
+\right.
+$$
+(i.e., if a
+constraint is satisfied with a strict inequality, then the
+corresponding Lagrange coefficient must vanish). 
+
+The same characterization applies to the solution of the dual problem,
+which  is associated to the maximization of the function 
+$$
+L^*(\al, \al^*, \eta, \eta^*) = \inf_{\be, \xi, \xi^*} \mathcal L.
+$$
+ under the previous
+positivity constraints. 
+
+We now compute $L^*$. Since the Lagrangian is linear in $\be_0$,
+$\xi_k$ and $\xi_k^*$, its minimum is $-\infty$ unless the
+coefficients vanish. We therefore have $L^* = -\infty$ unless the first three conditions in the system below must be satisfied. The fourth one expresses the fact that the derivative in $b$ of $\mathcal L$ must vanish. We have:
+$$
+\left\{\begin{array}{l}
+1 - \eta_k - \al_k = 0 \\
+1 - \eta_k^* - \al_k^* = 0 \\
+\sum_{k=1}^N (\al_k-\al_k^*) = 0 \\
+2 \la b - \sum_{k=1}^N (\al_k-\al_k^*) x_k^T = 0
+       \end{array}
+\right.
+$$ 
+Using $\eta_k  = 1- \al_k$ and $\eta_k^* = 1- \al_k^*$ and the
+expression of $b$,, we can 
+express $L^*$ uniquely as a function of $\al, \al^*$, yielding
+$$
+L^*(\al, \al^*) = -\frac{1}{4\la} \sum_{k,l=1}^N
+(\al_k-\al_k^*)(\al_l-\al_l^*)\scp{x_k}{x_l} - \ep \sum_{k=1}^N
+(\al_k+\al_k^*) + \sum_{k=1}^N (\al_k-\al_k^*)y_k
+$$
+with $\scp{x_k}{x_l} = x_k^Tx_k$.
+This must be maximized with the constraints that $0\leq \al_k,
+\al_k^*\leq 1$ and $\sum_{k=1}^N (\al_k-\al_k^*) = 0$ 
+from the previous system. This still is
+a quadratic programming problem, but now has additional nice features
+and interpretations.
+
+\subsection{Analysis of the dual problem}
+The first fact is that the dual problem only depends on the $x_k$'s
+through the matrix of their inner products. This is irrelevant in 
+small dimension, but in large dimension, this may become an important
+advantage (if the $2N$ unknowns of the dual problem are less that the $d$ original dimensions). Many applications of support vector machines work in fact
+with a linear space of infinite dimension, with the help of a 
+``kernel trick'' which will be discussed later, in which case the reduction is unavoidable.. The obtained predictor can
+also be expressed as a function of the inner products, since
+$$
+y = \beta_0 + x^T b = \be_0 + \frac{1}{\la} \sum_{k=1}^N (\al_k-\al_k^*)
+\scp{x_k}{x}\,.
+$$
+
+The parameter $\be_0$ can be determined  using the KKT conditions when the optimal $\al, \al^*$ are computed. We now analyze these conditions, which reduce to
+$$
+\left\{\begin{array}{l}
+\al_k (\ep + \xi_k - y_k + \be_0 + x_k^T b) = 0  \\
+\al_k^* (\ep + \xi_k^* + y_k - \be_0 - x_k^T b) = 0  \\
+(1-\al_k)\xi_k = (1-\al_k^*)\xi_k^* = 0
+       \end{array}
+\right.
+$$
+
+Let's see how and when these equations are satisfied. First consider indices $k$
+such that the error is strictly within the $\ep$-tolerance
+margin: $|y_k - \be_0 - x_k^Tb| < \ep$. Then the first two equations and $\xi_k, \xi_k^* \geq 0$ imply that $\al_k  \al_k^* = 0$ and the last two imply $\xi_k  = \xi_k^* = 0$. This provides no information on $\be_0$, but
+has the following consequence: {\em the variables $\al$ and $\al^*$
+vanish for the samples with prediction error less than $\ep$}. 
+
+Consider now the case when the prediction is strictly less accurate
+than the margin. Assume that $y_k - \be_0 - x_k^Tb > \ep$, the other case
+being symmetrical. This implies that $\al_k^* = \xi_k^* = 0$. This also implies that 
+\[
+\xi_k = y_k - \be_0 - x_k^Tb -\ep >0
+\]
+and $\al_k = 1$. No information is obtained on $\be_0$ in this case also.
+
+The remaining cases are samples for which the prediction error is exactly
+at the margin. Assume again that it is positive: this implies that $\xi_k =
+0$ (otherwise $\xi_k - y_k + \be_0 + x_k^Tb +\ep > 0$, which implies that $\al_k=0$ and $(1-\al_k)\xi_k=0$ is a contradiction. We therefore have $y_k - \be_0 - x_k^T b = \ep$ which provides the
+value of $\be_0$. The points for which the error is exactly at the margin are called {\em support vectors}. These are the points that  can be used to compute 
+$\be_0$ and there are, in
+general, several such points in practice.
+
+Note also that $\al_k$ and $\al_k^*$ cannot be nonzero together
+(because they correspond to incompatible constraints), and that when
+they are both zero, the corresponding points do not contribute to the
+estimation. Finally, for all points except support vectors, their value is either 0 or 1. 
+
+\subsection{Extension to other cost functions}
+This $\ep$-tolerant function is the most commonly used cost function
+in the SVM literature. However, the previous analysis would not be much
+affected if $V(t)$ were replaced by some other function $C(t) =
+c_0(t-\ep)$ if $t\geq \ep$ and 0 otherwise, with a convex
+$c_0$. Then, the primal problem is: minimize
+$$
+\frac{\la}{2} |b|^2 + \sum_{i=1}^N (c_0(\xi_k) + c_0(\xi_k^*))
+$$
+with the constraints 
+$$
+-\ep - \xi_k^* \leq y_k - \be_0 - x_k\be \leq \ep+\xi_k
+$$
+and $\xi_k, \xi_k^* \geq 0$. This is a convex programming problem. Its
+equivalent dual formulation is: maximize
+$$
+- \frac{\la}{2} \sum_{k,l=1}^N (\al_k-\al_k^*)\scp{x_k}{x_l}
+(\al_l-\al_l^*) + \sum_{k=1}^N (\al_k-\al_k^*)y_k - \ep \sum_{i=1}^N
+(\al_k+\al_k^*) +  \sum_{k=1}^N (T(\xi_k) + T(\xi_k^*))
+$$
+with the constraints $\al_k, \al_k^*\xi_k, \xi_k^* \geq 0$, $\sum_k (\al_k-\al_k^*)
+= 0$, $\xi_k = \inf\defset{t, c'_0(t) > \al}$, and the notation
+$$
+T(u) = c_0(u) - u c'_0(u).
+$$
+The dual formulation still has the property to depend only on the
+inner products $\scp{x_k}{x_l}$.
+
+
+\chapter{Models for linear classification}
+
+In this section, $Y$ takes values in a finite set $\CG = \defset{g_1,
+\ldots, g_q}$, and the goal is to predict this class variable from the
+observation of $X$, which is assumed, as before, to belong to
+$\mR^d$. We review in this section some linear models which are used
+in this context.
+
+\section{Linear regression and Optimal Scoring}
+
+In this approach, the set $\CG$ is mapped to a collection of $r$
+dimensional row vectors $\th_{g_1}, \ldots, \th_{g_q}$. One can for example take $r=q$ and $\th_{g_1} = (1,0,\ldots,0)$,
+$u_{g_2} = (0,1,0,\ldots,0)$, until $\th_{g_q} = (0,\ldots,0,1)$. A linear
+model is then estimated from this data, by minimizing
+$$
+\sum_{k=1}^N |\th_{y_k} - \tilde x_k^T\beta|^2
+$$ 
+as before, with the only difference that $\beta$ now is a $(d+1) \ti
+q$ matrix instead of a vector. This yields a least square estimator
+$\hat \beta = (\CX^T\CX)^{-1}\CX^T\CY$ where $\CY$ is the
+matrix of stacked $\th_{y_k}$ row vectors. 
+
+Given an input vector $x$, the row vector $\tilde x^T\beta$ has
+real coefficients which are not $0$ and 1's. Assignment to a class is typically  
+made by minimizing $|\tilde x^T \be - \th_{g}|$ over all
+$g$ in $\CG$.
+
+This approach is questionable, however, because the choice of
+assigning $\th_g$ to $g$ may seem artificial. It can be modified by optimizing also over these choices, leading to {\em optimal scoring}.
+In this case, the score  $g\mapsto \th_g$ is an additional parameter of the model. To simplify the discussion, we will first assume that $r=1$, i.e., the scores are scalar.
+
+The problem is
+then formulated as a least square minimization of
+$$
+\sum_{k=1}^N (\th_{y_k} - \be_0 - x_k^T b)^2
+$$
+with respect to $\th = (\th_1, \ldots, \th_q)$ and $\be = (\be_0, b)$. Since the problem is
+invariant by the multiplication of a constant, and to avoid the
+trivial solution $\th=\be=0$, $\th$ is normalized by the constraint
+$\sum_g N_g \th_g^2 = 1$. Also, to avoid ambiguities in the choice of
+$\be_0$, it is also assumed that $\sum_g N_g \th_g=0$. This last
+constraint implies that $\sum_k \th_{y_k} = 0$, and this implies in
+turn that the optimal $\be_0$ is 
+$$
+\be_0 = \frac{1}{N} \sum_{k=1}^N (\th_{y_k} - x_k^Tb) = -\bar\mu^Tb
+$$
+with $\bar \mu = \sum_{k=1}^N x_k /N$.
+The problem therefore reduces to minimizing
+$$
+\sum_{k=1}^N (\th_{y_k} - (x_k-\bar\mu)^T b)^2
+$$
+with the previous constraints. To lighten the notation, we will assume
+in the following that $\bar\mu = 0$. This is no loss of generality, since
+this corresponds to assuming that the $x_k$ have been centered before processing.
+
+
+Introduce the binary column vectors $u_{i} = (0, \ldots,
+0,1,0, \ldots, 0)^T$ with a 1 a the $i$th position.  The minimized function can now be written as
+$$
+\sum_{k=1}^N (u_{y_k}^T\th - (x_k-\bar\mu)^T b)^2
+$$
+where $\th$ is now the column vector with coordinates $\th_1, \ldots,
+\th_n$. We will use the following notation. For $g\in\CG$, denote by $N_g$ the
+number of $k$'s for which $y_k = g$. We let
+$$
+\mu_g = \frac{1}{N_g} \sum_{k=1}^N x_k \chi_{[y_k = g]}
+$$
+denote the class averages. so that $\bar\mu = \sum_{g\in \CG} c_g \mu_g$ with $c_g = N_g/N$. 
+We let
+$$
+\Sig_g = \frac{1}{N_g} \sum_{k=1}^N (x_k - \mu_{g})(x_k - \mu_{g})^T\chi_{[y_k=g]}\,.
+$$
+denote the class covariance matrix, and their weighted average
+\[
+\Sig_w = \sum_{g\in\CG} c_g\Sig_g,
+\]
+called the {\em within class} covariance matrix. The between class covariance matrix is
+\[
+\Sig_b = \sum_{g\in\CG} c_g (\mu_g- \bar\mu)(\mu_g- \bar\mu)^T.
+\]
+The total covariance matrix
+\[
+\Sig_{XX} = \frac{1}{N}\sum_{k=1}^N (x_k-\bar\mu) (x_k - \bar\mu)^T
+\]
+then satisfies $\Sig_{XX} = \Sig_w + \Sig_b$.
+We will furthermore let $M = [\mu_{g_1}-\bar\mu, \ldots, \mu_{g_q}-\bar\mu]$ (a $d\times q$ matrix) and $C = \mathrm{diag}(c_1, \ldots, c_q)$ so that, for example
+\[
+\Sig_b  = MCM^T.
+\]
+
+With this notation, the optimal scoring problem can be expressed as the minimization of 
+\[
+L(\th, b) = \th^TC \th - 2 b^TMC \th + b^T\Sig_{XX} b
+\]
+with respect to $b$ and $\th$, subject to the constraints $\sum_g c_g \th_g = 0$ and $\th^TC\th = 1$. The optimal $b$ is given by
+\[
+b = \Sig_{XX}^{-1} MC\th
+\]
+so that $\th$ must maximize
+\[
+\th^T C^TM^T \Sig_{XX}^{-1} MC\th
+\]
+subject to the constraints. If we let $\tilde C = C^{1/2}$, $\tilde\th = C^{1/2} \th$, and $z = (\sqrt{c_1}, \ldots, \sqrt{c_q})^T$, then the problem is equivalent to minimizing
+\[
+\tilde \th^T \tilde C^TM^T \Sig_{XX}^{-1} M\tilde C \tilde \th
+\]
+subject to $\tilde\th^T\tilde \th = 1$ and $z^T\tilde\th = 0$. The solution is given by letting $\tilde \th$ be the unit eigenvector associated with the largest eigenvalue of $\tilde C^TM^T \Sig_{XX}^{-1} M\tilde C$. This eigenvector automatically satisfies $z^T\tilde\th = 0$ because $z$ is also an eigenvector of this matrix, with eigenvalue 0 (we have $M\tilde C z  = 0$). Returning to the original variable, the optimal $\th$ is therefore given by the eigenvector with largest eigenvalue of $C^TM^T \Sig_{XX}^{-1} M$ normalized so that $\th^TC\th = 1$.
+
+
+The following computation will link optimal scoring with linear discriminant analysis, which will be discussed in the next section. 
+ Let $\eta$ be an eigenvector of $C^TM^T \Sig_{XX}^{-1} M$ with eigenvalue $\la$. Then 
+\begin{align*}
+&CM^T\Sig_{XX}^{-1} M\eta  = \la\eta\\
+\text{thus, }& MCM^T\Sig_{XX}^{-1} M\eta = \la M\eta\\
+\text{thus, }& (MCM^T + \Sig_w)\Sig_{XX}^{-1} M\eta - \Sig_w \Sig_{XX}^{-1} M\eta = \la M\eta\\
+\text{or, }&  \Sig_w \Sig_{XX}^{-1} M\eta = (1-\la) M\eta
+\end{align*}
+This implies that 
+$$(1-\la)^{-1} M\eta = \Sig_{XX}\Sig_w^{-1} M\eta = (\Id +
+\Sig_b\Sig_w^{-1})M\eta$$
+so that
+$$
+\Sig_b\Sig_w^{-1}M\eta = \frac{\la}{1-\la} M\eta
+$$
+or
+$$
+\Sig_w^{-1}\Sig_b (\Sig_w^{-1}M\eta) = \frac{\la}{1-\la} (\Sig_w^{-1} M\eta)
+$$
+
+This implies that the eigenvectors and eigenvalues of
+$CM^T\Sig_{XX}^{-1} M$ are related to those of $\Sig_w^{-1}\Sig_b$ by 
+$\th \mapsto \Sig_w^{-1}M\th$ and $\la \mapsto \la/(1-\la)$. Since the
+relations between the eigenvalues is increasing, the order of the
+eigenvectors is the same.
+
+% the optimal scores directly provide the
+%first discriminant direction. More precisely, if $e_1$ is, as above,
+%the first eigenvector of $C^{1/2}M^T \Sig_w^{-1} M C^{1/2}$, then , up
+%to a renormalization, $\Sig_w^{-1} M\th = \Sig_w^{-1} M C^{1/2}e_1$
+%which implies that $\th = C^{1/2} e_1$ (we can ``simplify'' by $M$
+%because both $\th$ and $C^{1/2} e_1$ are orthogonal to the null space
+%of $M$).
+
+
+
+\bigskip
+
+This analysis can be generalized to
+vector-valued scores, where $\th_g=(\th_g(1), \ldots, \th_g(r))$ now is
+a row vector, $b$ a $d\ti r$ matrix and the minimized function
+is
+$$
+\sum_{k=1}^N |u_k^T\th - \be_0 - x_k^T b|^2
+$$
+with the constraints $\th^T C\th = \mathrm{Id}$. The result is that the
+optimal $\th$ is provided are the first $r$ eigenvectors of
+$CM^T\Sig_{XX}^{-1} M$. As just remarked, they can be deduced from the first $r$ eigenvectors of $\Sig_w^{-1}\Sig_b$ by the transformation $\th \mapsto \Sig_w^{-1}M\th$.
+
+Optimal scoring is that it can be modified as
+in ridge regression by adding a penalty of the
+form $\sum_{i=1}^q \be_i\Om\be$ where $\Om$ is a weight matrix. This
+only modifies the previous computation by replacing $\Sig_{XX}$ by
+$\Sig_{XX}+\Om$.
+
+
+
+\section{Linear Discriminant analysis}
+\label{sec:lda}
+
+Linear discriminant analysis (LDA) has two ``flavors''. One is generative, and described in the lines below. The other is discriminative, and will be described next. We will use the notation introduced in the previous section.
+
+
+Given conditional densities of $X$ given $Y=g$ (denoted
+$f_g$) are known and prior probabilities $\pi_g =
+P(Y=g)$, the Bayes estimator maximizes the posterior probability
+$$
+P(Y=g|X=x) = \frac{\pi_g f_g(x)}{\sum_{g'\in \CG} \pi_{g'} f_{g'}(x)}
+$$
+Consider the region for class $g$ better than class $h$:
+$$
+R_{gh} = \defset{x\in\mR^d\,/\, \pi_g f_g(x) \geq \pi_{h} f_h(x)}
+$$
+Linear classification corresponds to the situation in which these regions
+are half spaces (delimited by a hyperplane). This occurs in particular
+the distributions $f_g$ are all Gaussian densities with
+mean $m_g$ and common variance $S$,
+$$
+f_g(x) = \frac{1}{\sqrt{(2\pi)^d\det \Sig}} e^{-(x-m_g)^T S^{-1}
+(x-m_g)},
+$$
+which are the assumptions made in the generative version of LDA.
+In this case, the decision boundaries are such that, for some $g$ and $h$
+$$
+\log \pi_g + \log f_g = \log\pi_h + \log f_h
+$$
+which yields, 
+$$
+\log \pi_g -(x-m_g)^T S^{-1}
+(x-m_g) = \log\pi_h - (x-m_h)^T S^{-1}
+(x-m_h)
+$$
+or
+$$
+2 x^TS^{-1}(m_g-m_h) = \log \frac{\pi_g}{\pi_h} +
+m_g^TS^{-1}m_g - m_h^TS^{-1}m_h
+$$
+which is the equation of a hyperplane. 
+
+\medskip
+The means and variance are not known beforehand, and must
+be estimated from data, taking $\hat m_g = \mu_g$, $\hat S = \Sig_w$ (see previous section). If one relaxes the assumption of common class variances, and use $\Sig_g$ in place of $\Sig_w$ for class $g$. The decision boundaries are not linear in this case, but provided by quadratic equations (and the resulting method if often called quadratic discriminant analysis, or QDA). QDA requires the estimation of $qd(d+3)/2$, which may be overly ambitious when the sample size of not large compared to the dimension, and QDA is often prone to overfitting. Evan LDA, which  involves  $qd + d(d+1)/2$ parameters, may be unrealistic in such cases (but it is certainly more resilient).
+A variant of QDA uses 
+a shrinkage operation on $\Sig_g$, working with class covariance
+matrices given by
+$$
+\tilde \Sig_g = \al \Sig_w + (1-\al)\Sig_g.
+$$
+
+\subsection{Dimension reduction}
+
+Even in the linear case, the number of required parameters may still
+be too high to provide reliable results. One of the interests of LDA
+is that it can be combined with a rank reduction procedure, in a way
+which resembles principal component analysis\footnote{Principal
+component analysis will be discussed in detail in chapter \ref{chap:unsupervised}.}. 
+ 
+
+We first remark that LDA operates over a $(q-1)-dimensional affine space $V$, in the sense that there one can replace each sample by a skewed projection on that space without changing the result.  To simplify the discussion, we  assume that the data has been ``spherized'', to ensure that  $0 = \bar \mu$ and $\Sig_w = \Id$. This operation consists in replacing $x_k$ by $\tilde x_k = \Sig_w^{-1/2}(x_k-\bar\mu)$, where $\Sig^{1/2}_w$ is positive symmetric square root of $\Sig_w$.
+We will denote by $\tilde\mu_g$.
+
+With this notation, the decision rule for $g$ better than $h$ for a new sample $x$ is 
+$$
+\tilde x^T (\tilde \mu_h- \tilde \mu_g) \geq \frac{1}{2}
+\Big(|\tilde \mu_g|^2  - |\tilde \mu_h|^2 + \log \frac{\pi_g}{\pi_h}\Big)
+$$
+with $\tilde x = \Sig_w^{-1/2}(x-\bar\mu)$.
+
+Now, let $V$ be the affine space space generated by  $\tilde \mu_g, g\in
+\CG$, which (because it contains 0) is actually a linear space. Let $P_V$ denote the orthogonal projection on $V$. From elementary
+properties of the projection, we have
+$\tilde x^T z = (P_V\tilde x)^T z$ for any $z\in V$ and $\tilde x\in \mathbb R^d$, so that, since the $\mu_g$'s
+belong to $V$, the decision rules can be replaced by 
+$$
+(P_V \tilde x)^T (\tilde \mu_h- \tilde \mu_g) \geq \frac{1}{2}
+\Big(|\tilde \mu_g|^2  - |\tilde \mu_h|^2 + \log \frac{\pi_g}{\pi_h}\Big)
+$$
+still with $\tilde x = \Sig_w^{-1/2}(x-\bar\mu)$.\\
+
+So this proves that, for a given $x$, the decision is based only on
+$P_V\tilde x$, which can be described by $r \leq (q-1)$ numbers (where
+$r = \mathit{dim}(V)$ and $q = |\CG|$). They can be computed
+easily as soon as one computes an orthonormal basis $(\tilde e_1,
+\ldots, \tilde e_{r})$ of $V$, since, in
+this case
+$$
+P_V \tilde x = \sum_{j=1}^{r} \tilde x^T\tilde e_j \tilde e_j.
+$$
+Since $\tilde e_j \in V$, they can be written as linear combinations
+of the $\tilde\mu_g$'s, so there there must exist a $q$ by $r$
+matrix $\tilde A$ such that
+$$
+\tilde E: = [\tilde e_1, \ldots, \tilde e_{r}] = [\tilde \mu_{g_1}, \ldots, \tilde
+\mu_{g_q}] \tilde A
+$$
+(for some order $\CG = \{g_1, \ldots, g_q\}$). To have an orthonormal
+family, we need $\tilde E^T\tilde E = \Id_{r}$ yielding
+$$
+\Id_{r} = A^T  \tilde M^T \tilde M A
+$$
+with $\tilde M = [\tilde \mu_{g_1}, \ldots, \tilde
+\mu_{g_q}]$ and $\tilde M^T\tilde M$ is the $q$ by $q$ matrix formed
+with the dot products of the $\mu_g$'s. Its rank is the dimension of
+$V$. Let $\tilde a_1, \ldots, \tilde a_q$ be its eigenvectors,
+associated to decreasing eigenvalues $\la_1, \ldots, \la_q$ (the first
+$r$ being non-vanishing). Then, it is an easy computation to check
+that 
+$\tilde A = [\tilde a_1/\sqrt{\la_1},
+\ldots, \tilde a_{r}/\sqrt{\la_r}]$ satisfies the required
+identity. This is not the only solution that we can get this way,
+however. In fact, if $S$ is any invertible $q$ by $q$
+matrix, we can apply the same computation replacing $\tilde A$ by
+$S\tilde A$,
+yielding
+$$
+\Id_{r} = \tilde A^T S^T  \tilde M^T \tilde M S \tilde A,
+$$
+and let $\tilde a_1, \ldots, \tilde a_q$ be the eigenvectors of
+$S^T \tilde M^T \tilde M S$, still taking 
+$\tilde A = [\tilde a_1/\sqrt{\la_1},
+\ldots, \tilde a_{r}/\sqrt{\la_r}]$ for the corresponding eigenvalues. We will assume that such an $S$ is
+chosen in the rest of the computation.
+
+To classifiy $x$, one must compute the ``scores'' $\ga_j(x) =
+\tilde x^T \tilde e_j$, the decision ``$g$ better than $h$'' being 
+$$
+\sum_{j=1}^r\ga_j(x)(\ga_j(\mu_g) - \ga_j(\mu_h)) \geq \frac{1}{2}
+\Big(\sum_{j=1}^r (\ga_j(\mu_g)^2 - \ga_j(\mu_h)^2) + \log \frac{\pi_g}{\pi_h}\Big)
+$$
+
+
+These scores have a nice expression in terms of the original
+variables. Define $M = [\mu_{g_1} - \bar\mu, \ldots, \mu_{g_q}-
+\bar\mu]$ so that $\tilde M = \Sig_w^{-1/2} M$ and $\tilde M^T \tilde
+M = M^T \Sig_w^{-1} M$. By construction
+$S^T\tilde M^T\tilde M S\tilde A = \tilde A \La$, where $\La =
+\mathit{diag}(\la_1, \ldots, \la_r)$,  yielding
+\begin{equation}
+\label{eq:lda.1} 
+S^TM^T \Sig_w^{-1} MS \tilde A= \tilde A \La. 
+\end{equation}
+We also have $\tilde A$ $\tilde MS\tilde A = \tilde E$, yielding
+$\Sig_w^{-1/2} MS\tilde A = \tilde E$; multiplying both sides in
+\eqref{eq:lda.1} by $\Sig_w^{-1/2}MS$ we get
+$$
+\Sig_w^{-1/2} MSS^TM^T \Sig_w^{-1/2} \tilde E = \tilde E \La.
+$$ 
+Multiplying the result by $\Sig_w^{-1/2}$ and letting $ E =
+\Sig_w^{-1/2} \tilde E$, we finally get
+$$
+\Sig_w^{-1} MSS^TM^T E = E \La
+$$
+so that $E$ is a matrix formed with the eigenvectors of $\Sig_w^{-1}
+MSS^TM^T $ (but normalized so that $E^T\Sig_w^{-1} E = \Id_r$).
+These properties permit to compute $E$, from which all scores can be
+computed since
+$$
+\ga_j(x) = x^T \Sig_w^{-1/2} \tilde e_j = x^T e_j.
+$$
+Letting $Q = SS^T$ (any positive definite matrix can take this form)
+and 
+$$
+\Sig_b^Q = MQM^T = \sum_{g\in\CG} q_{gh} (\mu_g-\mu) (\mu_h-\mu)^T, 
+$$
+we see that $e_1, \ldots, e_r$ are eigenvectors of of $\Sig_w^{-1}
+\Sig_b^Q$, so that, for some $\la_j$:
+$$
+\Sig_b^Q e_j = \Sig_w e_j.
+$$
+This is the generalized eigenvalue problem associated to $\Sig_b^Q$
+and $\Sig_w$. The first eigenvector is the maximizer of the ratio
+$$
+u\mapsto \frac{u^T\Sig_b^Q u}{u^T\Sig_w u}
+$$
+and the following ones maximize this ratio subject to the constraint of
+being perpendicular to those that precede. With $Q =
+\mathit{diag}(c_{g_1}, \ldots, c_{g_q})$, we have
+$$
+\Sig_b^Q = \Sig_b := MCM^T  = \sum_{g\in \CG} c_g (\mu_g-\mu)
+(\mu_g-\mu)^T
+$$
+which is called the between class (or interclass) covariance
+matrix. The method or progressively maximizing the ratio 
+${u^T\Sig_b^Q u}/{u^T\Sig_w u}$ is called {\em Fisher's linear
+  discriminant analysis}. 
+
+\section{Optimal scoring}
+
+\section{Logistic regression} 
+
+Logistic regression uses the fact that, in order to apply the Bayes
+rule, only the conditional distribution of the class variables $Y$
+given $X$ is needed. Denote $p(g|x)$ for the conditional distribution
+of $Y=g$ given $X=x$. Logistic regression corresponds to the model
+$$
+\log p_\be(g|x) = \tilde x^T \beta(g) - \log(C(\beta, x))
+$$
+where
+$C(\beta, x) = \sum_{g\in \CG} \exp(\tilde x^T \beta(g)).$
+
+From this definition, it is clear that the model is unchanged  if a constant vector is added
+to $\be$, so that the model is overparametrized. This can be addressed
+by adding a constraint like: $\sum_g
+\beta(g) = 0$, or $\beta(g_0) = 0$ for some $g_0\in \CG$.
+
+The classification rule can be applied as soon as a family of vectors $(\be(g),
+g\in\CG)$ has been estimated, and this estimation can be done by maximum
+likelihood. Let, as usual, $(y_1, x_1), \ldots, (y_N, x_N)$ form the
+training data. We need to maximize:
+$$
+l(\be) = \sum_{k=1}^N \log p_\be(y_k|x_k)\,.
+$$
+This is a non linear problem, which has however the advantage of being
+concave, since 
+$$
+\pdr{}{\beta(g)} \log p_\be(y|x) = \tilde x^T \chi_{[y=g]} - 
+\tilde x^T p_\be(g|x)
+$$
+and the second derivatives are
+$$
+\pddr{}{\beta(g)}{\beta(g')} \log p_\be(y|x) = -\tilde x \tilde x^T
+\chi_{[g=g']} p_\be(g|x) + 
+\tilde x \tilde x^T p_\be(g|x) p_\be(g'|x).
+$$
+Let us check that the matrix of second derivative is non-positive. If
+$a(g), g\in\CG$ is a family of $(d+1)$-dimensional vectors,  we have
+\begin{eqnarray*}
+\sum_{g,g'\in\CG} a(g)^T\left(\pddr{}{\beta(g)}{\beta(g')} \log
+p_\be(y|x)\right)a(g') &=& -\sum_{g\in\CG} a(g)^T \tilde x \tilde x^T a(g)
+p_\be(g|x)  \\
+&& + \sum_{g,g'\in\CG} a(g)^T \tilde x \tilde x^T a(g') p_\be(g|x)
+p_\be(g'|x)\\
+&=& -E((\tilde x^T a)^2|x) + E((\tilde x^T a)|x)^2 \leq 0.
+\end{eqnarray*}
+This proves the concavity. From the computed gradient and second
+derivative, an efficient Newton algorithm can be implemented to
+estimate $\beta$.
+\\
+
+The result of the logistic regression algorithm is, like for the LDA,
+decision regions which are separated by pieces of  hyperplanes. For a
+2 class problem, in particular, the two regions are linearly
+separated.
+
+This raises an issue we have encountered before, on why estimating a
+model if we know that in the end, we will find a
+separating hyperplane; why not trying to directly estimate it from the
+data, by minimizing the empirical risk. This is the subject of the
+next section.
+
+\section{SVM for linear classification}
+
+\subsection{Linear perceptrons}
+We here restrict to the two-class problem, and let $\CG =
+\defset{-1,1}$. A separating hyperplane predicts the class according
+to the sign of the linear expression $\be_0 + x^T b$. With this
+notation, a pair $(y,x)$ is correctly classified if and only if
+$y(\be_0 + x^T b) > 0$.
+
+Assume that a training set is available, denoted as usual by $(y_1,
+x_1), \ldots, (y_N, x_N)$. 
+The perceptron algorithm estimates $\be_0$ and $b$ by minimizing 
+$$
+L(\be) = \sum_{k=1}^N [y_k(\be_0 + x_k^T b)]^-
+$$
+with $u^- = \max(0, -u)$. If $\CM$ is the set of misclassified
+examples (those for which $y(\be_0 + x^T b) < 0$), we can write
+$$
+L(\be) =- \sum_{k\in\CM} y_k(\be_0 + x_k^T b).
+$$
+Assuming that no points lie on the boundary $\be_0 + x_k^T b = 0$, we
+can compute the gradient $L$ with respect to $\be_0$ and $b$, yielding
+$$
+\pdr{L}{\be_0} = - \sum_{k\in\CM} y_k, \hfill \pdr{L}{b} = -
+\sum_{k\in\CM} y_kx_k^T.
+$$\\
+
+Rosenblatt's algorithm visits examples belonging to $\CM$
+iteratively. When, say, example $k$ is visited, $\be_0$ is replaced by
+$\be_0 + \rho y_k$ and $b$ by $b + \rho y_k x$ with a ``learning
+parameter $\rho>0$. When the problem has a solution, this algorithms selects a
+separating hyperplane in a finite number of steps. 
+However, when no solution
+exists, the algorithm is very hard to analyze, and runs
+indefinitely. \\
+
+A more robust (and efficient) algorithm can be used, relying on the
+fact that the perceptron is a linear program. Indeed, it is equivalent
+to minimize
+$$
+\sum_{k=1}^N \xi_k
+$$
+subject to the constraints $x_k\geq 0, \xi_k-y_k(\be_0 + x_k^Tb) \geq
+0$ for $k=1, \ldots, N$. The following algorithm proposes a solution
+of the problem in at most $N$ steps if and only if a solution
+exists. It starts with $\be = 0$ and a matrix $H = \mathit{Identity}$. At step $n$, the algorithm
+selects a misclassified example, $k$, and updates $\be$ and $H$ as
+follows:
+\begin{eqnarray*}
+\be &\to& \be + \frac{1}{n+1} \frac{y_kHx_k}{\sqrt{x_k^THx_k}}\\
+H &\to& \frac{n^2}{n^2-1}\big(H - \frac{2}{n+1} \frac{x_k^TH^2x_k}{x_k^THx_k}\big)
+\end{eqnarray*}
+The algorithm stops if no misclassified example remains. If the method
+has not converged at step $N$, there is no solution.
+
+\subsection{Linear SVM}
+Note that, when a separating hyperplane exists, it is not unique, and
+the perceptron algorithm just finds one of them. Intuitively, one
+prefers a solution that would classify the examples with some large
+margin, rather than one for which training points are close to the
+separating hyperplane. This leads to the maximum margin separating
+hyperplane introduced by
+Vapnik and Chervonenkis.
+
+We now describe this algorithm, which is commonly called linear support vector machine. It is
+easier to understand how it works if we start with the case when a
+separating hyperplane exists for the given dataset. Then, the quality
+of the split can be measured by the margin with which the
+discrimination is performed, ie. the minimal distance over all the
+$x_k$'s to the hyperplane $\be_0 + x^Tb = 0$. 
+
+The distance of a point $x\in\mR^d$ to this hyperplane is  $|\be_0 + x^Tb|/\|b\|$, and when $(y,x)$ is a pair of correctly
+classified data, this is equal to $y(\be_0 + x^Tb)/\|b\|$. Thus, the
+classification margin, over the training set, is given by (for a given
+separating hyperplane)
+$$
+m(\be_0, b) = \min_{k=1, \ldots, N} y_k(\be_0 + x_k^T b)/\|b\|.
+$$
+Finding the best hyperplane requires maximizing this with respect to all $(\be_0, b)$
+which separating the data. This is equivalent to the
+problem:\\
+maximize $C$ under the constraint $C\|b\| \leq y_k(\be_0 + x_k^T b)$ for
+all $k=1, \ldots, N$. Since the solution $(\be_0, b)$ is defined up to
+a positive multiplicative, constant, there is no loss of generality in
+assuming that $\|b\| = 1/C$ and the problem becomes equivalent to
+minimizing $\|b\|^2/2$ under the constraints that $y_k(\be_0 + x_k^T b)
+\geq 1$ for $k=1, \ldots, N$, which is a quadratic programming problem.
+
+
+Before passing to the dual formulation, we modify this framework
+to also handle the situation in which the data cannot be separated by
+a hyperplane. This is done by introducing slack variables $\xi_k \geq
+0, k=1, \ldots, N$ and replacing the $k$th constraint by $y_k(\be_0 +
+x_k^T b)
+\geq 1 -\xi_k$. Of course, the slack variables must be controlled in
+order to avoid trivial solutions, and this is done by either adding a
+constraint of the form $\sum_k\xi_k \leq M$, for some parameter $M$,
+or by adding a penalty term $\ga \sum_k \xi_k$ in the function to
+minimize. We consider the latter case here, and therefore solve the
+quadratic optimization problem: minimize
+$$
+\frac{1}{2} \|b\|^2 + \ga \sum_{k=1}^N \xi_k\,,
+$$
+under the constraints $\xi_k \geq 0$, $y_k(\be_0 + x_k^T b) + \xi_k
+\geq 1$, for $k=1, \ldots, N$. Introduce Lagrange multipliers
+$\eta_k\geq 0$
+for the positivity constraints and $\al_k\geq 0$ for the other constraints to
+write the Lagrangian:
+$$
+\mathcal L = \frac{1}{2} \|b\|^2 + \ga \sum_{k=1}^N \xi_k - \sum_{k=1}^N
+\eta_k\xi_k -  \sum_{k=1}^N \al_k (y_k(\be_0 + x_k^T b +\xi_k - 1).
+$$
+Minimizing this with respect to $\be$ and $\xi_1, \ldots, \xi_N$
+yields $b = \sum_{k=1}^N \al_k y_k x_k$, $\sum_{k=1}^N \al_ky_k  = 0$
+and $\al_k = \ga - \mu_k$. The resulting dual formulation is :
+maximize
+$$
+\sum_{k=1}^N \al_k - \frac{1}{2} \sum_{k,l=1}^N \al_k\al_l y_ky_l
+\scp{x_k}{x_l}
+$$
+under the constraints $0\leq \al_k\leq \ga$, $\sum_{k=1}^N \al_k y_k =
+0$. 
+
+The KKT conditions in this case are $\xi_k(\ga-\al_k) = 0$ and 
+$\al_k (y_k(\be_0 + x_k^Tb +\xi_k - 1) = 0$. If one of the $\al_k$ does
+not vanish, the last condition provides $\be_0$.  If all
+$\al_k$ vanish, this implies first that $\xi_k = 0$ for all $k$ and
+that $b = 0$.  But this yields $y_k \be_0 \geq 1$ for all $k$ which is
+impossible excepted in the very uninteresting case when there is only
+one class present in the training set.
+
+For data (strictly) beyond the margin ($y_k(\be_0 + x_k^T b ) > 1$),
+one has $\xi_k=0$ therefore $\al_k=0$. This implies that the $k$th
+example $(y_k, x_k)$ does not contribute to the estimation. Those for
+which  $y_k(\be_0 + x_k^Tb ) < 1$  force $\xi_k
+> 0$ and therefore $\al_k = \ga$. So, $\al_k$ takes values in the open
+interval $(0, \ga)$ only for the examples with  $\be_0 + x_k^T b = y_k$
+which are two hyperplanes on both sides of the separating hyperplane,
+at distance $C  = 1/\|b\|^2$. These vectors therefore are those which
+define the margin, and are called the support vectors.
+
+
+
+
+
+

@@ -1,0 +1,2164 @@
+\chapter[Probabilistic Inference for MRF]{Probabilistic Inference for  Random Fields}
+\label{chap:inf.mrf}
+
+Once the joint distribution of a family of variables has been modeled as a random field,  this model can be used to estimate the probabilities
+ of specific events, or the expectations of random variables of interest. 
+ For
+example, if the modeled variables relate to  a medical condition, in
+which variables such as diagnosis, age, gender, clinical evidence can
+interact, one may want to compute, say, the probability  of someone having a disease given other observable
+factors. Note that, being able to
+compute expectations of the modeled variables for $G$-Markov processes also ensures that one can
+compute conditional expectations of some modeled variables given others, since, by 
+\cref{prop:cond.dist.grph}, conditional $G$-Markov distributions are
+Markov over restricted graphs.
+
+We assume  that $X$ is $G$-Markov for a graph $G = (V,E)$ and restrict (unless specified otherwise) to finite state spaces. We condider the basic problem to compute $\myP(\pe XS =\pe x S)$ when $S\sub V$, starting with one-vertex marginals, $\myP(\pe Xs= \pe xs)$. 
+
+The Hammersley-Clifford theorem provides a generic form for general
+positive $G$-Markov processes, in the form
+\begin{equation}
+\label{eq:gibbs.inference}
+\myP(X=x) = \pi(x) =  \frac{1}{Z} \exp\Big(-\sum_{C\in \mathcal C_G}
+h_C(\pe xC)\Big).
+\end{equation}
+So, formally, marginal distributions are given by the ratio 
+\[
+\myP(\pe XS = \pe xS) = \frac{\sum_{y\in \CF(V), \pe yS= \pe xS} \exp\Big(-\sum_{C\in \mathcal C_G}
+h_C(\pe yC)\Big)}{\sum_{y\in \CF(V)} \exp\Big(-\sum_{C\in \mathcal C_G}
+h_C(\pe yC)\Big)}.
+\]
+The problem is that the sums involved in this ratio involve a number
+of terms
+that grows exponentially with the size of $V$. Unless $V$ is very
+small, a direct computation of these sums is intractable. An exception
+to this is the case of acyclic graphs, as we will see in \cref{sec:inf.acyc}. But for
+general, loopy, graphs, the sums can only be approximated, using, for example,
+Monte-Carlo sampling, as described in the next section.
+
+\section{Monte Carlo sampling}
+
+Markov chain Monte Carlo methods are well adapted to sampling from Markov random fields, because conditional distributions used in Gibbs sampling, or, more generally, ratios of probabilities used in the Metropolis-Hastings algorithm do not in require the computation of the normalizing constant $Z$ in \cref{eq:gibbs.inference}. The simplest use of Gibbs sampling generalizes the Ising model example of \cref{sec:gibbs.ising}. Using the notation of \cref{alg:gibbs.sampling}, one lets $\CB'_s = \CF(s^c)$ (with the notation $s^c = V \setminus \{s\}$) and $U_s(x) = \pe x{s^c}$. The conditional distribution given $U_s$ is 
+\[
+Q_s(U_s(x), y) = \myP(\pe Xs = \pe ys\mid \pe X {s^c} = \pe x {s^c}) \bfone_{\pe y {s^c} = \pe x {s^c}}.
+\]
+The conditional probability in the r.h.s. of this equation takes the form 
+\[
+\pi_s(\pe ys\mid \pe x {s^c}) \defeq \myP(\pe Xs = \pe ys\mid \pe X {s^c} = \pe x {s^c}) = 
+ \frac{1}{Z_s(\pe x {s^c})} \exp\left (- \sum_{C\in \CC, s\in \in C} h_C(\pe y s \wedge \pe x {C\cap s^c})\right)
+\]
+with
+\[
+Z_s(\pe x {s^c}) = \sum_{\pe z s\in F_s} \exp\left (- \sum_{C\in \CC, s\in \in C} h_C(\pe z s \wedge \pe x {C\cap s^c})\right).
+\]
+
+The Gibbs sampling algorithm samples from $Q_s$ by visiting all $s\in V$ infinitely often, as described in \cref{alg:gibbs.sampling}. Metropolis-Hastings schemes are implemented similarly, the most common choice using a local update scheme in \cref{alg:met.hast} such that $g(x, \cdot)$ only changes one coordinate, chosen at random, so that
+\[
+g(x, y) = \frac{1}{|V|}\sum_{s\in V} \bfone_{ \pe y{s^c} = \pe x{s^c}} g_s(\pe ys)
+\]
+where $g_s$ is some probability distribution on $F_s$. The acceptance probability $a(x,y)$ is equal to 1 when $y=x$. If $y \neq x$ and $g(x,y) >0$,  there is a unique $s$ for which $\pe y{s^c} = \pe x{s^c}$ and 
+\[
+a(x,y) = \min\left(1, \frac{\pi(y)g(y,x)}{\pi(x)g(x,y)}\right)
+\]
+with 
+\[
+\frac{\pi(y)g(y,x)}{\pi(x)g(x,y)} = \frac{\pi_s(\pe ys\mid \pe x{s^c})g_s(\pe xs)}{\pi_s(\pe xs\mid \pe x{s^c})g_s(\pe ys)}.
+\]
+Note that the latter equation avoids the computation of the local normalizing constant $Z_s(\pe x {s^c})$, which simplifies in the ratio.
+
+Both algorithms have a transition probability $P$ that satisfies $P^m(x,y) >0$ for all $x,y\in \CF(V)$, with $m=|V|$ (for Metropolis-Hastings, one must assume that $g_s(\pe ys) > 0$ for all $\pe ys\in F_s$. This ensures that the chain is uniformly geometrically ergodic, i.e., \cref{eq:geom.ergod} is satisfied with a constant $M$ and some $\rho<1$. However, in many practical cases (especially for strongly structured distributions and large sets $V$), the convergence rate, $\rho$ can be very close to 1, resulting in a slow convergence. 
+
+Acceleration strategies have been designed to address this issue, which is often due to the existence of multiple configurations that are local modes of the probability $\pi$. Such configurations are isolated from other high-probability configurations because local updating schemes need to make multiple low-probability changes to access them from the local mode. The following two approaches provide examples designed to address this issue.
+
+\begin{enumerate}[label={\bf \alph*.}]
+\item {\bf Cluster sampling.} 
+To facilitate escaping from such local modes, it is sometimes possible to augment the state space by introducing a new configuration space, with variable denoted $\boldsymbol \xi$, and designing a joint distributions $\hat\pi(\xi, x)$ such that the marginal distribution on $\CF(V)$ (summing over $\xi$) is the targeted $\pi$. The additional variable can create high-probability bridges between local modes for $\pi$, and accelerate convergence.
+
+
+
+To take an example, assume that all sets $F_s$ are identical (letting $F=F_s$, $s\in V$)  and that the auxiliary variable $\boldsymbol \xi$ takes values in the set of functions from $E$ to $\{0,1\}$, that we will denote $\CB(E)$, i.e., that it takes the form $(\pe {\bfxi}{st}, \{s,t\}\in E)$, with $\pe \bfxi {st} \in \{0,1\}$. For $x\in \CF(V)$, introduce the set $\CB_x$ containing all $\xi \in \CB(E)$, such that  for all $\{s,t\}\in E$, 
+\[
+\pe xs \neq \pe xt \Rightarrow \pe \xi {st} = 1.
+\]
+Assume that the conditional distribution of $\boldsymbol\xi$ given $x$ is supported by $\CB_x$, such that, for $\xi\in \CB_x$
+\[
+\myP(\boldsymbol \xi = \xi \mid X = x) = \hat\pi(\xi\mid x) = \frac1{\zeta(x)} \exp\left(- \sum_{\{s,t\}\in E} \mu_{st} \pe \xi {st}\right) .
+\]
+The coefficients $\mu_{st}$ are free to choose (and one possible choice is to take $\mu_{st} = 0$ for all $\{s,t\}\in E$). For this distribution, all $\pe {\boldsymbol\xi} {st}$ are independent conditionally to $X=x$, with $\pe{\boldsymbol\xi}{st} = 1$ with probability 1 if $\pe xs\neq \pe xt$, and
+\begin{equation}
+\label{eq:sw.update}
+P(\pe {\boldsymbol \xi}{st} = 1\mid X=x) = \frac{e^{-\mu_{st}}}{1 + e^{-\mu_{st}}}
+\end{equation}
+if $\pe x s = \pe x t$.
+This conditional distribution is, as a consequence, very easy to sample from. Moreover, the normalizing constant $\zeta(x)$ has closed form and is given by
+\[
+\zeta(x) = \prod_{\{s,t\}\in E}\left(\bfone_{\pe xs = \pe xt} + e^{-\mu_{st}}\right) = \exp\left(\sum_{\{s,t\}\in E} \log\left(1+e^{-\mu_{st}}\right) + \sum_{\{s,t\}\in E} \log(1 +e^{\mu_{st}}) \bfone_{\pe xs\neq\pe xt}\right).
+\]
+
+Now consider the conditional probability that $X = x$ given $\boldsymbol\xi = \xi$. For this distribution, one has, with probability 1, $\pe Xs = \pe Xt$ when $\pe{\xi}{st} = 0$. This implies that $X$ is constant on the connected components of the subgraph $(V, E_\xi)$ of $(V,E)$, where $\{s,t\} \in E_\xi$ if and only if $\pe \xi {st} = 0$. Let $V_1, \ldots, V_m$ denote these connected components (these components and their number depend on $\xi$). The conditional distribution of $X$ given $\xi$ is therefore supported by the configurations such that there exists $c_1, \ldots, c_m\in F$ such that $\pe x s= c_j$ if and only if $s\in V_j$, that we will denote, with some abuse of notation: $\pe{c_1}{V_1} \wedge \cdots \wedge \pe{c_m}{V_m}$.
+
+
+Given this remark, the conditional distribution of $X$ given $\boldsymbol \xi = \xi$ is equivalent to a distribution on $F^m$, which may be feasible to sample from directly if $|F|$ and $m$ are not too large. To sample from $\pi$, one now needs to alternate between sampling $\boldsymbol\xi$ given $X$ and the converse, yielding the following first version of cluster-based sampling.
+
+\begin{algorithm}[Cluster-based sampling: Version 1]
+\label{alg:sw.1}
+This algorithm samples from \cref{eq:gibbs.inference}.
+\begin{enumerate}
+\item Initialize the algorithm some configuration $x \in \CF(V)$.
+\item Loop over the following steps:
+\begin{enumerate}[label=\alph*.,left=0.5cm]
+\item Generate a configuration $\xi \in \CB_x$ such that $\pe \xi {st} = 1$ with  probability given by \cref{eq:sw.update} when $\pe x s = \pe x t$.
+\item Determine the connected components, $V_1, \ldots, V_m$, of the graph $G_\xi = (V, E_\xi)$ with edges given by pairs $\{s,t\}$ such that $\pe \xi{st} = 1$.
+\item Sample values $c_1, \ldots, c_m\in F$ according to the distribution
+\[
+q(c_1, \ldots, c_m) \propto \frac{\pi(\pe{c_1}{V_1} \wedge \cdots \wedge \pe{c_m}{V_m})}{\zeta(\pe{c_1}{V_1} \wedge \cdots \wedge \pe{c_m}{V_m})}.
+\] 
+\item Set $x = \pe{c_1}{V_1} \wedge \cdots \wedge \pe{c_m}{V_m}$.
+\end{enumerate}
+\end{enumerate}
+\end{algorithm}
+Step (2.c) takes a simple form in the special case when $\pi$ is a non-homogeneous Potts model (\cref{eq:potts.model}) with positive interactions, that we will write as
+\[
+\pi(x) = \exp\left(- \sum_{s\in V} \alpha_s \pe xs - \sum_{\{s,t\}\in E} \beta_{st} \bfone_{\pe xs\neq \pe xt}\right)
+\]
+with $\beta_{st} \geq 0$.
+Then
+\[
+\frac{\pi(x)}{\zeta(x)} \propto \exp\left(- \sum_{s\in V} \alpha_s \pe xs - \sum_{\{s,t\}\in E} (\beta_{st} - \beta'_{st})\bfone_{x_s\neq s_t}\right)
+\]
+with $\beta'_{st} = \log(1 +e^{\mu_{st}})$. If one chooses $\mu_{st}$ such that $\beta'_{st} = \beta_{st}$ (which is possible since $\beta_{st}\geq 0$), then the interaction term disappears and the probability $q$ in (2.c) is proportional to 
+\[
+\prod_{j=1}^m \exp\left(-\sum_{s\in V_j} \alpha_s\right)
+\]
+so that $c_1, \ldots, c_m$ can be generated independently. The resulting algorithm is the Swendsen-Wang sampling algorithm for the Potts model \citep{swendsen1987nonuniversal}. The presentation given here adapts the one introduced in \citet{barbu2005generalizing}.
+
+
+For more general models, step (2.c) can be computationally costly, especially if the number of connected components is large. In this case, this step can be replaced by a Gibbs sampling step for one of the $c_j's$ conditional to the others (and $\xi$) that we summarize in the following variation of \cref{alg:sw.1}.
+\begin{algorithm}[Cluster-based sampling: Version 2]
+\label{alg:sw.2}
+This algorithm samples from \cref{eq:gibbs.inference}.
+\begin{enumerate}
+\item Initialize the algorithm some configuration $x \in \CF(V)$.
+\item Loop over the following steps:
+\begin{enumerate}[label=\alph*.,left=0.5cm]
+\item Generate a configuration $\xi \in \CB_x$ such that $\pe \xi {st} = 1$ with  probability given by \cref{eq:sw.update} when $\pe x s = \pe x t$.
+\item Determine the connected components, $V_1, \ldots, V_m$, of the graph $G_\xi = (V, E_\xi)$ with edges given by pairs $\{s,t\}$ such that $\pe \xi{st} = 1$. Note that $x$ is constant on each of these connected components, i.e., there exists $c_1, \ldots, c_m\in F$ such that $x = \pe{c_1}{V_1} \wedge \cdots \wedge \pe{c_m}{V_m}$.  
+\item Select at random one of the components, say, $j_0 \in \{1, \ldots, m\}$.
+\item Sample the value $\tilde c_{j_0} \in F$ according to the distribution
+\[
+q(\tilde c_{j_0}) \propto \frac{\pi(\pe{\tilde c_1}{V_1} \wedge \cdots \wedge \pe{\tilde c_m}{V_m})}{\zeta(\pe{\tilde c_1}{V_1} \wedge \cdots \wedge \pe{\tilde c_m}{V_m})}.
+\] 
+with $\tilde c_j = c_j$ if $j\neq j_0$.
+\item Set $\pe x s = \tilde c_{j_0}$ for $s\in V_{j_0}$.
+\end{enumerate}
+\end{enumerate}
+\end{algorithm}
+Unlike single-variable updating schemes, these algorithms can update large chunks of the configurations at each step, and may result in significantly faster convergence of the sampling procedure. Note that step (2.d) in \cref{alg:sw.2} can be replaced by a Metropolis-Hastings update with a proper choice of proposal probability \cite{barbu2005generalizing}.
+
+\item {\bf Parallel tempering.}
+We now consider a different kind of  extension in which we allow $\pi$ depends continuously on a parameter $\beta>0$, writing $\pi_\beta$ and, the goal is to sample from $\pi_1$. For example,  one can extend \cref{eq:gibbs.inference} by the  family of probability distributions
+\[
+\pi_\beta(x) =  \frac{1}{Z_\beta} \exp\left(-\beta \sum_{C\in \mathcal C_G}
+h_C(\pe xC)\right)
+\]
+for $\beta\geq 0$. For small $\beta$, $\pi_\beta$ gets close to the uniform distribution on $\CF(V)$ (achieved for $\beta=0$), so that it becomes easier to  move from local mode to local mode. This implies that sampling with small $\beta$ is more efficient and the associated Markov chain moves more rapidly in the configuration space.
+
+Assume given, for all $\beta$,  two ergodic transition probabilities on $\CF(V)$, $q_\beta$ and $\tilde q_\beta$ such that \cref{eq:reversed.discrete} is satisfied with $\pi_\beta$ as invariant probability, namely
+\begin{equation}
+\label{eq:tempered.neal.1}
+\pi_\beta(y) q_\beta(y,x) = \pi_\beta(x) \tilde q_\beta(x,y)
+\end{equation}
+for all $x,y \in \CF(V)$ (as seen in \cref{eq:reversed.discrete}, $\tilde q_\beta$ is the transition probability for the reversed chain).   The basic idea is that $q_\beta$ provides a Markov chain that converges rapidly for small $\beta$ and slowly when $\beta$ is closer to 1. Parallel tempering (this algorithm was introduced in \citet{neal1996sampling} based on ideas developed in \citet{marinari1992simulated}) leverages this fact (and the continuity of $\pi_\beta$ in $\beta$) to accelerate the simulation of $\pi_1$ by introducing intermediate steps sampling at low $\beta$ values.
+
+The algorithm specifies a sequence of parameters $0\leq \beta_1\leq \cdots \leq \beta_m = 1$. One simulation steps goes down, then up this scale, as described in the following algorithm.
+\begin{algorithm}[Parallel Tempering]
+Start with an initial configuration $x_0\in \CF(V)$. This configuration is then updated  at each step, using the following sequence of operations.
+\begin{enumerate}[label=(\arabic*)]
+\item For $j=1, \ldots, m$, generate a configuration $x_j$ according to $\tilde q_{\beta_{j}}(x_{j-1}, \cdot)$.
+\item Generate a configuration $z_{m-1}$ according to $q_{\beta_m}(x_m, \cdot)$. 
+\item For $j = m-1, \ldots, 1$, generate a configuration $z_{j-1}$ according to $q_{\beta_j}(z_j, \cdot)$.
+\item Set $x_0 = z_0$ with probability
+\[
+\min\left(1, \frac{\pi_{\beta_0}(z_0)}{\pi_{\beta_0}(x_0)}
+\left(\prod_{j=1}^{m-1}  \frac{\pi_{\beta_j}(x_{j-1})}{\pi_{\beta_{j}}(x_{j})}\right) \frac{\pi_{\beta_{m}}(x_{m-1})}{\pi_{\beta_{m}}(z_{m-1})}
+\left(
+\prod_{j=1}^{m-1}  \frac{\pi_{\beta_{j}}(z_{j})}{\pi_{\beta_{j}}(z_{j-1})}
+\right)\right).
+\]
+(Otherwise, keep $x_0$ unchanged).
+\end{enumerate}
+\end{algorithm}
+
+Importantly, the acceptance probability at step (4) only involves ratios of $\pi_\beta's$ and therefore no normalizing constant.
+We now show that this algorithm is $\pi_{\beta_0}$-reversible. Let $p(\cdot, \cdot)$ denote the transition probability of the chain. If $z_0\neq x_0$,  $p(x_0, z_0)$ corresponds to steps (1) to (3), with acceptance at step(4), and is therefore given by the sum, over all  $x_1, \ldots, x_m$ and $z_1, \ldots, z_m$, of products 
+\begin{multline*}
+\tilde q_{\beta_{1}}(x_{0}, x_1)\cdots \tilde q_{\beta_{m}}(x_{m-1}, x_m) q_{\beta_{m}}(x_{m}, z_{m-1}) \cdots q_{\beta_{1}}(z_{1}, z_0) \\
+\min\left(1, \frac{\pi_{\beta_0}(z_0)}{\pi_{\beta_0}(x_0)}
+\left(\prod_{j=1}^{m-1}  \frac{\pi_{\beta_j}(x_{j-1})}{\pi_{\beta_{j}}(x_{j})}\right) \frac{\pi_{\beta_{m}}(x_{m-1})}{\pi_{\beta_{m}}(z_{m-1})}
+\left(
+\prod_{j=1}^{m-1}  \frac{\pi_{\beta_{j}}(z_{j})}{\pi_{\beta_{j}}(z_{j-1})}
+\right)\right)
+\end{multline*}
+Applying \cref{eq:tempered.neal.1}, this is equal to
+\begin{multline*}
+\min\Big(
+\tilde q_{\beta_{1}}(x_{0}, x_1)\cdots \tilde q_{\beta_{m}}(x_{m-1}, x_m) q_{\beta_{m}}(x_{m}, z_{m-1}) \cdots q_{\beta_{1}}(z_{1}, z_0),\\ \frac{\pi_{\beta_0}(z_0)}{\pi_{\beta_0}(x_0)}
+q_{\beta_{1}}(x_{0}, x_1)\cdots  q_{\beta_{m}}(x_{m-1}, x_m) \tilde q_{\beta_{m}}(x_{m}, z_{n-1}) \cdots \tilde q_{\beta_{1}}(z_{1}, z_0) \Big)
+\end{multline*}
+So,
+\begin{multline*}
+\pi_{\beta_0}(x_0) p(x_0, z_0) = \sum \min\Big(\pi_{\beta_0}(x_0)
+\tilde q_{\beta_{1}}(x_{0}, x_1)\cdots \tilde q_{\beta_{m}}(x_{m-1}, x_m) q_{\beta_{m}}(x_{m}, z_{m-1}) \cdots q_{\beta_{1}}(z_{1}, z_0),\\ \pi_{\beta_0}(z_0)
+q_{\beta_{1}}(x_{1}, x_0)\cdots  q_{\beta_{m}}(x_{m}, x_{m-1}) \tilde q_{\beta_{m}}(z_{m-1}, x_m) \cdots \tilde q_{\beta_{1}}(z_{0}, z_1) \Big)
+\end{multline*}
+where the sum is over all $x_1, \ldots, x_m, z_1, \ldots, z_{m-1}\in \CF(V)$. The sum is, of course, unchanged if one renames $x_1, \ldots, x_m, z_1, \ldots, z_{m-1}$ to $z_1, \ldots, z_m, x_1, \ldots, x_{m-1}$, but doing so provides the expression of  $\pi_{\beta_0}(z_0) p(z_0, x_0)$, proving the reversibility of the chain with respect to $\pi_{\beta_0}$.
+
+
+
+\end{enumerate}
+
+\section{Inference with acyclic graphs}
+\label{sec:inf.acyc}
+
+We now switch to deterministic methods to compute, or approximate, marginal probabilities of Markov random fields. In this section, we consider a directed acyclic graph $G = (V,E)$.
+As we have seen, Markov processes for acyclic graphs are also Markov
+for any tree structure associated with the graph. Introducing such a
+tree, $\tilde G = (V, \tilde E)$ with $\tilde G^\flat = G$, we know
+that a Markov process on $G$ can be written in the form (letting $s_0$
+denote the root in $\tilde G$):
+\begin{equation}
+\label{eq:tree.assume}
+\pi(x) = p_{s_0}(\pe x {s_0}) \prod_{(s,t)\in \tilde E} p_{st}(\pe xs, \pe xt)
+\end{equation}
+where $p_{s_0}$ is a probability and $p_{st}$ a transition
+probability.
+
+We now show how to compute marginal probabilities of configurations
+$\pe xS$, denoted $\pi_S(\pe xS)$,  for a set $S\sub V$, starting with singletons $S = \{s\}$. The computation can be done by propagating down the tree as
+follows. For $s=s_0$, the probability is known, with
+$\pi_{s_0} = p_{s_0}$. Now take an arbitrary $s\neq s_0$ and let $\pa{s}$
+be its parent. Then
+\begin{multline*}
+\pi_s(\pe xs) = \myP(\pe Xs = \pe xs) = \sum_{\pe y{\pa{s}}\in F_{\pa{s}}} P(\pe Xs =
+\pe xs \mid \pe X{\pa{s}} = \pe y{\pa{s}}) P(\pe x{\pa{s}} = \pe y{\pa{s}}) \\
+=
+\sum_{\pe y{\pa{s}}\in F_{\pa{s}}} \pi_{\pa{s}}(\pe y{\pa{s}}) p_{\pa{s}}(y_{\pa{s}}, \pe xs)
+  \end{multline*}
+so that the marginal probability at any $s\neq s_0$ can be computed
+given the marginal probability of its parent. We can propagate the
+computation down the tree, with a total cost for computing $\pi_s$
+proportional to $\sum_{k=1}^n |F_{t_{k-1}}|\,|F_{t_k}|$ where $t_0=s_0, t_1,
+\ldots, t_n=s$ is the unique path between $s_0$ and $s$. This is
+linear in the depth of the tree, and quadratic (not exponential) in
+the sizes of the state spaces.
+The
+computation of all singleton marginals requires 
+an order of $\sum_{(s,t)\in E} |F_s|\,|F_t|$ operations. 
+
+Now, assume that probabilities of singletons have been computed and consider an arbitrary set $S \subset V$. Let $s\in V$ be  an ancestor of every vertex in $S$, maximal in the sense that none of its children also satisfy this property. Consider the subtrees
+of $\tilde G$ starting from each of the children of $s$, denoted
+$\tilde G_1,
+\ldots, \tilde G_n$ with $\tilde G_k = (V_k, \tilde E_k)$. Let $S_k = S\cap V_k$. From the
+conditional independence,
+\begin{eqnarray*}
+\pi_S(\pe xS) &=& \sum_{\pe ys\in F_s} P(\pe X{S\setm \{s\}} =
+\pe x{S\setm_\{s\}}\mid \pe Xs = \pe ys) \pi_s(\pe ys)\\
+&=& \sum_{\pe ys\in F_s} \prod_{k=1, S_k\neq \emp}^n P(\pe X{S_k}=\pe x{S_k}\mid \pe Xs = \pe ys)
+\pi_s(y_s)
+\end{eqnarray*}
+Now, for all $k=1, \ldots, n$, we have $|S_k| < |S|$: this is obvious
+if $S$ is not completely included in one of the $V_k$'s. But if $S\sub
+V_k$ then the root, $s_k$, of $V_k$ is an ancestor of all the elements
+in $S$ and is a child of $s$, which contradicts the assumption that
+$s$ is maximal. So we have reduced the computation of $\pi_S(x_S)$ to
+the computations of $n$ probabilities of smaller sets, namely
+$P(\pe X{S_k}= \pe x{S_k}\mid \pe Xs = \pe ys)$ for $S_k\neq \emp$. Because the
+distribution of $\pe X{V_k}$ conditioned at $s$ is a $\tilde G_k$-Markov model, we
+can reiterate the procedure until only sets of cardinality one remain,
+for which we know how to explicitly compute probabilities.
+
+\bigskip
+This provides a  feasible algorithm to compute
+marginal probabilities with trees, at least when its distribution is given 
+in tree-form, like in \cref{eq:tree.assume}. We now address the situation in which one starts with  a probability distribution associated with pair interactions (cf. 
+\cref{def:set.int}) over the acyclic graph $G$
+%form that derives from the Hammersley-Clifford theorem for the
+%underlying acyclic graph $G$, that is:
+%$$
+%\pi(x) = \frac{1}{Z} \exp\left(-\sum_{s\in V} h_s(\pe xs) -
+%\sum_{\defset{s,t}\in E} h_{st}(\pe xs, \pe xt)\right)
+%$$
+%which is also of the form
+\begin{equation}
+\label{eq:pi.tree}
+\pi(x) = \frac{1}{Z} \prod_{s\in V} \phi_s(\pe xs) \prod_{\defset{s,t}\in E} \phi_{st}(\pe xs, \pe xt).
+\end{equation}
+We assume these local interactions to be consistent, still
+allowing for some vanishing $\phi_{st}(\pe xs, \pe xt)$.
+
+
+Putting $\pi$ in the form \cref{eq:tree.assume} is equivalent to computing  all joint probability distributions
+$\pi_{st}(\pe xs, \pe xt)$ for $\defset{s,t}\in E$, and we now describe this computation. Denote
+$$
+U(x)  = \prod_{s\in V} \phi_s(\pe xs) \prod_{\defset{s,t}\in E}
+\phi_{st}(\pe xs, \pe xt)
+$$
+so that $Z=\sum_{y\in \CF(V)} U(y)$. For the tree $\tilde G = (V, \tilde E)$, and $t\in V$,
+we let $\tilde G_t = (V_t, \tilde E_t)$ be the subtree of $G$ rooted at $t$ (containing $t$ and all its descendants). For
+$S\sub V$,  define 
+$$
+U_S(\pe xS) = \prod_{s\in S} \phi_s(\pe xs) \prod_{\defset{s,s'}\in E,
+s,s'\in D}
+\phi_{ss'}(\pe xs, \pe x{s'})
+$$
+and
+$$
+Z_t(\pe xt) = \sum_{\pe y{V^*_t}\in \CF(V^*_t)} U_{V_t}(\pe xt\wedge \pe y{V^*_t}).
+$$
+with $V_t^* = V_t\setm \{t\}$.
+
+\begin{lemma}
+\label{lem:acyc.tree}
+Let $G = (V, E)$ be a directed acyclic graph and $\pi = P^X$ be the $G$-Markov
+distribution given by \cref{eq:pi.tree}. With the notation above, we
+have
+\begin{equation}
+\label{eq:acyc.tree.1}
+\pi_{s_0}(\pe x{s_0}) =\frac{Z_{s_0}(\pe x{s_0})}{\sum_{\pe y{s_0}\in F_{s_0} }
+Z_{s_0} (\pe y{s_0})}
+\end{equation}
+and, for $(s,t)\in \tilde E$,
+\begin{equation}
+\label{eq:acyc.tree.2}
+p_{st}(\pe xs, \pe xt) = P(\pe Xt=\pe xt\mid \pe Xs=\pe xs)  = \frac{\phi_{st}(\pe xs, \pe xt)
+Z_t(\pe xt)}{\sum_{\pe yt\in F_t} \phi_{st}(\pe xs, \pe yt) Z_t(\pe yt)}
+\end{equation}
+\end{lemma}
+\begin{proof}
+Let  $W_t = V\setm V_t$. 
+Clearly, $Z = \sum_{\pe x0\in F_{s_0}} Z_{s_0} (\pe x0)$
+and $\pi_{s_0}(\pe x0) = Z_{s_0}(\pe x0)/Z$ which gives \cref{eq:acyc.tree.1}. Moreover, if $s\in V$, we have
+$$
+\myP(\pe X{V_s^*} = \pe x{V_s^*}\mid \pe Xs=\pe xs) = \frac{\sum_{\pe y{W_s}} U(\pe x{V_s}\wedge
+\pe y{W_s})}{\sum_{\pe y{V_s^*}, \pe y{W_s}} U(\pe xs\wedge \pe y{V_s^*} \wedge
+\pe y{W_s})}.
+$$
+We can write
+$$
+U(\pe xs\wedge \pe y{V_s^*} \wedge
+\pe y{W_s}) = U_{V_s}(\pe xs\wedge \pe y{V_s^*}) U_{\{s\}\cup W_s}(\pe xs\wedge
+\pe y{W_s}) \phi_s(\pe xs)^{-1}
+$$
+yielding the simplified expression
+\begin{align*}
+\myP(\pe X{V_s^*} = \pe x{V_s^*}\mid \pe Xs=\pe xs) &=
+ \frac{U_{V_s}(\pe x{V_s})
+\phi_s(\pe xs)^{-1} \sum_{y_{W_s}} U_{\{s\}\cup W_s}(\pe xs\wedge
+\pe y{W_s})}{\phi_s(\pe xs)^{-1} \big(\sum_{\pe y{V_s^*}} U_{V_s}(\pe xs\wedge
+\pe y{V_s^*})\big)\big(\sum_{\pe y{W_s}} U_{\{s\}\cup W_s}(\pe xs\wedge
+\pe y{W_s})\big)
+}\\
+&= \frac{U_{V_s}(\pe x{V_s})
+}{Z_s(\pe xs) }
+\end{align*}
+Now, if $t_1, \ldots, t_n$ are the children of $s$, we have
+$$
+U_{V_s}(\pe x{V_s}) = \phi_s(\pe xs) \prod_{k=1}^n \phi_{st_k}(\pe xs,\pe x{t_k}) \prod_{k=1}^n U_{V_{t_k}}(\pe x{V_{t_k}}),
+$$
+so that
+\begin{align*}
+&\myP(\pe X{t_k} = \pe x{t_k}, k=1, \ldots, n \mid \pe Xs = \pe xs) 
+\\ &=
+\frac{1}{Z_s(\pe xs)}\sum_{\pe y{V_{t_k}^*}, k=1, \ldots, n} \phi_s(\pe xs)
+\prod_{k=1}^n \phi_{st_k}(\pe xs, \pe x{t_k}) \prod_{k=1}^n
+U_{V_{t_k}}(\pe x{t_k} \wedge \pe y{V^*_{t_k}})\\
+&= \frac{\phi_s(\pe xs) \prod_{k=1}^n \phi_{st_k}(\pe xs,\pe x{t_k})
+\prod_{k=1}^n Z_{t_k}(\pe x{t_k})}{Z_s(\pe xs)}
+\end{align*}
+This implies that  the transition
+probability needed for the tree model,
+$p_{st_1}(\pe xs, \pe x{t_1})$, must be
+proportional to  
+$\phi_{st_1}(\pe xs, \pe x{t_1}) Z_{t_1}(\pe x{t_1})$ which proves the lemma.
+\end{proof}
+
+This lemma reduces the computation of the transition probabilities
+to the computation of $Z_s(\pe xs)$, for $s\in V$. This can be done
+efficiently, going upward in the tree (from terminal vertexes to the
+root). Indeed, if $s$ is terminal, then $V_s  = \{s\}$ and 
+$Z_s(\pe xs) = \phi_s(\pe xs)$. Now, if $s$ is non-terminal and $t_1,
+\ldots, t_n$ are its children, then, it is easy to see that
+\begin{align}
+\nonumber
+Z_s(\pe xs) &= \phi_s(\pe xs) \sum_{\pe x{t_1}\in F_{t_1}, \ldots, \pe x{t_n}\in
+F_{t_n}} \prod_{k=1}^n \phi_{st_k}(\pe xs, \pe x{t_k}) Z_{t_k}(\pe x{t_k}) \\
+&= 
+\phi_s(\pe xs) \prod_{k=1}^n \Big(\sum_{\pe x{t_k}\in F_{t_k}} \phi_{st_k}(\pe xs, \pe x{t_k}) Z_{t_k}(\pe x{t_k})\Big)
+\label{eq:z.induc}
+\end{align}
+So, $Z_s(\pe xs)$ can be easily computed once the $Z_t(\pe xt)$'s are known
+for the children of $s$.
+
+ \Cref{eq:acyc.tree.1,eq:acyc.tree.2,eq:z.induc} therefore provide the necessary relations in order
+to compute the singleton and edge marginal probabilities on the
+tree. It is important to note that these relations are valid for any
+tree structure consistent with the acyclic graph we started with. We
+now rephrase them with notation that only depend on this graph and not
+on the selected orientation.
+
+Let $\defset{s,t}$ be an edge in $E$. Then $s$ separates the
+graph $G\setm\{s\}$ into two components. Let $V_{st}$ be the component
+that contains $t$, and  $V_{st}^* = V_{st}\setm t$. Define
+$$
+Z_{st}(x_t) = \sum_{\pe y{V^*_{st}}\in \CF(V^*_{st})} U_{V_{st}}(\pe xt\wedge \pe y{V^*_{st}}).
+$$
+This $Z_{st}$ coincides with the previously introduced $Z_t$, computed with any tree
+in which the edge $\{s,t\}$ is oriented from $s$ to $t$. 
+\Cref{eq:z.induc} can be rewritten with this new notation in the form:
+\begin{equation}
+\label{eq:z.induc.2}
+Z_{st}(\pe xt) =
+\phi_t(\pe xt) \prod_{t'\in \CV_t\setm \{s\}} \Big(\sum_{\pe x{t'}\in F_{t'}} \phi_{tt'}(\pe xt, \pe x{t'}) Z_{tt'}(\pe x{t'})\Big).
+\end{equation}
+This equation is usually written in terms of ``messages'' defined
+by
+$$
+m_{ts}(\pe xs) = \sum_{\pe x{t}\in F_{t}} \phi_{st}(\pe xs, \pe x{t}) Z_{st}(\pe x{t})
+$$
+which yields
+$$
+Z_{st}(\pe xt) = \phi_t(\pe xt) \prod_{t'\in\CV_t\setm \{s\}} m_{t't}(\pe xt)
+$$
+and the message consistency relation 
+\begin{equation}
+\label{eq:bp.mes}
+m_{ts}(\pe xs) = \sum_{\pe x{t}\in F_{t}} \phi_{st}(\pe xs, \pe x{t}) \phi_t(\pe xt) \prod_{t'\in\CV_t\setm \{s\}} m_{t't}(\pe xt).
+\end{equation}
+
+Also, because one can start building a tree from $G^\flat$ using 
+any vertex as a root,  \cref{eq:acyc.tree.1} is valid
+for any $s\in V$, in the form (applying \cref{eq:z.induc} to the root)
+\begin{equation}
+\label{eq:bp.bel}
+\pi_{s}(\pe x{s}) =\frac{1}{\zeta_s}  \phi_s(\pe xs) \prod_{t\in \CV_s} m_{ts}(\pe xs)
+\end{equation}
+where $\zeta_s$ is chosen to ensure that the sum of probabilities is
+1. (In fact, looking at  \cref{lem:acyc.tree}, we have $Z_s=Z$,
+independent of $s$.)
+
+
+
+Similarly,  \cref{eq:acyc.tree.2} can be written
+\begin{equation}
+\label{eq:bp.trans}
+p_{st}(\pe xs, \pe xt)  = m_{ts}(\pe xs)^{-1}  \phi_{st}(\pe xs, \pe xt)
+\phi_t(\pe xt) \prod_{t'\in\CV_t\setm \{s\}} m_{t't}(\pe xt)
+\end{equation}
+which provides the edge transition probabilities. Combining this with
+\cref{eq:bp.bel}, we get the edge marginal probabilities:
+\begin{equation}
+\label{eq:bp.edge}
+\pi_{st}(\pe xs, \pe xt) 
+=  \frac{1}{\zeta} \phi_{st}(\pe xs, \pe xt) \phi_s(\pe xs)
+\phi_t(\pe xt) \prod_{t'\in\CV_t\setm \{s\}} m_{t't}(\pe xt) \prod_{s'\in\CV_s\setm \{t\}} m_{s's}(\pe xs).
+\end{equation}
+
+
+\begin{remark}
+\label{rem:bp.normalize}
+We can modify \cref{eq:bp.mes} by multiplying the right-hand side by
+an arbitrary constant $q_{ts}$ without changing the resulting
+estimation of probabilities: this only multiplies the messages by a
+constant, which cancels after normalization. This remark can be useful
+in particular to avoid numerical overflow; one can,
+for example, define $q_{ts} = 1/\sum_{x_s\in F_s} m_{ts}(x_s)$ so
+that the messages always sum to 1. This is also useful when applying
+belief propagation (see next section) to loopy networks, for which \cref{eq:bp.mes} may
+diverge while the normalized version converges. 
+%An alternative normalization will also be discussed in the next section. 
+\end{remark}
+
+The following summarizes this message passing algorithm.
+
+\begin{algorithm}[Belief propagation on acyclic graphs]
+\label{alg:message.tree}
+Given a family of interactions $\phi_s: F_s \to [0, +\infty)$, $\phi_{st}: F_s \times F_t \to [0, +\infty)$,
+\begin{enumerate}
+\item Initialize functions (messages) $m_{ts}: F_s \to \mathbb R$, e.g., taking $m_{ts}(\pe x s) = 1/|F_s|$.
+\item Compute unnormalized messages 
+\[
+\tilde m_{ts}(\cdot) = \sum_{\pe x{t}\in F_{t}} \phi_{st}(\cdot, \pe x{t}) \phi_t(\pe xt) \prod_{t'\in\CV_t\setm \{s\}} m_{t't}(\pe xt)
+\]
+and  let $m_{ts}(\cdot) = q_{ts} \tilde m_{ts}(\cdot)$, 
+for some choice of constant $q_{ts}$, which must be a fixed function of $\tilde m_{ts}(\cdot)$, such as
+\[
+q_{ts} = \left(\sum_{\pe xs\in F_s} \tilde m_{ts}(\pe xs)\right)^{-1}.
+\]
+\item Stop the algorithm when the messages  stabilize (which happens after a finite number of updates). Compute the edge marginal distributions using \cref{eq:bp.edge}. 
+\end{enumerate}
+\end{algorithm}
+It should be clear, from the previous analysis that messages stabilize in finite time, starting from the outskirts of the acyclic graph. Indeed,  messages starting from a terminal $t$ (a
+vertex with only one neighbor) are
+automatically set to their correct value in \cref{eq:bp.mes},
+$$
+m_{ts}(x_s) = \sum_{x_{t}\in F_{t}} \phi_{st}(x_s, x_{t}) \phi_t(x_t),
+$$
+at the first update. These values then propagate to provide messages
+that satisfy \cref{eq:bp.mes}
+starting from the next-to-terminal vertexes (those that have only one
+neighbor left when the terminals are removed) and so on.
+
+
+\section{Belief propagation and free energy approximation}
+\subsection{BP stationarity}
+It is possible to run \cref{alg:message.tree} on graphs that are not acyclic, since nothing in its formulation requires this property. However, while the method stabilizes in finite time for acyclic graphs, this property, or even the convergence of the messages is not guaranteed for general, loopy, graphs. Convergence, however, has been observed in a large number of applications, sometimes with very good approximations of the true marginal distributions. 
+
+%Such applications include the decoding of error-correcting codes, for which they provided the first method that reached quasi-optimal compression rates. 
+
+We will refer to stable solutions of \cref{alg:message.tree} as BP-stationary points, as formally stated in the next
+definition, which allows for a possible normalization of messages,
+which is particularly important with loopy networks. 
+
+\begin{definition}
+\label{def:BP.stat}
+Let $G=(V, E)$ be an undirected graph and $\Phi = (\phi_{st},
+\defset{s,t}\in E, \phi_s, s\in V)$ a consistent family of pair interactions. We say that a family of joint
+probability distributions $(\pi'_{st}, \defset{s,t}\in E)$ is
+BP-stationary for $(G,\Phi)$ if there exists messages $x_t\in F_t
+\mapsto m_{st}(x_t)$, constants $\zeta_{st}$ for $t\sim s$ and $\al_s$ for
+$s\in V$  
+satisfying
+\begin{equation}
+\label{eq:bp.mes.1}
+m_{ts}(\pe xs) = \frac{\al_s}{\ze_{ts}} \sum_{\pe x{t}\in F_{t}} \phi_{st}(\pe xs, \pe x{t}) \phi_t(\pe xt) \prod_{t'\in\CV_t\setm \{s\}} m_{t't}(\pe xt)
+\end{equation}
+ such that
+\begin{equation}
+\label{eq:bp.edge.1}
+\pi'_{st}(\pe xs, \pe xt) 
+=  \frac{1}{\ze_{st}} \phi_{st}(\pe xs, \pe xt) \phi_s(\pe xs)
+\phi_t(\pe xt) \prod_{t'\in\CV_t\setm \{s\}} m_{t't}(\pe xt) \prod_{s'\in\CV_s\setm \{t\}} m_{s's}(\pe xs).
+\end{equation}
+\end{definition}
+There is no loss  of generality in the specific form chosen for the normalizing
+constants in \cref{eq:bp.mes.1,eq:bp.edge.1}, in the
+sense that, if the messages satisfy \cref{eq:bp.edge.1} and
+\[
+m_{ts}(\pe xs) = q_{ts} \sum_{\pe x{t}\in F_{t}} \phi_{st}(\pe xs, \pe x{t}) \phi_t(\pe xt) \prod_{t'\in\CV_t\setm \{s\}} m_{t't}(\pe xt)
+\]
+for some constants $q_{ts}$, then
+ \begin{eqnarray*}
+\ze_{st} &=& \sum_{\pe xs \in F_s, \pe xt\in F_t} \phi_{st}(\pe xs, \pe xt) \phi_s(\pe xs)
+\phi_t(\pe xt) \prod_{t'\in\CV_t\setm \{s\}} m_{t't}(\pe xt)
+\prod_{s'\in\CV_s\setm \{t\}} m_{s's}(\pe xs)\\
+ &=& \frac{1}{q_{ts}} \sum_{\pe xs\in F_s} 
+\phi_s(\pe xs) \prod_{s'\in\CV_s} m_{s's}(\pe xs)
+\end{eqnarray*}
+so that $\ze_{st}q_{ts}$ (which has been denoted $\al_s$) does not
+depend on $t$.
+Of course, the relevant questions regarding BP-stationarity is whether
+the collection of pairwise probability $\pi'_{st}$ exists, how to compute them, and whether $\pi'_{st}(\pe xs, \pe xt)$
+provides a good approximation of the marginals of the probability
+distribution $\pi$ that is associated to $\Phi$, namely 
+\[
+\pi(x) = \frac{1}{Z} \prod_{s\in V} \phi_s(\pe xs) \prod_{\defset{s,t}\in E} \phi_{st}(\pe xs, \pe xt).
+\]
+
+A reassuring statement for BP-stationarity is that it
+is not affected when the functions in $\Phi$ are multiplied by
+constants, which does not affect the underlying probability $\pi$. This is stated in the next proposition.
+\begin{proposition}
+\label{prop:bp.ok}
+Let $\Phi$ be as above a family of edge and vertex interactions. 
+Let $c_{st}, \defset{s,t}\in E$, $c_s, s\in V$ be  families of positive constants, and
+define $\tilde \Phi = (\tilde \phi_{st}, \tilde \phi_s)$ by $\tilde
+\phi_{st} = c_{st}\phi_{st}$ and $\tilde \phi_s = c_s\phi_s$. Then,
+\[
+\pi' \text{ is  BP-stationary for } (G,\Phi) \\
+\Leftrightarrow \pi' \text{ is
+ BP-stationary for } (G,\tilde \Phi).
+\]
+\end{proposition}
+\begin{proof}
+Indeed, if \cref{eq:bp.mes.1} and \cref{eq:bp.edge.1} are true for
+$(G, \Phi)$, it suffices to replace $\al_s$ by $\al_s c_s$ and $\zeta_{st}$
+by $\zeta_{st}c_{st} c_t$ to obtain \cref{eq:bp.mes.1} and \cref{eq:bp.edge.1} for
+$(G, \tilde\Phi)$.  
+\end{proof}
+
+It is also important to
+notice that, if $G$ is acyclic,  \cref{def:BP.stat} is no
+more general than the message-passing rule we had considered
+earlier. More precisely, we have (see \cref{rem:bp.normalize}),
+\begin{proposition}
+\label{prop:bp.tree}
+Let $G=(V, E)$ be undirected acyclic and  $\Phi = (\phi_{st},
+\defset{s,t}\in E, \phi_s, s\in V)$ a consistent family of pair
+interactions. Then, the only BP-stationary distributions are the
+marginals of the distribution $\pi$ associated to $\Phi$. 
+\end{proposition}
+
+%To conclude this section, we define what we mean by a belief
+%propagation algorithm, in view of  \cref{def:BP.stat}.
+%\begin{definition}
+%\label{def:bp.alg}
+%Given a family of pair interactions $\Phi = (\phi_s, \phi_{st})$, 
+% a belief-propagation scheme (BP scheme) is any recursive
+%algorithm  that implements a message-passing rule of the form
+%\begin{equation}
+%\label{eq:bp.alg.1}
+%m_{ts}(x_s) \leftarrow q_{st} \sum_{x_{t}\in F_{t}} \phi_{st}(x_s, x_{t}) \phi_t(x_t) \prod_{t'\in\CV_t\setm \{s\}} m_{t't}(x_t)
+%\end{equation}
+%where $q_{st}$ is some well-defined positive function of $\Phi$ and of the
+%current messages.
+%\end{definition}
+%If such a scheme converges, the limit provides a BP-stationary family
+%of pairwise distributions $\pi'$, as given by \cref{eq:bp.edge.1},
+%provided that the numerators in these expressions are not identically
+%zero.
+% 
+%For example, one gets the basic BP-scheme by letting $q_{st} = 1$ for
+%all $s,t$. We know that this algorithm converges for acyclic graphs,
+%but it can diverge when loops are present. The simplest normalization
+%takes
+%\[
+%(1/q_{st}) =  \sum_{x_s\in F_s} \sum_{x_{t}\in F_{t}} \phi_{st}(x_s,
+%x_{t}) \phi_t(x_t) \prod_{t'\in\CV_t\setm \{s\}} m_{t't}(x_t)
+%\]
+%which ensures that messages sum to 1.
+%
+
+
+
+\subsection{Free-energy approximations}
+
+
+A partial justification of the good behavior of BP with general graphs
+has been provided in terms of a quantity introduced in statistical
+mechanics, called the Bethe free energy. We let $G = (V,E)$ be an
+undirected graph and assume that a consistent
+family of pair interactions is given (denoted $\Phi = (\phi_s, s\in V,
+\phi_{st}, \{s,t\}\in E)$) and consider the associated distribution,
+$\pi$, on $\CF(V)$, given by
+\begin{equation}
+\label{eq:pi.tree.2}
+\pi(x) = \frac{1}{Z} \prod_{s\in V} \phi_s(\pe xs) \prod_{\defset{s,t}\in E} \phi_{st}(\pe xs, \pe xt).
+\end{equation}
+It will also be convenient to use the
+function 
+\[
+\psi_{st}(\pe xs,\pe xt) = \phi_s(\pe xs)\phi_t(\pe xt) \phi_{st}(\pe xs, \pe xt)
+\]
+such that
+\begin{equation}
+\label{eq:pi.tree.3}
+\pi(x) = \frac{1}{Z} \prod_{s\in V} \phi_s(\pe xs)^{1-|\CV_s|} \prod_{\defset{s,t}\in E} \psi_{st}(\pe xs, \pe xt).
+\end{equation}
+
+We will consider approximations $\pi'$ of $\pi$ that minimize the
+Kullback-Leibler divergence, $\KL(\pi'\|\pi)$ (see  \cref{eq:kl.definition}), subject to some
+constraints. 
+We can write
+\begin{eqnarray*}
+\KL(\pi'\|\pi) &=& -E_{\pi'} (\ln\pi) - H(\pi')\\
+&=& - \ln Z -  \sum_{s\in V} (1-|\CV_s|)E_{\pi'} (\ln \phi_s) -
+\sum_{\defset{s,t}\in E} E_{\pi'} (\ln \psi_{st}) - \CH(\pi')
+\end{eqnarray*}
+(where $\CH(\pi')$ is the entropy of $\pi'$).
+Introduce the one- and two-dimensional marginals of $\pi'$, denoted
+$\pi'_s$ ad $\pi'_{st}$. Then
+\begin{multline*}
+\KL(\pi'\|\pi) = - \ln Z -  \sum_{s\in V} (1-|\CV_s|)E_{\pi'} (\ln\frac{\phi_s}{\pi'_s}) -
+\sum_{\defset{s,t}\in E} E_{\pi'} (\ln \frac{\psi_{st}}{\pi'_{st}}) \\
++
+\sum_{s\in V} (1-|\CV_s|) \CH(\pi'_s) + \sum_{\defset{s,t}\in E}
+\CH(\pi'_{st}) -  \CH(\pi').
+\end{multline*}
+The Bethe free energy is the function $\mathbb F_\be$ defined by
+\begin{equation}
+\label{eq:bfe}
+\mathbb F_\be(\pi') = -  \sum_{s\in V} (1-|\CV_s|)E_{\pi'} (\ln \frac{\phi_s}{\pi'_s} )-
+\sum_{\defset{s,t}\in E} E_{\pi'} (\ln \frac{\psi_{st}}{\pi'_{st}})\,;
+\end{equation}
+so that
+$$
+\KL(\pi'\|\pi) = \mathbb F_\be(\pi') -\ln Z +
+\De_G(\pi')
+$$
+with
+$$
+\De_G(\pi') = \sum_{s\in V} (1-|\CV_s|) \CH(\pi'_s) + \sum_{\defset{s,t}\in E}
+\CH(\pi'_{st}) - \CH(\pi').
+$$
+
+Using this computation, one can consider the approximation problem:
+find $\hat \pi'$ that minimizes $\KL(\pi'\|\pi)$ over a class of
+distributions $\pi'$ for which the computation of the first and second
+order marginals is easy. This problem has an explicit solution when
+the distribution $\pi'$ is such that all variables are
+independent, leading to what is called the {\em mean-field
+  approximation} of $\pi$. Indeed, in this case, we have
+$$
+\De_G(\pi') =  \sum_{\defset{s, t} \in G} (\CH(\pi'_{s}) + \CH(\pi'_t))
++ \sum_{s\in S} (1-|\CV_s|) \CH(\pi'_s) -  \sum_{s\in S} \CH(\pi'_s) = 0
+$$
+and
+$$
+\mathbb F_\be(\pi') = -  \sum_{s\in V} (1-|\CV_s|)E_{\pi'} (\ln \frac{\phi_s}{\pi'_s}) -
+\sum_{\defset{s,t}\in E} E_{\pi'} ( \ln
+\frac{\psi_{st}}{\pi'_{s}\pi'_t})\, .
+$$
+$\mathbb F_\be$ must be minimized with respect to the variables $\pi'_s(\pe xs), s\in S,
+x_s\in F_S$ subject to the constraints $\sum_{x_s\in F_s} \pi'_s(\pe xs) =
+1$. The corresponding necessary optimality conditions  equations provide the mean-field
+consistency equations, described in the following definition.
+\begin{proposition}
+\label{prop:mean.f}
+A local minimum of $\mathbb F_\be(\pi')$ over all probability distributions
+$\pi'$ of the form
+$$
+\pi'(x) = \prod_{s\in V}\pi'_s(\pe xs)
+$$
+must satisfy the mean field consistency equations:
+\begin{equation}
+\label{eq:mf.cons}
+\pi_s(\pe xs) = \frac{1}{Z_s}\phi_s(\pe xs)^{1-|\mathcal V_s|}\prod_{t\sim s} \exp\left(E_{\pi_t} (\ln\psi_{st}(\pe x, .))\right).
+\end{equation}
+\end{proposition}
+\begin{proof}
+Since all constraints are affine, we can use Lagrange multipliers, denoted $(\la_s, s\in S)$ for each of the
+constraints, to obtain necessary conditions for a minimizer, yielding
+$$
+\pdr{\mathbb F_\be}{\pi_s(x_s)} -\la_s = 0, \ \ s\in S, x_s\in F_s.
+$$
+This gives:
+\[
+-(1-|\CV_s|)\left(\ln \frac{\phi_s(x_s)}{\pi_s(x_s)} -1\right) 
+-\sum_{t\sim s} \sum_{x_t\in F_t}\left(\ln\frac{\psi_{st}(x_s,
+x_t)}{\pi_s(x_s)\pi_t(x_t)}-1\right)\pi_t(x_t) = \la_s.
+\]
+Solving this with respect to $\pi_s(x_s)$ and regrouping all constant
+terms (independent from $x_s$) in the normalizing constant $Z_s$ yields
+\cref{eq:mf.cons}.
+\end{proof}
+
+The mean field consistency equations can be solved using a
+root-finding algorithm or by directly solving the minimization
+problem. We will retrieve this method, with more details, in our discussion of variational approximations in \cref{chap:var.bayes}.
+%Unfortunately, beyond the mean field theory and theapproximation of $\pi$ by a distribution that factorizes over allvariables, there is no feasible method that would use more generalapproximations. 
+
+In the particular case in which $G$
+is acyclic and the approximation is made by $G$-Markov
+processes, the Kullback-Leibler distance is
+minimized with $\pi'=\pi$ (since $\pi$ belongs to the approximating
+class). A slightly non-trivial remark is that $\pi$ is optimal also
+for the minimization of the Bethe free energy $F_\be$, because this
+energy coincides, up to the constant term $\ln Z$, with the
+Kullback-Leibler divergence, as proved by the following proposition.
+\begin{proposition}
+\label{prop:bethe.tree}
+If $G$ is acyclic and $\pi'$ is $G$-Markov, then $\De_G(\pi')  = 0$.
+\end{proposition}
+This proposition is a consequence of the following lemma that has
+its own interest:
+\begin{lemma}
+\label{lem:tree.acyc}
+If $G$ is acyclic and $\pi$ is a $G$-Markov distribution, then
+\begin{equation}
+\label{eq:tree.acyc}
+\pi(x) = \prod_{s\in V} \pi_s(\pe xs)^{1-|\CV_s|}
+\prod_{\defset{s,t}\in E}
+\pi_{st}(\pe xs, \pe xt).
+\end{equation}
+\end{lemma}
+\begin{proof}[of  \cref{lem:tree.acyc}]
+We know that, if $\tilde G = (V, \tilde E)$ is a tree such that
+$\tilde G^\flat = G$, we have, letting $s_0$ be the root in $\tilde
+G$
+\begin{eqnarray*}
+\pi(x) &=& \pi_{s_0}(\pe x{s_0}) \prod_{(s,t)\in \tilde E}
+p_{st}(\pe xs, \pe xt)\\
+&=& \pi_{s_0}(\pe x {s_0}) \prod_{(s,t)\in \tilde E} (\pi_{st}(\pe xs, \pe xt)
+\pi(\pe xs)^{-1}).
+\end{eqnarray*}
+Each vertex $s$ in $V$ has $|\CV_s|-1$ children in $\tilde G$, except
+$s_0$ which has $|\CV_{s_0}|$ children. Using this, we get
+\begin{eqnarray*}
+\pi(x) &=& \pi_{s_0}(\pe x{s_0}) \pi_{s_0}(\pe x{s_0})^{-|\CV_{s_0}|}
+\prod_{s\in V\setm \{s_0\}} \pi_s(\pe xs)^{1-|\CV_s|} \prod_{(s,t)\in \tilde E} \pi_{st}(\pe xs, \pe xt)\\
+&=& \prod_{s\in V} \pi_s(\pe xs)^{1-|\CV_s|} \prod_{\defset{s,t}\in  E} \pi_{st}(\pe xs, \pe xt).
+\end{eqnarray*}
+\end{proof}
+\begin{proof}[of  \cref{prop:bethe.tree}]
+If $\pi'$ is given by \cref{eq:tree.acyc}, then
+\begin{eqnarray*}
+H(\pi') &=& - E_{\pi'} \ln \pi'\\
+&=& - \sum_{s\in V} (1-|\CV_s|) E_{\pi'} \ln\pi'_s -
+\sum_{\defset{s,t}\in E} E_{\pi'}\ln \pi'_{st}\\
+&=& \sum_{s\in V} (1-|\CV_s|) H(\pi'_s) +
+\sum_{\defset{s,t}\in E} H(\pi'_{st})
+\end{eqnarray*}
+which proves that $\De_G(\pi') = 0$.
+\end{proof}
+
+
+In view of this, it is tempting to ``generalize'' the mean field
+optimization procedure and minimize $\mathbb F_\be(\pi')$ over all possible consistent
+singletons and pair marginals ($\pi'_s$ and $\pi'_{st}$), then use the
+optimal ones as an approximation of $\pi_s$ and $\pi_{st}$. What we
+have just proved is that this procedure 
+provides the exact expression of the marginals when $G$ is acyclic. For loopy graphs,
+however, it is not justified, and is at best an approximation. A very
+interesting fact is that this procedure provides the same consistency
+equations as belief propagation. To see this, we first start with the
+characterization of minimizers of $\mathbb F_\be$.
+\begin{proposition}
+\label{prop:bethe.loopy}
+Let $G=(V,E)$ be an undirected graph and $\pi$ be given by \cref{eq:pi.tree.2}. Consider the problem of minimizing the
+Bethe free energy $\mathbb F_\be$ in \cref{eq:bfe} with respect to all
+possible choices of probability distributions $(\pi'_{st},
+\defset{s,t}\in E)$, $(\pi'_s, s\in V)$ with the
+constraints
+$$
+\pi'_{s}(\pe xs) = \sum_{\pe xt\in F_t} \pi'_{st}(\pe xs,\pe xt), \forall \pe xs\in
+F_s \text{ and } t\sim s.
+$$
+Then a local minimum of this problem must take the form
+\begin{equation}
+\label{eq:bethe.loopy.1}
+\pi'_{st}(\pe xs, \pe xt) = \frac{1}{Z_{st}}\psi_{st}(\pe xs, \pe xt) \mu_{st}(\pe xt) 
+\mu_{ts}(\pe xs)
+\end{equation}
+where the functions $\mu_{st}: F_t\to [0, +\infty)$ are defined for all $ (s,t)$
+such that $\defset{s,t}\in E$ and satisfy the consistency conditions:
+\begin{equation}
+\label{eq:bethe.loopy.2}
+\mu_{ts}(\pe xs)^{-(|\CV_s|-1)} \prod_{s'\sim
+s}\mu_{s's}(\pe xs) 
+= \left(\frac{e}{Z_{st}}
+\sum_{\pe xt\in F_t} \psi_{st}(\pe xs,\pe xt) \phi_t(\pe xt) \mu_{st}(\pe xt)\right)^{|\CV_s|-1}.
+\end{equation}
+\end{proposition}
+\begin{proof}
+We introduce Lagrange multipliers:
+$\la_{ts}(\pe xs)$ for the constraint 
+$$
+\pi'_{s}(\pe xs) = \sum_{\pe xt\in F_t} \pi'_{st}(\pe xs, \pe xt)
+$$
+and $\ga_{st}$ for 
+$$
+\sum_{\pe xs, \pe xt} \pi'_{st}(\pe xs, \pe xt) = 1,
+$$
+which covers all constraints associated to the minimization
+problem. The associated Lagrangian is
+\begin{multline*}
+\mathbb F_\be(\pi') - \sum_{s\in V}\sum_{\pe xs\in F_s} \sum_{t\sim s}
+\la_{ts}(\pe xs) \left(\sum_{\pe xt\in F_t} \pi'_{st}(\pe xs, \pe xt) -
+\pi'_s(\pe xs)\right)\\
+ - \sum_{\{s,t\} \in E} \ga_{st}\left(\sum_{\pe xs\in F_s ,\pe xt\in F_t} \pi'_{st}(\pe xs, \pe xt)
+- 1\right).
+\end{multline*}
+The derivative with respect to $\pi'_{st}(\pe xs, \pe xt)$ yields the
+condition
+$$
+\ln\pi'_{st}(\pe xs, \pe xt) - \ln\psi_{st}(\pe xs, \pe xt) +1 -\la_{ts}(\pe xs)
+ - \la_{st}(\pe xt) -\ga_{st}=0.
+$$
+which implies
+\[
+\pi'_{st}(\pe xs, \pe xt) = \phi_{st}(\pe xs, \pe xt)\exp(\ga_{st}-1) \exp(\la_{ts}(\pe xs)
+ + \la_{st}(\pe xt) ).
+ \]
+ We let $Z_{st} = \exp(1-\ga_{st})$, with $\ga_{st}$ chosen so that $\pi'_{st}$ is a probability.
+The derivative with respect to $\pi'_s(\pe xs)$ gives
+$$
+(1-|\CV_s|)(\ln\pi'_s(\pe xs) - \ln\phi_s(\pe xs) +1)  + \sum_{t\sim
+s}\la_{ts}(\pe xs)  = 0.
+$$
+Combining this with the expression just obtained for $\pi_{st}'$, we
+get, for $t\sim s$,
+\begin{multline*}
+(1-|\CV_s|) \ln\sum_{\pe xt\in F_t} \psi_{st}(\pe xs, \pe xt) e^{\la_{st}(\pe xt)}
++ (1-|\CV_s|) \la_{ts}(\pe xs) \\ + (1-|\CV_s|) (1 -\ln Z_{st} - \ln\phi_s(\pe xs)) 
++ \sum_{s'\sim
+s}\la_{s's}(\pe xs) =0,
+\end{multline*}
+which gives \cref{eq:bethe.loopy.2} with $\mu_{st} =
+\exp(\la_{st})$. 
+\end{proof}
+
+A family $\pi'_{st}$ satisfying conditions \cref{eq:bethe.loopy.1,eq:bethe.loopy.2}  of 
+\cref{prop:bethe.loopy} will be called Bethe-consistent. A very
+interesting remark states that Bethe-consistency is
+equivalent to BP-stationarity, as stated below.
+\begin{proposition}
+\label{prop:bp.be}
+Let $G= (V,E)$ be an undirected graph and  $\Phi = (\phi_{st},
+\defset{s,t}\in E, \phi_s, s\in V)$ a consistent family of pair
+interactions.  Then a family $\pi'$ of joint probability distributions
+is BP-stationary if and only if it is Bethe-consistent.
+\end{proposition}
+\begin{proof}
+First assume that $\pi'$
+is BP-stationary with messages $m_{st}$, so that \cref{eq:bp.mes.1,eq:bp.edge.1} are satisfied. Take
+\[
+\mu_{st} = a_{t} \prod_{t'\in \CV_t, t'\neq s} m_{t't}(\pe xt)
+\] 
+for some constant $a_{t}$ that will be determined later. Then, the
+left-hand side of \cref{eq:bethe.loopy.2} is  
+\begin{align*}
+\mu_{ts}(\pe xs)^{-(|\CV_s|-1)} \prod_{s'\in\CV_s}\mu_{s's}(\pe xs) &= a_s \left(\prod_{s'\in \CV_s, s'\neq t}
+  m_{s's}(\pe xs)\right)^{-(|\CV_s|-1)} \prod_{s'\in\CV_s}
+\prod_{s''\in\CV_s, s''\neq s'} m_{s''s}(\pe xs)\\
+&= a_s m_{ts}(\pe xs)^{|\CV_s|-1}.
+\end{align*}
+The right-hand side is equal to (using \cref{eq:bp.mes.1})
+\[
+\left(\frac{e a_t \zeta_{st}}{Z_{st}\alpha_s}
+  m_{ts}(\pe xs)\right)^{|\CV_s| -1}, 
+\] 
+so that we need to have
+\[
+a_s = \left(\frac{e a_t \zeta_{st}}{Z_{st}\alpha_s}\right)^{|\CV_s|
+  -1}.
+\]
+We also need 
+\[
+Z_{st} = \sum_{\pe xs, \pe xt} \psi_{st}(\pe xs, \pe xt) \mu_{st}(\pe xt)
+\mu_{ts}(\pe xs) = a_s a_t \ze_{st}.
+\]
+Solving these equations, we find that \cref{eq:bethe.loopy.1} and
+\cref{eq:bethe.loopy.2} are satisfied with
+\[
+\begin{cases}
+a_s = (e/\al_s)^{(|\CV_s|-1)/|\CV_s|}\\
+Z_{st} = \ze_{st} a_s a_t
+\end{cases}
+\]
+which proves that $\pi'$ is Bethe-consistent.
+
+
+Conversely, take a Bethe-consistent $\pi'$, and $\mu_{st}, Z_{st}$
+satisfying \cref{eq:bethe.loopy.1} and
+\cref{eq:bethe.loopy.2}. For $s$ such that $|\CV_s| > 1$, define, for $t\in\CV_s$,
+\begin{equation}
+\label{eq:be.to.bp}
+m_{ts}(\pe xs) = \mu_{ts}(\pe xs)^{-1} \prod_{s'\sim s}
+\mu_{s's}(\pe xs)^{1/(|\CV_s|-1)}.
+\end{equation}
+Define also, for $|\CV_s| > 1$,
+\[
+\rho_{ts}(\pe xs) = \prod_{s'\in \CV_s, s'\neq t} m_{s's}(\pe xs).
+\]
+(If $|\CV_s| = 1$, take $\rho_{ts} \equiv 1$.)
+Using \cref{eq:be.to.bp}, we find
+$\rho_{ts} = \mu_{ts}$ when $|\CV_s| > 1$, and this identity is still valid when $|\CV_s| =1$, since in this case,
+\cref{eq:bethe.loopy.2} implies that $\mu_{ts}(\pe xs) = 1$. 
+
+We need to find constants $\al_t$ and $\ze_{st}$ such that
+\cref{eq:bp.mes.1} and \cref{eq:bp.edge.1} are satisfied. 
+ But \cref{eq:bp.edge.1} implies
+\[
+\ze_{ts} = \sum_{x_t, x_s} \psi_{st}(\pe xs, \pe xt) \rho_{st}(\pe xt)
+\rho_{ts}(\pe xs)
+\]
+and \cref{eq:bethe.loopy.1} implies $\ze_{ts} =  Z_{ts}$.
+
+We now consider \cref{eq:bp.mes.1}, which requires
+\[
+m_{ts}(\pe xs) = \frac{\al_s}{\ze_{st}} \sum_{\pe xt} \phi_{st}(\pe xs, \pe xt)
+\phi_t(\pe xt) \rho_{st}(\pe xt). 
+\]
+It is now easy to see that this identity to the power $|\CV_s| - 1$
+coincides with \cref{eq:bethe.loopy.2} as soon as one takes
+$\al_s = e$. 
+%Take   $\al_s=e$ also when $|\CV_s| = 1$ and define $m_{ts}$ so that \cref{eq:bp.mes.1} is satisfied.
+\end{proof}
+
+\section{Computing the most likely configuration}
+We now address the problem of finding a configuration that maximizes
+$\pi(x)$ (mode determination). This problem turns out to be very similar to the
+computation of marginals, that we have considered so far, and we will
+obtain similar algorithms.
+
+Assume that  $G$ is undirected and acyclic
+and that $\pi$ can be written as
+\[
+\pi(x) = \frac{1}{Z} \prod_{\defset{s,t}\in E} \phi_{st}(\pe xs,\pe xt)
+\prod_{s\in V} \phi_s(\pe xs).
+\]
+
+Maximizing $\pi(x)$ is equivalent  to maximizing
+\begin{equation}
+\label{eq:u.max}
+U(x) = \prod_{\defset{s,t}\in E} \phi_{st}(\pe xs,\pe xt)
+\prod_{s\in V} \phi_s(\pe xs).
+\end{equation}
+Assume that a root has been chosen in $G$, with the resulting edge orientation yielding a tree $\tilde G = (V, \tilde
+E)$ such that $\tilde G^\flat = G$. We partially order the vertexes according
+to $\tilde G$, writing $s\leq t$ if there exists a path from $s$ to $t$
+in $\tilde G$ ($s$ is an ancestor of $t$). Let $V_s^+$ contain all
+$t\in V$ with $t\geq s$, and define
+\[
+U_s(\pe x{V_s^+}) =  \prod_{\defset{t,u}\in E_{V_s^+}} \phi_{tu}(\pe xt, \pe xu)
+\prod_{t > s} \phi_t(\pe xt)
+\]
+and
+\begin{equation}
+\label{eq:us*}
+U^*_s(\pe xs) = \max\defset{U_s(\pe y{V_s^+}), \pe ys = \pe xs}.
+\end{equation}
+Since we can write
+\begin{equation}
+\label{eq:us.dec}
+U_s(\pe x{V_s^+}) =  \prod_{t\in s^+} \phi_{st}(\pe xs, \pe xt) \phi_t(\pe xt)  U_t(\pe x{V_t^+}),
+\end{equation}
+we have
+\begin{eqnarray}
+\nonumber
+U^*_s(\pe x{s}) &=& \max_{\pe xt, t\in s^+} \left( \prod_{t\in s^+} \phi_t(\pe xt)\phi_{st}(\pe xs, \pe xt) U^*_t(\pe x{t})\right)\\
+\label{eq:max.prod.1}
+&=&   \prod_{t\in s^+} \max_{x_t\in F_t}(\phi_t(\pe xt)\phi_{st}(\pe xs, \pe xt) U^*_t(\pe x{t})).
+\end{eqnarray}
+
+This provides a
+method to compute $U^*_{s}(\pe x{s})$ for all $s$, starting with the leaves and
+progressively updating the parents. (When $s$ is a leaf, $U_s^*(\pe xs) = 1$, by definition.)
+
+Once all $U^*_s(\pe xs)$ have been computed, it is possible to obtain a
+configuration $x_*$ that maximizes $\pi$. This is because an
+optimal configuration must satisfy
+$U^*_s(\pe xs_*) = U_s(\pe x{V^+_s}_*)$ for all $s\in V$, i.e., $\pe x{V^+_s\setm\{s\}}_*$ must
+solve the maximization problem in \cref{eq:us*}. But because of
+\cref{eq:us.dec}, we can separate this problem over the children of
+$s$ and obtain the fact that, it $t\in s^+$,
+$$
+\pe xt_* = \mathop{\mathrm{argmax}}_{\pe xt} \left(\phi_t(\pe xt) \phi_{st}(\pe xs_*,\pe xt)U_t^*(\pe xt)\right).
+$$
+
+This procedure can be rewritten in a slightly different form using messages similar to the belief propagation algorithm. It $s \in t^+$, define 
+\[
+\mu_{st}(\pe xt) = \max_{x_s\in F_s}(\phi_t(\pe xt)\phi_{ts}(\pe xt, \pe xs) U^*_s(\pe x{s}))
+\]
+and
+\[
+\xi_{st}(\pe xt) = \mathop{\mathrm{argmax}}_{\pe xs\in F_s}(\phi_t(\pe xt) \phi_{ts}(\pe xt, \pe xs) U^*_s(\pe x{s})).
+\]
+Using \cref{eq:max.prod.1}, we get
+\begin{eqnarray*}
+\mu_{st}(\pe xt) &=& \max_{\pe xs\in F_s}\left(\phi_{ts}(\pe xt,\pe xs)\phi_s(\pe xs) \prod_{u\in s^+} \mu_{us}(\pe xs)\right),\\
+\xi_{st}(x_t) &=& \mathop{\mathrm{argmax}}_{\pe xs\in F_s}\left(\phi_{ts}(\pe xt, \pe xs)\phi_s(\pe xs) \prod_{u\in s^+} \mu_{us}(\pe xs)\right).
+\end{eqnarray*}
+An optimal configuration can now be computed using $\pe xt_* = \xi_{ts}(\pe xs_*)$, with $s \in \pa{t}$.
+
+This resulting algorithm therefore first operates upwards on the tree
+(from leaves to root) to compute the $\mu_{st}$'s and $\xi_{st}$'s, then downwards to
+compute $x_*$. This is summarized in the following algorithm.
+\begin{algorithm}
+\label{alg:dyn.prog}
+A most likely configuration for 
+$$
+\pi(x) = \frac{1}{Z} \prod_{\defset{s,t}\in E} \phi_{st}(x_s,x_t)
+\prod_{s\in V} \phi_s(x_s).
+$$
+can be computed after iterating the following updates, based on any acyclic orientation of $G$:
+\begin{enumerate}
+\item Compute, from leaves to root: 
+\[
+\displaystyle \mu_{st}(\pe xt) = \max_{\pe xs\in F_s}\left(\phi_{ts}(\pe xt, \pe xs)\phi_s(\pe xs) \prod_{u\in s^+} \mu_{us}(\pe xs)\right)
+\]
+ and $\displaystyle \xi_{st}(\pe xt) = \mathop{\mathrm{argmax}}_{\pe xs\in F_s}\left(\phi_{ts}(\pe xt,\pe xs)\phi_s(\pe xs) \prod_{u\in s^+} \mu_{us}(\pe xs)\right)$.
+\item Compute, from root to leaves: $\pe xt_* = \xi_{ts}(\pe xs_*)$, with $s = \pa{t}$.
+\end{enumerate}
+\end{algorithm}
+
+Similar to the computation of marginals, this
+algorithm can be rewritten in an orientation-independent form. The main remark is that the value of $\mu_{st}(\pe xt)$ does not depend on the  tree orientation, as long as it is chosen such that $s\in t^+$, i.e., the edge $\{s,t\}$ is oriented from $t$ to $s$. This is because such a choice uniquely prescribes the orientation of the edges of the descendants of $s$ for any such tree, and $\mu_{st}$ only depends on this structure. Since the same remark holds for $\xi_{st}$, this provides a definition of these two quantities for any pair $s,t$ such that $\{s,t\}\in E$. 
+ The updating rule now
+becomes
+\begin{eqnarray}
+\label{eq:max.prod.final}
+\mu_{st}(\pe xt) &=& \max_{\pe xs\in F_s}\left(\phi_{ts}(\pe xt,\pe xs)\phi_s(\pe xs) \prod_{u\in \CV_s\setm \{t\}} \mu_{us}(\pe xs)\right),\\
+\label{eq:max.prod.final.2}
+\xi_{st}(\pe xt) &=& \mathop{\mathrm{argmax}}_{\pe xs\in F_s}\left(\phi_{ts}(\pe xt,\pe xs)\phi_s(\pe xs) \prod_{u\in \CV_s\setm \{t\}} \mu_{us}(\pe xs)\right)
+\end{eqnarray}
+with $\pe xt_* = \xi_{ts}(\pe xs_*)$ for any pair $s\sim t$.
+Like with the $m_{ts}$ in the previous section, looping over updating
+all $\mu_{ts}$ in
+any order will finally stabilize to their correct values, although, if an orientation is given,
+going from leaves to roots is obviously more efficient.
+
+The previous analysis is not valid for loopy graphs but  \cref{eq:max.prod.final} and \cref{eq:max.prod.final.2}
+provide well defined iterations when $G$ is an arbitrary undirected
+graph, and can therefore be used as such, without any guaranteed behavior.
+
+\section{General sum-prod and max-prod algorithms}
+\subsection{Factor graphs}
+The expressions we obtained for message updating with belief
+propagation and with mode determination respectively took
+the form
+\[
+m_{ts}(\pe xs) \leftarrow \sum_{\pe x{t}\in F_{t}} \phi_{st}(\pe xs, \pe x{t}) \phi_t(\pe xt) \prod_{t'\in\CV_t\setm \{s\}} m_{t't}(\pe xt)
+\]
+and
+$$
+\mu_{ts}(\pe xs) \leftarrow \max_{\pe x{t}\in F_{t}}\left( \phi_{st}(\pe xs, \pe x{t}) \phi_t(\pe xt) \prod_{t'\in\CV_t\setm \{s\}} \mu_{t't}(\pe xt)\right).
+$$
+
+
+They first one is often referred to as the ``sum-prod'' update rule,
+and the second as the ``max-prod''. In our construction, the sum-prod
+algorithm provided us with a method computing
+\[
+\sig_s(\pe xs) = \sum_{\pe y{V\setm\defset{s}}} U(\pe xs\wedge \pe y{V\setm \{s\}})
+\]
+with 
+\[
+U(x) = \prod_{s} \phi_s(\pe xs) \prod_{\defset{s,t}\in E}
+\phi_{st}(\pe xs, \pe xt).
+\]
+Indeed, we have, according to \cref{eq:bp.bel}
+\[
+\sig_s(\pe xs) = \phi_s(\pe xs) \prod_{t\in \CV_s} m_{ts}(\pe xs).
+\]
+
+Similarly, the max-prod algorithm computes
+\[
+\rho_s(\pe xs) = \max_{y_{V\setm\defset{s}}} U(\pe xs\wedge \pe y{V\setm \{s\}})
+\]
+via the relation
+\[
+\rho_s(\pe xs) = \phi_s(\pe xs) \prod_{t\in \CV_s} \mu_{ts}(\pe xs).
+\]
+
+We now discuss generalizations of these algorithms to situations in
+which the function $U$ does not decompose as a product of bivariate
+functions. More precisely, let $\CS$ be a subset of $\twop{V}$,
+and assume the decomposition
+$$
+U(x) = \prod_{C\sub \CS} \phi_C(x_C). 
+$$
+The previous algorithms can be generalized  using the concept of {\em factor
+graphs} associated with the decomposition. The vertexes of this graph
+are either indexes $s\in V$ or sets $C\in \CS$, and the only edges link  indexes and sets that contain them. The formal definition is
+as follows.
+\begin{definition}
+\label{def:fact.grph}
+Let $V$ be a finite set of indexes and $\CS$ a subset of $\twop{V}$. The
+factor graph associated to $V$ and $\CS$ is the graph $G=(V\cup
+\CS,E)$, $E$ being constituted of all pairs $\defset{s,C}$ with $C\in
+\CS$ and $s\in C$.
+\end{definition}
+We assign the variable
+$\pe xs$ to a vertex $s\in V$ of the factor graph, and  the function
+$\phi_C$ to $C\in\CS$. With this in mind,
+the sum-prod and max-prod algorithms are extended to factor graphs as
+follows.
+
+\begin{definition}
+\label{def:maxsumprod}
+Let $G=(V\cup
+\CS,E)$ be a factor graph, with associated functions
+$\phi_C(x_C)$. The sum-prod algorithm on $G$ updates messages
+$m_{sC}(x_s)$ and $m_{Cs}(x_s)$ according to the rules
+\begin{equation}
+\label{eq:sumprod}
+\left\{
+\begin{aligned}
+&m_{sC}(\pe xs) \leftarrow \prod_{\tilde C, s\in \tilde C,  \tilde C\neq C} m_{\tilde C s}(\pe xs)\\
+&m_{Cs}(\pe xs) \leftarrow \sum_{y_{C}: \pe ys = \pe xs} \phi_C(\pe y{C}) \prod_{t\in C\setm \{s\}} m_{tC}(\pe yt)
+\end{aligned}
+\right.
+\end{equation}
+
+Similarly, the max-prod algorithm iterates
+\begin{equation}
+\label{eq:maxprod}
+\left\{
+\begin{aligned}
+&\mu_{sC}(\pe xs) \leftarrow \prod_{\tilde C, s\in \tilde C,  \tilde C\neq C} \mu_{\tilde
+C s}(\pe xs)\\
+&\mu_{Cs}(\pe xs) \leftarrow \max_{\pe y{C}:\pe ys=\pe xs} \phi_C(\pe y{C}) \prod_{t\in C\setm \{s\}} \mu_{tC}(\pe yt)\\
+\end{aligned}
+\right.
+\end{equation}
+\end{definition}
+These algorithms reduce to the original ones when
+only single vertex and pair interactions exist. Let us check this with 
+sum-prod.  In this case, the set $\CS$ contains all singletons $C=\{s\}$, with
+associated function $\phi_s$, and all edges $\defset{s,t}$ with
+associated function $\phi_{st}$. We have links between $s$ and $\{s\}$
+and $s$ and $\{s,t\}\in E$. For singletons, we have
+$$
+m_{s\{s\}}(\pe xs) \leftarrow \prod_{t\sim s} m_{s\{s,t\}} (\pe xs) \text{
+and } m_{\{s\}s}(\pe xs) \leftarrow \phi_s(\pe xs).
+$$
+For pairs,
+$$
+m_{s\{s,t\}}(\pe xs) \leftarrow \phi_s(\pe xs) \prod_{\tilde t\in\CV_s\setm \{t\}}
+m_{\{s,\tilde t\}s} (\pe xs)
+$$
+and
+$$
+m_{\{s,t\}s}(\pe xs) \leftarrow \sum_{\pe yt} \phi_{st}(\pe xs,\pe yt)
+m_{t\{s,t\}}(\pe yt)
+$$
+and, combining the last two assignments, it becomes clear that we retrieve the initial algorithm with
+$m_{\{s,t\}s}$ taking the role of what we previously denoted $m_{ts}$.
+
+The important question, obviously, is whether the algorithms
+converge. The following result shows that this is true when the factor
+graph is acyclic.
+
+\begin{proposition}
+\label{prop:fct.grph.cvg}
+Let $G = (V\cup\CS, E)$ be a factor graph with associated
+functions $\phi_C$. Assume that $G$ is acyclic. Then the sum-prod and max-prod algorithms converge
+in finite time. 
+
+After convergence, we have 
+$\sig_s(\pe xs) = \prod_{C, s\in C} m_{Cs}(\pe xs)$
+and 
+$\rho_s(\pe xs) = \prod_{C, s\in C} \mu_{Cs}(\pe xs)$.
+\end{proposition}
+\begin{proof}
+Let us assume that $G$ is connected, which is without loss of
+generality, since the following argument can be applied to each component of $G$ separately.
+Since $G$ is acyclic, we can
+arbitrarily select one of its vertexes as a root to form a tree.
+This
+being done, we can see that the messages going upward in the tree
+(from children to parent) progressively stabilize, starting with leaves.
+Leaves in the factor graph indeed are either singletons, $C=\{s\}$, or vertexes
+$s\in V$ that belong to only one set $C\in\CS$. In the first case, the
+algorithm imposes (taking, for example, the sum-prod case)
+$m_{\{s\}s}(\pe xs) = \phi_s(\pe xs)$, and in the second case 
+$m_{sC}(\pe xs) = 1$. So the messages sent upward by the leaves are set at the
+first step. Since the messages going from a child to its parents only
+depend on the messages that it received from its other neighbors
+in the acyclic graph, which are its children in the tree,  it is clear
+that all upward messages progressively stabilize until the root is
+reached. Once this is done, messages propagate downward 
+from each parent to its children. This stabilizes as soon as all
+incoming messages to the parent are stabilized, since outgoing messages
+only depend on those. At the end of the upward phase, this is true
+for the root, which can then send its stable message to its
+children. These children now have all their incoming messages and can
+now send their messages to their own children and so on down to the
+leaves.
+
+We now consider the second statement,   proceeding by induction,  assuming that the result is true for any
+smaller graph than the one considered. Let $s_0$ be the selected root, and
+consider all vertexes $s\neq s_0$ such that  there exists $C_s\in
+\CS$ such
+that $s_0$ and $s$ both belong to $C_s$. Given $s$, there cannot be more than
+one such $C_s$ since this would create a loop in the graph. For each such $s$, consider the part
+$G_s$ of $G$ containing all descendants of $s$. Let $V_s$ be the set
+of vertexes among the descendants of $s$ and $\CC_s$ the set of $C$'s
+below $s$. Define
+\[
+U_s(\pe x{V_s}) = \prod_{C\in\CC_s}\phi_C(\pe xC).
+\]
+
+Since the upward phase
+of the algorithm does not depend on the ancestors of $s$, the messages
+incoming to $s$ for the sum-prod algorithm restricted to $G_s$ are the
+same as with the general algorithm, so that, using the
+induction hypothesis 
+\[
+\sum_{\pe y{V_s}, \pe ys=\pe xs} U_s(\pe y{V_s}) = \prod_{C\in \CC_s, s\in C}
+m_{Cs}(\pe xs) = m_{sC_s}(\pe xs).
+\]
+
+Now let $C_1, \ldots, C_n$ list all the sets in $\CC$ that contain $s_0$,
+which must be non-intersecting (excepted at $\{s_0\}$), again not to
+create loops. Write
+\[
+C_1 \cup \cdots \cup C_n = \{s_0, s_1, \ldots, s_q\}.
+\]
+ Then, we
+have
+\[
+U(x) = \prod_{j=1}^n \phi_{C_j}(\pe x{C_j}) \prod_{i=1}^qU_{s_i}(\pe x {V_{s_i}})
+\]
+and letting $S = \bigcup_{j=1}^n C_j\setm \{s_0\}$, 
+\begin{eqnarray*}
+\sig_{s_0}(\pe x {s_0}) &=& \sum_{\pe yV: \pe y{s_0}= \pe x{s_0}} \prod_{j=1}^n \phi_{C_j}(\pe y{C_j})
+\prod_{i=1}^q U_{s_i}(\pe y{V_{s_i}})\\
+&=& \sum_{\pe y_S: \pe y{s_0}= \pe x{s_0}} \prod_{j=1}^n \phi_{C_j}(\pe y{C_j})
+\prod_{i=1}^q m_{s_iC_{s_i}}(\pe y{s_i})\\
+&=& \prod_{j=1}^n \sum_{\pe y_{C_j}: \pe y{s_0}=\pe x{s_0}} \phi_{C_j}(\pe y{C_j})
+\prod_{s\in C_j\setm\{s_0\}} m_{sC_{s}}(\pe y{s})\\
+&=& \prod_{j=1}^n  m_{C_js_0}(\pe x{s_0})
+\end{eqnarray*}
+which proves the required result (note that, when factorizing the sum,
+we have used the fact that the sets $C_j\setm \{s_0\}$ are non
+intersecting). An almost identical argument holds for the max-prod
+algorithm.
+\end{proof}
+
+\begin{remark}
+Note that these algorithms are not always feasible. For example, it is
+always possible to represent a function $U$ on $\CF(V)$ with the
+trivial factor graph in which $\CS=\{V\}$ and $E$ contains all
+$\{s,V\}, s\in V$ (using $\phi_V=U$), but computing $m_{Vs}$ is
+identical to directly computing $\sig_s$ with a sum over all
+configurations on $V\setm\{s\}$ which grows exponentially.
+In fact, the complexity of the sum-prod and max-prod algorithms is
+exponential in the size of the largest $C$ in $\CS$ which should
+therefore remain small.
+\end{remark}
+
+\begin{remark}
+It is not always possible to decompose a function so that the
+resulting factor graph is acyclic with small degree (maximum number of
+edges per vertex). Sum-prod
+and max-prod can still be used with loopy networks, sometimes with excellent
+results, but without theoretical support.
+\end{remark}
+
+\begin{remark}
+\label{rem:JT.example}
+One can sometimes transform a given factor graph into an acyclic one
+by grouping vertexes. Assume that the set $\CS \sub \twop{V}$ is
+given. We will say that a partition  $\De = (D_1, \ldots D_k)$ of $V$
+is $\CS$-admissible if, for any $C\in \CS$ and any $j\in \{1, \ldots,
+k\}$, one has either $D_j\cap C = \emp$ or $D_j\sub C$. 
+
+If $\De$ is $\CS$-admissible, one can define a new factor graph $\tilde G$ as follows. We first let $\tilde V = \{1, \ldots,
+k\}$. To define $\tilde \CS \sub \twop{\tilde V}$ assign to each $C\in\CS$ the set $J_C$ of indexes $j$ such that $D_j \sub C$.  From the admissibility assumption,
+\begin{equation}
+\label{eq:ctc}
+C = \bigcup_{j\in J_C} D_j,
+\end{equation}
+so that $C \mapsto J_C$ is one-to-one.
+Let $\tilde \CS = \defset{J_C, C\in\CS}$.
+Group variables using $\pe {\tilde x}k = \pe x{D_k}$, so that $\tilde F_k = \CF(D_k)$. Define $\tilde \Phi =
+(\tilde\phi_{\tilde C}, \tilde C \in\tilde \CS)$ by
+$\tilde\phi_{\tilde C} = \phi_C$ where $C$ is given by
+\cref{eq:ctc}.
+
+In other terms, one groups variables $(\pe xs, s\in V)$ into clusters, to
+create a simpler factor graph, which may be acyclic even if the
+original one was not. For example, if $V = \{a,b,c,d\}$, $\CS =\{A,
+B\}$ with 
+$A=\{a,b,c\}$ and $B = \{b,c,d\}$, then $(A, c, B, b)$ is a cycle in
+the associated factor graph. If, however, one takes $D_1 = \{a\}$,
+$D_2= \{b,c\}$ and $D_3 = \{d\}$, then $(D_1, D_2, D_3)$ is
+$\CS$-admissible and  the associated factor graph is acyclic. In fact,
+in such a case, the resulting factor graph, considered as a graph with
+vertexes given by subsets of $V$, is a special case of a junction tree,
+which is defined in the next section.
+\end{remark}
+
+\subsection{Junction trees}
+
+\begin{definition}
+\label{def:jct.tree}
+Let $V$ be a finite set. A junction tree on $V$ is an undirected
+acyclic graph $\mathbb G = (\CS, \mathbb E)$ where $\CS \sub \twop{V}$ is a family
+of subsets of $V$ that satisfy the following property, called the running intersection constraint:
+if $C, C'\in\CS$ and $s\in C\cap C'$, then all sets $C''$ in the
+(unique) path connecting $C$ and $C'$ in $\mathbb G$ must also contain
+$s$.
+\end{definition}
+
+\begin{remark}
+\label{rem:JT.example.2}
+
+Let us check that the clustered factor graph $\tilde G$ defined in \cref{rem:JT.example} is equivalent to a junction tree when acyclic. 
+Using the same
+notation, let $\hat \CS = \{D_1, \ldots, D_k\}\cup \CS$, removing if needed sets $C\in \CS$ that coincide with one of the $D_j$'s.  Place an edge between $D_j$ and $C$ if and only if $D_j \sub C$. 
+
+Let
+$(C_1, D_{i_1}, \ldots, D_{i_{n-1}}, C_n)$ be a path
+in that graph. Assume that $s\in C_1\cap C_2$. Let $D_{i_n}$ be the unique $D_j$ that contains $s$. It is such that from the  the admissibility assumption, $D_{i_n} \sub C_1$ and $D_{i_n} \sub C_n$, which implies that $(C_1, D_{i_1}, \ldots, C_n, D_{i_n}, C_1)$ is a path in $\tilde G$. Since $\tilde G$ is acyclic, this path must be a union of folded paths. But it is easy to see that any folded path satisfies the running intersection constraint.  (Note that there was no loss of generality in assuming that the path started and ended with a ``$C$'', since any ``$D$'' must be contained in the $C$ that follows or precedes it.)
+\end{remark}
+
+
+We now consider a probability distribution written in
+the form
+\[
+\pi(x) = \frac1Z \prod_{C\in\CS} \phi_C(\pe xC)
+\]
+and we  make the assumption that $\CS$ can be organized as a
+junction  tree.
+
+
+Belief propagation can be extended to junction
+trees. Fixing a root $C_0\in \CS$, we first choose an orientation on $\mathbb G$, which induces as
+usual a partial order on $\CS$. For $C\in \CS$, define $\CS_C^+$ as
+the set of all $B\in\CS$ such that $B>C$. Define also 
+\[
+V_C^+ = \bigcup_{B\in \CS_C^+} B.
+\]
+We want to compute sums
+\[
+\sig_C(\pe xC) = \sum_{\pe y{V\setm C}} U(\pe xC \wedge \pe y{V\setm C}),
+\]
+where $U(x) = \prod_{C\in\CS} \phi_C(\pe xC)$.
+We have
+\[
+\sig_C(\pe xC) = \sum_{\pe y{V\setm C}} \phi_C(\pe xC) \prod_{B\in \CS\setm
+  \{C\}} \phi_B(\pe x{B\cap C} \wedge \pe y{B\setm C}).
+\]
+Define
+\[
+\sig^+_C(\pe xC) = \sum_{\pe y{V_C^+\setm C}} \prod_{B>C} \phi_B(\pe x{B\cap C} \wedge \pe y{B\setm C}).
+\]
+Note that we have $\sig_{C_0} = \phi_{C_0} \sig_{C_0}^+$ at the root. 
+We have the recursion formula
+\begin{eqnarray*}
+\sig^+_C(\pe xC) &=& \sum_{\pe y{V_C^+\setm C}} \prod_{C\to B} \left(\phi_{B}(\pe x{B\cap C} \wedge \pe y{B\setm C})\prod_{B'>B} \phi_{B'}(\pe x{B'\cap C} \wedge \pe y{B'\setm C})\right)\\
+&=& \prod_{C\to B} \sum_{\pe y{B\cup V_B^+\setm C}}  \phi_{B}(\pe x{B\cap C}
+\wedge \pe y{B\setm C})\prod_{B'>B} \phi_{B'}(\pe x{B'\cap C} \wedge
+\pe y{B'\setm C})\\
+&=& \prod_{C\to B} \sum_{\pe y{B\setm C}} \phi_{B}(\pe x{B\cap C}
+\wedge \pe y{B\setm C})\sig_B^+(\pe x{B\cap C}\wedge
+\pe y{B\setm C}).
+\end{eqnarray*}
+The inversion between the sum and product in the second equation
+above was possible because the sets $B\cup V_B^+ \setm C$, $C\to B$
+are disjoint. Indeed, if there existed 
+$B,B'$ such that $C\to B$ and $C\to B'$, and descendants $C'$ of $B'$
+and $C''$ of $B''$ with a non-empty intersection, then this
+intersection would have to be included in every set in the (non-oriented) path connecting $C'$
+and   $C''$ in $\mathbb G$. Since this path contains $C$, the
+intersection must also be included in $C$, so that the sets  $B\cup
+V_B^+ \setm C$, with $C\to B$
+are disjoint. 
+
+Introduce messages
+\[
+m_B^+(\pe x{ C}) = \sum_{\pe y{B\setm C}} \phi_{B}(\pe x{B\cap C}
+\wedge \pe y{B\setm C})\sig_B^+(\pe x{B\cap C}\wedge
+\pe y{B\setm C})
+\]
+where $C$ is the parent of $B$. Then
+\[
+m_{B}^+(\pe x{C}) = \sum_{\pe y{B\setm C}} \phi_{B}(\pe x{B\cap C}
+\wedge \pe y{B\setm C}) \prod_{B\to B'} m_{B'}^+(\pe x{B\cap C}\wedge
+\pe y{B\setm C})
+\]
+with
+\[
+\sig^+_C(\pe xC) = \prod_{C\to B} m^+_B(\pe x{C})
+\]
+which provides $\sig_C$ at the root. Reinterpreting this discussion in
+terms of the undirected graph, we are led to introducing messages 
+$m_{BC}(\pe xC)$ for $B\sim C$ in $\mathbb G$, with the message-passing rule
+\begin{equation}
+\label{eq:jct.tree.mes}
+m_{BC}(\pe x{C}) = \sum_{\pe y{B\setm C}} \phi_{B}(\pe x{B\cap C}
+\wedge \pe y{B\setm C}) \prod_{B'\sim B, B'\neq C } m_{B'B}(\pe x{B\cap C}\wedge
+\pe y{B\setm C}).
+\end{equation}
+Messages progressively stabilize when applied in $\mathbb G$, and at
+convergence, we have
+\begin{equation}
+\label{eq:jct.tree.sum}
+\sig_C(\pe xC) = \phi_C(\pe xC) \prod_{B\sim C} m_{BC}(\pe x{C}).
+\end{equation}
+
+Note that the complexity of the junction tree algorithm is exponential
+in the cardinality of the largest $C\in \CS$. This algorithm will
+therefore be unfeasible if $\CS$ contains sets that are too large.
+
+\section{Building junction trees}
+
+There is more than one family of set interactions with respect to
+which a given probability $\pi$ can be decomposed (notice that, unlike
+in the Hammersley-Clifford Theorem, we do not assume that the
+interactions are normalized), and not all of them can be organized as
+a junction tree. One can however extend any given family into a new one
+on which one can build a junction tree.
+\begin{definition}
+\label{def:clique.ext}
+Let $V$ be a set of vertexes, and $\CS_0\sub \twop{V}$. We say that a
+set $\CS \sub \twop{V}$ is an extension of $\CS_0$ if, for any $C_0\in
+\CS_0$, there exists a $C\in \CS$ such that $C_0\sub C$.
+
+A tree $\mathbb G = (\CS, E)$ is a junction-tree extension of $\CS_0$
+if $\CS$ is an extension of $\CS_0$ and $\mathbb G$ is a junction tree.   
+\end{definition}
+
+If $\Phi^0 = (\phi^0_C, C\in \CS_0)$ is a consistent family of set
+interactions, and $\CS$ is an extension of $\CS_0$, one can build a
+new family, $\Phi = (\phi_C, C\in \CS)$, of set interactions which
+yields the same probability distribution, i.e., such that, for all
+$x\in \CF(V)$,  
+\[
+\prod_{C\in \CS}\phi_C(\pe xC) \propto \prod_{C_0\in
+  \CS_0}\phi_{C_0}^0(\pe x{C_0}).
+\]
+For this, it suffices to build a mapping say $T: \CS_0 \to \CS$ such
+that $C_0 \sub T(C_0)$ for all $C_0\in \CS_0$, which is always
+possible since $\CS$ is an extension of $\CS_0$ (for example,
+arbitrarily order the elements of $\CS$ and let $T(\CS_0)$ be the
+first element of $\CS$, according to this order, that contains
+$C_0$).  One can then define 
+\[
+\phi_C(\pe xC) = \prod_{C_0: T(C_0)=C} \phi_{C_0}^0(\pe x{C_0}).
+\] 
+
+Given $\Phi^0$, our goal is to design a junction-tree extension which
+is as feasible as possible. So, we are not interested by the trivial
+extension $\mathbb G = (V, \emp)$, since the resulting junction-tree
+algorithm is unfeasible as soon as $V$ is large.  \Cref{th:jct.tree.exist} in the next section will be the first step in the design of an algorithm that computes
+junction trees on a given graph.
+
+\subsection{Triangulated graphs}
+\begin{definition}
+\label{def:triangul}
+Let $G = (V,E)$ be an undirected graph. Let  
+$(s_1, s_2, \ldots, s_n)$ be a path in $G$. One says that this path
+has a chord at $s_j$,   with $j\in
+\{2, \ldots, n\}$ , if $s_{j-1} \sim s_{j+1}$, and we will refer to $(s_{j-1}, s_j, s_{j+1})$ as a chordal triangle. A path in $G$ is
+achordal if it has no chord.
+
+One says that  $G$ is triangulated (or chordal) if it has no achordal
+loop.
+\end{definition}
+\begin{definition}
+\label{def:decomposable}
+The graph $G$ is decomposable if it satisfies the following recursive
+condition: it is either complete, or there exists disjoint
+subsets $(A,B,C)$ of $V$ such that
+\begin{itemize}
+\item $V = A \cup B \cup C$,  
+\item $A$ and $B$ are not empty,
+\item $C$ is clique in $G$, $C$ separates $A$ and $B$, 
+\item the restricted
+graphs, $G_{A\cup C}$ and $G_{B\cup C}$ are decomposable.
+\end{itemize}
+\end{definition}
+These definitions are in fact equivalent, as stated in the
+following proposition.
+
+\begin{proposition}
+\label{prop:trg.dec}
+An undirected graph is triangulated if and only if it is decomposable
+\end{proposition}
+\begin{proof}
+To prove the ``if'' part, we proceed by induction on $n=|V|$. Note that every graph for $n\leq3$ is both decomposable and triangulated (we leave the verification to the reader).  Assume that the statement ``decomposable $\Rightarrow$ triangulated'' holds for graphs with less than $n$ vertexes, and take $G$ with $n$ vertexes. Assume that $G$ is decomposable. If it is complete, it is obviously triangulated. Otherwise, there exists $A,B,C$ such that  $V = A\cup B \cup C$, with $A$ and $B$ non-empty such
+that $G_{A\cup C}$ and $G_{B\cup C}$ are decomposable, hence triangulated from the induction hypothesis,  and such that $C$ is a
+clique which separates $A$ and $B$.  Assume that $\gamma$ is an achordal loop in $G$. Since it cannot be included in $A\cup C$ or
+$B\cup C$, $\gamma$ must  go from $A$ to $B$ and back, which implies that it
+passes at least twice in $C$. Since $C$ is complete, the original loop can be shortcut to form subloops   in $A\cup C$ and $B\cup C$. If one of (or both) these loops has cardinality 3, this would provide $\gamma$ with a chord, which contradicts the assumption. Otherwise, the following lemma also provides a contradiction, since one of the two chords that it implies must also be a chord in the original $\gamma$. 
+
+\begin{lemma}
+Let $(s_1, \ldots, s_n, s_{n+1}=s_1)$ be a loop in a triangulated graph, with $n\geq 4$. Then the path has a chord at  two non-contiguous vertexes at least. 
+\end{lemma}
+To prove the lemma, assume the contrary and let $(s_1, \ldots, s_n, s_{n+1}=s_1)$ be a loop that does not satisfy the condition, with $n$ as small as possible. If $n > 4$, the loop must have a chord, say at $s_j$, and one can remove $s_j$ from the loop to still obtain a smaller loop that must satisfy the condition in the  lemma, since $n$ was as small as possible. One of the two chords must be at a vertex other than the two neighbors of $s_j$, and thus provide a second chord in the original loop, which is a contradiction. Thus $n=4$, but $G$ being triangulated implies that this 4-point loop has a diagonal, so that the condition in the lemma also holds, which provides a contradiction.
+
+For the ``only if'' part of \cref{prop:trg.dec}, assume that $G$ is triangulated. We prove
+that the graph is decomposable by induction on $|G|$.  The induction
+will work if we can show that, if $G$ is triangulated, it is either
+complete or there exists a clique in $G$ such that $V\setm C$ is
+disconnected, i.e., there exist two elements $a, b\in V\setm C$ which are
+related by no path in $V\setm C$. Indeed, we will then be able to
+decompose $V = A\cup B\cup C$, where $A$ and $B$ are unions of
+(distinct) connected components of $V\setm C$. Take, for example, $A$ to be the set of vertexes connected to $A$ in $G\setminus C$, and $B = V\setminus (A\cup C)$, which is not empty since it contains $b$. Note that restricted graphs from
+triangulated graphs are triangulated too. 
+
+So, assume that $G$ is triangulated, and not complete. Let $C$ be a subset
+of $V$ that satisfies the property that $V\setm C$ is disconnected, and take $C$ minimal, so  that $V\setm C'$ is connected for any $C'\sub C$, $C'\neq
+C$. We want to show that $C$ is a clique, so take $s$ and $t$ in $C$
+and assume that they are not neighbors to reach a contradiction.
+
+Let $A$ and $B$ be two connected components of $V\setm C$. For any
+$a\in A$,  $b\in B$, and $s,t\in C$, we know that there exists a path
+between $a$ and $b$ in $V\setm C\cup \{s\}$ and another one in $V\setm
+C \cup \{t\}$, the first one passing by $s$ (because it would
+otherwise connect $a$ and $b$ in $V\setm C$) and the second one
+passing by $t$. Any point before $s$ (or $t$) in these paths must
+belong to $A$, and any point after them must belong to
+$B$. Concatenating these two paths, and removing multiple points if
+needed, we obtain a loop passing in $A$, then by $s$, then in $B$,
+then by $t$. We can recursively remove all points at which these paths
+have a chord. We can also notice that we cannot remove $s$ nor $t$ in this
+process, since this would imply an edge between $A$ and $B$, and that
+we  must
+leave at least one element in $A$ and one in $B$ because removing the
+last one would require $s\sim t$. So, at the end, we obtain an achordal loop
+with at least four points, which contradicts the fact that $G$ is
+triangulated.
+\end{proof}
+
+We can now characterize graphs that admit junction trees over the set
+of their maximal cliques.
+\begin{theorem}
+\label{th:jct.tree.exist}
+Let $G = (V, E)$ be an undirected graph, and $\CC^*_G$ be the set of all
+maximum cliques in $G$. The following two properties are equivalent. 
+\begin{itemize}
+\item[(i)] There exists a junction tree over $\CC^*_G$.
+\item[(ii)] $G$ is triangulated/decomposable.
+\end{itemize}
+\end{theorem}
+
+\begin{proof}
+The proof works by induction on the number of maximal
+cliques, $|\CC^*_G|$. If $G$ has only one maximal clique, then $G$ is complete, because any point not included in this clique will have to be included in another maximal clique, which leads to a contradiction. So $G$ is decomposable, and, since any single node obviously provides a junction tree, (i) is true also. 
+
+Now, fix $G$ and assume that the theorem is true
+for any graph with fewer maximal cliques.
+First assume that $\CC_G^*$ has a junction tree, $\mathbb T$. Let
+$C_1$ be a leaf in $\mathbb T$, connected, say, to $C_2$, and let
+$\mathbb T_2$ be $\mathbb T$ restricted to $\CC_2 = \CC_G^* \setm
+\{C_1\}$. 
+Let $V_2$ be the unions of
+maximal cliques from nodes in $\mathbb T_2$. A maximal clique $C$ in $G_{V_2}$ is a clique in $G_V$ and therefore
+included in some maximal clique $C'\in \CC_V$. If $C'\in \CC_2$, then
+$C'$ is also a clique in $G_{V_2}$, and for $C$ to be maximal, we need
+$C= C'$. If $C' = C_1$, we note that we must also have
+\[
+C = \bigcup_{\tilde C\in \CC_2} C\cap \tilde C
+\]
+and whenever $C\cap \tilde C$ is not empty, this set must be included
+in any node in the path in $\mathbb T$ that links $\tilde C$ to
+$C_1$. Since this path contains $C_2$, we have $C\cap \tilde C\sub C_2$
+so that $C\sub C_2$, but, since $C$ is maximal, this would imply that
+$C = C_2 = C_1$ which is impossible. 
+
+This shows that $\CC_{G_2}^* = \CC_2$. This also shows that $\mathbb
+T_2$ is a junction tree over $\CC_2$. So, by the
+induction hypothesis, $G_{V_2}$ is decomposable. If $s\in V_2 \cap
+C_1$, then $s$ also belongs to some clique $C'\in \CC_2$, and
+therefore belongs to any clique in the path between $C'$ and $C_1$,
+which includes $C_2$. So $s\in C_1\cap C_2$ and $C_1\cap V_2 = C_1
+\cap C_2$. So, letting $A = C_1\setm (C_1\cap C_2)$, $B = V_1 \setm
+(C_1\cap C_2)$, $S = C_1\cap C_2$, we know that
+$G_{A\cup S}$ and $G_{B\cup S}$ are decomposable (the first one being
+complete), and that $S$ is a clique. To show that $G$ is decomposable,
+it remains to show that $S$ separates $A$ from $B$.  
+
+If a path connects
+$A$ to $B$ in $G$, it must contain an edge, say $\{s, t\}$, with
+$s\in V\setm S$ and $t\in S$; $\{s, t\}$ must be included in a maximal clique
+in $G$. If this clique is $C_1$, we have $s\in C_1\cap V_2 = S$. The same argument shows that this is the only
+possibility, because, if $\{s, t\}$ is included in some
+maximal clique in $\CC_2$, then we would find $t\in C_1\cap
+C_2$. So $S$ separates $A$ and $B$ in $G$.
+
+\medskip
+
+Let us now prove the converse statement, and assume that $G$ is
+decomposable. If $G$ is complete, it has only one maximal clique and we
+are done. Otherwise, there exists a partition $V = A\cup B\cup S$ such
+that $G_{A\cup S}$ and $G_{B\cup S}$ are decomposable, $A$ and $B$ separated by $S$
+which is complete. Let $\CC_A^*$ be the maximal cliques in $G_{A\cup S}$ and
+$\CC_B^*$ the maximal cliques in $G_{B\cup S}$. By hypothesis, there exist
+junction trees $\mathbb T_A$ and $\mathbb T_B$ over $\CC_A^*$ and
+$\CC_B^*$. 
+
+Let $C$ be a maximal clique in $G_{A\cup S}$. Assume that $C$  intersect
+$A$; $C$ can be extended to a maximal clique, $C'$, in $G$,
+but $C'$ cannot intersect $B$ (since this would imply a direct edge
+between $A$ and $B$) and is therefore included in $A\cup S$,
+so that $C=C'$. Similarly, all maximal cliques in $G_{B\cup S}$ that
+intersect $B$ also
+are maximal cliques in $G$. 
+
+The clique $S$ is included in some maximal clique $S_A^*\in
+\CC_A^*$. From the previous discussion, we have either $S^*_A = S$ or
+$S^*_A \in \CC_G^*$. Similarly, $S$ can be extended to a maximal
+clique $S^*_B \in \CC_B^*$, with $S^*_B=S$ or $S^*_B\in
+\CC_G^*$. Notice also that at least one of $S^*_A$ or $S^*_B$ must be
+a maximal clique in $G$: indeed, assume that both sets are equal to $S$,
+which, as a clique, can extended to a maximal clique $S^*$ in $G$;
+$S^*$ must be included either in $A\cup S$ or in
+$B\cup S$, and therefore be a maximal clique in the corresponding
+graph which yields $S^* = S$. Reversing the notation if needed, we
+will assume that $S_A^* \in \CC_G^*$.
+
+All elements of $\CC_G^*$ must belong either to $\CC_A^*$ or $\CC_B^*$
+since any maximal clique, say $C$, in $G$ must be included in either $A\cup
+S$ or $B\cup S$, and therefore also provide a maximal
+clique in the related graph. So the nodes in $\mathbb T_A$ and
+$\mathbb T_B$ enumerate all maximal cliques in $G$, and we can build a
+tree $\mathbb T$ over $\CC^*_G$ by identifying $S^*_A$ and $S^*_B$ to $S^*$ and
+merging the two trees at this node. To conclude our proof, it only
+remains to show that the running intersection property is
+satisfied. So consider two nodes $C,C'$ in $\mathbb T$ and take $s\in
+C\cap C'$. If the path between these nodes remain in $\CC^*_A$, or in
+$\CC^*_B$, then $s$ will belong to any set along that path, since the
+running intersection is true on $\mathbb T_A$ and $\mathbb
+T_B$. Otherwise, we must have $s\in S$, and the path must contain
+$S^*$ to switch trees, and $s$ must still belong to any clique in the
+path (applying the running intersection property between the beginning
+of the path and $S^*$, and between $S^*$ and the end of the path).
+\end{proof}
+
+This theorem delineates a strategy in order to build a junction tree
+that is adapted to a given family of local interactions $\Phi =
+(\phi_C, C\in C)$. Letting $G$ be the graph induced by these
+interactions, i.e., $s\sim_G t$ if and only if there exists $C\in \CC$
+such that $\{s,t\}\sub C$, the method  proceeds as follows.
+\begin{itemize}
+\item[(JT1)] Extend $G$ by adding edges to obtain a triangulated graph $G^*$.
+\item[(JT2)] Compute the set $\CC^*$ of maximal cliques in $G^*$,
+  which therefore extend $\CC$.
+\item[(JT3)] Build a junction tree over $\CC^*$.
+\item[(JT4)] Assign interaction $\phi_C$ to a clique $C^*\in\CC^*$
+  such that $C\sub C^*$.
+\item[(JT5)] Run the junction-tree belief propagation algorithm to
+  compute the marginal of $\pi$ (associated to $\Phi$) over each set
+  $C^*\in\CC^*$.
+\end{itemize}
+Steps (JT4) and (JT5) have already been discussed, and we now explain
+how the first three steps can be implemented. 
+
+\subsection{Building triangulated graphs}
+
+First consider step (JT1). To triangulate a graph $G = (V, E)$, it
+suffices to order its vertexes so that $V = \{s_1, \ldots,
+s_n\}$, and then run the following algorithm.
+
+\begin{algorithm}[Graph triangulation] Initialize the algorithm with $k=n$ and
+$E_k = E$. Given $E_k$, determine $E_{k-1}$ as follows:
+\begin{itemize} 
+\item Add an edge to any pair of neighbors of $s_k$ (unless, of
+course, they are already linked). 
+\item Let $E_{k-1}$ be the new set of
+edges.
+\end{itemize}
+\end{algorithm}
+
+ Then the graph  $G^* = (V, E_0)$ is triangulated. Indeed taking any
+ achordal loop, and selecting the vertex with highest
+ index in the loop, say $s_k$, brings a contradiction, since the
+ neighbors of $s_k$ have been linked when building $E_{k-1}$.
+
+However, the quality of the triangulation, which can be measured by the
+number of added edges, or by the size of the maximal cliques, highly
+depends on the way vertexes have been numbered. Take the simple
+example of the linear graph with three vertexes $A\sim B \sim C$. If
+the point of highest index is $B$, then the previous algorithm will
+return the three-point loop $A\sim B\sim C\sim A$. Any other ordering
+will leave the linear graph, which is already triangulated, invariant.
+
+So, one must be careful about the order with which nodes will be
+processed. Finding an optimal ordering for a given global cost is
+ an NP-complete problem. However, a very simple modification of
+the previous algorithm, which starts with $s_n$ having the minimal
+number of neighbors, and at each step defines $s_k$ to be the one with
+fewest neighbors that haven't been visited yet, provides an
+efficient way for building triangulations. (It has the merit of leaving
+$G$ invariant if it is a tree, for example).  Another criterion may be
+preferred to the number of neighbors (for example, the number of
+new edges that would be needed if $s$ is added).
+
+If $G$ is triangulated, there exists an ordering of $V$ such that the
+algorithm above leaves $G$ invariant. We now proceed to a proof of
+this statement and also show that such an ordering can be computed
+using an algorithm called
+maximum cardinality search, which, in addition, allows one to decide
+whether a graph is triangulated. We start with a definition that
+formalizes the sequence of operations in the triangulation algorithm.
+\begin{definition}
+\label{def:node.elim}
+Let $G = (V, E)$ be an undirected graph. A node elimination consists
+in selecting  a vertex $s\in V$ and building the graph $G^{(s)} =
+(V^{(s)}, E^{(s)})$ with $V^{(s)} = V \setm \{s\}$, and $E^{(s)}$
+containing all pairs $\{t, t'\}\sub V^{(s)}$ such that either $\{t, t'\}
+\in E$ or $\{t, t'\}\sub \CV_s$. 
+
+$G^{(s)}$ is called the $s$-elimination graph of $G$.
+The set of added edges, namely $E^{(s)} \setm (E\cap E^{(s)})$ is
+called the deficiency set of $s$ and denoted $D(s)$ (or $D_G(s)$).
+\end{definition}
+
+So, the triangulation algorithm implements a sequence of node
+eliminations, successively applied to $s_n, s_{n-1}$, etc. One says
+that such an elimination process is {\em perfect} if, for all $k=1,
+\ldots, n$,  the deficiency
+set of $s_k$ in the graph obtained after elimination of $s_n, \ldots,
+s_{k+1}$ is empty (so that no edge is added during the process). We will
+also say that $(s_1, \ldots, s_n)$ provides a perfect ordering for
+$G$. 
+\begin{theorem}
+\label{th:perf.order}
+An undirected graph $G = (V, E)$ admits a perfect ordering
+if and only if it is triangulated.
+\end{theorem}
+\begin{proof}
+The ``only if'' part is obvious, since, the triangulation algorithm following a perfect ordering
+  does not add any edge to $G$, which
+must therefore have been triangulated to start with.
+
+We now proceed to the ``if'' part. For this it suffices to prove that for any triangulated graph, there exists a vertex $s$ such that $D_G(s) = \emptyset$. One can then easily prove the result by induction, since, after removing this $s$, the remaining graph $G^{(s)}$ is still triangulated and would admit (by induction) a perfect ordering that completes this first step.
+
+To prove that such an $s$ exists, we take a decomposition $V = A \cup S\cup B$, in which $S$ is complete and separates $A$ and $B$,  such that $|A\cup S|$ is minimal (or $|B|$ maximal). We claim that $A\cup S$ must be complete. Otherwise, since $A\cup S$ is still triangulated, There exists a similar decomposition $A\cup S = A'\cup S' \cup B'$. One cannot have $S\cap A'$ and $S\cap B'$ non empty simultaneously, since this would imply a direct edge from $A'$ to $B'$ ($S$ is complete). Say that $S\cap A'=\emptyset$, so that $A'\subset A$. Then the decomposition $V = A'\cup S' \cup (B' \cup B)$ is such that $S'$ separates $A'$ from $B\cup B'$. Indeed, a path from $A'$ to $b\in B\cup B'$ must pass in $S'$ if $b\in B'$, and, if $b
+\in B$, it must pass in $S$ (since it links $A$ and $B$). But $S\subset S'\cup B'$  so that the path must intersect  $S'$. We therefore obtain a decomposition that enlarges $B$, which is a contradiction and shows that $A\cup S$ is complete. Given this, any element $s\in A$ can only have neighbors in $A\cup S$ and is therefore such that $D_G(s) = \emptyset$, which concludes the proof.
+\end{proof}
+
+If a graph is triangulated, there is more than one perfect ordering of
+its vertexes. One of these orderings is provided the {\em maximum
+  cardinality search} algorithm, which also allows one to decide
+whether the graph is triangulated. We start with a
+definition/notation.
+
+\begin{definition}
+\label{def:order}
+If $G = (V, E)$ is an undirected graph, with $|V| = n$, any ordering $V = (s_1,
+\ldots, s_n)$ can be identified with the bijection $\al: V\to \{1,
+\ldots, n\}$ defined by $\al(s_k) = k$. In other terms, $\alpha(s)$ is the rank of $s$ in the ordering. 
+We will refer to $\al$ as an
+ordering, too.
+
+Given an ordering $\al$, we define incremental neighborhoods
+$\CV^{\al, k}_s$, for $s\in V$ and $k=1, \ldots, n$ to be the
+intersections of $\CV_s$ with the sets $\al^{-1}(\{1, \ldots, k\})$,
+i.e., 
+\[
+\CV^{\al,k}_s = \defset{t\in V, t\sim s, \al(t) \leq k}.
+\]
+
+One says that $\al$ satisfies the maximum cardinality property if, for
+all $k=\{2, \ldots, n\}$ 
+\begin{equation}
+\label{eq:max.card}
+|\CV^{\al,k-1}_{s_k}| = \max_{\al(s) \geq k} |\CV^{\al,k-1}_{s}|.
+\end{equation}
+where $s_k = \al^{-1}(k)$.
+\end{definition}
+
+Given this, we have the proposition:
+\begin{proposition}
+\label{prop:max.card}
+If $G = (V, E)$ is triangulated, then any ordering that satisfies the
+maximum cardinality property is perfect.
+\end{proposition}
+
+ \Cref{eq:max.card} immediately provides an algorithm that
+constructs an ordering satisfying the maximum cardinality
+property given a graph $G$. From  \cref{prop:max.card}, we see that, if for
+some $k$, the largest set $\CV^{\al,k-1}_{s_k}$ is not a clique, then $G$ is
+not triangulated. We now proceed to the proof of this proposition.
+\begin{proof}
+Let $G$ be triangulated, and assume that $\al$ is an ordering that
+satisfies \cref{eq:max.card}. Assume that $\al$ is not proper in
+order to reach a contradiction. 
+
+Let $k$ be the first index for which
+$\CV^{\al,k-1}_{s_k}$ is not a clique, so that $s_k$ has two
+neighbors, say $t$ and $u$, such that $\al(t)< k$, $\al(u) < k$ and $
+t\not\sim u$. Assume that $\al(t) > \al(u)$. Then $t$ must have a
+neighbor that is not neighbor of $s$, say $t'$, such that $\al(t') <
+\al(t)$ (otherwise, $s$ would have more neighbors than $t$ at order
+less than $\al(t)$, which contradicts the maximum cardinality property). The sequence $t', t, s, u$ forms a path that is
+such that $\al$ increases from $t'$ to $s$, then decreases from $s$ to
+$u$, and contains no chord. Moreover, $t'$ and $u$ cannot be neighbors,
+since this would yield an achordal loop and a  contradiction. The proof of 
+\cref{prop:max.card} consists in showing that this construction can be
+iterated until a contradiction is reached.
+
+More precisely, assume that an achordal path $s_1, \ldots, s_k$ has been obtained, such that
+$\al(s)$ is first increasing, then decreasing along the path, and such
+that, at extremities one either has $\al(s_1) < \al(s_k) <
+\al(s_2)$ or $\al(s_k) <\al(s_1) < \al(s_{k-1})$. In fact, one can
+switch between these last two cases by
+reordering the path backwards. Both paths $(u,s,t)$ and $(u,s, t, t')$
+in the discussion above satisfy this property.
+
+\begin{itemize}
+\item Assume, without loss of generality, that $\al(s_1) < \al(s_k) <
+\al(s_2)$ and note that, in the considered path, $s_1$ and $s_k$ cannot be
+neighbors (for, if $j$ is the last index smaller than $k-1$ such that $s_j$ and $s_k$
+are neighbors, then $j$ must also be smaller than $k-2$ and the loop $s_j, \ldots, s_{k-1}, s_k$ would be achordal). 
+\item Since
+$\al(s_2) > \al(s_k)$, and $s_1$ and $s_2$ are neighbors, $s_k$ must
+have a neighbor, say $s'_k$, such
+that $s'_k$ is not neighbor of $s_2$ and $\al(s'_k) < \al(s_k)$. 
+\item Select the first index $j>2$ such that $s_j \sim s'_{k}$, and consider
+the path $(s_1, \ldots, s_j, s'_k)$. This path is achordal, by
+construction, and one cannot have $s_1 \sim s'_k$ since this would
+create an achordal loop. Let us show that $\al$ first increases and then decreases
+along this path. Since $s_2$ is in the path, $\al$ must first
+increase, and it suffices to show that $\al(s'_k) < \al(s_j)$. If
+$\al$ increases from $s_1$ to $s_j$, then $\al(s_j) > \al(s_2) >
+\al(s_k) > \al(s'_k)$. If $\al$ started decreasing at some point
+before $s_j$, then $\al(s_j) > \al(s_k) > \al(s'_k)$. 
+\item Finally, we need
+to show that the $\al$-value at one extremity is between the first two
+$\al$-values on the other end of the path. If $\al(s'_k) < \al(s_1)$,
+and since we have just seen that $\al(s_j) >\al(s_k) > \al(s_1)$, we
+do get $\al(s'_k) < \al(s_1) < \al(s_j)$. If $\al(s'_k) > \al(s_1)$,
+then, since by construction $\al(s_2) > \al(s_k) > \al(s'_k)$, we have
+$\al(s_2) > \al(s'_k) > \al(s_1)$. 
+\item So, we have obtained a new path
+that satisfies the same property that the one we started with, but
+with a maximum value at end points smaller than the initial one, i.e.,
+\[
+\max(\al(s_1), \al(s'_k)) < \max(\al(s_1), \al(s_k)).
+\]
+Since $\al$ takes a finite number of values, this process cannot be
+iterated indefinitely, which yields our contradiction.
+\end{itemize} 
+\end{proof}
+
+\subsection{Computing maximal cliques}
+At this point, we know that a graph must be triangulated for its
+maximal cliques to admit junction trees, and we have an algorithm to
+decide whether a graph is triangulated, and extend it into a
+triangulated one if needed. This provides the first step, (JT1), of
+our description of the junction tree algorithm. The next step, (JT2),
+requires computing a list of maximal cliques. Computing maximal cliques in general graph is an NP complete problem,
+for which a large number of algorithms has been developed (see, for
+example, \cite{pardalos1994maximum} for a review). For graphs with a
+perfect ordering,
+however, this problem can always be solved in a polynomial
+time. 
+
+Indeed, assume that a perfect ordering is given for $G = (V, E)$, so
+that $V = \{s_1, \ldots, s_n\}$ is such that, for all $k$, 
+$\CV_{s_k}':=\CV_{s_k}\cap\{s_1, \ldots, s_{k-1}\}$ is a clique. Let $G_k$ be $G$ restricted
+to $\{s_1, \ldots, s_k\}$ and $\CC^*_k$ be the set of maximal cliques
+in $G_k$. Then the set $C_k := \{s_k\} \cup
+\CV_{s_k}'$ is the only maximal clique in $G_k$ that contains $s_k$: it is a clique because  the
+ordering is perfect, and any clique that contains $s_k$ must be included in it (because its elements are either $s_k$ or neighbors of $s_k$). It follows from this that the set $\CC^*_k$ can be deduced
+from $C^*_{k-1}$ by
+\[
+\begin{cases}
+\CC^*_k = \CC^*_{k-1} \cup \{C_k\} \text{ if } \CV_k'\not\in \CC^*_{k-1}\\  
+\CC^*_k = (\CC^*_{k-1} \cup \{C_k\}) \setm \{\CV'_k\} \text{ if } \CV_k'\in
+\CC^*_{k-1}
+\end{cases} 
+\]
+This allows one to enumerate all elements in $\CC^*_G=\CC^*_n$,
+starting with $\CC^*_1 = \{\{s_1\}\}$.
+
+\subsection{Characterization of junction trees}
+We now discuss the last remaining point, (JT3). For this, we need to form
+the {\em clique graph} of $G$, which is the undirected  graph $\mathbb
+G = (\CC_G^*, \mathbb E)$ defined by
+$(C, C') \in \mathbb E$ if and only if $C\cap C'\neq
+\emp$. We then have the following fact:
+\begin{proposition}
+\label{prop:clq.conn}
+The clique graph $\mathbb G$ of a connected triangulated undirected
+graph $G$  is connected.
+\end{proposition}
+\begin{proof} 
+We proceed by induction, and assume that the result is true if $|V| =
+n-1$ (the proposition obviously holds if $|V|=1$).
+Assume that a perfect
+order on $G$ has been chosen, say $V = \{s_1, \ldots, s_n\}$. Let
+$G'$ be $G$ restricted to $\{s_1, \ldots, s_{n-1}\}$,
+and $\mathbb G'$ the associated clique graph. Because $\{s_n\} \cup
+\CV_{s_n}$ is a clique, any path in $G$ provides a valid path in $G'$
+after removing all occurrences of $s_n$ (because any two neighbors of
+$s_n$ are linked). The induction hypothesis also implies that $\mathbb
+G'$ is connected. 
+Since $G$ is connected, $\CV_{s_n}$ is not
+empty. Moreover, $C:=\{s_n\}\cup \CV_{s_n}$ must be a maximal clique in
+$G$ (since we assume that the order is perfect) and it is the only
+maximal clique in $G$ that contains $s_n$ (all other maximal cliques
+in $G$ therefore are maximal cliques in $G'$ also). To prove that $\mathbb
+G$ is connected, it 
+suffices to prove that $C$ is connected to any other maximal clique, $C'$, in
+$G$ by a path in $\mathbb G$. If $t\in C$, $t\neq s_n$, there exists a
+maximal clique, say $C''$, in $G'$ that contains $t$, and, since
+$\mathbb G'$ is connected, there exists a path
+$(C_1=C', \ldots, C_q = C'')$
+connecting $C'$ to $C''$ in $\mathbb G'$. Let $j$ be the first integer such that $C_j = \CV_{n}$ (take $j={q+1}$ if this never
+happens). Then $(C_1, \ldots, C_{j-1}, C)$ is a path linking $C'$ and $C$
+in $\mathbb G$.
+\end{proof}
+
+We hereafter assume that $G$,
+and hence $\mathbb G$, is connected. This is not real loss of
+generality because connected components in undirected graphs yields
+independent processes that can be handled separately.
+We assign weights to edges of the clique graph of $G$ by defining
+$w(C, C') = |C\cap C'|$. A
+subgraph $\tilde T$ of any given graph $\tilde G$ is called a spanning
+tree if $\tilde T$ is a tree with set of vertexes equal to the set of
+vertexes of $\tilde G$. 
+If 
+$\mathbb T = (\CC_G^*, \mathbb E')$  is a spaning tree of $\mathbb G$, we
+define the total weight
+\[
+w(\mathbb T) = \sum_{\{C,C'\}\in\mathbb E'} w(C,C').
+\]
+
+We then have the
+proposition:
+\begin{proposition}\cite{finn1994optimal}
+\label{prop:opt.jct}
+If $G$ is a connected triangulated graph, the set of junction trees over $\CC_G^*$ coincides with the set of
+maximizers of $w(\mathbb T)$ over all spanning trees of $\mathbb G$.
+\end{proposition} 
+(Notice that $\mathbb G$ being connected implies that spanning trees
+over $\mathbb G$ exist.)
+
+Before proving this proposition, we discuss some properties related to
+maximal (or maximum-weight) spanning trees over an undirected graph. 
+For this discussion, we let $G = (V, E)$ be any undirected graph with
+weight $(w(e), e\in E)$. We will then apply these results to a clique
+graph when will switch back to the general notation of this section.
+Maximal spanning trees can be computed using the so-called Prim's
+algorithm \cite{jarnik1930jistem,prim1957shortest,dijkstra1959note}.
+
+\begin{algorithm}[Prim's algorithm]
+Initialize the algorithm with a single-node tree $T_1 =
+(\{s_1\},  \emp)$, for some arbitrary $s_1\in V$.
+Let $T_{k-1} = (V_{k-1}, E_{k-1})$ be the tree obtained at step $k-1$ of the algorithm. If $k\leq n$, the next tree is built as follows.
+\begin{enumerate}
+\item Let
+\[
+V_k = \{s_k\} \cup V_{k-1}\  (s_k\not \in V_{k-1}.)
+\]
+\item Let $E_k = \{e_k\}\cup E_{k-1}$, such that $e_k = \{s_k, s\}$ for some
+$s\in V_{k-1}$ satisfying
+\begin{equation}
+\label{eq:prim}
+w(e_k) = \max\Big(w(\{t, t'\}), \{t, t'\}\in E, t\not\in V_{k-1}, t'\in V_{k-1}\Big).
+\end{equation}
+\end{enumerate}
+\end{algorithm}
+
+The ability of this algorithm to always build a maximal spanning tree
+is summarized in the following proposition
+\cite{gondran1983graphs,mchugh1990algorithm}.
+\begin{proposition}
+\label{prop:prim.alg}
+If $G=(V, E, w)$ is a weighted, connected undirected graph, Prim's algorithm, as
+described above, provides a sequence $T_k = (V_k, E_k)$, for $k=1,
+\ldots, n$ of subtrees of $G$ such that $V_n=V$ and, for all $k$,
+$T_k$ is a maximal spanning tree for the restriction $G_{V_k}$ of $G$
+to $V_k$.
+
+Moreover, any maximal spanning tree of $G$, can be realized as $T_n$,
+where $(T_1, \ldots, T_n)$ is a sequence provided by Prim's algorithm.
+\end{proposition}
+\begin{proof}
+We first prove that, for all $k$, $T_k$ is a maximal spanning tree on
+the graph $G_{V_k}$. 
+
+We will prove a slightly stronger statement, namely, that, for all $k$,
+$T_k$ can be extended to form a maximal spanning tree of $G$. This is
+stronger, because, if $T_k = (V_k, E_k)$ can be extended to a maximal spanning
+tree $T = (V,E)$, and if $T'_k = (V_k, E'_k)$ is a spanning tree for
+$G_{V_k}$ such that $w(T_k) < w(T'_k)$, then the graph $T'=(V, E')$ with
+\[
+E' = (E\setm E_k)\cup E'_k
+\]
+would be a spanning tree for $G$ with $w(T) < w(T')$, which is
+impossible. (To see that $T'$ is a tree, notice that paths in $T'$ are
+in one-to-one correspondence with paths in $T$ by replacing any
+subpath within $T'_k$ by the unique subpath in $T_k$ that has the same
+extremities.)
+
+
+
+Clearly, $T_1$, which only has one vertex, can be extended to a maximal
+spanning tree. Let $k\geq 1$ be
+the last integer for which this property is true for all $j = 1, \dots, k$. 
+ If $k=n$, we are done. Otherwise, take a
+maximum spanning tree, $T$, that extends $T_{k}$. This tree cannot
+contain the new edge added when building $T_{k+1}$, namely
+$e_{k+1}=\{s_{k+1}, s\}$ as defined in Prim's algorithm, since it
+would otherwise also extend $T_{k+1}$. Consider the path $\ga$ in
+$T$ that links $s$ to $s_k$. This path must have an edge $e = \{t, t'\}$
+such that $t\in V_{k}$ and $t'\not\in V_{k}$, and by definition of
+$e_{k+1}$, we must have
+$w(e) \leq w(e_{k+1})$. Notice that $e$ is uniquely defined, because a
+path leaving $V_k$ cannot return in this set, since one would be
+otherwise able to close it into a loop by inserting the only path in
+$T_k$ that connects its extremities.
+
+Replace $e$ by $e_{k+1}$ in $T$. The resulting graph,
+say $T'$,
+is still a spanning tree for $G$. From any path in $T$, one can create
+a path in $T'$ with the same extremities by replacing any
+occurrence of the edge, $e$, by the concatenation of the unique path
+in $T$ going from $t$ to $s$, followed by $(s,s_{k+1})$, followed by the
+unique path in $T$ going from $s_{k+1}$ to $t'$. This implies that $T'$ is
+connected. It is also
+acyclic, since any loop in $T$ would have to contain $e_{k+1}$ (since
+$T$ is acyclic), but there is no
+other path than $(s, s_{k+1})$ in $T'$ that links $s$ and $s_k$, because
+this path would have to be in $T$, and we have removed the only
+possible one from $T$ by deleting the edge $e$.
+
+As a conclusion, $T'$ is an extension of $T_{k+1}$, and a spanning tree with total weight larger or
+equal to the one of $T$, and must therefore be optimal, too. But this
+contradicts the fact that $T_{k+1}$ cannot be extended to a maximal
+tree, so that $k=n$ and the sequence of trees provided by Prim's
+algorithm is optimal.
+
+To prove the second statement, let $T$ be an optimal spanning
+tree. Let $k$ be the largest integer such that there exists a sequence
+$(T_1, \ldots, T_k)$ generated by Prim's algorithm, such that, for all
+$j=1, \ldots, k$, $T_j$ is a subtree of $T$. One necessarily has
+$j\geq 1$, since $T$ extends any one-vertex tree. If $k=n$, we are
+done. Assuming otherwise, let $T_k = (V_k,
+E_k)$ and make one more step
+of Prim's algorithm, selecting an edge $e_{k+1} = (s_{k+1}, s)$
+satisfying \cref{eq:prim}. By assumption, $e_{k+1}$ is not in
+$T$. Take as before the unique path linking $s$ and $s_{k+1}$ in $T$
+and let $e$ be the unique edge at which this path leaves
+$V_k$. Replacing $e$ by $e_{k+1}$ in $T$ provides a new spanning tree, $T'$. One
+must have $w(e) \geq w(e_{k+1})$ because $T$ is optimal, and
+$w(e_{k+1}) \geq w(e)$ by \cref{eq:prim}. So $w(e) = w(e_{k+1})$, and
+one can use $e$ instead of $e_{k+1}$ for the $(k+1)$th step of Prim's
+algorithm. But this contradicts the fact that $k$ was the largest
+integer in a sequence of subtrees of $T$ that is generated by Prim's
+algorithm, and one therefore has $k=n$.
+\end{proof}
+
+The proof of  \cref{prop:opt.jct}, that we provide now, uses
+very similar ``edge-switching'' arguments.
+\begin{proof}[Proof of  \cref{prop:opt.jct}]
+
+Let us start with a maximum weight spanning tree for $\mathbb G$, say $\mathbb T$, and
+show that it is a
+junction tree. Since $\mathbb T$ has maximum weight, we know that it can be
+obtained via Prim's algorithm, and that there exists a sequence
+$\mathbb T_1,
+\ldots, \mathbb T_n=\mathbb T$ of trees constructed by this
+algorithm. Let $\mathbb T_k = (\CC_k, \mathbb E_k)$.  
+
+We proceed by contradiction.
+Let $k$ be the largest index such that $\mathbb
+T_k$ can
+be extended to a junction tree for $\CC_G^*$, and let $\mathbb T'$ be a junction tree
+extension of $\mathbb T_{k}$. Assume that $k<n$, and let $e_{k+1} = (C_{k+1}, C')$ be the edge
+that has been added when building $\mathbb T_{k+1}$, with $\CC_{k+1} =
+\{C_{k+1}\}\cup \CC_{k}$. This edge is not
+in $\mathbb T'$, so that there  exists a unique edge $e = (B,B')$ in the path
+between $C_k$ and $C'$ in $\mathbb T'$  such that $B\in \CC_{k}$ and
+$B'\not\in \CC_{k}$. We must have $w(e) = |B\cap B'| \leq w(e_{k+1}) =
+|C_{k+1} \cap C'|$. But, since the running intersection property is true
+for $\mathbb T'$, both $B$ and $B'$ must contain $C_{k+1}\cap C'$ so that
+$B\cap B' = C_{k+1}\cap C'$. This implies that, if one modifies $\mathbb
+T'$ by replacing edge $e$ by edge $e_{k+1}$, yielding a new spanning tree
+$\mathbb T''$, the running intersection property is still satisfied in
+$\mathbb T'$. Indeed if a vertex $s\in V$ belongs to both extremities
+of a path containing $B$ and $B'$ in $\mathbb T'$, then it must belong
+to $B\cap B'$, and hence to $C_{k+1}\cap C'$, and therefore to any set in
+the path in $\mathbb T'$ that linked $C_{k+1}$ and $C'$.  So we found
+a junction tree extension of $\mathbb T_{k+1}$, which contradicts our
+assumption that $k$ was the largest. We must therefore have $k=n$ and $\mathbb
+T$ is a junction tree.
+
+Let us now consider the converse statement and assume that $\mathbb T$
+is a junction tree. Let $k$ be the largest integer such that there
+exists a sequence of subgraphs of $\mathbb T$ that is provided by
+Prim's algorithm. Denote such a sequence by $(\mathbb T_1, \ldots,
+\mathbb T_k)$, with $\mathbb T_j = (\CC_j, \mathbb E_j)$. Assume (to
+get a contradiction) that $k<n$, and consider a new step for Prim's
+algorithm, adding a new edge $e_{k+1} = \{C_{k+1}, C'\}$ to $\mathbb
+T_k$. Take as before the path in $\mathbb T$ linking $C'$ to $C_{k+1}$ in $\mathbb
+T$, and select the edge $e$ at which this path leaves $\CC_k$. If $e =
+(B, B')$, we must have $w(e) = |B\cap B'| \leq w(e_k) = |C_{k+1} \cap
+C'|$, and the running intersection property in $\mathbb T$ implies
+that $C_{k+1}\cap C' \sub B\cap B'$, which implies that $w(e)
+=w(e_{k+1})$. This implies that adding $e$ instead of $e_{k+1}$ at
+step $k+1$ is a valid choice for Prim's algorithm, and contradicts the
+fact that $k$ was the largest number of such steps that could provide
+a subtree of $\mathbb T$. So $k=n$ and $\mathbb T$ is maximal.
+\end{proof}
+

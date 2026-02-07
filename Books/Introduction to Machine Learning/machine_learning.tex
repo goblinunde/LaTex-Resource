@@ -1,0 +1,313 @@
+\documentclass[12pt]{book}
+\newcommand{\hmmax}{0}
+\newcommand{\bmmax}{0}
+
+\usepackage[small,compact]{titlesec}
+\usepackage{titletoc,titleps}
+
+\usepackage{kpfonts}
+\usepackage{bm,yfonts}
+\usepackage[bb=boondox,bbscaled=1.05]{mathalfa}
+%\usepackage{BOONDOX-ds}
+%\usepackage{MnSymbol}
+%\usepackage{unicode-math}
+
+
+
+
+
+\usepackage{mathtools}
+\usepackage[standard,thmmarks,amsmath]{ntheorem}
+\usepackage{cleveref}
+%\usepackage[capitalize]{cleveref}
+\usepackage{stackrel}
+\usepackage{enumitem}
+\usepackage{graphicx}
+\usepackage{fancyhdr}
+\usepackage{color}
+\usepackage[font=small]{caption}
+\usepackage[margin=3cm]{geometry}
+% \makeatletter
+%   \@addtoreset{equation}{\thechapter}
+%   \@addtoreset{proposition}{\thechapter}
+% \makeatother  
+   
+\usepackage[numbers]{natbib}
+\bibliographystyle{./plainnat_modified}
+
+\usepackage{tikz}
+\usetikzlibrary{positioning}
+\usetikzlibrary{decorations.pathreplacing,calc} 
+\usetikzlibrary{shapes.geometric}
+%\usepackage{palatino}
+ 
+%\pagestyle{fancy}
+%\fancyhf{}
+%\lhead{553.740: Introduction to Machine Learning}
+%\rhead{Page \thepage}
+%\cfoot{{\color{red} FOR CLASS USE ONLY. DO NOT DISTRIBUTE.}}
+
+
+%\usepackage[tt]{titlesec}
+
+
+%\renewcommand{\mathbb}{\mathbbm}
+%\titleformat{\subsubsection}[runin]
+\input Headers/newcom
+\input Headers/ml_preamble
+\input Headers/question_preamble
+
+
+
+%\newcommand{\indp}{{\perp\nolinebreak\!\!\!\!\perp}}
+\newcommand{\indp}{{\Bot}}
+\newcommand{\cind}[3]{(#1\indp#2\mid #3)}
+\newcommand{\twop}[1]{{\boldsymbol{\mathcal P}({#1})}}
+\newcommand{\osc}{\mathit{osc}}
+%\renewcommand{\hat}{\widehat}
+%\renewcommand{\bar}{\overline}
+%\renewcommand{\tilde}{\widetilde}
+\solutionsfalse
+\uselabeltrue
+
+\newcommand{\Eq}[1]
+{
+\[
+\displaystyle #1
+\]
+}
+
+\newcommand{\alert}[1]{{\em #1}}
+
+\theoremstyle{plain}
+\theorembodyfont{\em}
+%\renewtheorem{definition}[chapter]{Definition}
+%\renewtheorem{theorem}[chapter]{Theorem}
+%\newtheorem{result}{Result}[chapter]
+%\renewtheorem{proposition}[chapter]{Proposition}
+%\newtheorem{conditions}{Conditions}[chapter]
+%\newtheorem{hypothesis}{Hypothesis}[chapter]
+%\renewtheorem{corollary}{Corollary}[chapter]
+%\renewtheorem{lemma}[chapter]{Lemma}
+%\newtheorem{properties}{Properties}[chapter]
+%\newtheorem{property}{Property}[chapter]
+\newtheorem{all}{all}[chapter]
+\renewtheorem{definition}[all]{Definition}%[chapter]
+\renewtheorem{theorem}[all]{Theorem}%[chapter]
+\newtheorem{result}[all]{Result}%[chapter]
+\renewtheorem{proposition}[all]{Proposition}%[chapter]
+\newtheorem{conditions}[all]{Conditions}%[chapter]
+\newtheorem{hypothesis}[all]{Hypothesis}%[chapter]
+\renewtheorem{corollary}[all]{Corollary}%[chapter]
+\renewtheorem{lemma}[all]{Lemma}%[chapter]
+\newtheorem{properties}[all]{Properties}%[chapter]
+\newtheorem{property}[all]{Property}%[chapter]
+
+\theorembodyfont{\rm}
+\theoremsymbol{\ensuremath{\blacklozenge}}
+\renewtheorem{remark}[all]{Remark}%[chapter]
+\newtheorem{notation}[all]{Notation}%[chapter]
+\renewtheorem{example}[all]{Example}%[chapter]
+
+
+\theoremstyle{break}
+\theoremsymbol{}
+\theoremprework{\bigskip\hrule}
+\theorempostwork{\hrule\bigskip}
+\newtheorem{algorithm}{Algorithm}[chapter]
+
+\crefname{equation}{}{}
+\Crefname{equation}{Equation}{Equations}
+\crefname{algorithm}{Algorithm}{Algorithms}
+\Crefname{algorithm}{Algorithm}{Algorithms}
+\setlist[enumerate]{label=\arabic*., wide=0.5cm}
+
+%\providecommand{\citet}{\cite}
+%\providecommand{\citep}{\cite}
+\renewcommand{\cite}{\citep}
+\graphicspath{{./},{Figures/}}
+
+\setlist[enumerate]{label= (\arabic*), labelsep=*, leftmargin=0.25cm, wide=0cm, itemsep=0cm, topsep=0.1cm, ref=\arabic*}
+\setlist[itemize]{label= \textbullet, labelsep=*, leftmargin=0.25cm, wide=0cm, itemsep=0cm, topsep=0.1cm}
+
+\newcommand{\problems}[1]{\newpage
+\markright{PROBLEMS}
+\section*{Problems}
+\addcontentsline{toc}{section}{Problems}
+\input #1
+}
+
+% comment out to include problems
+\renewcommand{\problems}[1]{}
+
+%\newcommand{\pe}[2]{#1^{(#2)}}
+
+%\numberwithin{section}{chapter}
+%\numberwithin{subsection}{chapter}
+
+\title{Introduction to Machine Learning}
+\author{Laurent Younes}
+
+\begin{document}
+
+\maketitle
+\tableofcontents
+
+\setlength{\parskip}{1em}
+
+\input preface
+\input notation
+\input linalg
+
+\input optimization
+%\newpage
+%\markright{PROBLEMS}
+%\section*{Problems}
+%\addcontentsline{toc}{section}{Problems}
+\problems{Problems_Optimization}
+
+
+\input intro
+\input errors
+\problems{Problems_Bayes_Rule}
+
+
+\input higher
+%\newpage
+%\markright{PROBLEMS}
+%\section*{Problems}
+%\addcontentsline{toc}{section}{Problems}
+\problems{Problems_Kernels}
+
+
+\input linear_regression
+%\newpage
+%\markright{PROBLEMS}
+%\section*{Problems}
+%\addcontentsline{toc}{section}{Problems}
+\problems{Problems_Linear_Regression}
+
+\input linear_classification
+%\newpage
+%\markright{PROBLEMS}
+%\section*{Problems}
+%\addcontentsline{toc}{section}{Problems}
+\problems{Problems_Classification}
+
+\input nn
+%\newpage
+%\markright{PROBLEMS}
+%\section*{Problems}
+
+\input tree
+%\newpage
+%\markright{PROBLEMS}
+%\section*{Problems}
+
+\input neuralNets
+%\newpage
+%\markright{PROBLEMS}
+%\section*{Problems}
+%\addcontentsline{toc}{section}{Problems}
+\problems{Problems_Neural_Networks}
+
+\input mcmc
+\input sgd_markov
+
+\input mrf
+
+\input parametric_inference
+
+\input bayesian_networks
+
+
+\input variationalBayes
+
+\input learning_graphical
+
+%\newpage
+%\markright{PROBLEMS}
+%\section*{Problems}
+
+\input generative
+
+\input clustering
+%\newpage
+%\markright{PROBLEMS}
+%\section*{Problems}
+%\addcontentsline{toc}{section}{Problems}
+\problems{Problems_Clustering}
+
+\input dim-red
+%\newpage
+%\markright{PROBLEMS}
+%\section*{Problems}
+%\addcontentsline{toc}{section}{Problems}
+\problems{Problems_Factor_Analysis}
+
+\input manifold
+%\newpage
+%\markright{PROBLEMS}
+%\section*{Problems}
+%\addcontentsline{toc}{section}{Problems}
+\problems{Problems_Manifold_learning}
+
+\input ms
+%\newpage
+%\markright{PROBLEMS}
+%\section*{Problems}
+%\addcontentsline{toc}{section}{Problems}
+\problems{Problems_Concentration}
+
+\bibliography{machine_learning}
+
+\end{document}
+
+\chapter{Problems with Solutions}
+\setcounter{chapter}{1}
+\solutionstrue
+\uselabelfalse
+
+\chapter{Problems with solutions}
+\markright{PROBLEMS WITH SOLUTIONS}
+\section*{Basic concepts}
+\stepcounter{chapter}
+\input Problems_Bayes_Rule
+\section*{Matrix Analysis}
+\stepcounter{chapter}
+\section*{Reproducing Kernels}
+\stepcounter{chapter}
+\input Problems_Kernels
+\section*{Optimization}
+\stepcounter{chapter}
+\input Problems_Optimization
+\section*{Linear Regression}
+\stepcounter{chapter}
+\input Problems_Linear_Regression
+\section*{Linear Classification}
+\stepcounter{chapter}
+\input Problems_Classification
+\section*{Nearest Neighbors}
+\stepcounter{chapter}
+\section*{Decision Trees}
+\stepcounter{chapter}
+\section*{Neural Networks}
+\stepcounter{chapter}
+\input Problems_Neural_Networks
+\section*{Posterior Distributions}
+\stepcounter{chapter}
+\section*{Clustering}
+\stepcounter{chapter}
+\input Problems_Clustering
+\section*{Factor Analysis}
+\stepcounter{chapter}
+\input Problems_Factor_Analysis
+\section*{Manifold Learning}
+\stepcounter{chapter}
+\input Problems_Manifold_learning
+\section*{Generalization Bounds}
+\stepcounter{chapter}
+\input Problems_Concentration
+
+
+\end{document}

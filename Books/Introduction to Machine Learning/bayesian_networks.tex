@@ -1,0 +1,1103 @@
+
+
+% !TeX root = graphical.tex  
+\chapter{Bayesian Networks}
+\label{chap:bayes.net}
+\section{Definitions}
+
+Bayesian networks are graphical models supported
+by directed acyclic graphs (DAG), which provide them with an ordered
+organization (directed graphs were introduced in  \cref{def:dir.grph}). 
+
+We first introduce some notation. Let $G=(V,E)$ be a directed acyclic graph. The parents of $s\in V$ are
+vertexes $t$ such that $(t,s)\in E$, and its children are $t$'s such
+that $(s,t)\in E$. The set of parents of $s$ is denoted $\pa{s}$, and
+the set of its children is $\cl{s}$, with $\CV_s = \cl{s} \cup
+\pa{s}$.
+
+Similarly to trees, the vertexes of $G$ can be
+partially ordered by $s\leq_G t$ if and only if
+there exists a path going from $s$ to $t$. Unlike trees, however,
+there can be more than one minimal element in $V$, and we
+still call roots vertexes that have no parent, denoting
+$$
+V_0 = \defset{s\in V: \pa{s} = \emp}.
+$$
+We also call leaves, or terminal nodes, vertexes that have no children. Unless otherwise
+specified, we assume that all graphs are connected.
+
+ Bayesian networks over $G$ are defined as follows. We use the same notation as with Markov random fields to represent the set of configurations $\CF(V)$ that contains collections $x = (x_s, s\in V)$ with $x_s\in F_s$.
+\begin{definition}
+\label{def:bn}
+A random variable $X$ with values in $\CF(V)$ is a Bayesian network over a DAG $G=(V,E)$ if and only
+if its distribution can be written in the form
+\begin{equation}
+\label{eq:bn}
+P_X(x) = \prod_{s\in V_0} p_s(\pe xs) \prod_{s\in V\setm V_0} p_s(\pe x{\pa{s}}, \pe x s)
+\end{equation}
+where $p_s$ is, for all $s\in V$, a probability distribution with
+respect to $\pe xs$.
+\end{definition}
+Using the convention that conditional distributions given the empty set
+are just absolute distributions, we can rewrite \cref{eq:bn} as
+\begin{equation}
+\label{eq:bn.2}
+P_X(x) = \prod_{s\in V} p_s(\pe 
+x{\pa{s}}, \pe x s).
+\end{equation}
+One can verify that $\sum_{x\in \Om} P^X(x) =1$. Indeed, when summing over $x$, we can
+start summing over all $\pe xs$ with $\cl{s}= \emp$ (the leaves). Such
+$\pe xs$'s only appear in the corresponding $p_s$'s, which disappear since they sum
+to 1. What remains is the sum of the product over $V$ minus the
+leaves, and the argument can be iterated until the remaining sum is 1
+(alternatively, work by induction on $|V|$). This fact is also a
+consequence of  \cref{prop:rest} below, applied with $A=\emp$.
+
+
+
+\section{Conditional independence graph}
+\subsection{Moral graph}
+Bayesian networks have a conditional independence structure which is
+not exactly given by $G$, but can be deduced from it. Indeed, fixing $S\sub V$, we can see, when computing the probability of $\pe XS=\pe xs$
+given $\pe X{S^c} = \pe x{S^c}$, which is
+\[
+\myP(\pe XS = \pe x S \mid \pe X{S^c} = \pe x{S^c} ) = \frac{1}{Z(\pe x{S^c})} \prod_{s\in V} p_s(\pe x{\pa{s}}, \pe xs),
+\]
+ that the only variables $\pe xt, t\not \in S$ that
+can be factorized in the normalizing constant are those that are
+neither parent nor children of vertexes in $S$, and do not share a
+child with a vertex in $S$ (i.e., they intervene in no
+$p_s(\pe x {\pa{s}}, \pe xs)$ that  involve elements of $S$). This suggests the following definition.
+\begin{definition}
+\label{def:g.sharp}
+Let $G$ be a directed acyclic graph. We denote
+$G^\sharp=(V,E^\sharp)$ the undirected graph on $V$ such that
+$\defset{s,t}\in E^\sharp$ if one of the following conditions is satisfied
+\begin{itemize}
+\item Either $(s,t)\in E$ or $(t,s)\in E$.
+\item There exists $u\in V$ such that $(s,u)\in E$ and $(t,u)\in
+E$.
+\end{itemize}
+\end{definition}
+$G^\sharp$ is sometimes called the {\em moral graph} of $G$ (because
+it forces parents to marry~!). A path in $G^\sharp$ can be visualized as a path in $G^\flat$ (the undirected graph associated with $G$) which is
+allowed to jump between parents of the same vertex even if they were
+not connected originally.
+
+The previous discussion implies:
+\begin{proposition}
+\label{prop:g.sharp}
+Let $X$ be a Bayesian network on $G$. We have
+$$
+\cind{S}{T}{U}_{G^\sharp}\Ria \cind{\pe XS}{\pe XT}{\pe XU},
+$$
+i.e., $X$ is $G^\sharp$-Markov.
+\end{proposition}
+
+
+
+This proposition can be refined by noticing that the joint
+distribution of $\pe XS$, $\pe XT$ and $\pe XU$ can be deduced from a Bayesian
+network on a graph restricted to the ancestors of $S\cup T\cup
+U$. \Cref{def:subg} for restricted graphs extends without change to directed graphs, and we repeat it below for convenience.
+\begin{definition}
+\label{def:rest.grph}
+Let $G=(V,E)$ be a graph (directed or undirected), and $A\sub V$. The
+restricted graph $G_A = (A, E_A)$ is such that the elements of $E_A$
+are the edges $(s,t)$ (or $\defset{s,t}$) in $E$ such that both $s$
+and $t$ belong to $A$.
+\end{definition}
+Moreover, for a directed acyclic graph $G$ and $s\in V$, we define
+the set of ancestors of $s$ by
+\begin{equation}
+\label{eq:anc}
+\CA_s = \defset{t\in V, t\leq_G s}
+\end{equation}
+for the partial order on $V$ induced by $G$. 
+
+If $S\sub V$, we denote $\CA_S = \bigcup_{s\in S} \CA_s$. Note that,
+by definition, $S\sub \CA_S$. The following proposition is true.
+\begin{proposition}
+\label{prop:rest}
+Let $X$ be a Bayesian network on $G=(V,E)$ with distribution given by
+\cref{eq:bn.2}. Let $S\sub V$ and $A = \CA_S$. Then the distribution
+of $\pe XA$ is a Bayesian network over $G_A$ given by
+\begin{equation}
+\label{eq:bn.rest}
+\myP(\pe XA = \pe xA) = \prod_{s\in A} p_s(\pe 
+x{\pa{s}}, \pe xs).
+\end{equation}
+\end{proposition}
+There is no ambiguity in the notation $\pa{s}$, since the
+parents of $s\in A$ are the same in $G_A$ as in $G$. 
+\begin{proof}
+One needs to show that
+\[
+\prod_{s\in A} p_s(\pe x{\pa{s}}, \pe xs) = \sum_{x_{A^c}} \prod_{s\in V} p_s(\pe x{\pa{s}}, \pe xs).
+\]
+This can be done by induction on the cardinality of $V$. Assume that
+the result is true for graphs of size $n$, and let $|V| = n+1$ (the
+result is obvious for graphs of size 1).
+
+If $A=V$, there is nothing to prove, so assume that $A^c$ is not
+empty. Then $A^c$ must contain a leaf in $G$, since otherwise, $A$
+would contain all leaves and their ancestors which would imply that
+$A=V$. 
+
+If $s\in A^c$ is a leaf in $G$, one can remove the variable $\pe xs$ from
+the sum, since it only appear in $p_s$ and transition probabilities
+sum to one. But one can now apply the induction assumption to the
+restriction of $G$ to $V\setm \{s\}$. 
+\end{proof}
+
+Given  \cref{prop:rest},  \cref{prop:g.sharp} can
+therefore be refined as follows.
+\begin{proposition}
+\label{prop:g.sharp.2}
+Let $X$ be a Bayesian network on $G$. We have
+$$
+\cind{S}{T}{U}_{(G_{\CA_{S\cup T\cup U}})^\sharp}\Ria \cind{\pe XS}{\pe XT}{\pe XU}.
+$$
+\end{proposition}
+
+ \Cref{prop:rest} is also used in the proof of the following
+proposition.
+\begin{proposition}
+\label{prop:bayes.net.cond}
+Let $G = (V,E)$ be a directed acyclic graph, and $X$ be a Bayesian
+network over $G$. Then, for all $s\in S$
+\[
+\myP(\pe Xs = \pe xs \mid \pe X{\mathcal A_s\setm \{s\}} = \pe x{\mathcal A_s\setm \{s\}}) = \myP(\pe Xs = \pe xs \mid \pe X{\pa{s}} = \pe x{s^{-}}) = p_s(\pe x{\pa{s}}, \pe xs).
+\]
+\end{proposition}
+\begin{proof} 
+By  \cref{prop:rest}, we can without loss of generality
+assume that $V = \mathcal A_s$. Then
+\begin{eqnarray*}
+\myP(\pe Xs = \pe xs \mid \pe X{\mathcal A_s\setm \{s\}} = \pe x{\mathcal A_s\setm
+  \{s\}}) &\propto & \myP(\pe X{\mathcal A_s} = \pe x{\mathcal A_s})\\
+&=& p_s(\pe x{\pa{s}}, \pe xs) Z(\pe x{\mathcal A_s\setm
+  \{s\}})
+\end{eqnarray*}
+where
+\[
+Z(\pe x{\mathcal A_s\setm
+  \{s\}}) = \prod_{t\in \mathcal A_s\setm\{s\}} p_t(\pe x{\pa{t}}, \pe xt)
+\]
+disappears when the conditional probability is normalized.
+\end{proof}
+
+\subsection{Reduction to d-separation}
+We now want to reformulate 
+\cref{prop:g.sharp.2} in terms of the unoriented graph $G^\flat$ and
+specific features in $G$ called v-junctions, that we now define.
+\begin{definition}
+\label{def:v.j}
+Let $G=(V,E)$ be a directed graph. A v-junction is a triple of
+distinct vertexes,
+$(s,t,u)\in V\times V \times V$ such that $\defset{s,u}\sub \pa{t}$
+(i.e., $s$ and $u$ are parents of $t$). 
+   
+We will say that a path $(s_1, \ldots, s_N)$ in $G^\flat$ passes at $s=s_k$ with a
+v-junction if $(s_{k-1}, s_k, s_{k+1})$ is a v-junction in $G$.
+\end{definition}
+
+We have the lemma:
+\begin{lemma}
+\label{lem:d.sep}
+Two vertexes $s$ and $t$ in $G$ are
+separated by a set $U$ in $(G_{\CA_{\{s,t\}\cup U}})^\sharp$ if and
+only if any path between $s$ and $t$ in $G^\flat$ must either
+\begin{itemize}
+\item[(1)] Pass at a vertex in $U$ without a v-junction.
+\item[(2)] Pass in  $V \setm \CA_{\{s,t\}\cup U}$ at a v-junction.
+\end{itemize}
+\end{lemma}
+\begin{proof}
+\
+
+{\noindent \it Step 1.} We first note that the v-junction clause is
+redundant in (2). It can be removed without affecting the
+condition. Indeed, if a path in $G^\flat$ passes in $V \setm
+\CA_{\{s,t\}\cup U}$ one can follow this path downward (i.e.,
+following the orientation in $G$) until a v-junction is met. This has
+to happen before reaching the extremities of the path, since $u$ would
+be an ancestor of $s$ or $t$ otherwise.  We can therefore work with the weaker
+condition (that we will denote (2)')
+in the rest of proof.
+
+\bigskip
+{\noindent \em Step 2.} 
+Assume that $U$ separates $s$ and $t$ in $(G_{\CA_{\{s,t\}\cup
+U}})^\sharp$. Take a path $\ga$ between $s$ and $t$ in $G^\flat$. We need to
+show that the path satisfies (1) or (2)'. So assume that (2)' is false
+(otherwise we are done) so that $\gamma$ is included in
+$\CA_{\{s,t\}\cup U}$. We can modify $\ga$ by
+removing all the central nodes in v-junctions and still keep a valid path in $(G_{\CA_{\{s,t\}\cup
+U}})^\sharp$ (since parents are connected in the moral graph). The remaining path must intersect $U$ by assumption, and
+this cannot be at a v-junction in $\ga$ since we have removed them. So
+(1) is true.
+
+\bigskip
+\noindent {\em Step 3.}
+Conversely, assume that (1) or (2) is true for any path in
+$G^\flat$. Consider a path $\ga$ in $(G_{\CA_{\{s,t\}\cup U}})^\sharp$
+between $s$ and $t$. Any edge in $\ga$ that is not in $G^\flat$ must
+involve parents of a common child in $\CA_{\{s,t\}\cup
+  U}$. Insert this child between the parents every time this occurs,
+resulting in a v-junction added to $\gamma$. Since the added
+vertexes are still in $\CA_{\{s,t\}\cup
+  U}$, the new path still has no intersection with $V\setm \CA_{\{s,t\}\cup
+  U}$ and must therefore satisfy (1). So there must be an intersection
+with $U$ without a v-junction, and since the new additions are all
+at v-junctions, the intersection must have been originally in $\ga$,
+which therefore passes in $U$. This shows that $U$ separates $s$ and
+$t$ in $(G_{\CA_{\{s,t\}\cup U}})^\sharp$.
+\end{proof}
+
+Condition (2) can be further restricted to provide the notion of
+$d$-separation.
+\begin{definition}
+\label{def:d.sep}
+One says that two vertexes $s$ and $t$ in $G$ are
+$d$-separated by a set $U$ if and
+only if any path between $s$ and $t$ in $G^\flat$ must either
+\begin{itemize}
+\item[(D1)] Pass at a vertex in $U$ without a v-junction.
+\item[(D2)] Pass in  $V \setm \CA_{U}$ with a v-junction.
+\end{itemize}
+\end{definition}
+
+Then we have:
+\begin{theorem}
+\label{th:d.sep}
+Two vertexes $s$ and $t$ in $G$ are
+separated by a set $U$ in $(G_{\CA_{\{s,t\}\cup U}})^\sharp$ if and
+only if they are $d$-separated by $U$.
+\end{theorem}
+\begin{proof}
+It suffices to show that if condition ((D1) or (D2)) holds for any path between
+$s$ and $t$ in $G^\flat$, then so does  ((1) or (2)).  So take a path between
+$s$ and $t$: if (D1) is true for this path, the
+conclusion is obvious, since (D1) and (1) are the same. So assume that
+(D1) (and therefore (1)) is false and that (D2) is true. Let $u$ be a
+vertex in $V\setm \mathcal A_U$ at which $\ga$ passes with a v-junction.
+
+Assume that (2) is false. Then $u$ must be an
+ancestor of either $s$ or $t$. Say it is an ancestor of $s$: there is
+a path in $G$ going from $u$ to $s$  without passing by $U$ (otherwise
+$u$ would be an ancestor of $U$); one can replace the portion
+of the old path between $s$ and $u$ by this new one, which does not
+pass by $u$ with a v-junction anymore. So the new path still does
+not satisfy (D1) and must satisfy (D2). Keep on removing all
+intersections with ancestors of $s$ and $t$ that have v-junctions to
+finally obtain a path that satisfies neither (D1) or (D2) and a
+contradiction to the
+fact that $s$ and $t$ are $d$-separated by $U$.
+\end{proof}
+
+\subsection{Chain-graph representation}
+The $d$-separability property involves both unoriented and oriented
+edges. It is in fact a property of the hybrid graph in which the
+orientation is removed from the edges that are not involved in a
+v-junction, and retained otherwise. Such graphs are particular
+instances of chain graphs.
+
+\begin{definition}
+\label{def:ch.grph}
+A chain graph $G = (V,E, \tilde E)$ is composed with a finite set $V$
+of vertexes, a set $E\sub {\boldsymbol \CP}_2(V)$ of unoriented edges and a set
+$\tE\sub E\ti E \setm \defset{(t,t), t\in E}$ of oriented edges with
+the property that $E \cap \tE^\flat=\emp$, i.e., two vertexes cannot
+be linked by both an oriented and an unoriented edge.
+
+A path in a chain graph is a a sequence of vertexes $s_0,
+\ldots, s_N$ such that for all $k\geq 1$, $s_{k-1}$ and $s_k$ form an
+edge, which means that either $\defset{s_{k-1}, s_k}\in E$ or
+$(s_{k-1}, s_k) \in \tE$. 
+
+A chain graph is acyclic if it contains no loop. It is semi-acyclic if
+it contains no loop containing oriented edges.
+\end{definition}
+ 
+We start with the following equivalence relation within vertexes in a semi-acyclic
+chain graph.
+
+\begin{proposition}
+Let $G = (V,E, \tilde E)$ be a semi-acyclic chain graph. Define the
+relation $s\,\CR\, t$ if and only if
+there exists a path in the unoriented subgraph $(V,E)$ that links $s$
+and $t$. Then $\CR$ is an equivalence relation.
+\end{proposition}
+
+The proposition is obvious. This relation partitions $V$ in
+equivalence classes, the set
+of which being denoted $V_\CR$. If $S\in V_\CR$, then any pair $s,
+t$ in $S$ is related by an unoriented path, and if $S\neq S'\in
+V_\CR$, no elements $s\in S$ and $t\in S'$ can be related by such a
+path.
+
+Moreover, no path in $G$ between two elements of $S\in
+V_\CR$, can contain a directed edge,  since these elements must also be related by an undirected
+path, and this would create a loop in $G$ containing an undirected edge. So the restriction of $G$
+to $S$ is an undirected graph. 
+
+One can define a directed graph over equivalence classes as follows. Let $G_\CR =
+(V_\CR, E_\CR)$ be such that
+$(S,S') \in E_\CR$ if and only if there exists $s\in S$ and $t\in
+S'$ such that $(s,t)\in\tE$. The graph $G_\CR$ is acyclic: any loop in $G_\CR$
+would induce a loop in $G$ containing at least one oriented edge.
+
+We now can formally define a probability distribution on a semi-acyclic chain graph.
+\begin{definition}
+\label{def:acg}
+Let $G = (V, E, \tE)$ be a semi-acyclic chain graph. One says that a random variable
+$X$ decomposes on $G$ if and only if: $(\pe XS, S\in V_\CR)$ is
+a Bayesian network on $G_\CR$ and the conditional distribution of
+$\pe XS$ given $\pe X{S'}, S'\in \pa{S}$ is $G_S$-Markov, such that, for $s\in S$,
+$P(\pe Xs = \pe xs\mid \pe Xt, t\in S, X_{S'}, S'\in \pa{S})$ only depends on $\pe xt$
+with $\defset{s,t}\in E$ or $(t,s) \in \tilde E$.
+\end{definition}
+
+
+Returning to our discussion on Bayesian networks, we have the
+following.  Associate to a DAG $G = (V,E)$ the chain graph
+$G^\dagger = (V, E^\dagger, \tE^\dagger)$ defined by: $\defset{s,t}\in
+E^\dagger$ if and only if $(s,t)$ or $(t,s)\in E$ and is not involved
+in a v-junction, and $(s,t)\in \tE^\dagger$ if $(s,t)\in E$ and is
+involved in a v-junction. This graph is acyclic; indeed, take any loop
+in $G^\dagger$: when its edges are given their original 
+orientations in $E$, the sequence cannot contain a v-junction, since
+the orientation in v-junctions are kept in $G^\dagger$; the path therefore
+constitutes a loop in $G$ which is a contradiction. 
+
+All, excepted at most one, vertexes in an
+equivalence class $S\in G^\dagger_\CR$ have all their parents in
+$S$. Indeed, assume that two vertexes,  $s$ and $t$, in $S$ have
+parents outside of
+$S$. There exists an unoriented path, $s_0=s, s_1, \ldots, s_N = t$,
+in $G^\dagger$ connecting them,  since they belong to the same
+equivalence class. The edge
+at $s$ must be oriented from $s$ to $s_1$ in $G$, since otherwise
+$s_1$ would be a second parent to $s$ in $G$, creating a v-junction,
+and the edge would have remained
+oriented in $G^\dagger$. Similarly, the last edge in the path must be oriented from $t$ to
+$s_{N-1}$ in $G$. But this implies that there exists a v-junction in
+the original orientation along the path, which cannot be constituted
+with only unoriented edges in $G^\dagger$. So we get a contradiction.
+
+Thus,  random variables that decompose on $G^\dagger$ are ``Bayesian
+networks'' of acyclic graphs, or trees since we know these are
+equivalent. The root of each tree must have multiple (vertex) parents
+in the parent tree in $G_\CR$. The following theorem states that
+all Bayesian networks are equivalent to such a process.
+
+\begin{theorem}
+\label{th:acg}
+Let $G = (V,E)$ be a DAG. The random variable $X$ is a Bayesian network on
+$G$ if and only if it decomposes over $G^\dagger$.
+\end{theorem}
+\begin{proof}
+Assume that $X$ is a Bayesian network on $G$. We can obviously rewrite the
+probability distribution of $X$ in the form
+$$
+\pi(x) = \prod_{S\in G^\dagger_\CR}\prod_{s\in S} p_s(\pe x{\pa{s}}, \pe xs).
+$$
+Since every vertex in $S$ has its parents in $S$ or in $\bigcup_{T\in \pa{S}} T$,
+this {\em a fortiori} takes the form
+$$
+\pi(x) = \prod_{S\in G^\dagger_\CR} p_S((\pe xT, T\in S^{-}), \pe xs ).
+$$
+So $\pe XS, S\in V_\CR$ is a Bayesian network. Moreover, 
+$$
+p_S((\pe xT, T\in S^{-}), \pe xs ) = \prod_{s\in S} p_s(\pe x{\pa{s}}, \pe xs)
+$$
+is a tree distribution with the required form of the individual
+conditional distributions. 
+
+Now assume that $X$ decomposes on $G^\dagger$. Then the conditional
+distribution of $\pe XS$ given $\pe XT, T\in \pa{S}$ is Markov for the acyclic
+undirected graph $G_S$, and can therefore be expressed as a tree
+distribution consistent with the orientation of $G$. 
+\end{proof}
+
+\subsection{Markov equivalence}
+
+While the previous discussion provides a rather simple description of
+Bayesian networks in terms of chain graphs, it does not go all the way
+in reducing the number of oriented edges in the definition of  a Bayesian
+network. The issue is, in some way, addressed by the notion of Markov
+equivalence, which is defined as follows.
+
+\begin{definition}
+\label{def:mar.eq}
+Two directed acyclic graphs on the same set of vertexes $G = (V,E)$
+and $\tilde G = (V, \tilde E)$ are Markov-equivalent
+if any family of random variables that decomposes as a (positive) Bayesian network
+over one of them also decomposes as a Bayesian network over the other.
+\end{definition}
+
+The notion of Markov equivalence is exactly described by
+d-separation. This is stated in the following theorem, due to Geiger
+and Pearl \citep{Geiger1990,geiger1990logic}, that we state without proof.
+\begin{theorem}
+\label{th:geig.p}
+$G$ and $\tilde G$ are Markov equivalent if and only if, whenever two
+vertexes are d-separated by a set in one of them, the same separation
+is true with the other. 
+\end{theorem}
+
+This property can be expressed in a strikingly simple
+condition. One says that a v-junction $(s,t,u)$ in a DAG is {\em unlinked}
+if $s$ and $u$ are not neighbors.   
+\begin{theorem}
+\label{th:mar.eq}
+$G$ and $\tilde G$ are Markov equivalent if and only if $G^\flat =
+\tilde G^\flat$ and $G$ and $\tilde G$ have the same unlinked v-junctions.
+\end{theorem}
+\begin{proof}
+
+\begin{enumerate}[label={\it Step \arabic*.}]
+\item
+We first show that
+a given pair of vertexes in a DAG is unlinked if and only if it can
+be d-separated by some set in the graph. Clearly, if they are linked,
+they cannot be d-separated (which is the ``if'' part), so what really needs to be proved is that
+unlinked vertexes can be d-separated. Let $s$ and $t$ be these vertexes
+and let $U = \CA_{\{s,t\}}\setm \{s,t\}$. Then $U$ d-separates $s$ and
+$t$ since any path between $s$ and $t$ in $(G_{\CA_{\{s,t\}\cup
+U}})^\sharp = (G_{\CA_{\{s,t\}}})^\sharp$ must obviously pass in $U$.
+
+\item  We now prove the only-if part of 
+\cref{th:mar.eq} and
+therefore assume that $G$ and $\tilde G$ are Markov equivalent, or, as
+stated in  \cref{th:geig.p}, that
+d-separation coincides in $G$ and $\tilde G$. We want to prove that
+$G^\flat = \tilde G^\flat$ and unlinked v-junctions are the same.
+
+\begin{enumerate}[label={\it Step 2.\arabic*.}]
+\item The first statement is obvious from Step 1: d-separation determines
+the existence of a link, so if d-separation coincides in the two
+graphs, then the same holds for  links and $G^\flat = \tilde G^\flat$. 
+
+\item So let us proceed to the second statement and
+let $(s,t,u)$ be an unlinked
+v-junction in $G$. We want to show that it is also a v-junction in
+$\tilde G$ (obviously unlinked since links coincide). 
+
+We will denote by $\tilde \CA_S$ the ancestors of some set $S\sub V$ in $\tilde G$ (while $\CA_S$
+still denotes its ancestors in $G$). Let  $U =
+\CA_{\{s,u\}}\setm \{s,u\}$.  Then,
+as we have shown in Step 1, $U$ d-separates $s$ and $u$ in $G$,
+so that, by assumption it also d-separates  them in $\tilde G$. 
+
+We
+know that $t\not \in U$, because it cannot be both a child and an
+ancestor of $\{s, u\}$ in $G$ (this would induce a loop). The path
+$(s,t,u)$ links $s$ and $u$ and does not pass in $U$, which is
+only possible (since $U$ d-separates $s$ and $t$ in $\tilde G$) if it passes in
+$V-\tilde \CA_U$ at a v-junction: so $(s,t,u)$ is a v-junction in
+$\tilde G$, which is what we wanted to prove.
+\end{enumerate}
+
+
+\item We now consider the converse statement and assume that $G^\flat = \tilde G^\flat$
+and unlinked v-junctions coincide. We want to show that d-separation
+is the same in $G$ and $\tilde G$. So, we assume that $U$ d-separates $s$ and
+$t$ in $G$, and we want to show that the same is true in $\tilde
+G$. Thus, what we need to prove is:
+
+{\em Claim 1.} Consider a path $\ga$ between $s$ and $t$ in $\tilde
+G^\flat= G^\flat$. Then $\ga$ either  (D1)
+passes in $U$ without a v-junction in $\tG$, or (D2) in $V\setm
+\tilde\CA_U$ with a v-junction in $\tilde G$. 
+
+We will prove Claim 1 using a series of lemmas. We say that $\ga$ has a three-point loop at
+$u$ if $(v, u, w)$ are three consecutive points in $\ga$ such that
+$v$ and $w$ are linked. So $(v, u, w, v)$ forms a loop in the
+undirected graph.
+
+\begin{lemma}
+\label{lem:me.1}
+If
+$\gamma$ is a path between $s$ and $t$ that does not satisfy (D2) for $G$
+and passes in $U$ without three-point loops, then $\ga$ satisfies
+(D1) for $\tilde G$. 
+\end{lemma}
+The proof is easy: since $\ga$ does not satisfy (D2) in $G$,
+it satisfies (D1) and passes in $U$ without a v-junction in
+$G$. But this intersection cannot be a v-junction in $\tilde G$
+since it would otherwise have to be linked and constitute a three-point
+loop in $\ga$, which proves that (D1) is true for $\ga$ in $\tG$.
+
+The next step is to remove the three-point loop condition in 
+\cref{lem:me.1}. This will be done using the next two results.
+\begin{lemma}
+\label{lem:me.2}
+Let $\ga$ be a path with a three-point loop at
+$u\in U$ for $G$. Assume that $\ga\setm u$ (which is a valid path in
+$G^\flat$) satisfies (D1) or (D2) in
+$\tilde G$. Then $\ga$ satisfies (D1) or (D2) in $\tilde G$.
+\end{lemma}
+To prove the lemma, let $v$ and $w$ be the predecessor and
+successor of $u$ in $\ga$. First assume that $\ga\setm u$ satisfies (D1) in
+$\tilde G$. If
+this does not happen at $v$ or at $w$, then this will apply also to
+$\ga$ and we are done, so let us assume that $v\in U$ and that $(v', v,w)$ is not a
+v-junction in $\tilde G$, where $v'$ is the predecessor of $v$.  If $(v',v,u)$ is
+not a v-junction in $\tilde G$, then (D1) is true for $\ga$ in $\tilde
+G$. If it is
+a v-junction, then $(v,u,w)$ is not and (D1) is true too.
+
+Assume now that (D2) is true for $\ga\setm u$ in $\tG$. Again, there
+is no problem if (D2) occurs for some point other than $v$ or $w$, so
+let us consider the case for which it happens at $v$. This means that 
+$v\not\in \tilde \CA_U$ and $(v',v,w)$ is a v-junction. But, since
+$u\in U$, the link between $u$ and $v$ must be from $u$ to $v$ in
+$\tilde G$ so that
+there is no v-junction at $u$ and (D1) is true in $\tilde G$. This proves 
+\cref{lem:me.2}.
+
+\begin{lemma}
+\label{lem:me.3}
+Let $\ga$ be a path with a three-point loop at
+$u\in U$ for $G$. Assume that $\ga$ does not satisfy (D2) in $G$. Then
+$\ga\setm u$ does not satisfy this property either.
+\end{lemma}
+Let us assume that $\ga\setm u$ satisfies (D2) and reach a
+contradiction. Letting $(v,u,w)$ be the three-point loop, (D2) can only
+happen in $\ga\setm u$ at $v$ or $w$, and let us assume that this
+happens at $v$, so that, $v'$ being the predecessor of $v$, $(v',v,w)$
+is a v-junction in $G$ with $v\not\in \CA_U$. Since $v\not\in \CA_U$,
+the link between $u$ and $v$ in $G$ must be from $u$ to $v$, but this
+implies that $(v',v,u)$ is a v-junction in $G$ with $v \not \in \CA_U$
+which is a contradiction: this proves  \cref{lem:me.3}.
+
+
+The previous three lemmas directly imply the next one.
+\begin{lemma}
+\label{lem:me.4}
+If
+$\gamma$ is a path between $s$ and $t$ that does not satisfy (D2) for
+$G$, then $\ga$ satisfies
+(D1) or (D2) for $\tilde G$. 
+\end{lemma}
+Indeed, if we start with $\ga$ that does not satisfy (D2) for $G$, 
+ \cref{lem:me.3} allows us to progressively remove three-point loops from
+$\ga$ until none remains with a final path that satisfies the
+assumptions of  \cref{lem:me.1} and therefore satisfies (D1) in $\tilde G$,
+and  \cref{lem:me.2} allows us to add the points that we have
+removed in reverse order while always satisfying (D1) or (D2) in $\tG$.
+
+
+We now partially relax the hypothesis that (D2) is not satisfied with the next lemma.
+\begin{lemma}
+\label{lem:me.5}
+If
+$\gamma$ is a path between $s$ and $t$ that does not pass in $V\setm
+\CA_U$ at a linked v-junction for $G$, then $\ga$ satisfies
+(D1) or (D2) for $\tilde G$. 
+\end{lemma}
+Assume that $\ga$  does not satisfy (D2) for
+$\tilde G$ (otherwise the result is proved). By  \cref{lem:me.4},  $\ga$ must satisfy
+(D2) for $G$. So, take an intersection of $\ga$ with $V\setm \CA_U$ that
+occurs at a v-junction in $G$, that we will denote $(v, u, w)$. This is
+still a v-junction in $\tilde G$ since we assume it to be
+unlinked. Since (D2) is false in $\tilde G$, we must have
+$u\in \tilde \CA_U$, and there is an oriented path, $\tau$, from
+$u$ to $U$ in $\tilde G$. 
+
+We can assume that $\tau$ has no v-junction in $G$. If a v-junction
+exists in $\tau$,
+then this v-junction must be linked (otherwise this would also be a
+v-junction in $\tilde G$ and contradict the fact that $\tau$ is
+consistently oriented in $\tilde G$), and this link must be oriented
+from $u$ to $U$ in $\tilde G$ to avoid creating a loop in this
+graph. This implies that we can bypass the v-junction while keeping a
+consistently oriented path in $\tilde G$, and iterate this until
+$\tau$ has no v-junction in $G$. But this implies that $\tau$ is
+consistently oriented in $G$, necessarily from $U$ to $u$ since
+$u \not\in \CA_U$.
+
+Denote $\tau = (u_0=u, v_1, \ldots,
+u_n\in U)$. We now prove by induction that each $(v, u_k, w)$ is an unlinked
+v-junction. This is true when $k=0$, and let us assume that it is true
+for $k-1$. Then $(u_{k}, u_{k-1}, v)$ is a v-junction in $G$ but not
+in $\tilde G$: so it must be linked and there exists an edge between
+$v$ and $u_k$. In $\tilde G$, this edge must be oriented from $v$
+to $u_k$, since $(v, u_{k-1}, u_k, v)$ would form a loop
+otherwise. For the same reason, there must be an edge in $\tilde G$
+from $w$ to $u_k$ so that $(v, u_k, w)$ is an unlinked
+v-junction. 
+
+Since this is true for $k=n$, we can replace $u$ by $u_n$ in $\ga$
+and still obtain a valid path. This can be done for all 
+intersections of $\ga$ with $V\setm \CA_U$ that occur at
+v-junctions. This finally yields a path (denote it
+$\bar\ga$) which does not satisfy (D2) in $G$ anymore, and therefore
+satisfies (D1) or (D2) in $\tG$: so  $\bar\ga$
+must either pass in $U$ without a v-junction or in $V\setm \tilde A_U$
+at a v-junction. None of the  nodes that were modified can satisfy any of these
+conditions, since they were all in $U$ with a v-junction, so that the
+result is true for the original $\ga$ also. This proves 
+\cref{lem:me.5}.
+
+So the only unsolved case is when $\ga$ is allowed to pass in $V\setm
+\CA_U$ at linked v-junctions. We define an algorithm that removes them
+as follows. Let $\ga_0=\ga$ and let $\ga_k$ be the path after step $k$ of
+the algorithm. One passes from $\ga_k$ to $\ga_{k+1}$ as follows.
+\begin{itemize}
+\item If $\ga_k$ has no linked v-junctions in $V\setm \CA_U$ for $G$,
+  stop.
+\item Otherwise, pick such a v-junction and let $(v,u,w)$ be the
+  three nodes involved in it.
+\begin{enumerate}[label=(\roman*),labelindent=0.5cm, leftmargin=.5cm]
+\item If $v\in U, v'\not\in U$ and $(v', v, u)$ is a v-junction in $\tG$, remove
+  $v$ from $\ga_k$ to define $\ga_{k+1}$.
+\item Otherwise,  if  $w\in U, w'\not\in U$ and $(u,w, w')$ is a v-junction in $\tG$, remove
+  $w$ from $\ga_k$ to define $\ga_{k+1}$.
+\item Otherwise, remove $u$ from $\ga_k$ to define $\ga_{k+1}$.
+\end{enumerate}
+\end{itemize}
+
+None of the considered cases can disconnect the path. This is clear
+for case (iii)  since $v$ and $w$ are linked. For case (i), note that,
+in $G$, $(v',v, u)$ cannot be a v-junction since $(v,u,w)$ is
+one. This implies that the v-junction in $\tG$ must be linked and that
+$v'$ and $u$ are connected.
+
+The algorithm will stop at some point with some $\ga_n$ that does not
+have any linked v-junction in $V\setm \CA_U$ anymore, which implies
+that (D1) or (D2) is true in $\tG$ for $\ga_n$. To prove that this
+statement holds for $\ga$, it suffices to show that if (D1) or (D2) is true
+in $\tG$ with
+$\ga_{k+1}$, it must have been true with $\ga_k$ at each step of the
+algorithm. So let's assume that $\ga_{k+1}$ satisfies (D1) or (D2) in $\tG$. 
+
+First assume
+that we passed from $\ga_k$ to $\ga_{k+1}$ via case (iii). Assume that
+(D2) is true for $\ga_{k+1}$, with as usual the only interesting case
+being when this occurs at $v$ or $w$. Assume it occurs at $v$ so that
+$(v',v,w)$ is a v-junction and $v\not\in \tilde\CA_U$. If $(v',v,u)$
+is a v-junction, then (D2) is true with $\ga_k$. Otherwise, there is an
+edge from $v$ to $u$ in $\tG$ which also implies an edge from $w$ to
+$u$ since $(v,u,w,v)$ would be a loop otherwise.  So $(v,u,w)$ is a
+v-junction in $\tG$, and $u$ cannot be in $\tilde\CA_U$ since its
+parent, $v$ would be in that set also. So (D2) is true in $\tG$. Now,
+assume that 
+(D1) is true at $v$, so that $(v',v,w)$ is not a v-junction and $v\in
+U$. If $(v',v,u)$ is not a v-junction either, we are done, so assume
+the contrary. If $v'\in U$, then we cannot have a v-junction at $v'$
+and (D1) is true. But $v'\not\in U$ is not possible since this leads
+to case (i).
+
+Now assume that we passed from $\ga_{k}$ to $\ga_{k+1}$ via case
+(i). Assume that (D1) is true for $\ga_k$: this cannot be at $v'$
+since $v'\not\in U$, neither at $u$ since $u\not\in \CA_U$, so it will
+also be true for $\ga_{k+1}$. The same statement holds with (D2) since
+$(v',v,u)$ is a v-junction in $\tG$ with $v\in U$ which implies that
+both $v'$ and $u$ are in $\tilde\CA_U$. Case (ii) is obviously
+addressed similarly.
+\end{enumerate}
+With this,  the proof
+of  \cref{th:mar.eq} is complete.
+\end{proof}
+
+ 
+\subsection{Probabilistic inference: Sum-prod algorithm}
+
+We now discuss the issue of using the sum-prod algorithm to compute marginal probabilities,
+$\myP(\pe Xs = \pe xs)$ for $s\in V$ when $X$ is a Bayesian network on $G =
+(V,E)$. By definition, $\myP(X = x)$ can be written in the form
+$$
+\myP(X=x) = \prod_{C\in\CC} \phi_C(\pe xC)
+$$
+where $\CC$ contains all subsets $C_s := \defset{s} \cup \pa{s}$, $s\in
+V$. Marginal probabilities can therefore be computed easily when the
+factor graph associated to $\CC$ is acyclic, according to 
+\cref{prop:fct.grph.cvg}.  However, because of the specific form of the $\phi_C$'s (they are
+conditional probabilities), the sum-prod algorithm can be analyzed
+in more detail, and provide correct results even when the factor graph
+is not acyclic.
+
+The general rules for the sum-prod algorithm are
+\[
+\left\{
+\begin{aligned}
+&m_{sC}(\pe xs) \leftarrow \prod_{\tilde C, s\in \tilde C,  \tilde C\neq C} m_{\tilde C s}(\pe xs)\\
+&m_{Cs}(\pe xs) \leftarrow \sum_{\pe y{C}: \pe ys = \pe xs} \phi_C(\pe y{C}) \prod_{t\in C\setm \{s\}} m_{tC}(\pe yt)
+\end{aligned}
+\right.
+\]
+
+They take a particular form for Bayesian networks, using the fact that a vertex $s$ belongs to $C_s$, and to
+all $C_t$ for $t\in \cl{s}$.
+\begin{eqnarray*}
+m_{sC_s}(\pe xs) &\leftarrow& \prod_{t\in \cl{s}} m_{C_ts}(\pe xs),\\
+m_{sC_t}(\pe xs) &\leftarrow& m_{C_ss}(\pe xs) \prod_{u\in \cl{s}, u\neq t}
+m_{C_us}(\pe xs), \text{ for } t\in \cl{s},\\
+&&\\
+m_{C_ss}(\pe xs) &\leftarrow& \sum_{\pe y{C_s}, \pe ys = \pe xs} p_s(\pe y{\pa{s}}, \pe xs) \prod_{t\in
+\pa{s}} m_{tC_s}(\pe yt),\\
+m_{C_ts}(\pe xs) &\leftarrow& \sum_{\pe y{C_t}, \pe ys = \pe xs} p_t(\pe xs\wedge \pe y{\pa{s}\setminus\{t\}}, \pe yt) m_{tC_t}(\pe yt) \prod_{u\in
+\pa{s}, u\neq t} m_{uC_t}(\pe yu), 
+\\ && \text{ for } t\in \cl{s}.
+\end{eqnarray*}
+
+These relations imply that, if $\pa{s}=\emp$ ($s$ is a root), then
+$m_{C_ss} = p_s(\pe xs)$. Also, if $\cl{s} = \emp$ ($s$ is a leaf) then
+$m_{sC_s} = 1$. The following proposition shows that many of the
+messages become constant over time.
+\begin{proposition}
+\label{prop:bp.bay.1}
+All upward messages, $m_{sC_s}$ and $m_{C_ts}$ with $t\in \cl{s}$ become
+constant (independent from $\pe xs$) in finite time.
+\end{proposition}
+\begin{proof}
+This can be shown recursively as follows. Assume that, for a given
+$s$,  $m_{tC_t}$ is
+constant for all $t\in \cl{s}$ (this is true if $s$ is a leaf). Then,
+\begin{eqnarray*}
+m_{C_ts}(\pe xs) &\leftarrow& \sum_{pe y{C_t}, \pe ys = \pe xs} 
+p_t(\pe xs\wedge \pe y{\pa{s}\setminus\{t\}}, \pe yt) m_{tC_t}(\pe yt) \prod_{u\in
+\pa{s}, u\neq t} m_{uC_t}(\pe yu), \\
+&=& m_{tC_t} \sum_{\pe y{C_t}, \pe ys = \pe xs} p_t(\pe xs\wedge \pe y{\pa{s}\setminus\{t\}}, \pe yt) \prod_{u\in
+\pa{s}, u\neq t} m_{uC_t}(\pe yu)\\
+&=& m_{tC_t} \sum_{\pe y{C_t\setm \{t\}}, \pe ys = \pe xs} \prod_{u\in
+\pa{s}, u\neq t} m_{uC_t}(\pe yu)\\
+&=& m_{tC_t} \prod_{u\in \pa{s}, u\neq t} \sum_{\pe yu} m_{uC_t}(\pe yu)
+\end{eqnarray*}
+which is constant. Now
+$$
+m_{sC_s}(\pe xs) \leftarrow \prod_{t\in \cl{s}} m_{C_ts}(\pe xs)
+$$
+is also constant. This proves that all $m_{sC_s}$ progressively become
+constant, and, as we have just seen, this implies the same property
+for $m_{C_ts}$, $t\in \cl{s}$.
+\end{proof}
+
+This proposition implies that, if initialized with constant messages
+(or after a finite time), the sum-prod algorithm iterates
+\begin{eqnarray*}
+m_{sC_s} &\leftarrow& \prod_{t\in \cl{s}} m_{C_ts}\\
+m_{C_ss}(\pe xs) &\leftarrow& \sum_{\pe y{C_s}, \pe ys = \pe xs} p_s(\pe y_{\pa{s}}, \pe xs) \prod_{t\in
+\pa{s}} m_{tC_s}(\pe yt)\\
+m_{sC_t}(\pe xs)  &\leftarrow& m_{C_ss}(\pe xs) \prod_{u\in \cl{s}, u\neq t}
+m_{C_us}, \  \ t\in \cl{s}\\
+m_{C_ts} &\leftarrow& m_{sC_s} \prod_{u\in \pa{t}, u\neq s}
+\sum_{\pe yu} m_{uC_s}(\pe yu), \  \ t\in \cl{s}.
+\end{eqnarray*}
+From this expression, we can conclude
+\begin{proposition}
+\label{prop:bp.bay.2}
+If the previous algorithm is first initialized with upward messages,
+$m_{sC_s} = m_{C_ts}$ all equal to 1, and if  downward messages are
+computed top down from the roots to the leaves, the obtained
+configuration of messages is invariant for the sum-prod algorithm.
+\end{proposition}
+\begin{proof}
+If all upward messages are equal to 1, then clearly, the downward
+messages sum to 1 once they are updated from roots to leaves, and this
+implies that the upward messages will remain equal to 1 for the next
+round.  The obtained configuration is invariant since the downward
+messages are recursively uniquely defined by their value at the roots.
+\end{proof}
+The downward messages, under the
+previous assumptions, satisfy $m_{sC_t}(\pe xs)  = m_{C_ss}(\pe xs)$ for all
+$t\in \cl{s}$ and therefore
+\begin{equation}
+\label{eq:mes.bay}
+m_{C_ss}(\pe xs) = \sum_{\pe y{C_s}, \pe ys = \pe xs} \pi(\pe y{\pa{s}}, \pe xs) \prod_{t\in
+\pa{s}} m_{C_tt}(\pe yt).
+\end{equation}
+Note that the associated ``marginals'' inferred by the sum-prod algorithm are 
+$$
+\sig_s(\pe xs) = \prod_{C, s\in C} m_{Cs}(\pe xs) = m_{C_ss}(\pe xs) 
+$$
+since $m_{C_ts}(\pe xs) = 1$ when $t\in \cl{s}$.
+
+Although the sum-prod algorithm initialized with unit messages
+converges to a stable configuration if run top-down, the obtained
+$\sig_s$'s do not necessarily provide the correct single site marginals. There is a
+situation for which this is true, however, which is when the initial
+directed graph is singly connected, as we will see below. Before this,
+let us analyze the complexity resulting from an iterative computation of
+the marginal probabilities, similar to what we have done with trees.
+
+We define the
+depth of a vertex in $G$ as follows.
+\begin{definition}
+\label{def:depth}
+Let $G=(V,E)$ be a DAG. The depth of a vertex $s$ in $V$ is defined
+recursively by
+\begin{itemize}[labelindent=0.5cm]
+\item[-] $\mathrm{depth}(s) = 0$ if $s$ has no parent.
+\item[-] $\mathrm{depth}(s) = 1 + \max\big(\mathrm{depth}(t), t\in
+\pa{s}\big)$ otherwise.
+\end{itemize}
+\end{definition}
+
+The recursive computation of marginal distributions is made possible
+(although not always feasible)
+with the following remark.
+\begin{lemma}
+\label{lem:c.i.dag}
+Let $X$ be a Bayesian network on the DAG $G=(V,E)$, and $S\sub V$,
+such that all elements in $S$ have the same depth. Let
+$\pa{S}$ be the set of parents of elements in $S$, and $T =
+\mathrm{depth}^-(S)$ the set of vertexes in $V$ with depth strictly smaller
+than the depth of $S$. Then 
+$\cind{\pe XS}{\pe X{T\setm \pa{S}}}{\pe X{\pa{S}}}$ and the variables $\pe Xs, s\in S$
+are conditionally independent given $\pe X{\pa{S}}$. 
+\end{lemma}
+\begin{proof}
+It suffices to show that vertexes in $S$ are separated from  $T\setm
+\pa{S}$ and from other elements of $S$ by $\pa{S}$ for the
+graph $(G_{S\cup T})^\sharp$. Any path starting at $s\in S$ must either
+pass by a parent of $s$ (which is what we want), or by one of its children, or by another
+vertex that shares a child with $s$ in $G_{S\cup T}$. But $s$ cannot have any
+child in $G_{S\cup T}$, since this child cannot have a smaller depth
+than $s$,
+and it cannot be in $S$ either since all elements in $S$ have the same
+depth.
+\end{proof}
+This lemma allows us to work recursively as follows. Assume that we can
+compute marginal distributions over sets $S$ with maximal depth no
+larger than $d$. Take a set $S$ of maximal depth $d+1$, and let $S_0$ be the
+set of elements of depth $d+1$ in $S$. Then, letting
+$T=\mathrm{depth}^-(S) = \mathrm{depth}^-(S_0)$, and $S_1 = S\setm S_0$,
+\begin{eqnarray}
+\nonumber
+\myP(\pe XS = \pe xS) &=& \sum_{\pe y{T\setm S_1}} \myP(\pe X{S_0} = \pe x{S_0} \mid \pe XT = \pe y{T\setm S_1}\wedge
+\pe x{S_1}) P(\pe X{T\cup S_1} =  \pe y{T\setm S_1}\wedge \pe x{S_1})\\
+\label{eq:rec.inf}
+&=& \sum_{\pe y{\pa{S}\setm S_1}} \prod_{s\in S_0} p_s(\pe {(y\wedge x)}{\pa{s}}\wedge
+\pe x{S_1}, \pe xs) \myP(\pe X{\pa{S_0}\cup S_1} = \pe  y{\pa{S_0}\setm S_1}\wedge \pe x{S_1})
+\end{eqnarray}
+Since $\pa{S}\cup S_1$ has maximal depth strictly smaller than the
+maximal depth of $S$, this indeed provides a recursive formula for the
+computation of marginal over subsets of $V$ with increasing maximal
+depths. However, because one needs to add parents to the
+considered set when reducing the depth, one may end up having to
+compute marginals over very large sets, which becomes intractable
+without further assumptions.
+
+A way to reduce the complexity is to assume that the graph $G$ is
+singly connected, as defined below.
+
+\begin{definition}
+\label{def:sin.com}
+A DAG $G$ is singly connected if there exists at most one path in $G$ that connects
+any two vertexes. 
+\end{definition}
+Such a property is true for a tree, but also
+holds for some networks with multiple parents. We have the
+following nice property in this case.
+
+\begin{proposition}
+\label{prop:sin.con}
+Let $G$ be a singly connected DAG and $X$ a Bayesian network on
+$G$. If $s$ is a vertex in $G$, the variables $(\pe Xt, t\in \pa{s})$ are
+mutually independent.
+\end{proposition}
+\begin{proof}
+We have, using  \cref{prop:rest},
+$$
+\myP(\pe X{\pa{s}} = \pe x{\pa{s}})  = \sum_{\pe y{\CA_{\pa{s}}}, \pe y{\pa{s}} = \pe x{\pa{s}}}
+\prod_{u\in \CA_{\pa{s}}} p_u(\pe y{\pa{u}}, \pe yu).
+$$
+Because the graph is singly connected, two parents of $s$ cannot have a
+common ancestor (since there would then be two paths from this
+ancestor to 
+$S$). So $\CA_{\pa{s}}$ is the disjoint union of the $\CA_{t}$'s for $t\in
+\pa{s}$ and we can write
+\begin{eqnarray*}
+\myP(\pe X{\pa{s}} = \pe x{\pa{s}})  &=& \sum_{\pe y{\CA_{\pa{s}}}, \pe y{\pa{s}} = \pe x{\pa{s}}}
+ \prod_{t\in \pa{s}}  \prod_{u\in\CA_t} p_u(\pe y{\pa{u}}, \pe yu)\\
+&=& \prod_{t\in \pa{s}} \sum_{\pe y{\CA_{t}}, \pe y{t} = \pe x{t}}
+   \prod_{u\in\CA_t} p_u(\pe y{\pa{u}}, \pe yu)\\
+&=& \prod_{t\in \pa{s}} \myP(\pe Xt = \pe xt)
+\end{eqnarray*}
+This proves the lemma.
+\end{proof}
+
+ \Cref{eq:rec.inf} can be simplified under the assumption of
+a singly connected graph, at least for the computation of single
+vertex marginals; we have, if $s\in V$ and $G$ is singly connected
+\begin{equation}
+\label{eq:sing.con}
+\myP(\pe Xs = \pe xs) = \sum_{\pe y{\pa{s}}}  p_s(\pe y{\pa{s}}, \pe xs) \prod_{t\in \pa{s}}
+\myP(\pe X{t} = \pe yt).
+\end{equation}
+This is now recursive in single vertex marginal probabilities. It
+moreover coincides with the recursive equation that defines the
+messages $m_{C_ss}$ in \cref{eq:mes.bay}, which shows that the
+sum-prod algorithm provides the correct answer in this case.
+
+\subsection{Conditional probabilities and interventions}
+One of the main interests of graphical models is to provide an
+ability to infer the behavior of hidden variables of interest given
+other, observed, variables. When dealing with oriented graphs the
+way this should be analyzed is, however, ambiguous. 
+
+Let's consider an example, provided by the graph in  \cref{fig:snow}.
+\begin{figure}[h]
+\centering
+		\begin{tikzpicture}[mynode/.style={ellipse, draw=black!60, fill=gray!5, ultra thick, , minimum size=10mm},]
+				\node[mynode](H1){No school};
+				\node[mynode](H2)[above left =1.5cm and -.5cm of H1]{Bad weather};
+				\node[mynode](H3)[above right=1.5cm and -.5cm of H1]{Broken HVAC};
+
+		\draw[black, ultra thick,->] (H2.south) -- (H1.north);
+		\draw[black, ultra thick,->] (H3.south) -- (H1.north);
+		\end{tikzpicture}
+%\includegraphics{graph1.pdf}
+\caption{\label{fig:snow} Example of causal graph.}
+\end{figure}
+The Bayesian network interpretation of this graph is that both
+events (which may be true or false) ``Bad weather'' and ``Broken HVAC'' happen first, and that they are
+independent. Then, given their observation, the ``No school'' event may
+occur, probably more likely if the weather is bad or the HVAC is broken or snow, and even more likely if both happened at the same time.
+
+Now consider the following passive observation: you wake up, you
+haven't checked the weather yet or the news yet, and someone tells you that there is no
+school today. Then you may infer that there is more chances than usual
+for bad weather or the HVAC broken at school. Conditionally to this information, these two events become
+correlated, even if they were initially independent. So, even if the
+``No school'' event is considered as a probabilistic consequence of its
+parents, observing it influences our knowledge on them.
+
+Now, here is an intervention, or manipulation: the school superintendent has declared
+that he has given enough snow days for the year and declared that there
+would be school today whatever happens. So you know that the
+``no-school'' event will not happen. Does it change the risk of bad weather of broken HVAC? Obviously not: an intervention on a node does not affect the
+distribution of the parents. 
+
+Manipulation and passive observation are two very different ways of
+affecting unobserved variables in Bayesian networks. Both of them may
+be relevant in applications. Of the two, the simplest to analyze is
+intervention, since it merely consists in clamping one of the
+variables while letting the rest of the network dynamics
+unchanged. This leads to the following formal definition of
+manipulation.
+\begin{definition}
+\label{def:manip}
+Let $G = (V,E)$ be a directed acyclic graph and $X$ a Bayesian network
+on $G$. Let $S$ be a subset of $G$
+and $\pe xS\in F_S$ a given configuration on $S$. Then the manipulated distribution
+of $X$ with fixed values $\pe xS$ on $S$ is the Bayesian network on the
+restricted graph $G_S$, with the same conditional probabilities, using
+the value $\pe xs$ every time a vertex $s\in S$ is a parent of $t\in
+V\setm S$ in $G$.
+\end{definition}
+So, if the distribution of $X$ is given by \cref{eq:bn.2}, then its
+distribution after manipulation on $S$ is 
+$$
+\tilde \pi(\pe y{V\setm S}) = \prod_{t\in V\setm S} p_t(\pe y{\pa{t}}, \pe yt)
+$$
+where $\pa{t}$ is the set of parents of $t$ in $G$, and $\pe ys=\pe xs$
+whenever $s\in \pa{t}\cap S$.
+
+
+The distribution of a Bayesian network $X$ after passive observation
+$\pe XS = \pe xS$ is
+not so easily described. It is obviously the conditional distribution
+$P(\pe X{V\setm S} = \pe y{V\setm S}\mid \pe XS = \pe xS)$ and therefore requires using
+the conditional dependency structure, involving the moral
+graph and/or d-separation.
+
+Let us discuss this first in the simpler case of trees, for which the
+moral graph is the undirected acyclic graph underlying the tree, and
+d-separation is simple separation on this acyclic graph. We can then
+use  \cref{prop:cond.dist.grph} to understand the new
+structure after conditioning: it is a $G^\flat_{V\setm S}$-Markov
+random field, and, for $t\in V\setm S$, the conditional distribution
+of $\pe Xt = \pe yt$ given its neighbors is the same as before, using the
+value $\pe xs$ when $s\in S$. But note that when doing this (passing to $G^\flat$), we broke the
+causality relation between the variables. We can however always go
+back to a tree (or forest, since connectedness may have been broken) with
+the same edge orientation as they initially were, but this requires
+reconstituting the edge joint probabilities from the new acyclic
+graph, and therefore using (acyclic) belief propagation.
+
+With general Bayesian networks, we know that the moral graph can be
+loopy and therefore a source of  difficulties. The following
+proposition states that the damage is circumscribed to the ancestors of
+$S$. 
+
+\begin{proposition}
+\label{prop:inf.cond}
+Let $G=(V,E)$ be a directed acyclic graph, $X$ a Bayesian network on
+$G$, $S\sub V$ and $\pe x{\CA_S}\in \CF(\CA_S)$. Then the conditional
+distribution of $\pe X{\CA_S^c}$ given by $\pe X{\CA_S} = \pe x{\CA_S}$
+coincides with the manipulated distribution in 
+\cref{def:manip}.
+\end{proposition}
+\begin{proof} 
+The conditional distribution is proportional to 
+$$
+\prod_{s\in V} p(\pe y{\pa{s}}, \pe ys)
+$$
+with $\pe yt = \pe xt$ if $t\in \CA_S$. Since $s\in\CA_S$ implies $\pa{s}\sub
+\CA_S$, all terms with $s\in \CA_S$ are constant in the sum and can be
+factored out after normalization. So the conditional distribution is
+proportional to 
+$$
+\prod_{s\in \CA_S^c} p(\pe y{\pa{s}}, \pe ys)
+$$
+with $\pe yt = \pe xt$ if $t\in \CA_S$. But we know that such products sum
+to 1, so that the conditional distribution is equal to this expression
+and therefore provides a Bayesian network on $G_{\CA_S^c}$.
+\end{proof}
+
+\section{Structural equation models}
+\label{sec:sem}
+
+Structural equation models (SEM's) provides an alternative (and essentially equivalent) formulation of Bayesian networks, which may be more convenient to use, especially when dealing with variables taking values in general state spaces.
+
+Let $G=(V, E)$ be a directed acyclic graph.  SEMs are associated to families of functions $\Phi_s: \CF(\pa{s}) \times \CB_s\to F_s$ and random variables $\bfxi_s: \Omega \to \CB_s$ (where $\CB_s$ is some measurable set), for $s\in V$. The random field $X: \Omega \to \CF(V)$ associated to the SEM satisfies the equations
+\begin{equation}
+\label{eq:sem}
+X_s =\pe \Phi s(\pe X{s-}, \pe \bfxi s).
+\end{equation}
+Because of the DAG structure, these equations uniquely define $X$ once $\bfxi$ is specified. As a consequence, there exists a function $\boldsymbol\Psi$ such that $X = \boldsymbol \Psi(\bfxi)$. 
+
+
+%The model is generally parametrized by adding parameters to the functions $\pe \Phi s$, and we will use the notation $\pe {\Phi_\theta}s$, where $\theta$ parametrizes all structural equations.  
+The model is therefore fully specified by the functions $\pe \Phi s$ and the probability distributions of the variables $\pe \bfxi s$. We will assume that they have a density, denoted $\pe g s, s\in V$, with respect to some measure $\mu_s$ on $\CB_s$. 
+%We do not include parameters in these densities, to simplify the notation. 
+They are typically chosen as uniform distributions on $\CB_s$ (continuous and compact, or discrete) or as standard Gaussian when $\CB_s = \mR^{d_s}$ for some $d_s$. One also generally assumes that the variables $(\pe \bfxi s, s\in V)$ are jointly independent, and we make this assumption below.
+
+%If $\CB_s = \mR^{d_s}$ and $\mu_s$ is Lebesgue's measure, the 
+
+Let $V_k$, $k\geq 0$, be the set of vertexes in $V$ with depth $k$ (c.f. \cref{def:depth}) and $V_{<k} = V_0 \cup \cdots\cup V_{k-1}$. Then (using the independence of $(\pe\bfxi s, s\in V)$, for $s\in V_k$,  the conditional distribution of $\pe Xs$ given $\pe X{V_{<k}} = \pe x{V_{<k}}$ is the distribution  of $\pe\Phi s(\pe x{s-}, \pe\bfxi s)$. Formally this is given by 
+\[
+\pe\Phi s(\pe x{s-}, \cdot)_{\sharp} (\pe gs\mu_s),
+\]
+the pushforward of the distribution of $\pe \bfxi s$ by $\pe\Phi s(\pe x{s-}, \cdot)$.
+
+More concretely, assume that $\bfxi_s$ follows a uniform distribution on $\CB_s = [0, 1]^h$ for some $h$, and assume that $F_s$ is finite for all $s$. Then,
+\[
+P(\pe Xs = \pe xs \mid \pe X{V_{<k}} = \pe x{V_{<k}}) = \mathrm{Volume}(U_s(  \pe x{\pa{s}}, \pe xs)) \defeq p_s( \pe x{\pa{s}}, \pe xs)
+\]
+where 
+\[
+U_s(\pe x{\pa{s}}, \pe xs) = \left\{\xi\in [0,1]^h :  \pe\Phi s(\pe x{s-}, \xi) = \pe xs\right\}.
+\] 
+Since variables $\pe Xs$, $s\in V_k$ are conditionally independent given $\pe X {V<k}$, we find that $X$ decomposes as a Bayesian network over $G$, 
+\[
+P(X=x) = \prod_{s\in V}  p_s( \pe x{\pa{s}}, \pe xs).
+\]
+Similarly, if $F_s = \CB_s = \mR^{d_s}$, $\pe \xi s\sim\CN(0, \Id[d_s])$, and $\pe \bfxi s \mapsto \pe{\Phi_\theta}s(\pe x{\pa{s}}, \pe \xi s)$ is invertible, with $C^1$ inverse $\pe xs \mapsto \pe{\Psi_\theta} s(\pe x{\pa{s}}, \pe xs)$, then $X$ is a Bayesian network, with continuous variables, and, using the change of variable formula, the conditional distribution of $\pe Xs$ given $\pe X{\pa{s}} = \pe x{s-}$ has  p.d.f.
+\[
+ p_s( \pe x{\pa{s}}, \pe xs) = \frac{1}{(2\pi)^{d_s/2}} \exp\left(-\frac12 |x_s - 
+\pe{\Psi_\theta}s(\pe x{\pa{s}}, \pe xs)|^2\right) \left|\det (\partial_{\pe xs}\pe{\Psi_\theta}s(\pe x{\pa{s}}, \pe xs))\right|.
+\]
+A simple and commonly used special case for this example are linear SEMs, with
+\[
+\pe Xs = a_s + b_s^T\pe Xs + \sigma_s \pe\xi s.
+\] 
+In this case, the inverse mapping is immediate and the Jacobian determinant in the change of variables is $1/\sigma_s^{d_s}$. 
+%Since they are Bayesian networks, maximum likelihood estimators  for SEMs can be learned, in principle, using the methods discussed in \cref{chap:bayes.net}. %However, alternative learning paradigms have been introduced, as discussed in the next sections. 
+
+

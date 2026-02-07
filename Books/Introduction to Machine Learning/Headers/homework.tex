@@ -1,0 +1,41 @@
+
+\newcounter{thequestion}
+\setcounter{thequestion}{0}
+\newcounter{thesubquestion}
+\newcounter{thesubsubquestion}[thesubquestion]
+\newenvironment{question}[1][\emptY]{ 
+           \stepcounter{thequestion}
+           \setcounter{thesubquestion}{0}
+           \vskip 0.25cm 
+           \noindent{\bf Problem 
+           \arabic{thequestion}. %\ifx#1\emptY \else(#1)\fi 
+           \nopagebreak 
+           \ignorespaces
+           \nopagebreak}
+           
+           {\nopagebreak
+           %\stepcounter{thequestion}
+           }
+           }
+
+\newcommand{\subquestion}{
+                \stepcounter{thesubquestion}
+                \par\noindent(\arabic{thesubquestion}) 
+                \setcounter{thesubsubquestion}{0}
+         }
+
+\newcommand{\subsubquestion}{\stepcounter{thesubsubquestion} 
+\par(\alph{thesubsubquestion})
+         }
+
+\newif\ifsolutions
+
+\newcommand{\solution}[1]{
+{\it
+\vskip 0.05cm
+                \setcounter{thesubquestion}{0}
+                \noindent {\bf Solution}:
+                
+                {#1}
+                }
+}

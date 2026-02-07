@@ -1,0 +1,558 @@
+% !TEX root =  machine_learning.tex
+\chapter{Inner Products and Reproducing Kernels}
+\label{chap:higher}
+
+\section{Introduction}
+We will discuss later in this book various methods that specify the prediction is  as a linear function of the input. These methods are often applied after taking transformations of the original variables, in the form $x\mapsto h(x)$ (i.e., the prediction algorithm is applied to $h(x)$ instead of $x$). We will refer to $h$ as a ``feature function,'' which typically maps the initial data $x\in \CR$ to a vector space, sometimes of infinite dimensions, that we will denote $H$ (the ``feature space''). 
+
+The present chapter provides a formal description of this framework, focusing, in particular, on situations in which $H$ has an inner product, as this inner product is often instrumental in the design of linear methods on $H$. Many machine learning methods can indeed be expressed either as functions of the coordinates of the input data in some space, or as functions of the inner products between the input samples. Such methods can bypass the difficulty of using high-dimensional features with the help of the theory of ``reproducing kernels,'' \citep{aronszajn1950theory,wahba1990spline} which ensures that the inner product between special classes of feature functions $h(x)$ and $h(x')$ can be explicitly computed as a function of $x$ and $x'$. 
+
+
+\section{Basic Definitions}
+
+\subsection{Inner-product spaces}
+We recall that a real vector space\,\footnote{All vector spaces in these notes will be real, and will therefore only be referred as vector spaces.} is a set, $H$, on which an addition and a scalar product are defined, namely $(h,h') \in H\times H \mapsto h+h'\in H$ and $(\lambda, h) \in \mR \times H \mapsto \la h\in H$, and we assume that the reader is familiar with the theory of finite-dimensional spaces. 
+
+An inner product on a vector space $H$ is a bilinear function, typically denoted $(\xi,\eta) \mapsto \scp{\xi}{\eta}$ such that $\scp{\xi}{\xi} \geq 0$ with $\scp{\xi}{\xi} = 0$ if and only if $\xi=0$. A vector space equipped with an inner product is called an inner-product space. We will often denote the inner product with a subscript referring to the space (e.g., $\scp{\cdot}{\cdot}_H$). Given such a product, the function
+\[
+\xi \mapsto \|\xi\|_H = \sqrt{\scp{\xi}{\xi}_H}
+\]
+is a norm, so that $H$ is also a normed space (but not all normed spaces are inner-product spaces)\,\footnote{Note that we are using double bars for the norm in $H$, which, in most applications, is infinite dimensional}.  
+
+When a normed space is {\em complete} with respect to the topology induced by its norm, it is called a Banach space, or a Hilbert space when the norm is associated with an inner product. Completeness means that Cauchy sequences in this space always have a limit, i.e., if the sequence $(\xi_n)$ is such that, for any $\ep>0$, there exists $n_0>0$ such that $\|\xi_n-\xi_m\|_H < \ep$ for all $n,m\geq n_0$, then there exists $\xi$ such that $\|\xi_n - \xi\|_H \to 0$. Completeness is a very natural property. It allows, for example, for the definition of integrals such as $\int h(t) dt$ as limits of Riemann sums for suitable functions $h: \mR \to H$, leading (with more general notions of integrals) to proper definitions of expectations of $H$-valued random variables. Using a standard (abstract) construction, one can prove that any normed space (resp. inner-product) can be extended to a Banach (resp. Hilbert) space within which it is dense. 
+
+Note that finite-dimensional normed spaces are always complete.
+
+
+\subsection{Feature spaces and kernels}
+
+Now, consider an input set, say $\CR$, and a mapping $h$ from $\CR$ to $H$, where $H$ is an inner product space. For us, $\CR$ is the set over which the original input data is observed, typically $\mR^d$, and $H$ is the feature space.  One can define the function
+$K_h: \CR\times\CR \to \mR$ by 
+\[
+K_h(x,y) = \scp{h(x)}{h(y)}_H.
+\]
+The function $K_h$ satisfies the following two properties.
+\begin{enumerate}[label={[K\arabic*]}, wide=0pt]
+\item $K_h$ is symmetric, namely $K_h(x,y) = K_h(y,x)$ for all $x$ and $y$ in $\CR$. 
+\item For any $n>0$, for any choice of scalars $\la_1, \dots, \la_n\in \mR$ and any $x_1, \ldots, x_n \in \CR$, one has
+\begin{equation}
+\label{eq:pos.kernel}
+\sum_{i,j=1}^n \lambda_i \lambda_j K_h(x_i, x_j) \geq 0.
+\end{equation}
+\end{enumerate}
+The first property is obvious, and the second one results from the fact that one can write
+\begin{equation}
+\label{eq:kh.pos.def}
+\sum_{i,j=1}^n \lambda_i \lambda_j K_h(x_i, x_j) = \sum_{i,j=1}^n \lambda_i \lambda_j \scp{h(x_i)}{h(x_j)}_H = \Big\|\sum_{i=1}^n \lambda_i h(x_i)\Big\|_H^2 \geq 0.
+\end{equation}
+
+This leads us to the following definition.
+\begin{definition}
+\label{def:pos.kernel}
+A function $K: \CR \ti\CR \mapsto \mR$ satisfying  properties [K1] and [K2]
+%\begin{enumerate}[label={[K\arabic*]}]
+%\item $K$ is symmetric, namely $K(x,y) = K(y,x)$ for all $x$ and $y$ in $\CR$. 
+%\item For any $n>0$, for any choice of scalars $\la_1, \dots, \la_n\in \mR$ and any $x_1, \ldots, x_n \in \CR$, one has
+%\begin{equation}
+%\label{eq:pos.kernel}
+%\sum_{i,j=1}^n \lambda_i \lambda_j K(x_i, x_j) \geq 0.
+%\end{equation}
+%\end{enumerate}
+is called a positive kernel.
+
+One says that
+the kernel is positive definite if the sum in \cref{eq:pos.kernel} cannot vanish unless (i) $\la_1 = \cdots = \la_n=0$ or (ii) $x_i=x_j$ for some $i\neq j$.
+\end{definition}
+
+An equivalent definition of positive kernels can be given using kernel matrices, for which we introduce a notation.
+\begin{definition}
+\label{def:kernel.mat}
+If $K: \CR \ti\CR \mapsto \mR$ is given, we define, for every $x_1, \ldots, x_n\in \CR$, the kernel matrix 
+$\CK_K(x_1, \ldots, x_n)$ with entries $K(x_i, x_j)$, for $i,j = 1, \ldots, n$. (If $K$ is understood from the context, we will simply write $\CK(x_1, \ldots, x_n)$ instead of $\CK_K(x_1, \ldots, x_n)$.)
+\end{definition}
+Given this notation, it is clear that $K$ is a positive kernel if and only if  for all $x_1, \ldots, x_n\in \CR$, the matrix $\CK_K(x_1, \ldots, x_n)$ is symmetric, positive semidefinite. It is a positive definite kernel if $\CK_K(x_1, \ldots, x_n)$ is positive definite as soon as all $x_j$'s are distinct. This latter condition is obviously needed since, if $x_i=x_j$, the $i$th and $j$th columns of $\CK$ coincide and this matrix cannot be full-rank.
+
+\begin{remark}
+\label{rem:positive.kernel}
+It is important to point out that $K$ being a positive kernel {\em does not require} that $K(x,y) \geq 0$ for all $x,y\in\CR$ (see examples in the next section). However, it does imply that $K(x,x) \geq 0$ for all $x\in \CR$, since diagonal elements of positive semi-definite matrices are non-negative.
+\end{remark}
+
+\bigskip
+
+The function $K_h$ defined above is therefore always a positive kernel, but not always positive definite, as seen below. We will also see later that the converse statement is true: any positive kernel $K: \CR \ti\CR \mapsto \mR$ can be expressed as $K_{h}$ for some feature function $h$ between $\CR$ and some feature space $H$.
+
+
+Given a feature function $h: \CR \to H$, we will denote by $V_h = \vspan(h(x), x\in\CR)$ the vector space generated by the features, which, by definition, is the space of all linear combinations
+\[
+\xi = \sum_{i=1}^n \la_i h(x_i)
+\]
+with $\la_1, \ldots, \la_m\in\mR$, $x_1, \ldots, x_n\in \CR$ and $n\geq 0$ (by convention, $\xi=0$ if $n=0$). Then $K_h$ is positive definite if and only if any family $(h(x_1), \ldots, h(x_n))$ with distinct $x_i$'s is linearly independent. This is a direct consequence of  \cref{eq:kh.pos.def}.
+\[
+\sum_{i,j=1}^n \lambda_i \lambda_j K_h(x_i, x_j) =  \left\|\sum_{i=1}^n \lambda_i h(x_i)\right\|_H^2.
+\]
+This implies in particular that positive-definite kernels over infinite input spaces $\CR$ can only be associated to infinite-dimensional spaces $H$, since $V_h\subset H$. 
+
+
+
+%Looking ahead to regression methods, a model that is linear in feature space will try to predict a  dependent variable $y\in \mR$ from an input $x$ in the form
+%\[
+%f(x) = \beta_0 + \scp{b}{h(x)}_H
+%\]
+%with $\be_0\in\mR$ and $b\in H$. 
+%Furthermore, we will see that, for most methods, the optimal ``coefficient'' $b$ will have to  belong to $V_h$, so that, letting $b = \sum_{i=1}^n \la_i h(x_i)$, we have
+%\[
+%f(x) = \beta_0 + \sum_{i=1}^n \la_i K_h(x, x_i)\,.
+%\]
+%
+%
+%We now review a few examples.
+\section{First examples}
+
+\subsection{Inner product}
+Clearly, if $\CR$ is an inner product space, it has an associated reproducing kernel, defined by
+\[
+K(x,y) = \scp{x}{y}_{\CR}\,.
+\]
+This kernel is equal to $K_h$ with $H = \CR$ and $h=\id$ (the identity mapping). In particular $K(x,y) = x^Ty$ is a positive kernel if $\CR = \mR^d$. This kernel can obviously take positive and negative values.
+
+Notice that this kernel is not positive definite, because the rank of $\CK(x_1, \ldots, x_n)$ is equal to the dimension of $\mathrm{span}(x_1, \dots, x_n)$, which can be less than $n$ even when the $x_i$'s are distinct. 
+
+\subsection{Polynomial Kernels}
+
+Consider $\CR = \mR^d$ and define 
+\[
+h(x) = (\pe x {i_1} \dots \pe x {i_k}, 1\leq i_1, \ldots, i_k \leq d),
+\]
+ which contains all products of degree $k$ formed from variables $\pe x 1, \ldots,\pe x d$, i.e., all monomials of degree $k$ in $x$. This function takes its values in the space $H = \mR^{N_k}$, where $N_k = d^k$. Using, in $H$, the inner product $\scp{\xi}{\eta}_H = \xi^T\eta$, we have
+\begin{eqnarray*}
+K_h(x,y)& =& \sum_{1\leq i_1, \ldots, i_k\leq d} (\pe x {i_1}\pe y {i_1})
+\cdots (\pe x {i_k} \pe y {i_k})\\
+&=& (x^Ty)^k.
+\end{eqnarray*}
+This provides  the homogeneous polynomial kernel of order $k$.
+
+If one now takes all monomials of order less than or equal to $k$, i.e.,  
+\[
+h(x) = (\pe x {i_1} \dots \pe x {i_l}, 1\leq i_1, \ldots, i_l \leq d, 0\leq l\leq k),
+\]
+ which now takes values in a space of dimension $1 + d + \cdots + d^k$, the corresponding kernel is 
+$$
+K_h(x,y) = 1 + (x^Ty) + \cdots + (x^Ty)^k =
+\frac{(x^Ty)^{k+1} - 1}{x^Ty - 1}\,.
+$$
+This provides a polynomial kernel of order $k$. It is important to notice here that, even though the dimension of the feature space increases exponentially in $k$, so that the computation of the feature function rapidly becomes intractable, the computation of the kernel itself remains a relatively mild operation. 
+
+One can make variations on this construction. For example, choosing any family $c_0, c_1, \ldots, c_k$ of positive numbers, one can take 
+\[
+h(x) = (c_l \pe x {i_1} \dots \pe x {i_l}, 1\leq i_1, \ldots, i_l \leq d, 0\leq l\leq k)
+\]
+yielding
+\[
+K_h(x,y) = c_0^2 + c_1^2 (x^Ty) + \cdots + c_k^2 (x^Ty)^k.
+\]
+Taking $c_l = \bin{k}{l}^{1/2} \al^{l}$ for some $\al>0$, we get another form of polynomial kernel, namely,
+\[
+K_h(x,y) = (1 + \al^2 x^T y)^k.
+\]
+
+\subsection{Functional Features}
+\label{sec:functional.feat}
+We now consider an example in which $H$ is infinite dimensional.
+Let $\CR = \mR^d$. We assume that a  function $s: \mR^d \to \mR$ is chosen, such that $s$ is both (absolutely) integrable and square integrable. We also fix a scaling parameter $\rho>0$. Associate to $x\in \mR^d$ the function 
+\[
+\xi_x: y \mapsto s((y-x)/\rho),
+\] 
+which is also square integrable (as a function of $y$). We define the feature function $h: x\mapsto \xi_x$ from $\mR^d$ to $H = L^2(\mR^d)$, the space of square integrable functions on $\mR^d$ with inner product 
+\[
+\scp{\xi}{\eta}_H = \int_{\mR^d} \xi(z)\eta(z) dz.
+\]
+
+The resulting kernel is
+\Eq{
+K_h(x,y) = \int_{\mR^{d}} s(z/\rho - x) s(z/\rho - y)\,dz = \rho^d \int_{\mR^{d}} s(z)s(z - (y-x)/\rho) \, dz.
+}
+Note that $K_h(x,y)$ is ``translation-invariant,'' which means that it only depends on $x-y$. It takes the form $K_h(x,y) = \rho^d \Gamma((y-x)/\rho)$ where
+\Eq{
+\Gamma(u) = \int_{\mR^{d}} s(z)s(z-u) \,dz.
+}
+is  the convolution\footnote{The convolution between two absolutely integrable functions $f$ and $g$ is defined by $f*g(u) = \int_{\mR^d} f(z) g(u-z)\,dz$} of $s$ with $\tilde s: z\mapsto s(-z)$.
+
+
+Let $\sigma$ be the Fourier transform of $s$, i.e., 
+\Eq{
+\sigma(\om) = \int_{\mR^d} e^{-2i\pi \om^Tu} s(u) du.
+}
+Because $s$ is real-valued, we have $\sigma(-\omega) = \bar \sigma(\omega) $, the complex conjugate of $\sigma$. Moreover,
+$\bar \sigma$ is also the Fourier transform of $\tilde s$. Using the fact that the Fourier transform of the convolution of two functions is the product of their Fourier transforms, we see that the Fourier transform of $\Gamma = s * \tilde s$ is equal to $|\sig|^2$. 
+Applying the inverse transform, we find
+\Eq{
+\Gamma(u) = \int_{\mR^{d}} e^{2i\pi\om^{T}u } |\sigma(\om)|^{2}  \,d\om = \int_{\mR^{d}} e^{-2i\pi\om^{T}u } |\sigma(-\om)|^{2}  \,d\om\,.
+}
+This form is (almost) characteristic of translation-invariant kernels.
+\bigskip
+
+Let us consider a few examples of kernels that can be obtained in this way.
+\begin{enumerate}[label=(\arabic*), wide=0pt]
+\item
+Take $d=1$ and let $s$ be the indicator  function of the interval $[-\frac12, \frac12]$.  
+Then, one finds
+\Eq{
+\Gamma(t) = \max(1-|t|, 0)\,.
+}
+In this case, the space $V_h$ is the space of all functions expressed as finite sums
+\Eq{
+z\mapsto \sum_{j=1}^n \la_j \bfone_{[x_j - \rho/2, x_j+\rho/2]}(z)\,,
+}
+and therefore is a space of compactly-supported piecewise constant functions. 
+Such a function computed with distinct $x_j$'s cannot vanish everywhere unless all $\la_j$'s vanish, so that $K_h$ is positive definite. 
+Indeed, let
+\[
+f(z) = \sum_{j=1}^n \la_j \bfone_{[x_j - \rho/2, x_j+\rho/2]}(z)
+\]
+and assume without loss of generality that $x_1 < x_2 < \cdots < x_n$ and let $x_{n+1} = \infty$. Let $i_0$ be the smallest index $j$ such that $\la_j \neq 0$, assuming that such an index exists. Then $f(z) = \la_{i_0}>0$ for all $z\in [x_{i_0}-\rho/2, x_{i_0+1} - \rho/2)$ which is a non-empty interval.  So, if $f$ vanishes almost everywhere, we must have $\la_j=0$ for all $j=1, \ldots, n$.
+\item Still with $d=1$, let $s(z) = e^{-|z|}$. Then, for $t>0$, 
+\begin{align*}
+\Ga(t) &= \int_{-\infty}^\infty e^{-|z|} e^{-|z-t|}\, dz\\
+&= \int_{-\infty}^0 e^{z} e^{z-t}\, dz + \int_0^t e^{-z} e^{z-t}\, dz + \int_{t}^\infty e^{-z} e^{-z+t}\, dz\\
+&= \frac{e^{-t}}2 + t e^{-t} + \frac{e^{-t}}{2}\\
+&= (1 + t) e^{-t}
+\end{align*}
+Using the fact that $\Ga(-t) = \Ga(t)$ (make the change of variable $z\to -z$ in the integral), we get 
+\[
+\Ga(t) = (1 + |t|) e^{-|t|}.
+\]
+for all $t$. This shows that 
+\[
+K(x,y) = (1+|x-y|) e^{-|x-y|}
+\] 
+is a positive kernel on $\mR^d$.
+\item Take $s(z) = e^{-|z|^2/2}$,  $z\in \mR^d$. Then 
+\begin{align*}
+\Ga(u) &= \int_{\mR^d} e^{-\frac{|z|^2 + |u-z|^2}2}\, dz
+= e^{-\frac{|u|^2}4} \int_{\mR^d} e^{- |z-u/2|^2}\, dz\\
+&= (4\pi)^{d/2} e^{-\frac{|u|^2}4}.
+\end{align*} 
+\end{enumerate}
+This provides a special case of Gaussian kernel.
+
+%One way to interpret this construction is to think of $\xi_x$ as a kind of fuzzy representation of $x$, reflecting some uncertainty that can be associated with its exact value. The difference between two values $x$ and $y$ is then evaluated using the $L^2$ norm $\|\xi_x - \xi_y\|_H$. This leads to the expression of the kernel
+%\[
+%K_h(x,y) = \int_{\mR} s(z/\rho - x) s(z/\rho - y)\,dz = \rho^d \int_{\mR} s(z)s(z - (y-x)/\rho) \, dz.
+%\]
+%Notice that $K_h$ takes the form $K_h(x,y) = \rho^d \gamma((y-x)/\rho)$ where
+%\[
+%\gamma(t) = \int_{\mR} s(z)s(z-t) \,dz
+%\]
+%is  the convolution of $s$ with $\tilde s: z\mapsto s(-z)$. 
+%
+%This construction is useful when $\gamma$ can be computed analytically. Take, as a first example, $d=1$ and let $s$ be the indicator  function of the interval $[-0.5, 0.5]$.  Then
+%\[
+%\gamma(t) = \max(1-|t|, 0)\,.
+%\]
+%In this case, the space $V_h$ is the space of all functions expressed as finite sums
+%\[
+%z\mapsto \sum_{j=1}^n \la_j \chi_{[x_j - \rho/2, x_j+\rho/2]}(z)\,,
+%\] 
+%and therefore is a space of compactly supported piecewise constant functions. We also notice that such a function computed with distinct $x_j$'s cannot vanish everywhere unless all $\la_j$'s vanish, so that $K_h$ is positive definite. 
+%
+%
+%
+%Here are a few more examples, still with $d=1$, leaving details to the reader. If $s(z) = e^{-|z|}$, then $\ga(t) = (1 + |t|) e^{-|t|}$. If $s(z) = e^{-z^2/2}/\sqrt{2\pi}$, then $\ga(t) = e^{-z^2/2\sqrt 2}/\sqrt{4\pi}$.   
+
+\subsection{General construction theorems}
+
+\subsubsection{Translation invariance}
+As introduced above, a kernel $K$ is translation invariant if it takes the form $K(x,y)  = \Ga(x-y)$ for some continuous function
+$\Ga$ defined on $\mR^d$. 
+Bochner's theorem \citep{bochner1933vorlesungen} states that such a $K$ is a positive kernel if and only if $\Ga$
+is the Fourier transform of a positive measure, namely,
+\Eq{
+\Ga(x) = \int_{\mR^d} e^{-2i\pi\scp{x}{\om}} d\mu(\om)
+}
+where $\mu$ is a positive and symmetric (invariant by sign change) measure on $\mR^d$. For
+example one can take $d\mu(\om)  = \nu(\om) d\om$, where $\nu$ is a integrable, positive and even function.
+
+This theorem provides an at least numerical,
+and sometimes  analytical, method for constructing kernels. The previous section exhibited a special case of translation-invariant kernel for which $\nu = |\sigma|^2$. 
+
+\subsubsection{Radial kernels}
+ A radial kernel takes the form 
+ $K(x,y)
+= \ga(|x-y|^2)$, for some continuous function $\ga$ defined on $[0,
++\infty)$. 
+Shoenberg's theorem \citep{schoenberg1938metric} states that, if this function $\ga$ is
+universally valid, i.e., $K$ is a kernel for all dimensions $d$, then, it must take the form
+\Eq{
+\ga(t) = \int_0^{\infty} e^{-\la t} d\mu(\la) 
+}
+for some positive finite measure $\mu$ on $[0, +\infty)$. 
+
+ For example, when
+$\mu$ is a Dirac measure, i.e., $\mu = \de_{(2a)^{-1}}$ for some $a>0$, then
+$K(x,y) = \exp(-|x-y|^2/2a)$, which is the Gaussian kernel.
+Taking $d\mu = e^{-a\la} d\la$ yields $\ga(t) = 1/(t+a)$, and $d\mu =
+\la e^{-a\la}d\lambda$ yields $\ga(t) = 1/(a+t)^2$.
+
+There is also, in \citet{schoenberg1938metric}, a characterization of radial
+kernels for a fixed dimension $d$. Such kernels must take the form
+$$
+\ga(t) = \int_0^{+\infty} \Om_d(t\la) d\mu(\la)
+$$
+with $\Om_d(t) = \Ga(d/2) (2/t)^{(d-2)/2} J_{(d-2)/2}(t)$ where $J_{(d-2)/2}$ is Bessel's function of the first kind.
+
+
+\subsection{Operations on kernels}
+
+Kernels can be combined in several ways as described in the next proposition. 
+\begin{proposition}
+\label{prop:combine.K}
+Let  $K_1: \CR\times\CR \to \mR$ and $K_2: \CR\times\CR \to \mR$ be positive kernels. Then the following assertions hold.
+\begin{enumerate}[label=(\roman*),leftmargin=1cm]
+\item  If  $\la_1, \la_2 >0$, $\la_1K_1+\la_2 K_2$ is a positive kernel. It is positive definite as soon as either $K_1$ or $K_2$ is positive definite.
+\item For any function $f: \CR' \to \CR$, $K'_1(x',y') \defeq K_1(f(x'), f(y'))$ is a positive kernel. It is positive definite as soon as $K_1$ is positive definite and $f$ is one-to-one.
+\item $K(x,y) = K_1(x,y)K_2(x,y)$ is a positive kernel. It is positive definite as soon as $K_1$ and $K_2$ are positive definite.
+\item Let $K_1$ and $K_2$ be translation-invariant with $\CR = \mR^d$, taking the form $K_i(x,y) = \Ga_i(x-y)$, where $\Ga_i$ is continuous  ( $i=1,2$). Assume that one of the two functions $\Ga_1, \Ga_2$ is integrable on $\mR^d$. Then
+\[
+K(x,y) = \int_{\mR^d} K_1(x, z) K_2(z,y) dz 
+\]
+is also a positive kernel.
+\end{enumerate}
+\end{proposition}
+\begin{proof}
+Point (i) is obvious. Point (ii) is almost as simple, because, for any $\la_1, \ldots, \la_n\in \mR$ and $x'_1, \ldots, x'_n\in \CR'$,
+\[
+\sum_{i,j=1}^n \la_i\la_j K'_1(x'_i, x'_j) = \sum_{i,j=1}^n \la_i\la_j K_1(f(x'_i), f(x'_j))\geq 0.
+\]
+If $K_1$ is positive definite, then the latter sum can only vanish if all $\la_i$ are zero, or some of the points in $(f(x'_1), \ldots, f(x'_n))$ coincide. If, in addition, $f$ is one-to-one, then this is equivalent to all $\la_i$ are zero, or some of the points in $(x'_1, \ldots, x'_n)$ coincide, so that $K'_1$ is positive definite.
+
+
+
+To prove point  (iii), take $x_1, \ldots, x_N\in \mR^d$ and form the matrices $\CK_i = \CK_i(x_1, \ldots, x_N)$, $i=1,2$, which are, by assumption positive semi-definite. The matrix $\CK = \CK(x_1, \ldots, x_N)$ is the element-wise (or Hadamard) product of $\CK_1$ and $\CK_2$, and the conclusion follows from the linear algebra result stating that the Hadamard product of two positive semi-definite (resp. positive definite) matrices $A = (a(i,j), 1\leq i,j\leq N)$ and $B= (b(i,j), 1\leq i,j\leq N)$ is positive semi-definite (resp. positive definite). This is proved by diagonalizing, say, $A$ in an orthonormal basis $u_1, \ldots, u_N$, with eigenvalues $\la_1, \ldots, \la_N$ and writing
+\begin{align*}
+\sum_{i,j=1}^N \pe \al i a(i,j)b(i,j)\pe \al j & = \sum_{i,j, k=1}^N \pe \al i \pe {u_i} k \pe {u_j} k \la_k b(i,j)\pe \al j\\
+& = \sum_{k=1}^N \la_k \sum_{i,j=1}^N (\pe \al i \pe {u_i} k) (\pe \al j \pe {u_j}k)) b(i,j) \geq 0
+\end{align*}
+If $B$ is positive definite, then the sum above can be zero only if, for each $k$, either $\la_k=0$ or $\pe \al i \pe {u_i} k = 0$ for all $i$. If $A$ is also positive definite, then the only possibility is $\pe \al i \pe {u_i} k = 0$ for all $i$ and $k$, which implies $\pe \al i=0$ for all $i$ since $u_i\neq 0$. 
+
+To prove point (iv)\,\footnote{This part of the proof uses some measure theory.}, we first note that a translation invariant kernel $K'(x,y) = \Ga'(x-y)$ is always bounded. Indeed, the matrix $\CK'(x,0)$ is positive semi-definite, with determinant $\Ga'(0)^2 - \Ga'(x)^2 >0$, showing that $|\Ga'(x)| < \Ga'(0)$. 
+This shows that the integral defining $K(x,y)$ converges as soon as one of the two functions $\Ga_1$ or $\Ga_2$ is integrable. Moreover, we have 
+$K(x,y) = \Ga(x-y)$ with
+\[
+\Ga(x) = \int_{\mR^d} \Ga_1(x-z) \Ga_2(z)\,dz = \int_{\mR^d} \Ga_1(x-u) \Ga_2(u-y)\,du
+\]
+Using the fact that both $\Ga_1$ and $\Ga_2$ are even, and making the change of variable $z\mapsto -z$, one easily shows that $\Ga(x) = \Ga(-x)$, which implies that $K$ is symmetric. 
+
+We proceed with the assumption that $\Ga_2$ is integrable and use Bochner's theorem to write 
+\[
+ \Ga_1(y) = \int_{\mR^d} e^{-i\xi^Ty} d\mu_1(\xi)
+ \]
+ for some positive finite measure $\mu_1$. Then
+\begin{align*}
+\Ga(x) &= \int_{\mR^d} \left(\int_{\mR^d} e^{-2i\pi\xi^T(x-z)} d\mu_1(\xi)\right) \Ga_2(z)\,dz\\
+&= \int_{\mR^d} e^{-2i\pi\xi^Tx} \left(\int_{\mR^d} e^{2i\pi\xi^Tz}  \Ga_2(z)\,dz\right) d\mu_1(\xi)\\
+\end{align*}
+The shift in the order of the variables $\xi$ and $z$ uses Fubini's theorem. The function
+\[
+\psi(\xi) = \int_{\mR^d} e^{2i\pi\xi^Tz}  \Ga_2(z)\,dz
+\]
+is the inverse Fourier transform of $\Ga_2$. Because $\Ga_2$ is bounded and integrable, it is also square integrable, which implies that its inverse Fourier transform is also a square integrable function. Since Bochner's theorem implies that $\Ga_2$ is the Fourier transform of a positive measure $\mu_2$, we find, using the injectivity of the Fourier transform, that $\psi$ is non-negative. So $\Ga$ is the Fourier transform of the finite positive measure $\psi d\mu_1$, which implies that $K$ is a positive kernel.
+\end{proof}
+
+Point (iv)  can be related to the following discrete statement on symmetric matrices: assume that $A$ and $B$ are positive semi-definite and that they commute, so that $AB = BA$: then $AB$ is positive semi-definite (see the corresponding problem in the problems section). 
+In the case of kernels, one may consider the symmetric linear operators $\mathbb K_i : f \mapsto \int_{\mR^d} K_i(\cdot,y) f(y) dy$ which maps the space of square integrable functions into itself. Then $\mathbb K_1$ and $\mathbb K_2$ commute and $\mathbb K = \mathbb K_1 \mathbb K_2$. 
+
+% provided that $K_i(\cdot, x)\in L^2(\mR^d)$ for all $x\in \mR^d$ and $i=1,2$.
+
+\subsection{Canonical Feature Spaces}
+
+Let $K$ be a positive kernel on a set $\CR$. The following construction, which is fundamental, shows that $K$ can always be associated with a feature function $h$ taking values in a suitably chosen inner-product space $H$. 
+
+Associate to each $x\in \CR$ the function $\xi_x: y \mapsto K(y,x)$ (we will also write $\xi_x = K(\cdot, x)$), and let $H_K = \vspan(\xi_x, x\in \CR)$, a subspace of the vector space of all functions from $\CR$ to $\mR$. Define the feature function $h: x\mapsto \xi_x$ from $\CR$ to $H_K$. There is a unique inner product on $H_K$ such that $K = K_h$. Indeed, by definition, this requires
+\begin{equation}
+\label{eq:reprod}
+\scp{K(\cdot, x)}{K(\cdot, y)}_{H_K} = K(x,y)\,.
+\end{equation}
+Moreover, by linearity, for any $\xi = \sum_{i=1}^n \la_i K(\cdot, x_i)$ and $\eta = \sum_{i=1}^m \mu_i K(\cdot, y_i)$, one needs
+\[
+\scp{\xi}{\eta}_{H_K} = \sum_{i=1}^n\sum_{j=1}^m \la_i\mu_j K(x_i, y_j)\,,
+\]
+so that the inner product is uniquely specified on $H_K$.
+To make sure that this inner-product is well defined, we must check that there is no ambiguity, in the sense that, if $\xi$ has an alternative decomposition $\xi = \sum_{i=1}^{n'} \la'_i K(\cdot, x'_i)$, then, the value of $\scp{\xi}{\eta}_{H_K}$ remains unchanged. But this is clear, because one can also write
+\[
+\scp{\xi}{\eta}_{H_K} = \sum_{j=1}^m \mu_j \xi(y_j)\,,
+\]
+which only depends on $\xi$ and not on its decomposition. The linearity of the product with respect to $\xi$ is also clear from this expression, and the bilinearity by symmetry. 
+
+The Schwartz inequality implies that 
+\[
+|\scp{\xi}{\eta}_{H_K}| \leq \|\xi\|_{H_K}\,\|\eta\|_{H_K}
+\]
+From which we deduce that $\|\xi\|_{H_K} = 0$ implies that $\scp{\xi}{\eta}_{H_K}=0$ for $\eta\in H_K$. Since 
+$\scp{\xi}{K(\cdot, y)}_{H_K} = \xi(y)$ for all $y$, this also implies that $\xi=0$, completing the proof that $H_K$ is an inner-product space.
+\bigskip
+
+Equation \eqref{eq:reprod} is the ``reproducing property'' of the kernel for the inner-product on $H_K$. In functional analysis, the completion, $\hat H_K$, of $H_K$ for the topology associated to its norm is then a Hilbert space, and is referred to as a ``reproducing kernel Hilbert space,'' or RKHS. 
+
+More generally, an inner-product space $H$ of functions $h: \CR \to \mR$ is a reproducing kernel Hilbert space if $H$ is a complete space (which makes it Hilbert) and there exists a positive kernel $K$ such that, 
+\begin{enumerate}[label={[RKHS\arabic*]}, wide=0pt]
+\item For all $x\in \CR$, $K(\cdot, x)$ belongs to $H$,
+\item For all $h\in H$ and $x\in \CR$, 
+\[
+\scp{h}{K(\cdot, x)}_H = h(x)\,.
+\] 
+\end{enumerate}
+
+
+
+%These concepts are however more advanced than what we need in the present notes, and we will not have to invoke use them. 
+
+Returning to the example of functional features in \cref{sec:functional.feat}, we have two different representations of the kernel in feature space, namely in $H = L^2(\mR^d)$, or in $H_K$, with a different inner product. There is not a contradiction, and simply shows that the representation of a positive kernel in terms of a feature function is not unique. 
+
+
+\section{Projection on a finite-dimensional subspace}
+\label{sec:orth.proj}
+ If $H$ is an inner-product space and $V$ is a subspace of $H$, one defines the orthogonal projection of an element $\xi\in H$ on $V$ as its closest point in $V$, that is, the element $\eta^*$ of $V$ minimizing  the function $F: \eta \mapsto \| \eta - \xi\|^2_H$ over all $\eta\in V$. This closest point does not always exist, but it does in the special case in which $V$ is finite dimensional (or, more generally, when $V$ is a closed subspace of $H$; see \citet{yos70}). We state, without proof, some of the properties of this operation.
+ 
+Assuming that $V$ is closed,  this minimizer is unique and will be denoted $\eta^* = \pi_V(\xi)$. Moreover, $\pi_V$ is a linear transformation from $H$ to $V$, and $\eta^*$ is characterized by the properties
+ \[
+ \left\{ \begin{aligned} &\eta^*\in V \\ &\xi-\eta^* \perp V,\end{aligned}
+ \right.
+ \]
+ the last condition meaning that $\scp{\xi-\eta^*}{\eta}_H = 0$ for all $\eta\in V$.
+ 
+ Because $\|\xi\|_H^2 = \|\pi_V(\xi)\|_H^2 + \|\xi- \pi_V(\xi)\|_H^2$, one always has $\|\pi_V(\xi)\|_H \leq \|\xi\|_H$, with inequality if and only if $\pi_V(\xi) = \xi$, i.e., if and only if $\xi\in V$.
+
+ 
+ If $V$ is finite-dimensional and $\eta_1, \ldots, \eta_n$ is a basis of $V$, then $\pi_V(\xi)$ is given by
+ \[
+ \pi_V(\xi) = \sum_{i=1}^n \pe \alpha i \eta_i
+ \]
+ with $\alpha$ (considered as a column vector in $\mR^n$) given by
+ \[
+ \alpha = \mathrm{Gram}(\eta_1, \ldots, \eta_n)^{-1} \la\,,
+ \]
+ where $\la\in\mR^n$ is the vector with coordinates $\pe \la i = \scp{\xi}{\eta_i}_H$, $i=1, \ldots, n$. The Gram matrix of $\eta_1, \ldots, \eta_n$, denoted $\mathrm{Gram}(\eta_1, \ldots, \eta_n)$, is the $n$ by $n$ matrix with entries $\scp{\eta_i}{\eta_j}_H$ for $i,j = 1, \ldots, n$. 
+ 
+
+If $A$ is a subset of $H$, the set $A^\perp$ consists of all vectors perpendicular to $A$, namely
+\[
+A^\perp = \defset{h\in H: \scp{h}{\tilde h}_H = 0 \text{ for all } \tilde h \in A}\,.
+\]
+If $V$ is a finite-dimensional  (or, more generally, closed) subspace of $H$, then any point in $h$ is decomposed as $h = \pi_V(h) + h- \pi_V(h)$ with $h-\pi_V(h) \in V^\perp$. This shows that $\pi_{V^\perp}$ is well defined and equal to $\mathrm{id}_H - \pi_V$.
+
+\bigskip
+
+Orthogonal projections can be applied to function interpolation in an RKHS. Indeed, assuming that $H$ is an RKHS, as described at the end of the previous section, with a positive-definite kernel.   Given distinct points $x_1, \ldots, x_N\in \CR$ and values $\alpha_1, \ldots, \alpha_N\in \mR$, the interpolation problem consists in finding $h\in H$ with minimal norm satisfying $h(x_k) = \alpha_k$, $k=1, \ldots, N$. Consider the finite dimensional space
+\[
+V = \vspan\defset{K(\cdot, x_k), k= 1, \ldots N}.
+\]
+Then there exists an element $h_0\in V$ that satisfies the constraints. Indeed, looking for $h_0$ in the form
+\[
+h_0(x) = \sum_{l=1}^N K(x, x_l) \lambda_l 
+\]
+one has
+\[
+h_0(x_k) = \sum_{l=1}^N K(x_k, x_l) \lambda_l
+\]
+so that 
+\[
+\begin{pmatrix}
+\lambda_1 \\ \vdots \\ \lambda_N 
+\end{pmatrix}
+ =
+ \CK(x_1, \ldots, x_N)^{-1} \begin{pmatrix}
+\alpha_1 \\ \vdots \\ \alpha_N 
+\end{pmatrix}
+ \]
+ 
+Any other function $h$ satisfying the constraints satisfies $h(x_k) - h_0(x_k) = 0$, which, using RKHS2, is equivalent to $\scp{h-h_0}{K(\cdot, x_k)}_H = 0$, i.e., to $h-h_0\in V^\perp$. This shows that $h_0 = \pi_V(h)$, so that 
+$\|h\|_H \geq \|h_0\|_H$ and $h_0$ provides the optimal interpolation. We summarize this in the proposition:
+\begin{proposition}
+\label{prop:rkhs.interpolation}
+Let $H$ is an RKHS with a positive-definite kernel.   Let $x_1, \ldots, x_N\in \CR$ be distinct points  and $\alpha_1, \ldots, \alpha_N\in \mR$. Then the function $h\in H$ with minimal norm satisfying $h(x_k) = \alpha_k$, $k=1, \ldots, N$ takes the form
+\begin{subequations}
+
+\begin{equation}
+\label{eq:rkhs.interpolation.1}
+h(x_k) = \sum_{l=1}^N K(x_k, x_l) \lambda_l
+\end{equation}
+with 
+\begin{equation}
+\label{eq:rkhs.interpolation.2}
+\begin{pmatrix}
+\lambda_1 \\ \vdots \\ \lambda_N 
+\end{pmatrix}
+ =
+ \CK(x_1, \ldots, x_N)^{-1} \begin{pmatrix}
+\alpha_1 \\ \vdots \\ \alpha_N 
+\end{pmatrix}.
+ \end{equation}
+\end{subequations}
+\end{proposition}
+
+A variation of this problem replaces the constraint by a penalty that complete the minimization associated with the orthogonal projection, namely, minimizing (in $h\in H$)
+\[
+\|h\|_H^2 + \sigma^2 \sum_{k=1}^N |h(x_k) - \alpha_k|^2.
+\]
+Letting $h_0 = \pi_V(h)$, so that $h_0(x_k) = h(x_k)$ for all $k$, this expression can be rewritten as
+\[
+\|h_0\|_H^2 + \|h-h_0\|^2_H + \sigma^2 \sum_{k=1}^N |h_0(x_k) - \alpha_k|^2.
+\]
+This shows that the optimal $h$ must coincide with its projection on $V$, and therefore belong to that subspace. Looking for $h$ in the form
+\[
+h(\cdot) = \sum_{l=1}^N K(\cdot, x_l) \lambda_l,
+\]
+the objective function is rewritten as
+\[
+\sum_{k,l=1}^N K(x_k, x_l) \lambda_k\lambda_l + \sigma^2 \sum_{k=1}^N \left|\sum_{l=1}^N K(x_k, x_l) \lambda_l - \alpha_k\right|^2, 
+\]
+which, in vector notation gives, writing $\boldsymbol{\lambda} = \begin{pmatrix}
+\lambda_1 \\ \vdots \\ \lambda_N 
+\end{pmatrix}$ and $\boldsymbol\alpha = \begin{pmatrix}
+\alpha_1 \\ \vdots \\ \alpha_N 
+\end{pmatrix}$, 
+\[
+\boldsymbol\lambda^T
+\CK(x_1, \ldots, x_N)\boldsymbol\lambda +
+ \sigma^2 \left(\CK(x_1, \ldots, x_N)\boldsymbol\lambda
+ - \boldsymbol \alpha\right)^T \left(\CK(x_1, \ldots, x_N)\boldsymbol\lambda
+ - \boldsymbol \alpha\right).
+\]
+
+The differential of this expression in $\boldsymbol\lambda$ is 
+\[
+\CK(x_1, \ldots, x_N)\boldsymbol\lambda + 2\sigma^2 \CK(x_1, \ldots, x_N)(\CK(x_1, \ldots, x_N)\boldsymbol\lambda  - \boldsymbol\alpha).
+\]
+Assuming that $x_1, \ldots, x_N$ are distinct, this vanishes if and only if
+\[
+\boldsymbol\lambda = (\CK(x_1, \ldots, x_N) + (1/\sigma^2) \Id[N])^{-1}\boldsymbol\alpha.
+\] 
+
+We have just proved the proposition:
+\begin{proposition}
+\label{prop:rkhs.interpolation.soft}
+Let $H$ is an RKHS with a positive-definite kernel.   Let $x_1, \ldots, x_N\in \CR$ be distinct points  and $\alpha_1, \ldots, \alpha_N\in \mR$. Then the unique minimizer of 
+\[
+h \mapsto
+\|h\|_H^2 + \sigma^2 \sum_{k=1}^N |h(x_k) - \alpha_k|^2
+\]
+on $H$ is given by
+\begin{subequations}
+
+\begin{equation}
+\label{eq:rkhs.interpolation.soft.1}
+h(x_k) = \sum_{l=1}^N K(x_k, x_l) \lambda_l
+\end{equation}
+with 
+\begin{equation}
+\label{eq:rkhs.interpolation.soft.2}
+\begin{pmatrix}
+\lambda_1 \\ \vdots \\ \lambda_N 
+\end{pmatrix}
+ =
+( \CK(x_1, \ldots, x_N)+ (1/\sigma^2) \Id[N])^{-1} \begin{pmatrix}
+\alpha_1 \\ \vdots \\ \alpha_N 
+\end{pmatrix}.
+ \end{equation}
+\end{subequations}
+\end{proposition}

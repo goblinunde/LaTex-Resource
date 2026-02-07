@@ -1,0 +1,756 @@
+\chapter{Latent Variables and Variational Methods}
+\label{chap:var.bayes}
+
+\section{Introduction}
+
+We will describe, in the next chapters, methods that fit a parametric model to the observation while introducing  unobserved, or ``latent,'' components in their models, whose inference typically attaches  interpretable information or structure  to the data. We have seen one such example in the form of the mixture of Gaussian in \cref{chap:intro}, that we will revisit in \cref{chap:clustering}. We now provide a  presentation of the variational Bayes paradigm that provides a general strategy to address latent variable problems \citep{neal1998view,jaakkola1997variational,
+attias1999variational,jordan1999introduction}. 
+
+The general framework is as follows. Variables in the model  are divided in two groups: the observable part, that we denote  $X$, and the latent part, denoted $Z$. In many models $Z$ represents some unobservable structure, such that $X$ conditional to $Z$ has some relatively simple distribution (in a Bayesian estimation context, $Z$ often contains model parameters). The quantity of interest, however, is the conditional distribution of $Z$ given $X$ (also called the ``posterior distribution''), which allows one to infer the latent structure from the observations, and will also have an important role in maximum likelihood parametric estimation, as we will see below. This conditional distribution is not always easy to compute or simulate, and variational Bayes provides a framework under which it can be approximated. 
+
+
+
+\section{Variational principle}
+\label{sec:var.principle}
+We  consider a pair of random variables $X$ and $Z$, where $X$ is considered as ``observed'' and $Z$ is hidden, or ``latent''. We will use $U = (X,Z)$ to denote the two variables taken together. We denote as usual by $P_U$ the probability law of $U$, defined on $\CR_U = \CR_X \times \CR_Z$ by $P_U(A)= \myP(U\in A)$. We will also assume that there exists a measure $\mu$ on $\CR_U$ that decomposes as a product measure $\mu = \mu_X \times \mu_Z$ (where $\mu_X$ and $\mu_Z$ are measures on $\CR_X$ and $\CR_Z$), such that  $P_U \ll \mu$ ($\pi_U$ is absolutely continuous with respect to $\mu$). This implies that $P_U$ has a density with respect to $\mu$ that we will denote $f_U$. If both $\CR_X$ and $\CR_Z$ are discrete, $\mu$ is typically the counting measure, and if they are both Euclidean space, $\mu$ can be the Lebesgue measure on the product.\footnote{The reader unfamiliar with measure theory may want to read this discussion by replacing $d\mu_X$ by $dx$, $d\mu_Z$ by dz and $d\mu_U$ by $dx\,dz$, i.e., in the context of continuous probability distributions having p.d.f.'s with respect to the Lebesgue's measure.}
+
+The variables $X$ and $Z$ then have probability density functions with respect to $\mu_X$ ad $\mu_Z$, given by
+\[
+f_X(x) = \int_{\CR_Z} f_U(x,z) \mu_Z(dz) \quad \text{ and } \quad f_Z(z) = \int_{\CR_X} f_U(x,z) \mu_X(dx).
+\]
+
+The conditional distribution of $X$ given $Z=z$, denoted $P_X(\,\cdot\mid Z=z)$, has density $f_X(x\mid z) = f_U(x,z)/f_Z(z)$ with respect to $\mu_X$ and that of $Z$ given $X=x$, denoted  $P_Z(\,\cdot\mid X=x)$, has density $f_Z(z\mid x) = f_U(x,z) / f_X(x)$ with respect to $\mu_Z$. 
+We will be mainly interested by approximations of $P_Z(\,\cdot\mid X=x)$, assuming that $P_Z$ and $P_X(\,\cdot\mid Z=z)$ (and hence $P_U$) are easy to compute or simulate. 
+
+
+We will use the Kullback-Liebler divergence to quantify the accuracy of the approximation. As stated in \cref{prop:kl}, we have
+\[
+P_Z(\,\cdot\mid X=x) = \argmin_{\nu\in  \mathcal M_1(\CR_Z)} \KL(\nu\, \|\, P_Z(\cdot\mid X=x))
+\]
+where $\mathcal M_1(\CR_Z)$ denotes the set of all probability distributions on $\CR_Z$. Note that all distributions $\nu$ for which $\KL(\nu\,\|\,\pi_Z(\cdot|X=x))$ is finite must be absolutely continuous with respect to $\mu_Z$ and therefore take the form $\nu = g \mu_Z$. One   has
+\begin{align}
+\nonumber
+\KL(gd\mu_Z\|P_Z(\cdot|X=x)) &= \int_{\CR_Z} \log \frac{g(z)}{f_Z(z|x)} g(z) \mu_Z(dz) \\
+\label{eq:variational.b}
+&= \int_{\CR_Z} \log \frac{g(z)}{f_U(x,z)} g(z) \mu_Z(dz) + \log f_X(x).
+\end{align}
+We will denote by $\CP(\mu_Z)$, or just $\CP$ when there is no ambiguity, the set of all p.d.f.'s $g$ with respect to $\mu_Z$, i.e., the set of all non-negative measurable functions on $\CR_Z$ with $\int_{\CR_Z} g(z) \mu_Z(dz) = 1$.
+
+
+The basic principle of variational Bayes methods is to replace  $\CP$ by a subset $\hCP$ and to define the approximation
+\[
+\widehat P_Z(\,\cdot\,|X=x) = \argmin_{g \in \hCP} \KL(g \mu_Z\|P_Z(\ccdot|X=x)).
+\]
+For the approximation to be practical, the set $\hCP$ must obviously be chosen so that the computation of $\widehat P_Z(\,\cdot\,|X=x)$ is computationally feasible. We now review a few examples, before passing to the EM algorithm and its  approximations.
+
+\section{Examples}
+\label{sec:var.bayes.expl}
+\subsection{Mode approximation}
+\label{sec:mode.approx}
+Assume that $\CR_Z$ is discrete and $\mu_Z$ is the counting measure so that 
+\[
+\KL(gd\mu_Z\,\|\,P_Z(\ccdot\mid X=x))  - \log f_X(x) = \sum_{z\in \CR_Z} \log \frac{g(z)}{f_U(x,z)} g(z),
+\]
+the sum being infinite if there exists $z$ such that $\nu(z) > 0$ and $f_U(x, z) = 0$.
+Take 
+\[
+\hCP = \defset{\bfone_z: z\in \CR_Z},
+\]
+the family of all Dirac functions on $\CR_Z$. Then,
+\[
+\KL(\bfone_z\,\|\,P_Z(\ccdot|X=x)) - \log f_X(x) =  -\log f_U(x,z).
+\]
+The variational approximation of $P_Z(\ccdot\mid X=x)$ over $\hCP$ therefore is the Dirac measure at point(s) $z\in \CR_Z$ at which $f_U(x, z)$ is largest, i.e., the mode(s) of the posterior distribution. This approximation is often called the MAP approximation (for maximum a posteriori).
+
+
+If $\CR_Z$ is, say, $\mR^q$ and $\mu_Z=dz$ is Lebesgue's measure, then the previous construction does not work because $\bfone_z$ is not a p.d.f. with respect to $\mu_Z$. In place  of Dirac functions, one can use constant functions  on small balls. Let $B(z, \ep)$ denote the open ball with radius $\epsilon$, and let $|B(z, \ep)|$ denote its volume. Let $\mathfrak u_{z,\ep} = \bfone_{B(z,\ep)}/|B(z, \ep)|$. Fixing $\epsilon$, we can consider the set 
+\[
+\hCP = \defset{\mathfrak u_{z, \ep}: z\in \mR^q}.
+\]
+Now, one has (leaving the computation to the reader)
+\[
+\KL(\mathfrak u_{z, \ep} dz\,\|\,P_Z(\ccdot|X=x)) - \log f_X(x) =  -\log \left(\frac{1}{|B(z, \ep)}\int_{B(z, \ep)} f_U(x, z') dz' \right).
+\]
+The limit for small $\epsilon$  (assuming that $f_U(x, \cdot)$ is continuous at $z$, or defining the limit up to sets of measure zero) is $ -\log f_U(x,z)$, justifying again choosing the mode of the posterior distribution of $Z$ for the approximation. 
+
+The mode approximation has some limitations. First, it is in general a very crude approximation of the posterior distribution. Second, even with the assumption that  $f_U$ has closed form,  this p.d.f. is often difficult to maximize (for example when defining models over large discrete sets). In such cases, the mode approximation has limited practical use.
+
+\subsection{Gaussian approximation}
+
+Let us still assume that $\CR_Z = \mR^q$ and that $\mu_Z = dz$.  Let $\hCP$ be the family of all Gaussian distributions $\CN(m, \Sig)$ on $\mR^q$. Then, denoting by $\phi(\ccdot;m,\Sigma)$ the density  of  $\CN(m, \Sig)$,
+\begin{multline*}
+\KL(\phi(\ccdot;\,m , \Sig) \|P_Z(\ccdot\mid X=x)) - \log f_X(x) =-\frac{q}2 \log 2\pi - \frac q2 - \frac12 \log \det(\Sigma) \\
+- \int_{\mR^q} \log f_U(x,z) \phi(z;m,\Sigma) dz.
+\end{multline*}
+
+In order to provide the best approximation, $m$ and $\Sigma$ must therefore maximize
+\begin{equation}
+\int_{\mR^q} \log f_U(x,z) \phi(z;m,\Sigma) dz + \frac12 \log \det(\Sigma).
+\label{eq:laplace.approx}
+\end{equation}
+The resulting optimization problem does not have a closed form solution in general (see \cref{sec:vae} for an example in which stochastic gradient methods are used to solve this problem). Another approach that is commonly used in practice is to push  the approximation further by replacing $\log f_U(x,z)$ by its second order expansion around its maximum as a function of $z$. Let $m(x)$ be the posterior mode, i.e., the value of $z$ at which $x \mapsto \log f_U(x, z)$ is maximal, that we will assume to be unique. Let $H(x)$ denote the $q\times q$ Hessian matrix formed by the second partial derivatives of  $-\log f_U(x, z)$ (with respect to $z$) at $z = m(x)$. This matrix is positive semidefinite according to the choice made for  $m(x)$, and we will assume that it is positive definite. Since the first derivatives of $\log f_U(x, z)$ at $m(x)$ must vanish, we have the expansion:
+\[
+ \log f_U(x,z) = \log f_U(x,m(x)) - \frac12 (z-m(x))^T H(x) (z-m(x)) + \cdots
+\]
+ Plugging the expansion into the integral in \cref{eq:laplace.approx} yields
+\[
+-\frac12 \trace(H(x) \Sigma) - \frac12  (m-m(x))^T H(x) (m-m(x)) + \frac12 \log\det\Sig.
+\]
+To maximize this expression, one must clearly take $m = m(x)$. Moreover, 
+\[
+\prt_{\Sigma}\left(-\trace(H(x) \Sigma) + \log\det\Sig\right) = -H(x)^T + (\Sigma^T)^{-1} = -H(x) + \Sigma^{-1},
+\]
+and we see that  one must take $\Sigma = H(x)^{-1}$. This provides the Laplace approximation \citep{dieudonne1971infinitesimal} of the posterior, $\CN(m(x), H(x)^{-1})$, which is practical when the mode and corresponding second derivatives are feasible to compute.
+
+\subsection{Mean-field approximation}
+\label{sec:mean.field}
+
+This section generalizes the approach discussed in \cref{prop:mean.f} for Markov random fields.
+Assume that $\CR_Z$ can be decomposed into several components $\CR_Z^{[1]}, \ldots, \CR_Z^{[K]}$, writing $z = (z^{[1]}, \ldots, z^{[K]})$ (for example, taking $K=q$ and $z^{[i]} = z^{(i)}$, the $i$th coordinate of $z$ if $\CR_Z= \mR^q$).  Also assume that $\mu_Z$  splits into a product measure $\mu_Z^{[1]} \otimes\cdots\otimes \mu_Z^{[K]}$. 
+Mean-field approximation consists in assuming that probabilities $\nu$ in $\hCP$ split into independent components, i.e.,  their densities $g$ take the form:
+\[
+g(z) = g^{[1]}(z^{[1]}) \cdots g^{[K]}(z^{[K]}).
+\]
+Then,
+\begin{multline}
+\label{eq:var.b.mean.field}
+\KL(\nu\,\|\,P_Z(\ccdot\mid X=x))  - \log f_X(x) = \sum_{j=1}^K \int_{\CR_Z^{[j]}} \log g^{[j]}(z^{[j]}) g^{[j]}(z^{[j]}) \mu_Z^{[j]}(dz^{[j]}) \\
+- \int_{\CR_Z} \log f_U(x,z) \prod_{j=1}^q g^{[j]}(z^{[j]}) \mu_{Z}(dz).
+\end{multline}
+The mean-field approximation may be feasible when $\log f_U(x,z)$ can be written as a sum of products of functions of each $z^{[j]}$. Indeed, assume that 
+\begin{equation}
+\label{eq:mean.field.decomp}
+\log f_U(x,z) = \sum_{\alpha\in A} \prod_{j=1}^K \psi_{\alpha,j}(z^{[j]}, x)
+\end{equation}
+where $A$ is a finite set. To shorten notation, let us denote by $\langle \psi\rangle$ the expectation of a function $\psi$
+with respect to the product p.d.f. $g$.
+Then, \cref{eq:var.b.mean.field} can be written as
+\[
+\KL(\nu\|P_Z(\ccdot\mid X=x))  - \log f_X(x) = \sum_{j=1}^K \langle \log g^{(j)}(z^{[j]}) \rangle 
+- \sum_{\al\in A} \prod_{j=1}^K \langle \psi_{\alpha,j}(z^{[j]}, x) \rangle.
+\]
+
+The following lemma will allow us to identify the form taken by the optimal p.d.f. $g^{[j]}$. 
+\begin{lemma}
+\label{lem:max.ent}
+Let $Q$ be  a set equipped with a positive measure $\mu$. Let $\psi: Q \to \mR$ be a measurable function such that 
+\[
+C_\psi \defeq \int_Q \exp(\psi(q)) \mu(dq) < \infty.
+\]
+Let 
+\[
+g_\psi(q) = \frac{1}{C_\psi} \exp(\psi(q)).
+\]
+Let $g$ be any p.d.f. with respect to $\mu$, and define
+\[
+F(g) = \int_Q (\log g(q) - \psi(q)) g(q) \mu(dq).
+\]
+Then $F(g_\psi) \leq F(g)$. 
+\end{lemma}
+\begin{proof}
+We note that $g_\psi > 0$, and that 
+\[
+\KL(g\|g_\psi) = F(g) + \log C_\psi = F(g) - F(g_\psi),
+\]
+which proves the result, since KL divergences are always non-negative.
+\end{proof}
+
+Applying this lemma separately to each function $g^{[j]}$ implies that any optimal $g$ must be such that
+\[
+g^{[j]}(z^{[j]}) \propto \exp\left(\sum_{\al\in A} M_{\alpha,j}\psi_{\alpha,j}(z^{[j]}, x)\right)
+\]
+with
+\[
+M_{\alpha,j} = \prod_{j'=1, j'\neq j}^K \langle \psi_{\alpha,j'}(z^{[j']}, x) \rangle.
+\]
+We therefore have
+\begin{equation}
+\label{eq:mean.field.cons}
+\langle \psi_{\alpha,j}(z^{[j]}, x) \rangle = \frac{\int_{\CR_Z^{[j]}} \psi_{\alpha,j}(z^{[j]}, x) \exp\left(\sum_{\al'\in A} M_{\alpha',j}\psi_{\alpha',j}(z^{[j]}, x)\right) \mu_Z^{[j]}(dz^{[j]})}{\int_{\CR_Z^{[j]}} \exp\left(\sum_{\al'\in A} M_{\alpha',j}\psi_{\alpha',j}(z^{[j]}, x)\right) \mu_Z^{[j]}(dz^{[j]})}
+\end{equation}
+
+This specifies a relationship expressing $\langle \psi_{\alpha,j}(z^{[j]}, x) \rangle$ as a function of the other expectations $\langle \psi_{\alpha',j'}(z^{(j')}, x) \rangle$ for $j\neq j'$. These equations put together are called the {\em mean-field consistency equations}. When these equations can be written explicitly, i.e., when the integrals in \cref{eq:mean.field.cons} can be evaluated analytically (which is generally the case when the p.d.f.'s $g^{[j]}$ can be associated with standard distributions), one obtains an algorithm that iterates \cref{eq:mean.field.cons} over all $\alpha$ and $j$ until stabilization (each step reducing the objective function in \cref{eq:var.b.mean.field}).
+
+
+
+
+Let us retrieve the result obtained in \cref{prop:mean.f} using the current formalism. Assume that  $\CR_X$ finite and $\CR_Z = \{0,1\}^L$, where $L$ can be a large number, with
+\[
+f_U(x, z) = \frac1C \exp\left( \sum_{j=1}^L \alpha_j(x) z^{(j)} + \sum_{i,j=1, i<j}^L \beta_{ij}(x) z^{(i)} z^{(j)}\right).
+\]
+Take $K=L$, $z^{[j]} = z^{(j)}$. Applying the previous discussion, we see that $g^{[j]}$ must take the form
+\[
+g^{[j]}(z^{(j)}) = \frac{\exp\left(\alpha_j(x) z^{(j)}  + \sum_{i\neq j}\beta_{ij}(x) \langle z^{(i)} \rangle z^{(j)}\right) }{1 + \exp\left(\alpha_j(x)   + \sum_{i\neq j}\beta_{ij}(x) \langle z^{(i)} \rangle\right)}
+\]
+In particular
+\[
+\langle z^{(j)} \rangle =  \frac{\exp\left(\alpha_j(x)  + \sum_{i\neq j}\beta_{ij}(x) \langle z^{(i)} \rangle \right) }{1 + \exp\left(\alpha_j(x)  + \sum_{i\neq j}\beta_{ij}(x) \langle z^{(i)} \rangle\right)}
+\]
+providing the mean-field consistency equations. 
+
+In this special case, it is also possible to express the objective function as a simple function of the expectations $\langle z^{(j)}\rangle$'s. We indeed have, letting $\rho_j = \langle z^{(j)}\rangle$,
+\[
+\sum_{z\in \CR_Z} \log f_U(x,z) \prod_{j=1}^L g^{[j]}(z^{(j)})  =
+-\log C + \sum_{j=1}^L \alpha_j(x) \rho_j + \sum_{i,j=1, i<j}^L \beta_{ij}(x) \rho_i\rho_j.
+\]
+The values of $\rho_1, \ldots, \rho_L$ are then obtained  by maximizing
+\[
+\sum_{j=1}^L \alpha_j(x) \rho_j + \sum_{i,j=1, i<j}^L \beta_{ij}(x) \rho_i\rho_j - \sum_{j=1}^L \big(\rho_j\log\rho_j + (1-\rho_j)\log(1-\rho_j)\big).
+\]
+The consistency equations express the fact that the derivatives of this expression with respect to each $\rho_j$ vanish.
+
+
+%\section{Monte-Carlo Sampling}
+%Some properties of posterior distributions can often be obtained by generating random samples of these distributions. In this section, we review some of the main methods that are designed for this purpose. 
+%\subsection{General sampling procedures}
+%\label{sec:gen.samp}
+%\paragraph{Real-valued variables.}
+%We will use the following notation for the left limit of a function $F$ at a given point $z$ 
+%\[
+%F(z-0) = \lim_{y\to z, y<z} F(y)
+%\]
+%assuming, of course that this limit exists (which is always true, for example when $F$ is non-decreasing). 
+%Recall that $F$ is left continuous if and only if  $F=F(\ccdot-0)$. Moreover, it is easy to see that $F(\ccdot-0)$ is left-continuous\footnote{ For every $z$ and every $\epsilon>0$, there exists $z'<z$ such that for all $z''\in [z', z)$, $|F(z'') - F(z-0)| < \epsilon$. Moreover, taking any $y\in (z', z)$, there exists $y'<y$ such that for all $y''\in [y', y)$, $|F(y'') - F(y-0)| < \epsilon$. Without loss of generality, we can assume that $y'\geq z'$, yielding $|F(z-0) - F(y-0)| \leq 2\epsilon$, showing the left continuity of $F(\ccdot-0)$.}. 
+%Note also that, if $F$ is non-decreasing, one always has $F(z) \leq F(y-0)$ whenever $z < y$. The following proposition provides a basic mechanism for Monte-Carlo sampling.
+%
+%
+%\begin{proposition}
+%\label{prop:sampling}
+%Let $Z$ be a real-valued random variable with c.d.f. $F_Z$.
+%For  $u\in [0,1]$, define
+%\[
+%F_X^-(u) = \max\{z: F_Z(z-0) \leq u\}.
+%\]
+%Let $U$ be uniformly distributed over $[0,1]$. Then $F_Z^-(U)$ has the same distribution as $Z$.
+%\end{proposition}
+%\begin{proof}
+%Let $A_z = \{u\in [0,1]: F_Z^-(u) \leq z\}$.  
+%Assume first that $u<F_Z(z)$. Then $F_Z(y-0) \leq u$ implies that $y\leq z$, since $y>z$ would imply that $F_Z(z) \leq F_Z(y-0)$. This shows that $\sup\{z': F_Z(z'-0) \leq u\} \leq z$, i.e., $u\in A_z$. 
+%
+%Now, take $u>F_Z(z)$. Because c.d.f.'s are right continuous, there exists $y>z$ such that $u>F_Z(y)$, which implies that $F_Z^-(u) \geq y$ and $u\not \in A_z$. 
+%We have therefore shown that $[0, F_Z(z)) \sub A_z \sub [0, F_Z(z)]$. 
+%
+%If $U$ is uniformly distributed on $[0,1]$, then $P(U< F_Z(z)) = P(U \leq F_Z(z)) = F_Z(z)$, showing that
+%\[
+%P(F_Z^-(U) \leq z) = P(U\in A_z) = F_Z(z).
+%\]
+%\end{proof}
+%
+%This proposition shows that one can generate random samples of a real-valued random variable $Z$ as soon as one can compute $F_Z^-$ and generate uniformly distributed variables (the latter are provided by random number generators on computers). Note that, if $F_Z$ is strictly increasing, then $F_Z^- = F_Z^{-1}$, the usual function inverse.
+%
+%The proposition also shows how to sample from random variables taking values in finite sets. Indeed, if $Z$ takes values in $\CR_Z = \{z_1, \ldots, z_n\}$ with $p_i = P(Z=z_i)$, sampling from $Z$ is equivalent to sampling from the integer valued random variable $\widetilde Z$ with $P(\widetilde Z = i) = p_i$. For this variable, $F_{\tilde Z}^-(u)$ is the largest $i$ such that $p_1 + \cdots + p_{i-1} \leq u$ (this sum being zero if $i=1$), which provides the standard sampling scheme for discrete probability distributions. 
+%
+%\subsection{Rejection sampling}
+%While the previous approach can be generalized to multivariate distributions, it quickly becomes unfeasible when the dimension gets large, excepting simple cases in which the variables are independent, or, say, Gaussian. Rejection sampling is a simple algorithm that allows, in some cases, for the generation of samples from a complicated distribution based on repeated sampling of  a simpler one. 
+%
+%Let us assume that we want to sample from a variables $Z$ taking values in $\mR^d$, with p.d.f. $f_Z$. Let $g$ be another p.d.f. from which it is ``easy'' to sample. Consider the following algorithm, which includes a function $a: z\mapsto a(z) \in [0,1]$ that will be specified later.
+%\begin{algorithm}[Rejection sampling with acceptance function $a$ and base p.d.f. $g$]
+%\begin{enumerate}
+%\item Sample a realization $z$ of a random variable with p.d.f. $g$.
+%\item  Generate $b\in \{0,1\}$ with $P(b=1) = a(z)$.
+%\item If $b=1$, return $Z=z$ and exit. 
+%\item Otherwise, return to step 1. 
+%\end{enumerate}
+%\end{algorithm}
+%
+%The probability of exiting at step 3 is $\mu = \int_{\mR^d} g(z) a(z) dz$. So, the algorithm simulates a random variable with p.d.f.
+%\[
+%\tilde f(z) = g(z) a(z) (1+(1-\mu)+(1-\mu)^2 +\cdots) = \frac{g(z)a(z)}{\mu}.
+%\]
+%As a consequence, in order to simulate $f_Z$, one must choose $a$ so that $f_Z(z)$ is proportional to $g(z) a(z)$, which, (assuming that $g(z) > 0$ whenever $f_Z(z) > 0$), requires that $a(z)$ is proportional to $f_Z(z)/g(z)$. Since $a(z)$ must take values in $[0,1]$, but should otherwise be chosen as large as possible to ensure that fewer iterations are needed, one takes
+%\[
+%a(z) = \frac{f_Z(z)}{cg(z)}
+%\]
+%where $c = \max\{f_Z(z)/g(z): z\in\mR^d\}$, which must therefore be finite. This fully specifies a rejection sampling algorithm for $f_Z$. Note that $g$ is free to choose (with the restriction that $f_Z(z)/g(z)$ must be bounded), and should be selected so that sampling from it is easy, and the coefficient $c$ above is not too large. 
+%A similar algorithm can be derived for discrete distributions (replacing p.d.f.'s by p.m.f.'s).
+%
+%
+%\subsection{Gibbs sampling}
+%When dealing with high-dimensional distributions, the constant $c$ in the previous procedure is typically extremely large, and the rejection-sampling algorithm becomes unfeasible, because it keeps rejecting samples for very long times. In such cases, one can use alternative simulation methods that update each component of the distribution in sequence, looping an infinite (in practice, very large) number of times.
+%
+%This provides an algorithm, often referred to as ``Gibbs sampling algorithm'' \citep{geman1984stochastic}, which is itself a is a ``Markov-chain Monte-Carlo''  (or MCMC) method that iterates an infinite number of simple simulations, converging in the long run to a target multivariate distribution. A general version of Gibbs sampling is described below.
+%\begin{algorithm}[Gibbs sampling]
+%\label{alg:gibbs.sampling}
+%Let $\CB$ be a fixed set and $Q$ a probability distribution on $\CB$. Consider a finite family $U_1, \ldots, U_K$ of random variables defined on $\CB$ with values in spaces $\CB'_1, \ldots, \CB'_K$. Gibbs sampling, initialized with some $z_0\in \CB$ iterates the following update step given a current $z(n)\in\CB$:
+%\begin{enumerate}[label=\arabic*., wide=0.5cm]
+%    \item Select $j\in \{1, \ldots, K\}$ according to some pre-defined scheme, i.e., at random according to a probability distribution $\pi^{(n)}$ on the set $\{1, \ldots, K\}$. 
+%    \item Sample a new value $z(n+1)$ according to the probability distribution $q_j(z_n, B) = P(Z\in B|U_j(Z) = U_j(z(n)))$, where $Z$ is a random variable with distribution $Q$.
+%\end{enumerate}
+%\end{algorithm}
+%One typically chooses the probability distribution in Step 1 equal to the uniform distribution on $\{1, \ldots, K\}$ (in which case it is independent on $n$), or to $\pi^{(n)} = \de_{j_n}$ where $j_n = 1 + (n \mathrm(mod) K)$ (periodic scheme). Strictly speaking, Gibbs sampling is a Markov chain if $\pi^{(n)}$ does not depend on $n$, and we will make this simplifying assumption in the rest of our discussion (therefore replacing  $\pi^{(n)}$ by $\pi$).
+%
+%An important property of Gibbs sampling is that  if $Z$ follows the distribution $Q$  and $Z'$ is obtained by applying the two sampling steps in the algorithm letting $z(n)$ be a realization of $Z$ and $Z' = z(n+1)$, then the joint distribution of $(Z,Z')$ is the same as that of $(Z',Z)$ (one says that the Markov chain is {\em $Q$-reversible}). To prove this, note that for any (bounded measurable) functions $f$ and $g$ on $\CB$, one has, using the definition of conditional expectations,
+%\begin{align*}
+%E(f(Z) g(Z')) &= \sum_{i=1}^K E\big(f(Z) E(g(Z)|U_i)\big) \pi(i)\\
+%&= \sum_{i=1}^K E\big(E(f(Z)|U_i) E(g(Z)|U_i)\big) \pi(i)\\
+%&= \sum_{i=1}^K E\big(E(f(Z)|U_i) g(Z)\big) \pi(i)\\
+%&= E(g(Z)f(Z')).
+%\end{align*}
+%This implies, in particular, that if $Z\sim Q$, then so does $Z'$, i.e., $Q$ is an invariant distribution for Gibbs sampling. This shows that, if one initializes the algorithm with a random sample of $Q$, all subsequent iterations will also provide random samples of $Q$. This is not very practical, since the purpose of the Gibbs sampling algorithm is to (asymptotically) sample from $Q$, but does have important consequences under additional assumptions. 
+%
+%The first of these assumptions is that the conditioning variables $U_1, \ldots, U_K$ must be chosen so that $Z$ visits all the relevant parts of $\CB$. More precisely, the chain is  called $Q$-irreducible if and only if, for all $z\in \CB$ and all (measurable) $B\sub \CB$ such that $Q(B)>0$, there exists $n>0$ with $P(Z(n)\in B|Z(0) = z) > 0$. If this is true, then $Q$ is the only invariant probability of the Markov chain. 
+%
+%The second assumption, called aperiodicity,  ensures that the sequence does not loop over a finite family of non-overlapping subsets of $\CB$. If the chain is irreducible and aperiodic,  one can show that  
+%$P(Z(n)\in B |Z(0) = z)$ converges to $Q(B)$, when $n$ tends to infinity, uniformly in $B\sub\CB$ and with probability 1 in $z\in\CB$. In other words, Gibbs sampling is a valid sampling scheme for $Q$.
+%We refer to, e.g.,   \citet{tierney1994markov} for a justification of these statements, and for important complements addressing, in particular, the speed of convergence of the simulation scheme. 
+%
+%In the standard version of Gibbs sampling, $\CB$ is a product space $\CB_1 \times \cdots \times \CB_K$, and
+%\[
+%\CB'_j = \CB_1 \times \cdots \times \CB_{j-1} \times \CB_{j+1} \times \cdots\times \CB_K.
+%\]
+%One then takes
+%$U_j(z^{(1)}, \ldots, z^{(K)}) =  (z^{(1)}, \ldots, z^{(i-1)}, z^{(i+1)}, \ldots, z^{(K)})$. In other terms, step 2 in the algorithm replaces the current value of $z^{(j)}(n)$ by a new one sampled from the conditional distribution of $Z^{(j)}$ given the current values of $z^{(i)}(n), i\neq j$. 
+%
+%\subsection{Example: Ising model}
+%\label{sec:gibbs.ising}
+%We will see  several examples of applications of Gibbs sampling in the next few chapters. Here, we consider the example introduced in \cref{sec:mean.field}   with $\widetilde{\Omega}_Z = \{0,1\}^L$, and
+%\[
+%f_Z(z|x) = \frac1{C(x)} \exp\left( \sum_{j=1}^L \alpha(x) z^{(j)} + \sum_{i,j=1, i< j}^L \beta_{ij}(x) z^{(i)} z^{(j)}\right).
+%\]
+%We want to simulate $f_Z(\ccdot|x)$ for a fixed $x$, that we will keep implicit (i.e., drop it) in the notation to lighten the expressions. Note that, although $\CR_Z$ is a finite set, its cardinality, $2^L$, is too large for the enumerative procedure described in \cref{sec:gen.samp} to be applicable as soon as $L$ is, say, larger than 30. In practical applications of this model, $L$ is orders of magnitude larger, typically in the thousands or tens of thousands.
+%
+%We here apply standard Gibbs sampling, therefore defining $\CB_j = \{0,1\}$ and 
+%\[
+%U_j(z^{(1)}, \ldots, z^{(L)}) =  (z^{(1)}, \ldots, z^{(i-1)}, z^{(i+1)}, \ldots, z^{(L)}).
+%\]
+% The conditional distribution of $Z^{(j)}$ given $U_j(z)$ is a Bernoulli distribution with
+%\[
+%f_{Z^{(j)}}(1\,|\,U_j(z)) = \frac{\exp(\alpha + \sum_{j'=1, j'\neq j}^L \beta_{jj'} \pe z j)}{1 + \exp(\alpha + \sum_{j'=1, j'\neq j}^L \beta_{ij} \pe z j)}
+%\]
+%(taking  $\beta_{jj'} = \beta_{j'j}$ for $j>j'$).  
+%Gibbs sampling for this model will generate a sequence of variables $Z(0), Z(1), \ldots$ by fixing $Z(0)$ arbitrarily and, given $Z(n) = z$, applying the two steps:
+%\begin{enumerate}[label=\arabic*., wide=0.5cm]
+%    \item Select $j\in \{1, \ldots, L\}$  at random according to a probability distribution $\pi^{(n)}$ on the set $\{1, \ldots, L\}$. 
+%    \item Sample a new value $\zeta\in \{0,1\}$ according to the Bernoulli distribution with parameter $f_{Z_n^{(j)}}(1\,|\,U_j(z))$, and set $Z^{(j)}(n+1) = \zeta$ and $Z^{(j')}(n+1) = Z^{(j')}(n)$ for $j'\neq j$.
+%\end{enumerate}
+%
+%\subsection{Metropolis-Hastings}
+%Gibbs sampling is a special of a generic MCMC algorithm called Metropolis-Hastings that is defined as follows \citep{metropolis1953equation,hastings1970monte}. Assume that the distribution $Q$  has a density  $f$ with respect to a measure $\mu$ on a set $\CB$. Specify a  transition probability on $\CB$, represented by a family of density functions with respect to $\mu$, $(q(z, \cdot), z\in \CB)$, and a family of acceptance functions $(z,z') \mapsto a(z,z') \in [0,1]$. Choosing $q$ and $a$ is  part of the design of the algorithm, but they should satisfy the identity
+%\begin{equation}
+%\label{eq:met.hast.db}
+%f(z)q(z,z') a(z,z') = f(z')p(z',z)a(z',z)
+%\end{equation}
+%called the ``detailed balance'' equation.
+%The sampling algorithm is then defined as follows.
+%\begin{algorithm}[Metropolis-Hastings]
+%\label{alg:met.hast}
+%Initialize the algorithm with $Z(0) = z(0) \in \CB$. At step $n$, the current value $Z(n) = z$ is then updated as follows.
+%\begin{enumerate}[label=$\bullet$]
+%\item ``Propose'' a new configuration $z'$ drawn according to $q(z, \cdot)$.
+%\item ``Accept'' $z'$ (i.e., set $Z(n+1)=z'$) with probability $a(z,z')$. If the new value is rejected, keep the current one, i.e., let $Z(n+1)=z$.
+%\end{enumerate}
+%\end{algorithm}
+%The standard choice, for the function $a$ given a transition probability $q$ is to set
+%\[
+%a(z,z') = \min\left(1, \frac{f(z')q(z',z)}{f(z)q(z,z')}\right).
+%\]
+%Obviously, if $q$ already satisfies $f(z)q(z,z') = f(z')q(z',z)$, which is the case for Gibbs sampling, then one should take $a(z,z') = 1$ for all $z$ and $z'$. In the general case, the detailed balance equation \eqref{eq:met.hast.db} ensures the $Q$-reversibility of the simulation process. 
+
+
+\section{Maximum likelihood estimation}
+
+%Let $\widetilde\Om_X$ and $\widetilde \Om_Z$ denote the sets in which $X$ and $Z$ take values. The sets can be  Euclidean (e.g., $\mR^d$), or finite, or any measurable sets, respectively equipped with measures\footnote{The reader unfamiliar with measure theory, can replace, in this discussion: $\mu_X$ by $dx$, $\mu_Z$ by $dz$,  $\mu_X \otimes \mu_Z$ by $dxdz$ and think of $\pi$ as the p.d.f. of $U$.}
+%$\mu_X, \mu_Z$. 
+%
+% We assume that the distribution of $U$ (i.e., the joint distribution of $X$ and $Z$) has density $\pi$ with respect to the product measure $\mu_X \otimes \mu_Z$.
+% 
+%Given this, the p.d.f. of the observations $X$ is given by
+% \[
+% \psi(x) = \int_{M_Z} \pi(x,z) \, d\mu_Z.
+% \]
+% and the following variational inequality holds. 
+
+\subsection{The EM algorithm}
+We now consider maximum likelihood estimation with latent variables and use the notation of \cref{sec:var.principle}. The main tool is the following obvious consequence of \cref{eq:variational.b}.
+ \begin{proposition}
+ \label{prop:var.bayes}
+ One has
+ \[
+\log f_X(x) = \max_{g\in \CP(\mu_Z)} \int_{\CR_Z} \log \left(\frac{f_U(x,
+z)}{g(z)}\right) g(z) d\mu_Z(z)
+\]  
+and the maximum is achieved for $g(z) = f_Z(z\mid x)$, the conditional p.d.f. of $Z$ given $X=x$.
+ \end{proposition}
+ \begin{proof}
+ \Cref{eq:variational.b} implies that 
+ \[
+ \int_{\CR_Z} \log \left(\frac{f_U(x,
+z)}{g(z)}\right) g(z) d\mu_Z(z) = \log f_X(x) - \KL(g\,\mu_Z\|P_Z(\ccdot|X=x))
+\]
+and the r.h.s. is indeed maximum when the Kullback-Liebler divergence vanishes, that is, when $g$ is the p.d.f. of  $P_Z(\ccdot\mid X=x)$.
+\end{proof}
+
+We will use this proposition for the derivation of the expectation-maxi\-mi\-zation (or EM) algorithm for maximum likelihood with latent variables. We now assume that  
+ $P_U$, and therefore $f_U$, is parametrized by $\th\in \Theta$, and that a training set  $T = (x_1, \ldots, x_N)$ of $X$ is observed. To indicate the dependence in $\theta$, we will write $f_U(x,z\,;\,\theta)$, or $f_Z(z\mid x\,;\,\theta)$.
+  The maximum likelihood estimator (m.l.e.) then maximizes
+ \[
+ \ell(\th) = \sum_{x\in T} \log f_X(x\,;\,\theta)\,.
+ \]
+ The EM algorithm is useful when the
+computation of the m.l.e. for complete observations, i.e., the maximization
+of 
+\[
+ \log f_U(x, z\,;\,\theta)
+\]
+when both $x$ and $z$ are given, is easy, whereas the same problem with the marginal distribution
+is hard.
+   
+From the proposition, we have:
+\[
+\sum_{x\in T}\log f_X(x\,;\,\theta)= \sum_{x\in T} \max_{g_x\in \CP(\mu_Z)} \int_{\CR_Z} \log \left(\frac{f_U(x,
+z\,;\,\theta)}{g_x(z)}\right) g_x(z) \mu_Z(dz)  
+\]
+Therefore the maximum likelihood requires to compute
+\begin{equation}
+\label{eq:lik.var}
+\max_{\th, g_x, x\in T} \sum_{x\in T} \int_{\CR_Z} \log \left(\frac{f_U(x,
+z\,;\,\theta)}{g_x(z)}\right) g_x(z) \mu_Z(dz)  .
+\end{equation}
+
+The maximization can therefore be done by iterating the following  two steps.
+\begin{enumerate}[label=\arabic*., wide=0.5cm]
+\item Given $\th_n$,  compute 
+\[
+\argmax_{g_x, x\in T} \sum_{x\in T} \int_{\CR_Z} \log \left(\frac{f_U(x,
+z\,;\,\theta)}{g_x(z)}\right) g_x(z) \mu_Z(dz) .
+\]
+\item Given $g_1, \ldots, g_N$,  compute 
+\begin{multline*}
+\argmax_{\th}  \sum_{x\in T} \int_{\CR_Z} \log \left(\frac{f_U(x,
+z\,;\,\theta)}{g_x(z)}\right) g_x(z) \mu_Z(dz) \\
+=  \argmax_{\th} 
+\sum_{x\in T} \int_{\CR_Z} \log \left(f_U(x,
+z\,;\,\theta)\right) g_x(z) \mu_Z(dz).
+\end{multline*}
+\end{enumerate}
+
+Step 1. is explicit and its solution is $g_x(z) = f_Z(z\mid x\,;\,\theta)$. 
+Using this, both steps can be grouped together, yielding the EM algorithm.
+\begin{algorithm}[EM algorithm]
+\label{alg:EM}
+Let a statistical model with density $f_U(x,z\,;\,\theta)$ modeling an observable variable $X$ and a latent variable $Z$ be given, and a training set $T = (x_1, \ldots, x_N)$. Starting with an initial guess of the parameter, $\theta(0)$, the EM algorithm iterate the following equation until numerical stabilization, . 
+\begin{equation}
+\label{eq:EM}
+\th_{n+1} = \argmax_{\th'} \sum_{x\in T} \int_{\CR_Z} \log \left(f_U(x,
+z\,;\,\theta')\right) f_Z(z\mid x\,;\,\theta_n) \mu_Z(dz).
+\end{equation}
+\end{algorithm}
+\Cref{eq:EM} maximizes (in $\th'$) a function defined as an expectation (for $\th_n$), justifying the name "Expectation-Maximization."
+
+\subsection{Application: Mixtures of Gaussian}
+A mixture of Gaussian (MoG) model was introduced in \cref{chap:intro} (\cref{eq:MoG.model}). We now reinterpret it (in a slightly generalized version) as a model with partial observations and show how the EM algorithm can be applied. Let $\phi(x\,;\, m, \Sigma)$ denote the p.d.f. of the $d$-dimensional multivariate Gaussian distribution with mean $m$ and covariance matrix $\Sigma$. We model $f_X(x\,;\,\theta)$ as
+\[
+f_X(x\,;\,\theta) = \sum_{j=1}^p \alpha_j \phi(x,;\, c_j, \Sigma_j).
+\]
+Here, $\theta$ contains all sequences $\alpha_1, \ldots, \alpha_p$ (non-negative numbers that sum to one), $c_1, \ldots, c_p\in \mR^d$ and $\Sigma_1, \ldots, \Sigma_p$ ($d\times d$ positive definite matrices).
+
+Using the previous notation, we therefore have $\CR_X = \mR^d$, and $\mu_X$ the Lebesgue measure on that space. 
+The variable $Z$ will take values in $\CR_Z = \{1, \ldots, p\}$, with $\mu_Z$ being the counting measure. We model the joint density function for $(X,Z)$ as
+\begin{equation}
+\label{eq:mog.lik}
+f_U(x,z\,;\,\theta) = \alpha_z \phi(x;\, c_z, \Sigma_z).
+\end{equation}
+
+Clearly $f_X$ is the marginal p.d.f. of $f_U$. One can therefore consider $Z$ as a latent variable, and therefore estimate $\th$ using the EM algorithm.
+
+We now make \cref{eq:EM} explicit for mixtures of Gaussian.
+For given $\th$ and $\th'$ and $x\in\CR$, let
+\begin{align*}
+U_x(\th, \th') &= \frac d2 \log 2\pi + \int_{\CR_Z} \log \left(f_U(x,
+z\,;\,\theta')\right) f_Z(z|x\,;\,\theta) d\mu_Z(z)  \\
+& = \sum_{z=1}^p \left(\log\alpha'_z - \frac{1}{2}
+\log\det\Sig'_z -   \frac12 (x-c'_z)^T{\Sig'_z}^{-1} (x-c'_z)\right) f_Z(z|x\,;\,\theta) 
+\end{align*}
+with
+\[
+f_Z(z\mid x\,;\,\theta) = \frac{(\det \Sig_z)^{-\frac12} \alpha_z e^{- \frac12
+(x-c_z)^T\Sig_z^{-1} (x-c_z)}}{\sum_{j=1}^p (\det \Sig_j)^{-\frac12} \alpha_j e^{-\frac12
+(x-c_j)^T\Sig_j^{-1} (x-c_j)}}.
+\]
+
+If $\th_n$ is the current parameter in the EM, the next one, $\th_{n+1}$ must  maximize
+$\sum_{x\in T}^N U_{x}(\th_n, \th')$. This can be solved in closed form. To compute $\al'_1, \ldots, \al'_p$, one must maximize 
+\[
+\sum_{x\in T}\sum_{z=1}^p (\log\al'_z) f_Z(z|x\,;\,\theta)
+\]
+subject to the constraint that $\sum_z \al'_z = 1$. This yields
+\[
+\al'_z = \sum_{x\in T} \Lfrac{f_Z(z|x\,;\,\theta)}{\sum_{j=1}^p\sum_{x\in T} f_Z(j|x\,;\,\theta)} = \lfrac{\zeta_z}{N}
+\]
+with
+$\zeta_z = \sum_{x\in T} f_Z(z|x\,;\,\theta).$
+
+The centers $c'_1, \ldots, c'_p$ must minimize $\sum_{x\in T} (x-c'_z)^T{\Sig'_z}^{-1}
+(x-c'_z)f_Z(z|x\,;\,\theta)$, which yields
+\[
+c'_z = \frac{1}{\zeta_z}\sum_{x\in T} x f_Z(z|x\,;\,\theta).
+\]
+Finally, $\Sig'_z$ must minimize
+\[
+\frac{\zeta_z}{2}
+\log\det\Sig'_z  + \frac12   \sum_{x\in T} (x-c'_z)^T{\Sig'_z}^{-1} (x-c'_z) f_Z(z|x\,;\,\theta),
+\]
+which yields
+\[
+\Sig'_z = \frac{1}{\zeta_z} \sum_{x\in T} (x - c'_z)(x-c'_z)^T f_Z(z|x\,;\,\theta).
+\]
+We can now summarize the algorithm.
+\begin{algorithm}[EM for Mixture of Gaussian distributions]
+\label{alg:mix.gauss}
+\begin{enumerate}[label=\arabic*., wide=0.5cm]
+\item Initialize the  parameter $\th(0) = (\al(0), c(0), \Sig(0))$. Choose a small constant $\ep$ and a maximal number of iterations $M$.
+\item At step $n$ of the algorithm, let $\th = \th(n)$ be the current parameter, writing for short $\theta = (\alpha, c, \Sigma)$. 
+\item Compute, for $x\in T$ and $i=1, \ldots, p$
+\[
+f_Z(i\mid x\,;\,\theta) = \frac{(\det \Sig_i)^{-\frac12} \al_i e^{- \frac12
+(x-c_i)^T\Sig_i^{-1} (x-c_i)}}{\sum_{j=1}^p (\det \Sig_j)^{-\frac12} \al_j e^{-\frac12
+(x-c_j)^T\Sig_j^{-1} (x-c_j)}}
+\]
+and let $\zeta_i = \sum_{x\in T} f_Z(i|x\,;\,\theta)$, $i=1, \ldots, p$.
+\item Let $\al'_i = \zeta_i/N$.
+\item For $i=1, \ldots, p$, let 
+\[
+c'_i = \frac{1}{\zeta_i}\sum_{x\in T} x f_Z(i\mid x\,;\,\theta).
+\]
+\item For $i=1, \ldots, p$, let 
+\[
+\Sig'_i = \frac{1}{\zeta_i} \sum_{x\in T} (x - c'_i)(x-c'_i)^T f_Z(i\mid x\,;\,\theta).
+\]
+\item Let $\th' = (\mu', c', \Sig')$. If $|\th' - \th| <\ep$ or $n+1=M$: return $\theta'$ and exit the algorithm.
+\item Set $\th(n+1)=\th'$ and return to step 2. 
+\end{enumerate}
+\end{algorithm}
+
+\begin{remark}
+\label{rem:mog}
+\Cref{alg:mix.gauss} can be simplified by making restrictions on the model. Here are some examples.
+\begin{enumerate}[label=(\roman*)]
+\item One may restrict to $\Sig_i = \sig^2_i \Id[d]$ to reduce the number of free parameters. Then, Step 7 of the algorithm needs to be replaced   by:
+\[
+(\sig'_i)^2 = \frac{1}{d\zeta_i} \sum_{x\in T} |x - c'_i|^2 f_Z(i\mid x\,;\,\theta).
+\]
+\item Alternatively, the model may be simplified by assuming that all covariance matrices coincide: $\Sig_i = \Sig$ for $i=1, \ldots, p$. Then, Step 7 becomes
+\[
+\Sig'_i = \frac{1}{N} \sum_{i=1}^p \sum_{x\in T} (x - c'_i)(x-c'_i)^T f_Z(i\mid x\,;\,\theta).
+\]
+\item Finally, one may assume that $\Sig$ is known and fixed in the algorithm (usually in the form $\Sig = \sig^2\Id[d]$ for some $\sig>0$) so that Step 7 of the algorithm can be removed.
+\item One may also assume also that the (prior) class probabilities are known, typically set to $\al_i = 1/p$ for all i, so that Step 4 can be skipped.
+
+\end{enumerate}
+\end{remark}
+
+\subsection{Stochastic approximation EM}
+\label{sec:saem}
+The stochastic approximation EM (or SAEM) algorithm has been proposed by \citet{delyon1999convergence} (see this reference for convergence results) to address the situation in which the expectations for the posterior distribution cannot be computed in closed form, but can be estimated using Monte-Carlo simulations.  SAEM uses a special form of stochastic approximation, different from the SGD algorithm described in \cref{sec:sgd}. It updates, at each step $n$, an approximate objective function that we will denote $\lambda_n$ and a current parameter $\theta(n)$.  It implements the following iterations:
+\begin{equation}
+\left\{
+\begin{aligned}
+\xi^{(x)}_{n+1} & \sim P_Z(\ccdot\mid X=x\,;\,\theta_n),\quad  x\in T\\
+\la_{n+1}(\theta') &= \Big(1-\frac1{n+1}\Big)\la_n(\theta') + \frac1{n+1}\Big( \sum_{x\in T} \log f_U(x, \xi^{(x)}_{n+1}\,;\,\theta') - \la_n(\theta')\Big),\  \theta'\in \Theta\\
+\theta_{n+1} &= \argmax_{\theta'}  \la_{n+1}(\theta')
+\end{aligned}
+\right.
+\label{eq:saem.1}
+\end{equation}
+The second step means that 
+\[
+\la_{n}(\theta') = \sum_{x\in T}^N \left(\frac{1}{n} \sum_{j=1}^n \log f_U(x, \xi^{(x)}_j\,;\,\theta')\right).
+\]
+Given that $\xi^{(x)}_{n+1} \sim P_Z(\ccdot\mid X=x\,;\,\theta_n)$, one expects this expression to approximate
+\[
+\sum_{x\in T} \int_{\CR_Z} \log \left(f_U(x,
+z\,;\,\theta')\right) f_Z(z\mid x\,;\,\theta) d\mu_Z(z)
+\]
+so that the third step of \cref{eq:saem.1} can be seen as an approximation of \cref{eq:EM}. Sufficient conditions under which this actually happens (and $\theta(n)$ converges to a local maximizer of the likelihood) are provided in \citet{delyon1999convergence} (see also \citet{kuhn2004coupling} for a convergence result under more general hypotheses on how $\xi$ is simulated).
+
+To be able to run this algorithm efficiently, one needs the simulation of  the posterior distribution to be feasible. Importantly, one also needs to be able to update efficiently the function $\la_n$. This can be achieved when the considered model belongs to an exponential family, which corresponds to assuming that the p.d.f. of $U$ takes the form
+\[
+f_U(x,z\,;\,\theta) = \frac{1}{C(\theta)} \exp\big(\psi(\theta)^TH(x,z)\big)
+\]
+for some  functions $\psi$ and $H$. For example, the MoG model of equation \cref{eq:MoG.model} takes this form, with
+\begin{align*}
+\psi(\th)^T &=\Big (&&\log \al_1 -\frac12 m_1^T\Sigma_1^{-1} m_1 -\frac12 \log\det\Sigma_1, \ldots, \log\al_p - \frac12 m_p^T\Sigma_p^{-1} m_p-\frac12 \log\det\Sigma_p,\\
+ &&&\Sigma_1^{-1}m_1, \ldots, \Sigma_p^{-1} m_p,\\
+ &&& \Sigma_1^{-1}, \ldots, \Sigma_p^{-1}\Big),\\
+H(x,z)^T &= \Big(&&\bfone_{z=1}, \ldots, \bfone_{z=p},\\
+&&&x\bfone_{z=1}, \ldots, x\bfone_{z=p},\\
+&&& -\frac12 xx^T\bfone_{z=1}, \ldots,-\frac12 xx^T\bfone_{z=p} \Big)
+\end{align*}
+and
+$C(\theta) = (2\pi)^{pd/2}$.
+
+For such a model, we can replace the algorithm in \cref{eq:saem.1} by the more manageable one:
+\begin{equation}
+\left\{
+\begin{aligned}
+\xi^{(x)}_{n+1} & \sim P_Z(\ccdot\mid X=x\,;\,\theta_n),\  x\in T\\
+\eta^{(x)}_{n+1} &= \Big(1-\frac1{n+1}\Big)\eta^{(x)}_n + \frac1{n+1} (H(x, \xi^{(x)}_{n+1}) - \eta^{(x)}_n)\\
+\la_{n+1}(\theta') &= \psi(\theta')^T \Big(\sum_{x\in T} \eta^{(x)}_{n+1}\Big) - \log C(\theta')\\
+\theta_{n+1} &= \argmax_{\theta'}  \la_{n+1}(\theta')
+\end{aligned}
+\right.
+\label{eq:saem.2}
+\end{equation}
+We leave as an exercise the  computation leading to the implementation of this algorithm for mixtures of Gaussian.
+
+\subsection{Variational approximation}
+\label{sec:var.approx}
+Returning to \cref{prop:var.bayes} and \cref{eq:lik.var}, we see that one can make a variational approximation of the maximum likelihood by computing
+\begin{equation}
+\max_{\th\in \Theta, g_x \in \hCP, x\in T} \sum_{x\in T} \int_{\CR_Z} \log \left(\frac{f_U(x,
+z\,;\,\theta)}{g_x(z)}\right) g_x(z) \mu_Z(dz) ,
+\label{eq:em.var}
+\end{equation}
+where $\hCP\sub \CP$ is a class of p.d.f. with respect to $\mu_Z$. The resulting algorithm is then implemented by iterating the computation of $g_x$, $x\in T$, using approximations similar to those provided in \cref{sec:var.bayes.expl}, and maximization in $\theta$ for given $g_x$, $x\in T$.  
+ This variational approximation of the maximum likelihood estimator is therefore  provided by the following algorithm.
+\begin{algorithm}[Variational Bayes approximation of the m.l.e.]
+\label{alg:var.EM}
+Let a statistical model with density $f_U(x,z\,;\,\theta)$ modeling an observable variable $X$ and a latent variable $Z$ be given, and a training set $T = (x_1, \ldots, x_N)$ be observed. Let $\hCP$ be a set of p.d.f. on $\CR_Z$ and define 
+\[
+\widehat g(\ccdot;\,x, \theta) = \argmin_{g\in \hCP} \int_{\CR_Z} \log \left(\frac{g(z)}{f_U(x,
+z\,;\,\theta)}\right) g(z) \mu_Z(dz)
+\]
+(assuming that this minimizer is uniquely defined).
+
+Starting with an initial guess of the parameter, $\theta_0$,  iterate the following equation until numerical stabilization:
+\begin{equation}
+\label{eq:var.EM}
+\th(n+1) = \argmax_{\th'} \sum_{x\in T}\int_{\CR_Z} \log \left(f_U(x,
+z\,;\,\theta')\right) \widehat g(z|x\,;\,\theta(n)) \mu_Z(dz).
+\end{equation}
+\end{algorithm}
+
+Assume that the distributions in $\hCP$ are also parametrized, denoting their parameter by $\eta$, belonging to some Euclidean domain $H$. Let $g(\cdot; \eta)$ denote the p.d.f. in $\hCP$ with parameter $\eta$. Letting $\boldsymbol \eta  = (\eta_x, x\in T)$ denote an element of $H^T$ (parameters in $H$ indexed by elements of the training set), \cref{eq:em.var} can then be written as the maximization of  
+\begin{equation}
+F(\theta, \bfeta) = \sum_{x\in T} \int_{\CR_Z} \log \left(\frac{f_U(x,
+z\,;\,\theta)}{g(z;\eta_x)}\right) g(z;\eta_x) \mu_Z(dz) .
+\label{eq:em.var.par}
+\end{equation}
+
+This expression is amenable to a stochastic gradient ascent implementation. We have 
+\[
+\partial_\theta \int_{\CR_Z} \log \left(\frac{f_U(x,
+z\,;\,\theta)}{g(z;\eta_x)}\right) g(z;\eta_x) \mu_Z(dz) = \int_{\CR_Z} \partial_\theta \log f_U(x,
+z\,;\,\theta) g(z;\eta_x) \mu_Z(dz)
+\]
+and 
+\begin{align*}
+&\partial_{\eta_x} \int_{\CR_Z} \log \left(\frac{f_U(x,
+z\,;\,\theta)}{g(z;\eta_x)}\right) g(z;\eta_x) \mu_Z(dz) \\
+&= 
+  \int_{\CR_Z} \left(-\partial_\eta \log g(z;\eta_x) g(z;\eta_x) + \log \left(\frac{f_U(x,
+z\,;\,\theta)}{g(z;\eta_x)}\right) \partial_\eta g(z;\eta_x)\right) \mu_Z(dz)\\
+ &= 
+  \int_{\CR_Z}\log \left(\frac{f_U(x,
+z\,;\,\theta)}{g(z;\eta_x)}\right)\partial_\eta \log g(z;\eta_x) g(z;\eta_x)  \mu_Z(dz)
+\end{align*}
+Here, we have used the fact that, for all $\eta$, 
+\[
+  \int_{\CR_Z} \partial_\eta \log g(z;\eta) g(z;\eta)\,\mu_Z(dz) =   \int_{\CR_Z} \partial_\eta  g(z;\eta)\mu_Z(dz) = 0
+  \]
+  since $\int_{\CR_Z} g(x, \eta)\mu_Z(dz) = 1$.
+  
+Denote by $\pi_{\bfeta}$ the probability distribution of the random variable $\bfZ$ taking values in $\CR_Z^{|T|}$ obtained by  sampling $\bfZ= (Z_x, x\in T)$ such that the components $Z_x$ are independent and with p.d.f. $g(\cdot;\eta_x)$ with respect to $\mu_Z$. Define
+\[
+\Phi_1(\theta, \bfz) =  \sum_{x\in T} \partial_\theta \log f_U(x, z_x\,;\,\theta)
+\]
+and
+\[
+\Phi_2(theta, \bfeta, \bfz) = \sum_{x\in T}\log \left(\frac{f_U(x,
+z\,;\,\theta)}{g(z;\eta_x)}\right)\partial_\eta \log g(z_x;\eta_x).
+\]
+Then, following \cref{sec:sgd}, one can maximize \cref{eq:em.var.par} using the algorithm
+\begin{equation}
+\label{eq:sga.var.1}
+\left\{
+\begin{aligned}
+\theta_{n+1} &= \theta_n + \gamma_{n+1} \Phi_1(\theta_n, \bfZ_{n+1})\\
+\bfeta_{n+1} &= \bfeta_n + \gamma_{n+1} \Phi_2(\theta_n, \bfeta_n, \bfZ_{n+1})
+\end{aligned}
+\right.
+\end{equation}
+where $\bfZ_{n+1} \sim \pi_{\bfeta_n}$. 
+
+Alternatively (for example when $T$ is large), one can also sample from $x\in T$ at each update. This would require defining $\pi_{\bfeta}$ as the distribution on $T\times \CR_Z$ with p.d.f. $\phi_{\bfeta}(x, z) = g(z;\eta_x) / N$, where $N=|T|$. One can now use
+\[
+\Phi_1(\theta, x, z) =  \partial_\theta \log f_U(x, z\,;\,\theta)
+\]
+and
+\[
+\Phi_2(\theta, \eta, z) = \log \left(\frac{f_U(x,
+z\,;\,\theta)}{g(z;\eta)}\right)\partial_\eta \log g(z;\eta),
+\]
+one can use 
+\begin{equation}
+\label{eq:sga.var.2}
+\left\{
+\begin{aligned}
+\theta_{n+1} &= \theta_n + \gamma_{n+1} \partial_\theta \log f_U(X_{n+1}, Z_{n+1}\,;\,\theta_n)\\
+\eta_{n+1,X_{n+1}} &= \eta_{n,X_{n+1}} + \gamma_{n+1} \log \left(\frac{f_U(X_{n+1},
+Z_{n+1}\,;\,\theta_n)}{g(Z_{n+1};\eta_{n, X_{n+1})}}\right)\partial_\eta \log g(Z_{n+1};\eta_{n, X_{n+1}})
+\end{aligned}
+\right.
+\end{equation}
+with $(X_{n+1}, Z_{n+1}) \sim \pi_{\bfeta_{n}}$. Sampling from a single training sample at each step can be replaced by sampling from a minibatch with obvious modifications.
+%Note that the second equation in \cref{eq:sga.var.2} only updates $\eta_{n+1,X_{n+1}}$.
+
+\section{Remarks}
+\subsection{Variations on the EM}
+Based on the formulation of the EM as the solution of \cref{eq:lik.var}, it should be clear  that solving \cref{eq:EM} at each step can be replaced by any update of the parameter that increases \cref{eq:lik.var}.
+For example, \cref{eq:EM} can be replaced by a partial run of a gradient ascent algorithm, stopped before convergence. One can also use a coordinate ascent strategy. Assume that $\theta$ can be split into several components, say two, so that $\theta = (\theta^{(1)}, \theta^{(2)})$. Then, \cref{eq:EM} may then be split into 
+\begin{align*}
+\th^{(1)}_{n+1} & = \argmax_{\th^{(1)}} \sum_{x\in T} \int_{\CR_Z} \log \left(f_U(x,
+z\,;\,\theta^{(1)}, \theta^{(2)}_{n})\right) f_Z(z\mid x\,;\,\theta(n)) \mu_Z(dz)\\
+\th^{(2)}_{n+1} & = \argmax_{\th^{(2)}} \sum_{x\in T} \int_{\CR_Z} \log \left(f_U(x,
+z\,;\,\theta^{(1)}_{n+1}, \theta^{(2)})\right) f_Z(z\mid x\,;\,\theta(n)) \mu_Z(dz).
+\end{align*}
+Doing so is, in particular, useful when both these steps are explicit, but not \cref{eq:EM}.
+ 
+\subsection{Direct minimization}
+\label{sec:direct.min.incomplete}
+While the EM algorithm is widely used in the context of partial observations, it is also possible to make explicit the derivative of 
+\[
+\log f_X(x\,;\,\theta) = \log \int_{\CR_Z} f_U(x, z\,;\,\theta) \mu_Z(dz)
+\]
+with respect to the parameter $\theta$. Indeed, differentiating the integral and writing $\prt_\th f_U = f_U \prt_\th \log f_U$, we have
+\begin{align*}
+\prt_\theta \log f_X(x\,;\,\theta) &= \int_{\CR_Z} \prt_\th \log f_U(x, z\,;\,\theta) \frac{f_U(x, z\,;\,\theta)}{f_X(x\,;\,\theta)}  \mu_Z(dz) \\
+&= \int_{\CR_Z} \prt_\th \log f_U(x, z\,;\,\theta) f_Z(z\,|\,x, \theta)  \mu_Z(dz).
+\end{align*}
+In other terms, the derivative of the log-likelihood of the observed data is the conditional expectation of the derivative of the log-likelihood of the full data given the observed data. When computable, this expression can be used with standard gradient-based optimization methods, such as those described in \cref{chap:optim}. This expression is also amenable to a stochastic gradient ascent algorithm, namely
+\begin{equation}
+\label{eq:direct.min.incomplete}
+\theta_{n+1} = \theta_n + \gamma_{n+1} \sum_{x\in T} \partial_\theta f_U(x, Z_{n+1, x}, \theta_n)
+\end{equation}
+where $Z_{n+1, x}$ follows the distribution with density $f_Z(\cdot\,|\,x, \theta_n)$ with respect to $\mu_Z$. An alternative SGA implementation can use the discussion in \cref{sec:var.approx}, with the density $g_{\eta_x}$ replaces by $f_Z(\cdot\,|\,x, \eta_x)$, which leads to 
+\[
+\left\{
+\begin{aligned}
+\theta_{n+1} &= \theta_n + \gamma_{n+1} \sum_{x\in T} \partial_\theta \log f_U(x, Z_{n+1, x}, \theta_n)\\
+\eta_{n+1,x} &= \bfeta_{n,x} - \gamma_{n+1} \partial_{\eta_x} \log f_Z(Z_{n+1,x}\,|\,x, \eta_x), \quad x\in T
+\end{aligned}
+\right.
+\]
+where $Z_{n+1, x}$ follows the distribution with density $f_Z(\cdot\,|\,x, \eta_{n,x})$.
+
+\subsection{Product measure assumption}
+We have worked, in this chapter, under the assumption that $\pi_U$ was absolutely continuous with respect to a product measure $\mu_U = \mu_X \otimes \mu_Z$. This is not a mild assumption, as it fails to include some important cases, for example when $X$ and $Z$ have some deterministic relationship, the simplest instance being when $X = F(Z)$ for some function $F$. In many cases, however, one can make simple transformations on the model that will make it satisfy this working assumption.   For example, if $X = F(Z)$, one can generally split $Z$ into $Z = (Z^{(1)}, Z^{(2)})$ so that the equation $X = F(Z)$ is equivalent to $Z^{(2)} = G(X, Z^{(1)})$ for some function $G$. One can then apply the discussion above to $U = (X,Z^{(1)})$ instead of $U = (X,Z)$. 
+
+If one is ready to step further into measure theoretic concepts, however, one can see that this product decomposition assumption was in fact unnecessary. Indeed, one can assume that the measure $\mu_U$ can ``disintegrate'' in the following sense: there exists, a measure $\mu_X$ on $\CR_X$ and, for all $x\in \CR_X$, a measure $\mu_Z(\ccdot|x)$ on $\CR_Z$ such that, for all functions $\psi$ defined on $\CR_U$, 
+\[
+\int_{\CR_U} \psi(x,z) \mu_U(dx,dz) = \int_{\CR_X} \int_{\CR_Z} \psi(x,z) \mu_Z(dz|x) \mu_X(dx).
+\]
+This is in fact a fairly general situation \citep{bogachev2007measure} as soon as one assumes that $\mu_U(\CR)$ is finite (which is not a real loss of generality as one can  reduce to this case by replacing if needed $\mu_U$ by an equivalent probability distribution). 
+
+With this assumption, the marginal distribution of $X$ had a p.d.f. with respect to $\mu_X$ given by
+\[
+f_X(x) = \int_{\CR_Z} f_U(x,z) \mu_Z(dz|x)
+\]
+and the conditional distributions $P_Z(\ccdot\mid x)$ have a p.d.f. relative to $\mu_Z(\ccdot\mid x)$ given by
+\[
+f_Z(z\mid x) = \frac{f_U(x,z)}{f_X(x)}. 
+\]
+The computations and approximations made earlier in this chapter can then be applied with essentially no modification. 
+
+%\section{Parameter estimation for graphical models}
+

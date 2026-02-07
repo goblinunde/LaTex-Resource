@@ -1,0 +1,66 @@
+\usepackage{xcolor}
+\usepackage[standard,thmmarks,amsmath]{ntheorem}
+\newcounter{thequestion}
+\setcounter{thequestion}{0}
+\newcounter{thesubquestion}
+\newcounter{thesubsubquestion}
+\newtheoremstyle{problem}%
+{}{}%
+%{\itshape}{}%
+%{\bfseries}{}%
+%{\newline}{}
+%{ \setcounter{thesubquestion}{0}}
+
+\theoremstyle{break}
+\theorembodyfont{\rm}
+\theoremprework{\vskip 1cm \hrule
+                \setcounter{thesubquestion}{0}}
+\theorempostwork{\hrule}
+\newtheorem{question}{Problem}
+
+\theoremstyle{plain}
+
+
+%{ 
+%%			\refstepcounter{thequestion}
+%%           \stepcounter{thequestion}
+%           \setcounter{thesubquestion}{0}
+%           }
+%           {
+%           \vskip 0.1cm
+%           \vskip 0.3cm
+%           }
+
+\newcommand{\subquestion}{\vskip 0.25cm
+                \stepcounter{thesubquestion}
+                \noindent(\arabic{thesubquestion}) 
+                \setcounter{thesubsubquestion}{0}
+         }
+
+\newcommand{\subsubquestion}{\vskip 0.10cm
+\stepcounter{thesubsubquestion} 
+%\noindent(\arabic{thequestion}.\arabic{thesubquestion}.\alph{thesubsubquestion})
+\par(\alph{thesubsubquestion})
+         }
+
+
+\definecolor{myred}{rgb}{.5,0,0}
+
+
+\newif\ifsolutions
+\newcommand{\solution}[1]{{
+\ifsolutions
+\color{myred}
+%\small
+\vskip 0.75cm
+                \setcounter{thesubquestion}{0}
+                \noindent {\bf Solution}:{#1}
+\fi
+}}
+
+\newif\ifuselabel
+\newcommand{\mylabel}[1]{{
+\ifuselabel
+\label{#1}
+\fi
+}}

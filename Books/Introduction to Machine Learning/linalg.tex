@@ -1,0 +1,395 @@
+\chapter{A Few Results in Matrix Analysis}
+\label{chap:linalg}
+
+This chapter collects a few results in linear algebra that will be useful in the rest of this book.
+
+\section{Notation and basic facts}
+We  denote by $\CM_{n,d}(\mR)$ the space of all $n\times d$ matrices with real coefficients\footnote{Unless mentioned otherwise, all matrices are assumed to be real.}. For a matrix $A\in \CM_{n,d}(\mR)$ and integer $k\leq n$ and $l\leq d$, we let $A_{\lceil kl\rceil}\in \CM_{k,l}(\mR)$ denote the matrix $A$ restricted to its first $k$ rows and first $l$ columns. The $i,j$ entry of $A$ will be denoted $A(i,j)$ or $\pe A {ij}$.
+
+We assume that the reader is familiar with elementary matrix analysis, including, in particular the fact that symmetric matrices are diagonalizable in an orthonormal basis, i.e., if $A \in \CM_{d,d}(\mR)$ is a symmetric matrix (whose space is denoted $\CS_d$), there exists an orthogonal  matrix $U\in \CO_d$ (i.e., satisfying $U^TU = UU^T = \Id[d]$) and a diagonal matrix $D\in \CM_{d,d}(\mR)$ such that
+\[
+A = UDU^T.
+\]
+The identity $AU = UD$ then implies that the columns of $U$ form an orthonormal basis of eigenvectors of $A$. 
+
+If $A\in \CS^+_d$ is positive semi-definite (i.e., $u^T Au \geq 0$ for all $u\in \mR^d$), the entries of  $D$ in the decomposition $A = UDU^T$ are non-negative, and one can define the matrix square root of $A$ as $S = UD^{\odot 1/2} U^T$ where  $D^{\odot 1/2}$ is the diagonal matrix formed taking the square roots of all  coefficients of $D$. We will use the notation $S = A^{1/2}$. Note that $D^{1/2} = D^{\odot 1/2}$ if $D$ is diagonal and positive semi-definite. 
+
+If  $A\in \CS^{++}_d$ is positive definite (i.e., $A$ is positive semi-definite and $u^TAu=0$ implies $u=0$) and $B$ is positive semi-definite, both being $d\times d$ matrices, the generalized eigenvalue problem associated with $A$ and $B$ consists in finding a diagonal matrix $D$ and a matrix $U$ such that $BU = AUD$ and $U^TAU = \Id[d]$. Letting $\tilde U = A^{1/2} U$, the problem is equivalent to solving $A^{-1/2} B A^{-1/2} \tilde U = \tilde U D$ with $\tilde U^T \tilde U = \Id[d]$, i.e., finding the eigenvalue decomposition of the symmetric positive-definite matrix $A^{-1/2} B A^{-1/2}$.
+
+If $A\in \CM_{n,d}(\mR)$, it can be decomposed as 
+\[
+A = UDV^T
+\]
+where $U \in \CO_{n}(\mR)$ and  $V\in \CO_{d}(\mR)$) are orthogonal matrices and $D\in \CM_{n,d}(\mR)$ is diagonal (i.e., such that $D(i,j) = 0$ whenever $i\neq j$) with non-negative diagonal coefficients. These coefficients are called the singular values of $A$, and the procedure is called a {\em singular-value decomposition} (SVD) of $A$. An equivalent formulation is that there exist orthonormal bases $u_1, \ldots, u_n$ of $\mR^n$ and $v_1, \ldots, v_d$ of $\mR^d$ (forming the columns of $U$ and $V$) such that
+\[
+Av_i = \la_i u_i
+\]
+for $i\leq \min(n,d)$, where $\la_1, \ldots, \la_{\min(n,d)}$ are the singular values. Of course, if $A$ is square and symmetric positive semi-definite, an eigenvalue decomposition of $A$  is also a singular value decomposition (and the singular values coincide with the eigenvalues). More generally, if  $A = UDV^T$, then $AA^T = UDD^TU^T$ and $A^TA = VD^TDV^T$ are eigenvalue decompositions of $AA^T$ and $A^TA$. Singular values are uniquely defined, up to reordering. However, the matrices $U$ and $V$ are not unique up to column reordering in general.
+
+ If $m = \min(n, d)$, then, forming the matrices $\tilde U = U_{\lceil n,m\rceil}$ (resp. $\tilde V = V_{\lceil d, m\rceil}$) by removing from $U$ (resp. $V$) its last $n-m$ (resp. $d-m$) columns , and $\tilde D=D_{\lceil m,m\rceil}$  by removing from $D$ its $n-m$ rows and $d-m$ columns, one has
+\[
+A = \tilde U \tilde D \tilde V^T
+\]
+with $\tilde U$, $\tilde D$ and $\tilde V$ having respectively size $n\times m$, $m\times m$ and $m\times d$, $\tilde U^T \tilde U = \tilde V^T \tilde V = \Id[m]$ and $\tilde D$ diagonal with non-negative coefficients. This representation provides a {\em reduced SVD} of $A$ and one can create a full SVD from a reduced one by completing the missing rows of $\tilde U$ and $\tilde V$ to form orthogonal matrices, and by adding the required number of zeros to $\tilde D$.
+
+\section{The trace inequality}
+
+We now descibe Von Neumann's trace theorem. Its justification follows the proof given in \citet{mirsky1975trace}.
+\begin{theorem}[Von Neumann]
+\label{th:trace.ineq}
+Let $A, B\in \CM_{n,d}(\mR)$ have  singular values $(\la_1, \ldots, \la_m)$ and $(\mu_1, \ldots, \mu_m)$, respectively,  where $m = \min(n,d)$. Assume that these eigenvalues are listed in decreasing order so that
+$\la_1\geq \cdots\geq \la_m$ and $\mu_1\geq \cdots\geq \mu_m$. Then,
+\begin{equation}
+\label{eq:trace.ineq}
+\trace(A^TB) \leq \sum_{i=1}^m \la_i\mu_i\,.
+\end{equation}
+
+Moreover, if $\trace(A^TB) = \sum_{i=1}^m \la_i\mu_i$, then there exist $n\times n$ and $d\times d$ orthogonal matrices $U$ and $V$ such that $U^TAV$ and $U^TBV$ are both diagonal, i.e., one can find SVDs of $A$ and $B$ in the same bases of $\mR^n$ and $\mR^d$.
+\end{theorem}
+
+\begin{proof}
+We can assume without loss of generality that $d\leq n$ because, if the result holds for $A$ and $B$, it also holds for $A^T$ and $B^T$. Let $A = U_1 \Lambda V_1^T$ and $B = U_2 M V_2^T$ be the singular values decompositions of $A$ and $B$ (both $\La$ and $M$ are $n\times d$ matrices). Then 
+\[
+\trace(A^TB) = \trace(V_1 \Lambda^T U_1^TU_2 M V_2) = \trace(\Lambda^T UMV^T)
+\]
+with $U = U_1^TU_2$ and $V = V_1^T V_2$. Let $u(i,j), 1\leq i,j\leq n$ and $v(i,j), 1\leq i,j\leq d$ be the coefficients of the orthogonal matrices $U$ and $V$. Then
+\begin{equation}
+\label{eq:trace.ineq.proof.1}
+\trace(\Lambda^T UMV^T) = \sum_{i,j=1}^d u(i,j) v(i,j) \la_i\mu_j \leq \frac12 \sum_{i,j=1}^d \la_i \mu_j u(i,j)^2 + \frac12 \sum_{i,j=1}^d \la_i \mu_j v(i,j)^2
+ \end{equation}
+ Let us consider the first sum in the upper-bound. Let $\xi_d = \la_d$ (resp. $\eta_d = \mu_d$) and $\xi_i = \la_i - \la_{i+1}$ (resp. $\eta_i = \mu_i - \mu_{i+1}$) for $i=1, \ldots, d-1$. Since  singular values are non-increasing, we have $\xi_i, \eta_i\geq 0$  and 
+ \[
+ \la_i = \sum_{j=i}^d \xi_j, \quad  \mu_i = \sum_{j=i}^d \eta_j
+ \]
+ for $i=1, \ldots, d$. We have
+ \begin{align}
+ \nonumber
+ \sum_{i,j=1}^d \la_i \mu_j u(i,j)^2 &=  \sum_{i,j=1}^d \sum_{i'=i}^d\xi_{i'}\sum_{j'=j}^d \eta_{j'}  u(i,j)^2 = \sum_{i',j'=1}^d \xi_{i'}\eta_{j'} \sum_{i=1}^{i'}\sum_{j=1}^{j'} u(i,j)^2\\
+ &\leq \sum_{i',j'=1}^d \xi_{i'}\eta_{j'} \min(i', j')
+ \label{eq:trace.ineq.proof.2}
+ \end{align}
+where we used the fact that $U$ is orthogonal, which implies that $\sum_{j=1}^{j'} u(i,j)^2$ and $\sum_{i=1}^{i'} u(i,j)^2$ are both less than 1. Notice also that, when $u(i,j) = \de_{ij}$ (i.e., $u(i,j)=1$ if $i=j$ and zero otherwise), then
+\[
+\sum_{i=1}^{i'}\sum_{j=1}^{j'} u(i,j)^2 = \min(i', j'),
+\]
+so that the last inequality is an identity, and the chain of equalities leading to \cref{eq:trace.ineq.proof.2} implies
+\[
+\sum_{i',j'=1}^d \xi_{i'}\eta_{j'} \min(i', j') = \sum_{i=1}^d \la_i\mu_j\,.
+\]
+We therefore obtain (for any $U$), the fact that 
+\[
+ \sum_{i,j=1}^d \la_i \mu_j u(i,j)^2 \leq \sum_{i=1}^d \la_i\mu_j.
+ \]
+The  same identity obviously holds with $v$ in place of $u$, and combining the two yields \cref{eq:trace.ineq}.
+\bigskip
+
+We now consider conditions for equality. Clearly, if one can find SVD decompositions of $A$ and $B$ with $U_1=U_2$ and $V_1=V_2$, then $U = \Id[n]$, $V=\Id[d]$ and \cref{eq:trace.ineq} is an identity. We want to prove the converse statement.
+
+For \cref{eq:trace.ineq} to be an equality, we first need \cref{eq:trace.ineq.proof.1} to be an identity, which requires that $u(i,j) = v(i,j)$ as soon as $\la_i\mu_j > 0$. We also need an equality in \cref{eq:trace.ineq.proof.2}, which requires 
+\[
+\sum_{i=1}^{i'}\sum_{j=1}^{j'} u(i,j)^2 = \min(i',j')
+\]
+as soon as $\la_{i'} > \la_{i'+1}$ and $\mu_{j'} > \mu_{j'+1}$. The same identity must be true with $v(i,j)$ replacing $u(i,j)$
+
+In view of this, denote by $i_1< \cdots < i_p$ (resp. $j_1 < \cdots < j_q$) the indexes at which the singular values of $A$ (resp. $B$) differ form their successors, with the convention $\la_{d+1} = \mu_{d+1} = 0$. Let, for $k=1, \ldots, p$ and $l=1, \ldots, q$
+\[
+C(k,l) = \sum_{i=1}^{i_k}\sum_{j=1}^{j_l} u(i,j)^2.
+\]
+Then, we must have $C(k,l) = \min(i_k, j_l)$ for all $k,l$ and $u(i,j) = v(i,j)$ for $i=1, \ldots, i_p$ and $j=1, \ldots, j_q$. 
+
+If, for all $i,j\leq d$, we let $U_{\lceil ij\rceil}$ be the matrix formed by the first $i$ rows and $j$ columns of $U$, the condition $C_{kl} = \min(i_k, j_l)$ requires that $U_{\lceil i_kj_l\rceil}U_{\lceil i_kj_l\rceil}^T =\Id[i_k]$ if $i_k\leq j_l$ and $U_{\lceil i_kj_l\rceil}^TU_{\lceil i_kj_l\rceil} =\Id[j_l]$ if $j_l\leq i_k$.
+This shows that, if $i_k\leq j_l$,  the rows of $U_{\lceil i_kj_l\rceil}$ form an orthonormal family, and necessarily, all elements $u(i,j)$ for $i\leq i_k$ and $j>j_l$ vanish. The symmetric situation holds if $j_l\leq i_k$.
+
+Let $r_k = i_k - i_{k-1}$ and $s_l = j_l - j_{l-1}$ (with $i_0=j_0=0$).
+We now consider possible changes in the SVDs of $A$ and $B$. With our notation, the matrix $\La$ takes the form
+\[
+\Lambda = \begin{pmatrix}
+\la_{i_1} \Id[r_1] & 0 & 0 & \cdots & 0 &0 &\ldots& 0 \\
+0 & \la_{i_2} \Id[r_2] & 0 & \cdots & 0 &0 &\ldots& 0\\
+\vdots &  &\ddots & &\vdots &\vdots&&\vdots\\
+0 & 0 & \ldots & \la_{i_p} \Id[r_p] & 0 &0 &\ldots& 0\\
+0 &&\ldots && 0&0 &\ldots& 0\\
+\vdots &&&&\vdots &\vdots&&\vdots\\
+0 &&\ldots && 0 &0 &\ldots& 0
+\end{pmatrix}
+\]
+Let $W, \tilde W$ be  $n\times n$ and $d\times d$ orthogonal matrices taking the form
+\[
+W = \begin{pmatrix}
+W_1 & 0 & 0 & \cdots & 0 \\
+0 & W_2 & 0 & \cdots & 0\\
+\vdots &  &\ddots & &\vdots \\
+0 & 0 & \ldots & W_p & 0 \\
+0 &&\ldots && W_{p+1}
+\end{pmatrix},\ 
+\tilde W = \begin{pmatrix}
+W_1 & 0 & 0 & \cdots & 0 \\
+0 & W_2 & 0 & \cdots & 0\\
+\vdots &  &\ddots & &\vdots \\
+0 & 0 & \ldots & W_p & 0 \\
+0 &&\ldots && \tilde W_{p+1}
+\end{pmatrix}
+\]
+where $W_1, \ldots, W_p$ are orthogonal with respective sizes $r_1, \ldots, r_p$, $W_{p+1}$ is orthogonal with size $n-i_p$ and $\tilde W_{p+1}$ is orthogonal with size $d-i_p$. Then we have
+\[
+WD\tilde W = D
+\]
+proving that $U_1$ can be replaced by $U_1W$ provided that $V_1$ is replaced by $V_1 \tilde  W$.  Similar transformations can be made on $U_1$ and $V_2$, with $U_2$ replaced by $U_2 Z$ and $V_2 $ by $V_2 \tilde Z$ with 
+\[
+Z = \begin{pmatrix}
+Z_1 & 0 & 0 & \cdots & 0 \\
+0 & Z_2 & 0 & \cdots & 0\\
+\vdots &  &\ddots & &\vdots \\
+0 & 0 & \ldots & Z_q & 0 \\
+0 &&\ldots && Z_{q+1}
+\end{pmatrix},\quad 
+\tilde Z = \begin{pmatrix}
+Z_1 & 0 & 0 & \cdots & 0 \\
+0 & Z_2 & 0 & \cdots & 0\\
+\vdots &  &\ddots & &\vdots \\
+0 & 0 & \ldots & Z_q & 0 \\
+0 &&\ldots && \tilde Z_{q+1}
+\end{pmatrix}
+\]
+with a structure similar to $W$ and $\tilde W$, replacing $r_1, \ldots, r_p$ by $s_1, \ldots, s_q$. As a consequence, $U = U_1^TU_2$ can be replaced by $W^TUZ$ and $V$ by $\tilde W^T V \tilde Z$. To complete the proof, we need to show that, when \cref{eq:trace.ineq} is an equality, these matrices can be chosen so that  $W^TUZ=\Id[n]$ and $\tilde W^T V \tilde Z = \Id[d]$.
+
+Let us consider a first step in this direction, assuming that $i_1 \leq j_1$ so that 
+\[
+U_{[i_1j_1]} U_{\lceil i_1j_1\rceil}^T = \Id[i_1]. 
+\]
+Complete $U_{\lceil i_1j_1\rceil}^T$ into a orthogonal matrix $Z_1 = [U_{\lceil i_1j_1\rceil}^T, \tilde U]$. Build a matrix $Z$ as above by taking $Z_2$, \ldots, $Z_{q+1}$ equal to the identity. Then $UZ$ has a first $i_1\times i_1$ block equal to $\Id[i_1]$, which implies that all coefficients on the right and below this block are zeros. If $j_1\leq i_1$, a similar construction can be made on the other side, letting $W_1 =   [U_{\lceil i_1j_1\rceil} \tilde U]$ with the first $j_1\times j_1$ block of the new matrix $U$ equal to the identity. Note that, since $V_{\lceil i_pj_q\rceil } = U_{\lceil i_pj_q\rceil }$, the same result is obtained on $V$ at the same time. 
+
+Pursuing this way (and skipping the formal induction argument, which is a bit tedious), we can progressively introduce identity blocks into $U$ and $V$ and transform them into new matrices (that we still denote by $U$ and $V$) taking the form (letting $k=\min(i_p, j_q)$)
+\[
+U = \begin{pmatrix}
+\Id[k] & 0\\
+0 & \bar U
+\end{pmatrix}
+\text{ and }
+V = \begin{pmatrix}
+\Id[k] & 0\\
+0 & \bar V
+\end{pmatrix}
+\]
+
+If $k=i_p$ (resp. $k=j_q$), the final reduction can be obtained by choosing $W_{p+1} = \bar U$ and $\tilde W_{p+1} = \bar V$ (resp.  $Z_{p+1} = \bar U^T$ and $\tilde Z_{p+1} = \bar V^T$), leading to SVDs for $A$ and $B$ with identical matrices $U_1=U_2$ and $V_1=V_2$.
+\end{proof}
+
+\begin{remark}
+Note that, since the singular values of $-A$ and of $A$ coincide, \cref{th:trace.ineq} implies
+\begin{equation}
+\label{eq:trace.ineq.abs}
+\big|\trace(A^TB)\big| \leq \sum_{i=1}^m \la_i\mu_i\,.
+\end{equation}
+for all matrices $A$ and $B$, with equality if either $A$ and $B$ or $-A$ and $B$ have an SVD using the same bases. 
+\end{remark}
+
+\section{Applications}
+Let $p$ and $d$ be integers with $p\leq d$.
+Let $A\in \CS_{d}(\mR)$, $B\in \CS_{p}(\mR)$ be symmetric matrices.
+We consider the following optimization problem: maximize, over  matrices $U\in \CM_{d,p}(\mR)$ such that $U^TU = \Id[p]$, the function
+\[
+F(U) = \trace(U^TAUB) = \trace(AUBU^T)\,.
+\]
+We first note that the singular values of $UBU^T$, which is $d\times d$, are the same as the eigenvalues of $B$ completed with zeros. Letting $\la_1 \geq \cdots \geq \la_d$ be the eigenvalues of $A$ and $\mu_1 \geq \cdots \geq \mu_p$ those of $B$, we therefore have, from \cref{th:trace.ineq},
+\[
+F(U) \leq \sum_{i=1}^p \la_i\mu_i.
+\]
+Introduce the eigenvalue decompositions of $A$ and $B$ in the form $A = V\Lambda V^T$ and $B = W M W^T$. For $F(U)$ to be equal to its upper-bound, we know that we must arrange $UBU^T$ to take the form
+\[
+UBU^T = V \begin{pmatrix}
+M & 0\\ 0& 0
+\end{pmatrix}
+V^T.
+\]
+Use, as before, the notation $V_{\lceil dp\rceil}$ to denote the matrix formed with the $p$ first columns of $V$. Take $U = V_{\lceil dp\rceil}W^T$, which satisfies $U^TU = \Id[p]$. We then have
+\[
+V_{\lceil dp\rceil} W^T B W V_{\lceil dp\rceil}^T = V_{\lceil dp\rceil} M V_{\lceil dp\rceil}^T =  V \begin{pmatrix}
+M & 0\\ 0& 0.
+\end{pmatrix}
+V^T,
+\]
+which shows that $U$ is optimal. 
+%Finally, we note that we can remove the assumption that $A$ was positive semi-definite, since, for any $\lambda\geq 0$, 
+%\begin{align*}
+%\trace((A + \lambda\Id[d])UBU^T) &= F(U) + \lambda \trace(UBU^T) \\
+%& =  F(U) + \lambda \trace(BU^TU)\\
+%& = F(U) + \lambda \trace(B)
+%\end{align*}
+%so that maximizing $F$ is equivalent to maximizing the left-hand side, and $A + \lambda\Id[d]$ is positive definite for large enough $\lambda$.  
+We summarize this discussion in the next theorem.
+
+\begin{theorem}
+\label{th:pca.base}
+Let $A\in \CS_{d}(\mR)$ and $B\in \CS_{p}(\mR)$ be   symmetric matrices,  with $p\leq d$. Let  eigenvalue decompositions of $A$ and $B$ be  given by $A = V\Lambda V^T$ and  $B= WMW^T$, where the diagonal elements of  $\Lambda$ (resp. $M$) are  $\la_1\geq \cdots \geq \la_d$ (resp. $\mu_1  \geq \cdots \geq \mu_p$).
+
+Define $F(U) = \trace(AUBU^T)$, for $U\in \CM_{d,p}(\mR)$. Then,
+\[
+\max\left\{F(U): U^TU = \Id[p]\right\} = \sum_{i=1}^p \la_i\mu_i.
+\]
+This maximum is attained at 
+\[
+U = V_{\lceil d,p\rceil} W^T.
+\]
+\end{theorem}
+
+The following corollary applies \cref{th:pca.base} with $B = \mathrm{diag}(\mu_1, \ldots, \mu_p)$.
+\begin{corollary}
+\label{cor:pca.base}
+Let $A\in \CS_{d}(\mR)$ be a symmetric matrix with eigenvalues $\la_1\geq \cdots \geq \la_d$.
+For $p\leq d$, let $\mu_1 \geq  \cdots \geq \mu_p > 0$ and define
+\[
+F(e_1, \ldots, e_p) = \sum_{i=1}^p \mu_i e_i^TAe_i.
+\]
+Then, the maximum of $F$ over all orthonormal families $e_1, \ldots, e_p$ in $\mR^d$ is $\sum_{i=1}^p \la_i\mu_i$ and is attained when $e_1, \ldots, e_p$ are eigenvectors of $A$ with eigenvalues $\la_1, \ldots, \la_p$. 
+
+The minimum of $F$ over all orthonormal families $e_1, \ldots, e_p$ in $\mR^d$ is $\sum_{i=1}^p \la_{d-i+1}\mu_i$ and is attained when $e_1, \ldots, e_p$ are eigenvectors of $A$ with eigenvalues $\la_d, \ldots, \la_{d-p+1}$. 
+\end{corollary}
+\begin{proof}
+The statement about the maximum is just a special case of  \cref{th:pca.base}, with $B = \mathrm{diag}(\mu_1, \ldots, \mu_p)$, noting that the $i$th diagonal element of $U^TAU$ is $e_i^TAe_i$ where $e_i$ is the $i$th column of $U$.
+
+The  statement about the minimum is deduced by replacing $A$ by $-A$.
+\end{proof}
+Applying this corollary with $p=1$, we retrieve the elementary result that $\la_1 = \max\{u^TAu: |u|=1\}$ and $\la_d = \min\{u^TAu: |u|=1\}$. 
+
+\bigskip
+
+To complete this chapter, we quickly state and prove Rayleigh's theorem.
+\begin{theorem}
+\label{th:rayleigh.base}
+Let $A\in \CM_{d,d}(\mR)$ be a symmetric matrix with eigenvalues $\la_1 \geq \cdots \geq \la_d$. Then 
+\[
+\la_k = \max_{V: \dim(V) = k}\min\{u^TAu, u\in V, |u|=1\} = \min_{V: \dim(V) = d-k+1}\max\{u^TAu, u\in V, |u|=1\}
+\]
+where the min and max are taken over linear subspaces of $\mR^d$.
+\end{theorem}
+\begin{proof}
+Let $e_1, \ldots, e_d$ be an orthonormal basis of eigenvectors of $A$ associated with $\la_1, \ldots, \la_d$. Let, for $k\leq l$,  $W_{k,l} = \vspan(e_k, \ldots, e_l)$. Let $V$ be  a subspace of dimension $k$. Then $V\cap W_{k,d} \neq \emptyset$ (because the sum of the dimensions of these two spaces is $d+1$). Taking $u_0$ with norm 1 in this intersection, we have  
+\[
+\min\{u^TAu, u\in V, |u|=1\} \leq u_0^TAu_0 \leq \max\{u^TAu, u\in W_{k,d}, |u|=1\} = \lambda_k,
+\]
+where the last identity follows by considering the eigenvalues of $A$ restricted to $W_{k,d}$.  So, the maximum of the right-hand side is indeed less than $\lambda_k$, and it is attained for $V = W_{1,k}$. This proves the first identity, and the second one can be obtained by applying the first one to $-A$.
+\end{proof}
+
+\section{Some matrix norms}
+\label{sec:matrix.norms}
+
+The {\em operator norm} of a matrix $A \in \CM_{n,d}(\mR)$, is defined as
+\[
+|A|_{\mathrm{op}} = \max \{|Ax|: x\in \mR^d, |x| = 1\}.
+\]
+It is equal to the square root of the largest eigenvalue of $A^TA$, i.e., to the largest singular value of $A$.
+
+The {\em Frobenius norm } of $A$ is 
+\[
+|A|_F = \sqrt{\trace(A^TA)} = \sqrt{\sum_{i,j=1}^d A(i,j)^2},
+\]
+so that
+\[
+|A|_F = \left(\sum_{k=1}^m \sigma_k^2\right)^{1/2}
+\]
+where $\sigma_1, \ldots, \sigma_m $ are the singular values of $A$ (and $m  = \min(n,d)$). 
+
+The {\em nuclear norm} of $A$ is defined by
+\[
+|A|_* = \sum_{k=1}^d \sig_k\,.
+\]
+One can prove that this is a norm using an equivalent definition, provided by the following proposition.
+\begin{proposition}
+\label{prop:nuclear}
+Let $A$ be an $n$ by $d$ matrix. Then
+\[
+|A|_* = \max\Big\{\trace(UAV^T): U \in \CM_{n,n} \text{ and } U^TU = \Id,  V \in \CM_{d,d} \text{ and } V^TV = \Id\Big\}\,.
+\]
+\end{proposition}
+\begin{proof}
+The fact that $\trace(UAV^T) \leq |A|_*$ for any $U$ and $V$ is a consequence of the trace inequality applied with $B = [\Id, 0]$ or its transpose depending on whether $n\leq d$ or not. The upper-bound being attained when $U$ and $V$ are the matrices forming the singular value decomposition of $A$, the proof is complete.
+\end{proof}
+The fact that $|A|_*$ is a norm, for which the only non-trivial fact was the triangular inequality, now is an easy consequence of this proposition, because the maximum of the sum of two functions is always less than the sum of their maximums. 
+More precisely, we have
+\begin{align*}
+|A+B|_* &= \max\{\trace(UAV^T) + \trace(UBV^T):\\
+& \qquad \qquad \qquad \qquad U^TU = \Id, V^TV = \Id\}\\
+&\leq \max\{\trace(UAV^T): U^TU = \Id, V^TV = \Id\}\\
+& \quad + \max\{\trace(UBV^T): U^TU = \Id,  V^TV = \Id\}\\
+&= |A|_* + |B|_*
+\end{align*}
+
+%This result is actually a special case of a family of inequalities on the singular values of sums of matrices. Assume that $A, B\in \CM_{n,d}(\mR)$ have  singular values $(\la_1, \ldots, \la_m)$ and $(\mu_1, \ldots, \mu_m)$, respectively,  where $m = \min(n,d)$ and that these eigenvalues are listed in decreasing order. Let $\sigma_1, \ldots, \sigma_m$ be the singular values of $A+B$ also listed in decreasing order.
+%Then, for all $k\leq m$, one has
+%\[
+%\sigma_1 + \cdots + \sigma_k \leq \lambda_1 + \cdots + \lambda_k + \mu_1 + \cdots + \mu_k.
+%\]
+
+The nuclear norms is also called the Ky Fan norm of order $d$. Ky Fan norms of order $k$ (for $1\leq k\leq d$) associate to a matrix $A$ the quantity
+\[
+|A|_{(k)} = \lambda_1 + \cdots + \lambda_k,
+\]
+i.e., the sum of its $k$ largest singular values. One has the following proposition.
+
+\begin{proposition}
+\label{prop:ky.fan}
+The Ky Fan norms satisfy the triangular inequality. 
+\end{proposition}
+\begin{proof}
+We prove this following the argument suggested in \citet{bhatia2013matrix}. For $A\in\CM_{d,d}$,  and $k=1, \ldots, d$, let
+$\trace_{(k)}(A)$ be the sum of the $k$   largest diagonal elements of $A$. Let, for a symmetric matrix $A$, $|A|'_{(k)}$ denote the sum of the $k$ largest eigenvalues of $A$ (it is equal to $|A|_{(k)}$ if $A$ is positive definite, but can also include negative values).
+
+Then, for any  symmetric matrix $A\in \CS_d$, 
+\begin{equation}
+\label{eq:kf.1}
+|A|'_{(k)} = \max\left\{\trace_{(k)}(UAU^T): U\in CO_d\right\}.
+\end{equation}
+To show this, assume that $V$ in $\CO_d$ diagonalizes $A$, so that $D = VAV^T$ is a diagonal matrix. Assume, without loss of generality, that the coefficients $\lambda_j = D(j,j)$ are non-increasing. Fix $U\in \CO_d$, let $B = UAU^T$ and $W = VU^T$ so that $D = WBW^T$, or $B = W^TDW$. Then, for any $j\leq d$, 
+\[
+B(j,j) = \sum_{i=1}^d W(i,j)^2 D(i,i).
+\]
+Then, for any $1\leq j_1 < \cdots < j_k\leq d$
+\begin{align*}
+\sum_{l=1}^k B(j_l, j_l) &= \sum_{i=1}^d D(i,i) \sum_{l=1}^k W(i, j_l)^2\\
+&= \sum_{i=1}^k D(i,i) + \sum_{i=1}^k D(i,i) \big(\sum_{l=1}^k W(i, j_l)^2 - 1\big) + \sum_{i=k+1}^d D(i,i) \sum_{l=1}^k W(i, j_l)^2\\
+&= \sum_{i=1}^k D(i,i) + \sum_{i=1}^k (D(i,i) - D(k,k)) \big(\sum_{l=1}^k W(i, j_l)^2 - 1\big) \\
+&+ \sum_{i=k+1}^d (D(i,i) - D(k,k)) \sum_{l=1}^k W(i, j_l)^2
++ D(k,k) \left(\sum_{i=1}^n \sum_{j=1}^k W(i,j_l)^2 - k\right).
+\end{align*}
+Because $W$ is orthogonal, we have  $\sum_{l=1}^k W(i, j_l)^2 \leq 1$ and 
+\[
+\sum_{i=1}^n \sum_{j=1}^k W(i,j_l)^2 = k.
+\]
+This shows that the terms after $\sum_{i=1}^k D(i,i)$ in the upper bound are negative or zero, so that
+\[
+\sum_{l=1}^k B(j_l, j_l) \leq \sum_{i=1}^k D(i,i).
+\]
+The maximum of the left-hand side is $\trace_{(k)}(B)$. Noting that we get an equality when choosing $U=V$, the proof of \cref{eq:kf.1} is complete.
+
+Using the same argument as that made above for the nuclear norm, one deduces from this that
+\[
+|A+B|_{(k)}' \leq |A|_{(k)}' + |B|_{(k)}'
+\]
+for all $A,B \in \CS_d$ and all $k=1, \ldots, d$. 
+
+Now, let $A\in \CM_{n,d}$ and consider the symmetric matrix
+\[
+\tilde A = \begin{pmatrix}
+0 & A^T\\ A & 0
+\end{pmatrix}
+\in \CS_{n+d}.
+\]
+Write a vector $u \in \mR^{n+d}$ as $u = \begin{pmatrix}
+u_1\\u_2
+\end{pmatrix}
+$ with $u_1\in \mR^d$ and $u_2\in \mR^n$. Then $u$ is an eigenvector of $\tilde A$ for an eigenvalue $\lambda$ if and only if $A^Tu_2 =\lambda u_1$ and $Au_1 = \lambda u_2$, which implies that $A^TA u_1 = \lambda^2 u_1$ and $\lambda^2 $ is a singular value of $A$.  Conversely, if $\mu$ is a nonzero singular value of $A$, associated with eigenvector $u_1$, then $1 /\sqrt{\mu}$ and $-1 /\sqrt{\mu}$ are eigenvalues of $\tilde A$, associated with eigenvectors $\begin{pmatrix}
+u_1 \\ \pm  Au_1 / \sqrt{\mu}
+\end{pmatrix} 
+$.
+It follows from this that $|A|_{(k)} = |\tilde A|'_{(k)}$ for $k \leq \min(n,d)$ and therefore satisfies the triangle inequality. 
+\end{proof}
+
+We refer to \cite{bhatia2013matrix} for more examples of matrix norms, including, in particular those provided by taking $p$th powers in Ky Fan's norms, defining
+\[
+|A|_{(k,p)} = (\lambda_1^p + \cdots + \lambda_k^p)^{1/p}.
+\]
+
+
+
+

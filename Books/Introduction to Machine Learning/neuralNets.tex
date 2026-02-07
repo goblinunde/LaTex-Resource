@@ -1,0 +1,750 @@
+% !TEX root = machine_learning.tex
+\chapter[Neural Nets]{Iterated Compositions of  Functions and Neural Nets}
+\label{chap:neural.nets}
+
+\section{First definitions}
+We now discuss a class of methods in which the predictor $f$ is built using iterated compositions, with a main application to neural nets.  We will structure these models using  directed acyclic graphs (DAG). These graphs are  composed with a set of vertexes (or nodes) $\mathcal V = \{0, \ldots, m+1\}$ and a collection $\mathcal L$  of directed edges $i\to j$ between some vertexes.  If  an edge exists between $i$ and $j$, one says that $i$ is a parent of $j$ and $j$ a child of $i$ and  will use the notation $\pa{i}$ (resp. $\cl{i}$) denote the set of parents (resp. children) of $i$. The graphs we consider must satisfy the following conditions:
+\begin{enumerate}[label = (\roman*),wide=0.5cm]
+\item No index is a descendant of itself, i.e., that the graph is acyclic.
+\item The only index without parent is $i=0$ and the only one without children in $i=m+1$.
+\end{enumerate}
+
+To each node $i$ in the graph, one associates a dimension $d_i$ and a variable $z_i \in \mR^{d_i}$. 
+The root node variable,   $z_0 = x$, is the input  and $z_{m+1}$ is the output.
+One also associates to each node $i\neq 0$ a function $\psi_i$ defined on the product space $\bigotimes_{j\in\pa{i}} \mR^{d_j}$ and taking values in $\mR^{d_i}$.
+The input-output relation is then defined by the family of equations:
+\[
+z_i = \psi_i(z_{\pa{i}})
+\]
+where  $z_{\pa{i}} = (z_j, j\in\pa{i})$.
+Since there is only one root  and one terminal node, these iterations implement a relationship $y = z_{m+1} = f(x)$, with $z_0=x$. We will refer to the $z_1, \ldots, z_m$ as the {\em latent variables} of the network.
+
+Each function $\psi_i$ is furthermore parametrized by an $s_i$-dimensional vector  $w_i \in \mR^{s_i}$, so that we will write 
+\[
+z_i = \psi_i(z_{\pa{i}}; w_i).
+\]
+ We let $\CW$ denote the vector containing all parameters $w_1, \ldots, w_{m+1}$, which therefore has dimension $s = s_1+\cdots + s_{m+1}$.
+ The network function $f$ is then parametrized by $\CW$ and we will write $y = f(x;\CW)$.
+ 
+\section{Neural nets}
+\subsection{Transitions}
+Most neural networks iterate functions taking the form 
+\[
+\psi_i(z;w) = \rho(bz + \beta_0), z\in\mR^{d_j}
+\]
+where $b$ is a $d_{i}\times (\sum_{j\in \pa{i}} d_j)$ matrix and $\beta_0\in \mR^{d_{i}}$ (so that $w = (b, \beta_0)$ is $s_i = d_{i}(1+ \sum_{j\in \pa{i}} d_j)$-dimensional);
+$\rho$ is defined on and takes values in $\mR$, and we make the abuse of notation, for any $d$ and $u\in \mR^d$
+\[
+\rho(u) = \begin{pmatrix} \rho(u^{(1)}) \\\vdots\\ \rho(u^{(d)})\end{pmatrix}.
+\]
+
+
+ The most popular choice for $\rho$ is the positive part, or ReLU (for rectified linear unit), given by $\rho(t) = \max(t,0)$.
+ Other common choices are $\rho(t) =  1/(1+e^{-t})$ (sigmoid function), or $\rho(t) = \mathrm{tanh} (z)$.
+
+Residual neural networks (or ResNets \cite{he2016deep}) are discussed in \cref{sec:continuous.nn}. They iterate transitions between inputs and outputs of same dimension, taking 
+\begin{equation}
+\label{eq:resnet}
+z_{i+1} = z_i + \psi(z_i;w) .
+\end{equation}
+
+
+
+
+
+\subsection{Output}
+The last node of the graph provides the prediction, $y$. Its expression depends on the type of predictor that is learned
+\begin{enumerate}[label=$\bullet$, wide=0.5cm]
+\item  For regression, $y$ can be chosen as an affine function of is its parents: $z_{m+1} = b z_{\pa{m+1}} + a_0$.
+\item For classification, one can also use a linear model  $z_{m+1} = b z_{\pa{m+1}} + a_0$ where $z_{m+1}$ is $q$-dimensional and let the classification be  $\argmax(\pe{z_{m+1}} i, i=1, \ldots, q)$. Alternatively, one  uses ``softmax'' transformation, with 
+\[
+\pe{z_{m+1}} i = \frac{e^{\pe{\zeta_{m+1}}i}}{\sum_{j=1}^q e^{ \pe{\zeta_{m+1}} j }}
+\] 
+with  $\zeta_{m+1} = b z_{\pa{m+1}} + a_0$.
+\end{enumerate}
+
+\subsection{Image data}
+ Neural networks have achieved top performance when working with organized structures such as images. 
+ A typical problem in this setting is to categorize the content of the image, i.e., return a categorical variable naming its principal element(s).
+ Other applications include facial recognition or identification.
+ In this case, the transition function can take advantage of the 2D structure, with some special terminology.
+
+Instead of speaking of the total dimension, say, $d$, of the considered variables, writing $z = (z^{(1)}, \ldots, z^{(d)})$, images are better represented with three indices $z(u, v, \lambda)$ where
+ $u=1, \ldots, U$ and $U$ is the width of the image,  $v=1, \ldots, V$ and $V$ is the height of the image,  $\la=1, \ldots, \Lambda$ and $\Lambda$ is the depth of the image. (With this notation  $d =UV\Lambda$.)
+  Typical images  have length and width of one or two hundred pixels, and depth $\La=3$ for the three color channels.
+ This three-dimensional structure is conserved also for latent variables, with different dimensions. 
+ Deep neural networks   often combine compression in width and height with expansion in depth while transitioning  from input to output.
+
+
+The linear transformation $b$ mapping one layer with dimensions $U_i, V_i, \La_i$ to another with dimensions $U_{i+1}, V_{i+1}, \La_{i+1}$ is then preferably seen as a collection of numbers: $b(u',v',\la', u,v, \La)$ so that the transition from $z_i$ to $z_{i+1}$ is given by
+\[
+z_{i+1}(u', v', \la') = \rho\left(\be_0(u', v', \la') 
++ \sum_{u=1}^{U_i}\sum_{v=1}^{V_i}\sum_{\lambda=1}^{\La_i} b(u', v', \la', u,v,\la)  z_i(u,v,\la)\right).
+\]
+
+For images, it is often preferable to use convolutional transitions, providing convolutional neural networks (\citep{lecun1989backpropagation,lecun1995convolutional}, or CNNs.
+ If $U_i=U_{i+1}$ and $V_i=V_{i+1}$, such a transition requires that  $b(u', v', \la', u,v,\la)$ only depends on $\la$, $\la'$ and on the differences $u'-u$ and $v-v'$.
+In general, one also requires that  $b(u', v', \la', u,v,\la)$ is non-zero only if $|u'-u|$ and $|v'-v|$ are both less than a constant, typically a small number. Also, there is generally little computation across depths: each output at depth $\la'$ only uses values from a single input depth. These restrictions obviously reduce dramatically the number of free parameters involved in the transition.
+
+After one or a few convolutions, the dimension is often reduced by a ``pooling'' operation, dividing the image into small non-overlapping windows and replacing each such window by a single value, either the max (max-pooling) or the average.
+
+\section{Geometry}
+In addition to the transitions between latent variables and resulting changes of dimension, the structure of the DAG defining the network is an important element in the design of a neural net.
+ The simplest choice is a purely linear structure (as shown in Figure \ref{fig:net.1}), as was, for example, used for image categorization in \cite{krizhevsky2017imagenet}. 
+ \begin{figure}
+	\begin{center}
+		\begin{tikzpicture}[roundnode/.style={rectangle, draw=green!60, fill=green!5, thin, minimum size=20mm}, squarednode/.style={rectangle, draw=black!60, fill=gray!5, very thick},]
+		\node[squarednode, minimum height=3cm] (L1) {$x$} ;
+		\node[squarednode, minimum height= 2cm, minimum width = 1cm] (L2) [right=.5cm of L1] {$z_1$} ;
+		\node[] (dots) [right=.5cm of L2] {$\ldots$} ;
+		\node[squarednode] (Lm) [right=.5cm of dots, minimum height= .5cm, minimum width = 4cm] {$z_m$} ;
+		\node[right=.5cm of Lm] (O) {$y$} ;
+		\draw[blue, thick,->] (L1.east) -- (L2.west) node[midway, above] {};
+		\draw[blue, thick,->] (L2.east) -- (dots.west) node[midway, above] {};
+		\draw[blue, thick,->] (dots.east) -- (Lm.west) node[midway, above] {};
+		\draw[blue, thick,->] (Lm.east) -- (O.west) node[midway, above] {};
+		\end{tikzpicture}
+		
+		\caption{ \label{fig:net.1}
+		Linear net with increasing layer depths and decreasing layer width.}
+		\end{center}
+	\end{figure}	
+
+More complex architectures have been introduced in recent years. Their design is in a large part heuristic and based on an analysis of the kind of computation that should be done in the network to perform a particular task. For example, an architecture used for image segmentation in summarized in \cref{fig:net.2}. 
+
+\begin{figure}
+
+\centering
+		\begin{tikzpicture}[roundnode/.style={rectangle, draw=green!60, fill=green!5, thin, minimum size=20mm}, squarednode/.style={rectangle, draw=black!60, fill=gray!5, very thick},]
+		\node[squarednode, minimum height=3cm] (L1) {$x$} ;
+		\node[squarednode, minimum height= 2cm, minimum width = 1cm] (L2) [below right=.1cm and .1cm of L1] {$z_1$} ;
+		\node[squarednode] (Lm) [below right=.5cm and 1cm of L2, minimum height= .5cm, minimum width = 4cm] {$z_m$} ;
+		\node[squarednode, minimum height= 2cm, minimum width = 1cm] (L2m-1) [above right=.5cm and 1cm of Lm] {$z_{2m-1}$} ;
+		\node[squarednode, minimum height=3cm] (L2m)[above right=.1cm and .1cm of L2m-1] {$y$} ;
+		\draw[blue, thick, ->] (L1.east) -- (L2.north) node[midway, above] {};
+		\draw[blue, thick, dashed, -] (L2.south east) -- (Lm.north west) node[midway, above] {};
+		\draw[blue, thick, dashed, -] (Lm.north east) -- (L2m-1.south west) node[midway, above] {};
+		\draw[blue, thick, ->] (L2m-1.north) -- (L2m.west) node[midway, above] {};
+		\draw[blue, thick, ->] (L1.east) -- (L2m.west) node[midway, above] {};
+		\draw[blue, thick, ->] (L2.east) -- (L2m-1.west) node[midway, above] {};
+\end{tikzpicture}
+		\caption{ \label{fig:net.2} A sketch of the U-net architecture designed for image segmentation \citep{ronneberger2015u-net}.}
+	\end{figure}	
+
+
+An important feature of neural nets is their modularity, since ``simple'' architectures can be combined (e.g., by placing the output of a network as input of another one) and form a more complex network that still follows the basic structure defined above. One example of such a building block is the ``attention  module,''  which take as input three vectors $Q, K, V$ (for query, key, and value) and return
+\[
+\mathrm{softmax} (QK^T) V.
+\]
+These modules are fundamental elements of ``transformer networks'' \citep{vaswani2017attention}, that are used, among other tasks, for  automatic translation. 
+
+
+\section{Objective function}
+\subsection{Definitions}
+ We now return to the general form of  the problem, with variables $z_0, \ldots, z_{m+1}$ satisfying 
+\[
+z_i = \psi_i(z_{\pa{i}}; w_i)
+\]
+ Let $T = (x_1, y_1, \ldots, x_N, y_N)$ denote the training data.
+
+For regression problems, the objective function minimized by the algorithm is typically the empirical risk, the simplest choice being the mean square error, which gives
+\[
+F(\CW) = \frac1N \sum_{k=1}^N |y_k - z_{k,m+1}(\CW)|^2.
+\]
+with $z_{k;m+1}(\CW) = f(x_k; \CW)$.
+
+For classification, with the dimension of the output variable equal to the number of classes and the decision based on the largest coordinate, one can take (letting  $z_{k,m+1}(i;\CW)$ denote the $i$th coordinate of $z_{k,m+1}(\CW)$):
+\[
+F(\CW) = \frac1N \sum_{k=1}^N \left(-z_{k,m+1}(y_k;\CW) + \log \Big(\sum_{i=1}^q \exp(z_{k,m+1}(i;\CW))\Big)\right).
+\]
+ This  objective function is similar to that minimized in logistic regression.
+
+\subsection{Differential}
+\label{sec:nn.der}
+\paragraph{General computation.}
+ The computation of the differential of $F$ with respect to $\CW$ may look daunting, but it has actually a simple structure captured by the back-propagation algorithm.
+Even if programming this algorithm can often be avoided by using an automatic differentiation software, it is important to understand how it works, and why the implementation of gradient-descent algorithms remains feasible. 
+
+Consider the general situation of minimizing a function $G(\CW, \boldsymbol z)$ over $\CW\in \mR^s$ and $\boldsymbol z \in \mR^r$, subject to a constraint $\gamma(\CW, \boldsymbol z) = 0$ where $\gamma$ is defined on $\mR^s \times \mR^r$ and takes values in $\mR^r$ (here, it is important that the number of constraints is equal to the dimension of $z$). We will denote below by $\prt_\CW$ and $\prt_{\boldsymbol z}$ the derivatives of these functions with respect to the multi-dimensional variables $\CW$ and $\boldsymbol z$. We make the assumptions that $\prt_{\boldsymbol z}\gamma$, which is an $r\times r$ matrix, is invertible, and that 
+the constraints can be solved to express $\boldsymbol z$ as a function of $\CW$, that we will denote $\boldsymbol Z(\CW)$. 
+
+This allows us to define the function $F(\CW) = G(\CW, \boldsymbol Z(\CW))$ and we want to compute the gradient of $F$. (Clearly, the function $F$ in the previous section satisfies these assumptions). 
+Taking $h\in \mR^s$, we have
+\[
+dF(\CW) h = \prt_\CW G h + \prt_{\boldsymbol z} G\, d\boldsymbol Z h.
+\]
+Moreover, since $\gamma(\CW, \boldsymbol Z) = 0$ by definition of $\boldsymbol Z$, we have
+\[
+\prt_{\CW} \gamma h + \prt_{\boldsymbol z}\gamma\, d\boldsymbol Z h = 0, 
+\]
+so that
+\[
+dF(\CW) h = \prt_\CW G h - \prt_{\boldsymbol z} G \, \prt_{\boldsymbol z}\gamma^{-1}\,  \prt_{\CW} \gamma h.
+\]
+
+Let $\boldsymbol p\in \mR^r$ be the solution of the linear system
+\[
+\prt_{\boldsymbol z}\gamma^T \boldsymbol p =  \prt_{\boldsymbol z} G^T.
+\]
+Then,
+\[
+dF(\CW) h = (\prt_\CW G - \boldsymbol p^T \prt_{\CW} \gamma) h
+\]
+or 
+\[
+\nabla F = \prt_\CW G^T - \prt_{\CW} \gamma^T \boldsymbol p.
+\]
+
+Note that, introducing the ``Hamiltonian''
+\[
+\boldsymbol H(\boldsymbol p, \boldsymbol z, \CW) = \boldsymbol p^T \gamma(\CW, \boldsymbol z) - G(\CW, \boldsymbol z), 
+\]
+one can summarize the previous computation with the system
+\[
+\left\{
+\begin{aligned}
+&\prt_{\boldsymbol p} \boldsymbol H = 0\\
+&\prt_{\boldsymbol z}\boldsymbol H = 0 \\
+&\nabla F = - \prt_{\CW} \boldsymbol H^T.
+\end{aligned}
+\right.
+\]
+\bigskip
+
+\paragraph{Application: back-propagation.}
+In our case, we are minimizing a function of the form
+\[
+\boldsymbol G(\CW, \boldsymbol z_1, \ldots, \boldsymbol z_N) = \frac1N \sum_{k=1}^N r(y_k, z_{k, m+1})
+\]
+subject to constraints $z_{k,i+1} = \psi_i(z_{k, \pa{i}}; w_i)$, $i=0, \ldots, m$, $z_{k,0} = x_k$. We focus on one of the terms in the sum, therefore fixing $k$, that we will temporarily drop from the notation.
+
+So, we evaluate the gradient of $G(\CW, \boldsymbol z) = r(y, z_{m+1})$ with $z_{i+1} = \psi_i(z_{\pa{i}}; w_i)$, $i=0, \ldots, m$, $z_0 = x$. With the notation of the previous paragraph, we take $\gamma = (\gamma_1, \ldots, \gamma_{m+1})$ with
+\[
+\gamma_i(\CW, \boldsymbol z) = \psi_{i}(z_{\pa{i}}; w_i) - z_i
+\]
+These constraints uniquely define $\boldsymbol z$ as a function of $\CW$, which was one of our assumptions. For the derivative, we have, for $\boldsymbol u= (u_1, \ldots, u_{m+1})\in \mR^r$ (with $r = d_1 + \cdots+d_{m+1}$, $u_i\in \mR^{d_i}$), and for $i=1, \ldots, m+1$  
+\[
+\prt_{\boldsymbol z}\gamma_i \boldsymbol u = \sum_{j \in \pa{i}} \prt_{z_j} \psi_i(z_{\pa{i}}; w_i) u_j - u_i
+\]
+Taking $\boldsymbol p = (p_1, \ldots, p_{m+1}) \in \mR^r$, we get
+\begin{align*}
+\boldsymbol p^T \prt_{\boldsymbol z}\gamma \boldsymbol u &= 
+\sum_{i=1}^{m+1}\sum_{j \in \pa{i}} p_i^T\prt_{z_j} \psi_i(z_{\pa{i}}; w_i) u_j - \sum_{i=1}^{m+1} p_i^T u_{i} \\
+&= 
+\sum_{j=1}^{m+1}\sum_{i \in \cl{j}} p_i^T\prt_{z_j} \psi_i(z_{\pa{i}}; w_i) u_j - \sum_{j=1}^{m+1} p_j^T u_{j} 
+\end{align*}
+This allows us to identify $\prt_{\boldsymbol z}\gamma^T \boldsymbol p$ as the vector $\boldsymbol g = (g_1, \ldots, g_{m+1})$ with 
+\[
+g_{j} = \sum_{i \in \cl{j}} \prt_{z_j} \psi_i(z_{\pa{i}}; w_i)^T p_i - p_j.
+\]
+For $j=m+1$ (which has no children), we get $g_{m+1} = -p_{m+1}$, so that the equation $\prt_{\boldsymbol z} \gamma^T p = g$ can be solved recursively by taking $p_{m+1} = -g_{m+1}$ and propagating backward, with
+\[
+p_{j} = -g_j + \sum_{i \in \cl{j}} \prt_{z_j} \psi_i(z_{\pa{i}}; w_i)^T p_i
+\]
+for $j=m, \ldots, 1$. 
+
+To compute the gradient of $G$, the propagation has to be applied to $g = \prt_{\boldsymbol z} G$. Since $G$ only depends on $z_{m+1}$, we have $g_{m+1} = \prt_{z_{m+1}} r(y, z_{m+1})$ and  $g_j=0$ for $j=1, \ldots, m$. Moreover, $G$ does not depend on $\CW$, so that $\prt_{\CW} G = 0$. We have
+\[
+\prt_{\CW} \gamma_i = \prt_{w_i} \psi_i(z_{\pa{i}}, w_i)
+\]
+yielding $\prt_{\CW} \gamma^T p = (\zeta_1, \ldots, \zeta_{m})$ with
+\[
+\zeta_j = \prt_{w_j} \psi_j(z_{\pa{j}}, w_j)^T p_j.
+\]
+
+We can now formulate an algorithm that computes the gradient of $F$ with respect to $\CW$, reintroducing training data indexes in the notation.
+\bigskip
+
+\begin{algorithm}[Back-propagation]
+\label{alg:backprop} 
+Let $(x_1, y_1, \ldots, x_N, y_N)$ be the training set and $R_k(z) = r(y_k, z)$ so that 
+\[
+F(\CW) = \frac1N \sum_{k=1}^N R_k(z_{k, m+1}(\CW))
+\]
+ with $z_{k, m+1}(\CW) = f(x_k, \CW)$.
+ Let $\CW$ be a family of weights. The following steps compute $\nabla F(\CW)$.
+\begin{enumerate}[label=\arabic*., wide = 0.5cm]
+\item For all $k=1, \ldots, N$ and all $i=1, \ldots, m+1$, compute $z_{k,i}(\CW)$ (forward computation through the network).
+\item Initialize variables $p_{k, m+1} = -\nabla R_k(z_{k,m+1}(\CW))$, $k=1, \ldots, N$.
+\item For all $k=1, \ldots, N$ and all $j=1, \ldots, m$, compute $p_{k, j}$ using iterations 
+\[
+p_{k,j} = \sum_{i\in \cl{j}} \prt_{z_j} \psi_i(z_{k,\pa{i}}, w_i)^Tp_{k,i}.
+\]
+\item Let 
+\[
+\nabla F(\CW) = -\frac1N \sum_{k=1}^N \sum_{i=1}^{m+1} D_i^T \prt_{w_i} \psi_i(z_{k,\pa{i}}, w_i)^T p_{k,i},
+\]
+ where $D_i$ is the $s_i\times s$ matrix such that $D_i h = h_i$.
+\end{enumerate}
+\end{algorithm}
+
+\subsection{Complementary computations}
+
+ The back-propagation algorithm requires the computation of the gradient of the costs $R_k$ and of the derivatives of the functions $\psi_i$, and this can generally be done in closed form, with relatively simple expressions.
+ 
+ \begin{enumerate}[label=$\bullet$,wide=0.5cm]
+\item If $R_k(z) = |y_k - z|^2$ (which is the typical choice for regression models) then $\nabla R_k(z) = 2 (z-y_k)$. 
+\item In classification, with $R_k(z) = - z(y_k) + \log \Big(\sum_{i=1}^q \exp(\pe z i)\Big)$, one has
+\[
+\nabla R_k(z) = - u_{y_k} +   \frac{\exp(z)}{\sum_{i=1}^q \exp(\pe z i)}
+\]
+where $u_{y_k}\in \mR^d$ is the vector with 1 at position $y_k$ and zero elsewhere, and $\exp(z)$ is the vector with coordinates $\exp(\pe z i)$, $i=1, \ldots, d$.
+\item For dense transition functions in the form $\psi(z; w) = \rho(bz+\beta_0)$ with $w = (\beta_0, b)$, then $\prt_z \psi(z, w) = \mathrm{diag}(\rho'(\beta_0 + bz)) b$ so that
+\[
+\prt_z \psi(z, w)^T p =  b^T \mathrm{diag}(\rho'(\beta_0 + bz))p
+\]
+\item
+Similarly
+\[
+\prt_w \psi(z, w)^T p =  \left[ \mathrm{diag}(\rho'(\beta_0 + bz))p, \mathrm{diag}(\rho'(\beta_0 + bz))pz^T\right] \,. 
+\]
+\end{enumerate}
+Note that neural network packages implement these functions (and more) automatically.
+ 
+\section{Stochastic Gradient Descent}
+
+%\subsection{Stochastic Approximation}
+%\subsubsection*{Definition}
+%The cost of computing the gradient of the empirical loss is quadratic in the layer size,  linear in the number of compositions ($m$, the network depth) and in the size of the training set ($N$). Current  deep-learning implementations may have dozens, or hundreds, of layers, and can be trained on billions of examples. In such a setting, a significant reduction in the cost per iteration can be obtained by only working with a subset of the available examples. By randomly selecting this subset at each step, one can ensure that all examples are taken into account in average without using them every time, leading to a {\em stochastic approximation algorithm }\cite{robbins1985stochastic,kushner2003stochastic,benveniste2012adaptive,duflo2013random} called stochastic gradient descent (SGD). 
+% 
+% A general stochastic approximation algorithm of the Robbins-Monro type keep track of a parameter, denoted $w\in \mR^d$ (for neural networks, $w$ is the vector of weights). Assume that one associates to each $w\in\mR^d$ a probability distribution $(\pi_w)$ on some set $\CS$. Then, for some function $H: \mR^d\times \CS \to \mR^d$, one defines the sequence of random iterations:
+%\[
+%\left\{
+%\begin{aligned}
+%\xi_{n+1} &\sim \pi_{w_n}\\
+%w_{n+1} &= w_n + \ga_{n+1} H(w_n, \xi_{n+1})
+%\end{aligned}
+%\right.
+%\]
+%where $\xi_{n+1}$ is a random variable and the notation $\xi_{n+1} \sim \pi_{w_n}$ should be interpreted as the more precise statement that the conditional distribution of $\xi_{n+1}$ given all past random variables $\mathcal U_n = (\xi_1, w_1, \ldots, \xi_n, w_n)$ only depends on $w_n$ and is given by $\pi_{w_n}$. The simplest case is when $\pi_w$ does not depend on $w$, which includes most of the algorithms used for neural networks. More tricky situations can be considered, for example when the conditional distribution of $\xi_{n+1}$ given the past also depends on $\xi_n$, which allows for the combination of stochastic gradient methods with Markov chain Monte-Carlo methods (see \cite{benveniste2012adaptive} for more details).
+%\bigskip
+% 
+% \subsubsection*{Deterministic approximation} 
+%Introduce the  function
+%\[
+%\bar H(w) = E_{\pi_w}(H(w, \xi))
+%\]
+%and write
+%\[
+%w_{n+1}  = w_n + \ga_{n+1} \bar F(w_n)  + \ga_{n+1} \eta_{n+1}
+%\]
+%with $\eta_{n+1} = F_n(w_n, \xi_{n+1}) - \bar F_n(w_n)$ in order to represent the evolution of $w$ as a perturbation
+%of the deterministic algorithm
+%\begin{equation}
+%\label{eq:sa.deter}
+%\bar w_{n+1}  = \bar w_n + \ga_{n+1} \bar F(w_n) 
+%\end{equation}
+%by the ``noise term'' $\ga_{n+1} \eta_{n+1}$. This interpretation is important, because, in most cases, the deterministic algorithm is the limit behavior of the stochastic sequence, and one should ensure that this limit is as desired. 
+%
+%By definition, the conditional expectation of $\eta_{n+1}$ given $\CU_n$ (the past) is zero. One says that $\eta_{n+1}$ is a ``martingale increment,'' and
+%\begin{equation}
+%\label{eq:sa.M}
+%M_n = \sum_{k=0}^n \ga_{k+1} \eta_{k+1}
+%\end{equation}
+% is called a ``martingale.'' The theory of martingales offers numerous  tools for controlling the size of $M_n$ and assessing its possible convergence. 
+% 
+%When the steps ($\ga_{n}$) are small, further analysis can be performed after making a continuous time interpolation,  where time is discretized in accordance with the sequence $(\ga_n)$. More precisely, let $\tau_0=0$ and $\tau_{n} =  \tau_{n-1} + \ga_n$, $n\geq 1$. Define the piecewise linear interpolation $W(t)$ of the sequence $w_n$ defined by 
+%\[
+%W(t) = w_n +  \frac{t-\tau_n}{\ga_{n+1}} (w_{n+1} - w_n), t\in [\tau_{n}, \tau_{n+1}).
+%\] 
+%We will assume that $\sum_{n=1}^\infty \ga_n = +\infty$, so that $\tau_n\to\infty$ and $W$ is defined over $[0, +\infty)$. Switching to continuous time allows us to interpret the average iteration $\bar w_{n+1} = \bar w_n + \ga_{n+1} \bar F(\bar w_n) $ as a Euler discretization scheme for the ordinary differential equation (ODE)
+%\begin{equation}
+%\label{eq:sa.ode}
+%\prt_t \bar W = \bar H(\bar W).
+%\end{equation}
+%\bigskip
+%
+%
+%\subsubsection*{A convergence result}
+%Most of the insight on long-term behavior of  stochastic approximations results from the fact that the random process $W$ behaves asymptotically like solutions of this ODE. We will assume that \eqref{eq:sa.ode} has unique solutions for given initial conditions on any finite interval, and denote by $\phi(t, \omega)$ the solution at time $t$ of this equation initialized with $W(0) = \omega$.
+%
+%One has, for example, the following result, for which we introduce some additional notation. Let $\ga^c(t)$ and $\eta^c(t)$ be piecewise constant interpolations of $(\ga_n)$ and $(\eta_n)$ defined by $\ga^c(t) = \ga_{n+1}$ and $\eta^c(t) = \eta_{n+1}$ on the interval $[\tau_{n}, \tau_{n+1})$. Let 
+%\[
+%\De(t, T) = \max_{s\in [t, t+T]} \left| \int_t^s \eta^c(u) du\right|.
+%\]
+%The following proposition (see \cite{benaim1999dynamics}) compares the tails of the process $W$  (i.e., the functions $W(t+s)$, $s\geq 0$) with the solution of the ODE over finite intervals. 
+%\begin{proposition}[Benaim]
+%\label{prop:sgd.ode}
+%%Assume that 
+%%\begin{equation}
+%%\label{eq:ode.1}
+%%\lim_{t\to\infty} \De(t, T)  = 0
+%%\end{equation}
+%% for any $T>0$. 
+%Assume that $\bar H$ is Lipschitz and bounded. Then, for some constant $C(T)$ that only depends on $T$ and $\bar H$, one has, for all $t\geq 0$
+%\begin{equation}
+%\label{eq:ode.2}
+%\sup_{h\in [0,T]} |W(t+h) - \phi(h, W(t))| \leq C(T) \left( \Delta(t-1, T+1) + \max_{s\in[t, t+T]} \ga^c(s)\right)\,.
+%\end{equation}
+%\end{proposition}
+%Recall that $\bar H$ being Lipschitz means that there exists a constant $C$ such that
+%\[
+%|\bar H (w) - \bar H(w') |\leq C |w-w'|
+%\]
+%for all $w, w' \in \mR^p$. 
+%
+%Notice that, in the upper-bound in \eqref{eq:ode.2}, the term $\Delta(t-1, T+1)$ is a random variable. It can be related to the variations
+%\[
+%\De'(n, N) = \sup_{k = 0, \ldots, N}  |M_{n+k} - M_n|, 
+%\]
+%where $M$ is defined in \eqref{eq:sa.M},
+%because, if $m(t)$ is the larger integer $n$ such that $\ga_1 + \cdot +\ga_n \leq t$, then
+%\[
+%\De'(m(t)+1, m(t+T) - m(t)) \leq \De(t, T) \leq  \De'(m(t), m(t+T) - m(t)+1).
+%\]
+%In the case we are considering, one can use martingale inequalities (called Doob's inequalities) to control $\De'$. One has, for example,
+%\begin{equation}
+%\label{eq:doob}
+%P\left(\max_{0\leq k\leq N}|M_{n+k} - M_n| > \la\right) \leq \frac{E(|M_{n+N} - M_n|^2}{\la^2}.
+%\end{equation}
+%Furthermore, using the fact that $E(\eta_{k+1}\eta_{l+1}) = 0$ if $k\neq l$, one has
+%\[
+%E(|M_{n+N} - M_n|^2 )= \sum_{k=n}^{n+N} \ga_{k+1}^2 E(|\eta_{n+1}|^2).
+%\]
+%If we assume that $H$ is bounded and $\sum_{k=1}^\infty \ga_k^2 <\infty$ then, for some constant $C$, we have
+%\[
+%E(|M_{n+N} - M_n|^2) \leq C \sum_{k=n}^{\infty} \ga_{k+1}^2 \to 0
+%\]
+%and inequality \eqref{eq:doob} can then be used in \eqref{eq:ode.2} to control the probability of deviation of the stochastic approximation from the solution of the ODE over finite intervals.
+%\bigskip
+%
+%Proposition \ref{prop:sgd.ode} cannot be used with $T = \infty$ because the constant $C(T)$ typically grows exponentially with $T$. In order to draw conclusions on the limit of the process $W$, one needs a little more work and a few additional assumptions, in particular on the stability of the ODE. We refer to \cite{benaim1999dynamics} for a collection of results on the 
+%relationship between invariant sets and attractors of the ODE and  limit trajectories of the stochastic approximation. We here quote one of these results which is especially relevant for neural networks. 
+%\begin{proposition}
+%\label{prop:sgd.conv}
+%Assume that $\bar H = -\nabla E$ is the gradient of a function $E$ and that $\nabla E$ only vanishes at a finite number of points. Assume also that $W$ is bounded. Then $W$ converges to a point at which $\nabla E = 0$.
+%\end{proposition}
+%
+%
+%Some additional conditions on $\bar H$ can ensure that stochastic trajectories remain bounded. The simplest one assumes the existence of a ``Lyapunov function'' that controls the ODE at infinity. The following result is a simplified version of Theorem 17 in \cite{benveniste2012adaptive}.
+%\begin{theorem}
+%\label{th:sgd.lyap}
+%In addition to the hypotheses previously made, 
+%assume that there exists a $C^2$ function $U$ with bounded second derivatives and $\rho_0 >0$ such that, for all $w\geq \rho_0$, 
+%\begin{align*}
+%&\nabla U(w)^T\bar H(w) \leq 0,\\
+%&U(w) \geq \al |w|^2, \al>0.
+%\end{align*}
+%Then, the trajectories $W(t)$ are almost surely bounded.
+%\end{theorem}
+%
+%We note that, in order to ensure that the stochastic approximation algorithm converges with probability one, the previous results require that the sequence $\ga_n$ tends to zero at sufficient speed. If this is not satisfied, the algorithm will typically move from local minimizer to local minimizer over time, often with a non-zero probability of explosion. In spite of this, many implementations use constant, albeit small, steps, for which one can prove some good behavior of the algorithm over some finite time interval with high probability (using e.g., results similar to Proposition \ref{prop:sgd.ode}). 
+%
+
+%\subsection{Application to Neural Nets}
+
+\subsection{Mini-batches}
+Fix $\ell \ll N$. Consider the set of $B_\ell$ of binary sequences $\xi = (\xi^1, \ldots, \xi^{N})$ such that $\xi^k \in \{0,1\}$ and $\sum_{k=1}^N \xi^k = \ell$.
+Define 
+\[
+H(\CW, \boldsymbol \xi) = \nabla_\CW \left(\frac1\ell \sum_{k=1}^N \boldsymbol\xi^k r(y_k, f(x_k, \CW))\right) = \frac1\ell \sum_{k=1}^N \boldsymbol \xi^k \nabla_{\CW}\, r(y_k, f(x_k, \CW))
+\]
+where $\boldsymbol \xi$ follows the uniform distribution on $B_\ell$. Consider the stochastic approximation algorithm: 
+\begin{equation}
+\label{eq:nn.sgd}
+\CW_{n+1} = \CW_n - \ga_{n+1}  H(\CW_n, \boldsymbol\xi_{n+1}).
+\end{equation}
+Because $E(\boldsymbol\xi^k) = \ell/N$, we have $E( H(\CW, \boldsymbol\xi)) = \nabla_\CW \CE_T(f(\cdot, \CW))$ and \eqref{eq:nn.sgd} provides a stochastic gradient descent algorithm to which the  discussion in \cref{sec:sgd}  applies. Such an approach is often referred to as ``mini-batch'' selection in the deep-learning literature, since it correspond to sampling $\ell$ examples from the training set without replacement and only computing the gradient of the empirical loss computed from these examples.  
+
+\subsection{Dropout}
+
+Introduced for deep learning in \citet{srivastava2014dropout}, ``dropout'' is a learning paradigm that brings additional robustness (and, maybe, reduces overfitting risks) to massively parametrized predictors.  
+
+Assume that a random perturbation mechanism  of the model parameters has been designed. We will represent it using a random variable $\boldsymbol\eta$ (interpreted as noise) and a transformation $\CW' = \phi(\CW, \eta)$ describing how $\eta$ affects a given weight configuration $\CW$ to form a perturbed one $\CW'$. In order to shorten notation, we will write $\phi(\CW, \eta) = \eta\cdot \CW$, borrowing the notation for a group action from group theory. As a typical example, $\boldsymbol\eta$ can be chosen as a vector of Bernoulli random variables (therefore taking values in \{0,1\}), with same dimension as $\CW$ and one can simply let $\eta\cdot \CW = \eta\odot \CW$ be the pointwise multiplication of the two vectors. This corresponds to replacing some of the parameters by zero (``dropping them out'') while keeping the others unchanged. One generally preserves the parameters of the final layer ($g_m$), so that the corresponding $\eta$'s are equal to one, and let the other ones be independent, with some probability $p$ of  being one, say, $p=1/2$.
+
+Returning to the general case, in which $\boldsymbol\eta$ is simply assumed to be a random variable with known probability distribution, the dropout method replaces the objective function $F(\CW) = \CE_T(f(\cdot, \CW))$ by its expectation over perturbed predictors
+$G(\CW) = E(\CE_T(f(\cdot, \boldsymbol\eta\cdot\CW)))$ where the expectation is taken with respect to the random variable $\boldsymbol\eta$.  While this expectation cannot be computed explicitly, its minimization can be performed using stochastic gradient descent, with
+\[
+\CW_{n+1} = \CW_n - \ga_{n+1}  L(\CW_n, \eta_{n+1}),
+\]
+where $\eta_1, \eta_2, \ldots$ is a sequence of independent realizations of $\boldsymbol\eta$ and 
+\[
+L(\CW, \eta) = \nabla_{\CW} \left(\CE_T(f(\cdot, \eta\cdot\CW))\right)\,.
+\]
+Then, averaging in $\eta$
+\[
+\bar L(\CW) = E(\nabla_{\CW} F(\eta\odot\CW)) = \nabla G(\CW).
+\]
+
+In the special case where $\eta\cdot\CW$ is just pointwise multiplication, then
+\[
+L(\CW, \eta) = \eta\odot \nabla F(\eta\odot\CW).
+\]
+So this quantity can be evaluated by using back-propagation to compute $\nabla F(\eta\cdot\CW)$ and multiplying the result  by $\eta$ pointwise. Obviously, random weight perturbation can be combined with mini-batch selection in a hybrid stochastic gradient descent algorithm, the specification of which being left to the reader. We also note that stochastic gradient descent in neural networks is often implemented using the ADAM algorithm  (\cref{sec:adam}). 
+
+%\subsection{The ADAM algorithm}
+%ADAM (for adaptive moment estimation \citep{kingma2014adam}) is a popular variant of stochastic gradient descent.
+% When dealing with high-dimensional vectors $\CW$, having a single ``gain'' parameter ($\gamma_{n+1}$ in \cref{eq:nn.sgd}) is indeed a limitation since all parameters do not need to scale the same way. This provide the main motivation for ADAM.
+% 
+% This algorithm itelf has several parameters, namely: $\gamma$: the algorithm gain, taken as constant (e.g., $\ga=0.001$);
+%Two parameters $\beta_1$ and $\beta_2$ for moment estimates (e.g. $\be_1 = 0.9$ and $\be_2=0.999$);
+%A small number $\ep$ (e.g., $\ep = 10^{-8}$) to avoid divisions by 0.
+%In addtition, the algorithm defines two vectors: a mean $m$ and a variance $v$, respectively initialized at $\boldsymbol 0$ and $\dsone$. 
+%
+%\begin{algorithm}[ADAM]
+%\label{alg:adam}
+%\begin{enumerate}[label=\arabic*., wide=0.5cm]
+%\item Let $\CW_n$ be the current parameters, $m_n$ and $v_n$ the current mean and variance.
+%\item Generate $\xi_{n+1}$ and let $g_{n+1} = H(\CW_n, \xi_{n+1})$.
+%\item Update $m_{n+1} = \beta_1 m_n + (1-\beta_1) g_{n+1}$.
+%\item Update $v_{n+1} = \beta_2 v_n + (1-\beta_2) g^{\odot 2}_{n+1}$.
+%\item Let $\hat m_{n+1} = m_{n+1} / (1-\beta_1^{n+1})$ and $\hat v_{n+1} = v_{n+1} / (1-\beta_2^{n+1})$
+%\item
+%Set 
+%\[
+%\CW_{n+1}  = \CW_n - \gamma \frac{\hat m_{n+1}}{\sqrt{\hat v_{n+1}} + \ep}
+%\]
+%\end{enumerate}
+%\end{algorithm}
+%Note that the iteration on $m_n$ and $v_{n+1}$ correspond to defining 
+%\[ 
+%\hat m_n = \frac{\be_1}{1 - \be_1^n} \sum_{k=0}^n (1 - \be_1)^{n-k} g_k
+%\]
+%and   
+%\[
+%\hat v_n = \frac{\be_2}{1 - \be_2^n} \sum_{k=0}^n (1 - \be_2)^{n-k} g_k^{\odot 2}.
+%\]
+%
+
+%\section{Neural nets as generative statistical models}
+
+\section{Continuous time limit and dynamical systems}
+\label{sec:continuous.nn}
+\subsection{Neural ODEs}
+\label{sec:neural.ode}
+Equation \cref{eq:resnet} expresses the difference of the input and output of a neural transition as a non-linear function $f(z;w)$ of the input. This strongly suggests passing to continuous time and replacing the difference by a derivative, i.e., replacing the neural network by a high-dimensional parametrized dynamical system. The continuous model then takes the form \citep{chen2019neural}
+\begin{equation}
+\label{eq:neural.ode}
+\prt_t z(t) = \psi(z(t); w(t))
+\end{equation}
+where $t$ varies in a a fixed interval, say, $[0,T]$. The whole process is parametrized by $\CW = (w(t), t\in [0,T])$. We need to assume existence and uniqueness of solutions of \cref{eq:neural.ode}, which usually restricts the domain of admissibility of parameters $\CW$.  
+
+Typical neural transition functions are Lipschitz functions whose constant depend on the weight magnitude, i.e., are such that
+\begin{equation}
+\label{eq:ode.lip}
+|\psi(z,w) - \psi(z', w)| \leq C(w) |z-z'|
+\end{equation}
+where $C$ is a continuous function of $W$. For example, for $\psi(z, w) = \rho(bz + \beta_0)$, $w = (b, \beta_0)$, one can take
+$C(w) = C_\rho |b|_{\mathrm{op}}$. The Caratheodory theorem \citep{barbu2016differential} implies that solutions are well-defined as soon as 
+\begin{equation}
+\int_0^T C(w(t)) dt < \infty.
+\label{eq:ode.carath}
+\end{equation}
+This is  a relatively mild requirement, on which we will return later. Assuming this, we can consider $z(T)$ as a function of the initial value, $z(0) = x$ and of the parameters, writing $z(T) = f(x, \CW)$.
+
+
+Given a training set, we consider the problem of minimizing 
+\begin{equation}
+\label{eq:neural.ode.objective}
+F(\CW) = \frac1N \sum_{k=1}^N r(y_k, f(x_k, \CW)).
+\end{equation}
+The discussion in section \cref{sec:nn.der} applies---formally, at least---to this continuous case, and we can consider the equivalent problem of minimizing
+\[
+\boldsymbol G(\CW, \bfz_1,\ldots, \bfz_N) = \frac{1}{N} \sum_{k=1}^N r(y_k, \bfz_k(T))
+\]
+with $\prt_t \bfz_k(t) = \psi(\bfz_k(t); w(t))$, $\bfz_k(0) = x_k$. Once again, we  consider each $k$ separately, which boils down to considering $N=1$ and we drop the index $k$ from the notation, letting $F(\CW) = r(y, f(x, \CW))$
+$\boldsymbol G(\CW, \bz) = r(y, \bfz(T))$.
+
+We define 
+$\gamma(\CW, \bfz)$ to return the {\em function}
+\[
+t \mapsto \gamma(\CW, \bfz)(t) = \psi(\bfz(t); w(t)) - \prt_t \bfz(t).
+\]
+Let $\bfp: [0,T] \to \mR^d$. We want to determine the expression of $\boldsymbol u = \prt_z \gamma^T \bfp$, which satisfies 
+\[
+\int_0^T \bfu(t)^T \delta \bfz(t) dt = \int_0^T \bfp(t)^T (\prt_z \psi(\bfz(t), w(t))\delta\bfz(t) -\prt_t \delta \bfz(t))  dt
+\]
+After an integration by parts, the r.h.s. becomes 
+\[
+-\bfp(T)^T \delta \bfz(T) + \int_0^T \prt_t \bfp(t)^T \delta\bfz(t) dt + \int_0^T \bfp(t)^T \prt_z \psi(\bfz(t), w(t)) \delta\bfz(t)) dt
+\]
+which gives
+\[
+\bfu(t) = - \bfp(T) \delta_T + \prt_t \bfp(t) + \prt_z \psi(\bfz(t), w(t))^T \bfp(t).
+\]
+The equation $\prt_{\boldsymbol z} \gamma^T \boldsymbol p = \prt_{\boldsymbol z} \boldsymbol G^T$
+therefore gives
+\[
+-\bfp(T) \delta_T + \prt_t \bfp(t) + \prt_z \psi(\bfz(t), w(t))^T \bfp(t) = \prt_2 r(y, \bfz(T)) \delta_T,
+\]
+so that $\bfp$ satisfies $\bfp(T) = -\prt_2 r(y, \bfz(T))$ and 
+\begin{equation}
+\label{eq:adjoint.p}
+\prt_t \bfp(t) = - \prt_z \psi(\bfz(t), w(t))^T \bfp(t).
+\end{equation}
+
+We have $\prt_{\CW} \boldsymbol G = 0$ and $\bfv = \prt_{\CW} \gamma^T \bfp$ satisfies
+\[
+\int_0^T \bfv(t)^T \delta w(t) dt = \int_0^T \bfp(t)^T \prt_w \psi(\bfz(t), w(t)) \delta w(t) dt
+\]
+so that
+\[
+\nabla F(\CW) = (t \mapsto - \prt_w \psi(\bfz(t), w(t))^T \bfp(t)).
+\]
+
+This informal derivation (more work is needed to justify the existence of various differentials in appropriate function spaces) provides the continuous-time version of the back-propagation algorithm, which is also known as the {\em adjoint method} in the optimal control literature \citep{hocking1991optimal,macki2012introduction}. In that context, $z$ represents the state of the control system, $w$ is the control and $p$ is called the costate, or covector. We summarize the gradient computation algorithm, reintroducing $N$ training samples.
+\begin{algorithm}[Adjoint method for neural ODE]
+\label{alg:adjoint} 
+Let $(x_1, y_1, \ldots, x_N, y_N)$ be the training set and $R_k(z) = r(y_k, z)$ so that 
+\[
+F(\CW) = \frac1N \sum_{k=1}^N R_k(\bfz_{k}(T, \CW))
+\]
+ with $\prt_t \bfz_{k} = \psi(\bfz_k, \CW)$, $\bfz_k(0) = x_k$.
+ Let $\CW$ be a family of weights. The following steps compute $\nabla F(\CW)$.
+\begin{enumerate}[label=\arabic*., wide = 0.5cm]
+\item For all $k=1, \ldots, N$ and all $t\in[0,T]$, compute $\bfz_{k}(t, \CW)$ (forward computation through the dynamical system).
+\item Initialize variables $\bfp_{k}(T) = -\nabla R_k(\bfz_{k}(T, \CW))/N$, $k=1, \ldots, N$.
+\item For all $k=1, \ldots, N$ and all $j=1, \ldots, m$, compute $\bfp_{k}(t)$ by solving (backwards in time)
+\[
+\prt_t \bfp_k(t) = - \prt_z \psi(\bfz_k(t), w(t))^T \bfp_k(t).
+\]
+\item Let, for $t\in [0,T]$,
+\[
+\nabla F(\CW)(t) = -\sum_{k=1}^N \prt_w \psi(\bfz_k(t), w(t))^T \bfp_k(t).
+\]
+\end{enumerate}
+\end{algorithm}
+
+
+Of course, in numerical applications, the forward and backward dynamical systems need to be discretized, in time, resulting in a finite number of computation steps. This can be done explicitly (for example using basic Euler schemes), or using ODE solvers \citep{chen2019neural} available in every numerical software. 
+
+
+\subsection{Adding a running cost}
+Optimal control problems are usually formulated with a ``running cost'' that penalizes the magnitude of the control, which in our case is provided by the function $\CW: t \mapsto w(t)$. Penalties on network weights are rarely imposed with discrete neural networks, but, as discussed above, in the continuous setting, some assumptions on the function $\CW$, such as \cref{eq:ode.carath}, are needed to ensure that the problem is well defined.
+
+
+It is therefore natural to modify the objective function in \cref{eq:neural.ode.objective} by adding a penalty term ensuring the finiteness of the integral in \cref{eq:ode.carath}, taking, for example, for some $\lambda>0$,
+\begin{equation}
+\label{eq:neural.ode.objective.2}
+F(\CW) = \lambda \int_0^T C(w(t))^2 dt +  \sum_{k=1}^N r(y_k, f(x_k, \CW)).
+\end{equation}
+The finiteness of the integral of the squared $C(w)^2$ implies, by Cauchy-Schwartz, the integrability of $C(w)$ itself, and usually leads to simpler computations.
+
+If $C(w)$ is known explicitly and is differentiable, the previous discussion and the back-propagation algorithm can be adapted with minor modifications for the minimization of \cref{eq:neural.ode.objective.2}. The only difference appears in Step 4 of \cref{alg:adjoint}, with
+\[
+\nabla F(\CW)(t) = 2\lambda \nabla C(w(t)) -   \frac1N \sum_{k=1}^N \prt_w \psi(\bfz_k(t), w(t))^T \bfp_k(t).
+\]
+Computationally, one should still ensure that $C$ and its gradient are not too costly to compute. If $\psi(z, w) = \rho(bz + \beta_0)$, $w = (b, \beta_0)$, the choice
+$C(w) = C_\rho |b|_{\mathrm{op}}$ is valid, but not computationally friendly. The simpler choice $C(w) = C_\rho |b|_{2}$ is also valid, but cruder as an upper-bound of the Lipschitz constant. It leads however to straightforward computations.
+
+The addition of a running cost to the objective is important to ensure that any potential solution of the problem leads to a solvable ODE. It does not guarantee that an optimal solution exists, which is a trickier issue in the continuous setting than in the discrete setting. This is an important theoretical issue, since it is needed, for example, to ensure that various numerical discretization schemes lead to consistent approximations of a limit continuous problem. The existence of minimizers is not known in general for ODE networks. It does hold, however, in the following  non-parametric (i.e., weight-free) context that we now describe.   
+
+\bigskip
+The function $\psi$ in the r.h.s. of \cref{eq:neural.ode}, is, for any fixed $w$, a function that maps $z\in \mR^d$ to a vector $\psi(z, w)\in \mR^d$. Such functions are called {\em vector fields} on $\mR^d$, and the collection $\psi(\cdot, w), w\in \mR^s$ is a parametrized family of vector fields.
+
+The non-parametric approach replaces this family of functions by a general vector  field, $v$ so that the time-indexed parametrized family of vector fields $(t \mapsto \psi(\cdot, w(t)))$ becomes an unconstrained family $(t \mapsto f(t, \cdot))$. Following the general non-parametric framework in statistics, one needs to define a suitable function space for the vector fields, and use a penalty in the objective function.
+
+We will assume that, at each time, $f(t, \cdot)$ belongs to a reproducing kernel Hilbert space (RKHS), as introduced in \cref{chap:higher}. However, because we are considering a space of vector fields rather than scalar-valued functions, we need work with matrix-valued kernels \cite{alvarez2012kernels}, for which we give a definition that generalizes \cref{def:pos.kernel} (which corresponds to $q=1$ below). 
+\begin{definition}
+\label{def:pos.kernel.op}
+A function $K: \mR^d \ti\mR^d \mapsto \CM_q(\mR)$ satisfying 
+\begin{enumerate}[label={[K\arabic*-vec]}, wide=0pt]
+\item $K$ is symmetric, namely $K(x,y) = K(y,x)^T$ for all $x$ and $y$ in $\mR^d$. 
+\item For any $n>0$, for any choice of vectors $\la_1, \dots, \la_n\in \mR^q$ and any $x_1, \ldots, x_n \in \mR^d$, one has
+\begin{equation}
+\label{eq:pos.kernel.op}
+\sum_{i,j=1}^n \lambda_i^T K(x_i, x_j) \lambda_j \geq 0.
+\end{equation}
+\end{enumerate}
+is called a positive (matrix-valued) kernel.
+
+One says that
+the kernel is positive definite if the sum in \cref{eq:pos.kernel} cannot vanish, unless (i) $\la_1 = \cdots = \la_n=0$ or (ii) $x_i=x_j$ for some $i\neq j$.
+\end{definition}
+If $\kappa$ is a ``scalar kernel'' (satisfying \cref{def:pos.kernel}), then $K(x,y) = \kappa(x,y)\Id[q]$ is a matrix-valued kernel. 
+
+A reproducing kernel Hilbert space of vector-valued functions is a Hilbert space $H$ of functions from $\mR^d$ to $\mR^q$ such that there exists a reproducing kernel $K: \mR^d \ti\mR^d \mapsto \CM_q(\mR)$ with the following properties
+\begin{enumerate}[label={[RKHS\arabic*]}, wide=0pt]
+\item For all $x\in \mR^d$ and $\lambda\in \mR^q$, $K(\cdot, x)\lambda$ belongs to $H$,
+\item For all $h\in H$, $x\in \mR^d$ and $\lambda\in \mR^q$, 
+\[
+\scp{h}{K(\cdot, x)\lambda}_H = \lambda^T h(x)\,.
+\] 
+\end{enumerate}
+
+\Cref{prop:rkhs.interpolation} remains valid in the for vector-valued RKHS, with the following modifications: $\lambda_1, \ldots, \lambda_N$ and $\alpha_1, \ldots, \alpha_N$ are $q$-dimensional vectors and the matrix $\CK(x_1, \ldots, x_N)$ is 
+now an $Nq\times Nq$ block matrix, with $q\times q$ blocks given by $K(x_k,x_l)$, $k,l= 1, \ldots, N$.
+
+Returning to the specification of the nonparametric control problem, we will assume that a vector-valued RKHS, $H$, has been chosen, with $q=d$ in \cref{def:pos.kernel.op}. We further assume that elements of $H$ are Lipschitz continuous, with
+\begin{equation}
+\label{eq:lip.rkhs}
+|v(z) - v(\tilde z)| \leq C \|v\|_H |z-\tz|
+\end{equation}
+for some constant $C$ and all $v\in H$. We note that, for every $\lambda\in \mR^d$,
+\begin{align*}
+|\lambda^T(v(z) - v(\tilde z))|^2 & = |\scp{v}{K(\cdot, z)\lambda - K(\cdot, \tz)\lambda}_H|^2\\
+& \leq \|v\|_H^2\, \|K(\cdot, z)\lambda - K(\cdot, \tz)\lambda\|_H^2\\
+& = \|v\|_H^2\, (\lambda^T K(z, z)\lambda -2 \lambda^T K(z, \tz)\lambda + \lambda^T K(\tz, \tz))\\
+&\leq |\lambda|^2 \|v\|_H^2\, |K(z, z) -2 K(z, \tz) + K(\tz, \tz)|\,.
+\end{align*}
+This shows that \cref{eq:lip.rkhs} can be derived from regularity properties of the kernel, namely, that
+\[
+|K(z, z) -2 K(z, \tz) + K(\tz, \tz)| \leq C |z-\tz|^2
+\]
+for some constant $C$ and all $z, \tz\in \mR^d$. This property is satisfied by most of the kernels that are used in practice.
+
+Let $\eta: t\mapsto \eta(t)$ be a function from $[0,1]$ to $H$. This means that, for each $t$, $\eta(t)$ is a vector field $x \mapsto \eta(t)(x)$ on $\mR^d$, and we will write indifferently $\eta(t)$ and $\eta(t, \cdot)$, with a preference for $\eta(t,x)$ rather than $\eta(t)(x)$. We consider the objective function
+\begin{equation}
+\label{eq:ode.objective.2}
+\bar F(f) = \lambda \int_0^T \|\eta(t)\|_H^2 dt + \frac1N \sum_{k=1}^N r(y_k, z_k(1)),
+\end{equation}
+with $\prt_t z_k(t) = \eta(t, z_k(t))$, $z_k(0) = x_k$. To compare with \cref{eq:neural.ode.objective.2}, the finite-dimensional $w\in \mR^s$ is now replaced with an infinite-dimensional parameter, $\eta$, and the transition $\psi(z,w)$ becomes $\eta(z)$. 
+
+Using the vector version of \cref{prop:rkhs.interpolation} (or the kernel trick used several times in \cref{chap:lin.reg,chap:lin.class}), one sees that there is no loss of generality in replacing $\eta(t)$ by its projection onto the vector space
+\[
+V(t) = \defset{\sum_{l=1}^N K(\cdot, z_l(t))w_l: w_1, \ldots, w_N\in \mR^d}.
+\]
+Noting that, if $\eta(t)$ takes the form 
+\[
+\eta(t) = \sum_{l=1}^N K(\cdot, z_l(t)) w_l(t),
+\]
+then
+\[
+\|\eta(t)\|^2_H = \sum_{k,l=1}^N w_k(t)^T K(z_k(t), z_l(t))w_l(t).
+\]
+This  allows us to replace the infinite-dimensional parameter $\eta$ by a family $\CW = (w(t), t\in [0,T]$ with $w(t) = (w_k(t), k=1, \ldots, N)$. The minimization of $\bar F$ in \cref{eq:ode.objective.2} can be replaced by that of
+\begin{equation}
+\label{eq:ode.objective.3}
+F(\CW) = \lambda \int_0^T \sum_{k,l=1}^N  w_k(t)^T K(z_k(t), z_l(t))w_l(t) dt + \frac1N \sum_{k=1}^N r(y_k, z_k(1)),
+\end{equation}
+with 
+\[
+\prt_t z_k(t) = \sum_{l=1}^N K(z_k(t), z_l(t)) w_l(t).
+\]
+
+This optimal control problem has a similar form to that considered in  \cref{eq:neural.ode.objective.2}, where the running cost $C(w)^2$ is replaced by a cost that depends on the control (still denoted $w$) and the state $\bfz$. The discussion in section \cref{sec:neural.ode} can be applied with some modifications.
+Let $\CK(\bfz)$ be the $dN \times dN$ matrix formed with $d\times d$ blocks $K(z_k(t), z_l(t))$ and $\bfw(t)$ the $dN$-dimensional vector formed by stacking $w_1, \ldots, w_N$. Let
+\[
+G(\CW, \bfz) = \lambda \int_0^T \bfw(t)^T \CK(\bfz(t))\bfw(t) dt + \frac1N \sum_{k=1}^N r(y_k, z_k(1))
+\]
+and
+\[
+\gamma(\CW, \bfz)(t) = \CK(\bfz(t))\bfw(t)- \prt_t \bfz(t)\,.
+\]
+The backward ODE in step 3. of \cref{alg:adjoint} now becomes
+\[
+\prt_t \bfp_k(t) = -\prt_{z_k} (\bfw(t)^T \CK(\bfz(t))\bfp(t)) + \lambda \prt_{z_k} (\bfw(t)^T \CK(\bfz(t))\bfw(t))
+\]
+for $k=1, \ldots, N$.
+Step 4. becomes (for $t\in [0,T]$),
+\[
+\nabla F(\CW)(t) = \CK(\bfz(t)) (2\lambda  -  \bfp(t)).
+\]
+
+The resulting algorithm was introduced in \citep{younes2020diffeomorphic}. It has the interesting property (shared with neural ODE models with smooth controlled transitions) to determine an implicit diffeomorphic transformation of the space, i.e., the function $x\mapsto f(x; \CW, \bfz) = \tilde z(T)$ which returns the solution at time $T$ of the ODE 
+\[
+\prt_t \tilde z(t) =  \sum_{l=1}^N K(\tilde z(t), z_l(t)) w_l(t)
+\]
+(or $\prt \tilde z(t) = \psi(\tilde z(t); w(t))$ for neural ODEs) is smooth, invertible, with a smooth inverse.
+
+
+
+
+
+
+
+
+ 
+
+
+

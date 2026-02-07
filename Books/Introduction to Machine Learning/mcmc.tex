@@ -1,0 +1,1265 @@
+\chapter{Monte-Carlo Sampling}
+\label{chap:mcmc}
+
+The goal of this section is to describe how, from a basic random
+number generator that provides samples from a uniform distribution on $[0,1]$, one
+can generate samples that follow, or
+approximately follow, complex probability distributions on finite or general spaces. This,
+combined with the law of large numbers, permits to 
+approximate probabilities or expectations by empirical averages over
+a large collection of generated samples.
+
+We assume that as many as needed independent samples of the uniform distribution are
+available, which is only an approximation of the truth. In practice,
+computer programs are only able to generate pseudo-random numbers,
+which are highly chaotic recursive sequences, but still
+deterministic. Also, these numbers are generated as integers, which
+only provide, after normalization, a distribution on a finite discretization
+of the unit interval. We will neglect these facts, however, and work
+as if the output of the function {\em random} (or any similar name) in
+a computer program is a true realization of the uniform distribution.
+
+
+\section{General sampling procedures}
+\label{sec:gen.samp}
+\paragraph{Real-valued variables.}
+We will use the following notation for the left limit of a function $F$ at a given point $z$ 
+\[
+F(z-0) = \lim_{y\to z, y<z} F(y)
+\]
+assuming, of course that this limit exists (which is always true, for example when $F$ is non-decreasing). 
+Recall that $F$ is left continuous if and only if  $F=F(\ccdot-0)$. Moreover, it is easy to see that $F(\ccdot-0)$ is left-continuous\footnote{ For every $z$ and every $\epsilon>0$, there exists $z'<z$ such that for all $z''\in [z', z)$, $|F(z'') - F(z-0)| < \epsilon$. Moreover, taking any $y\in (z', z)$, there exists $y'<y$ such that for all $y''\in [y', y)$, $|F(y'') - F(y-0)| < \epsilon$. Without loss of generality, we can assume that $y'\geq z'$, yielding $|F(z-0) - F(y-0)| \leq 2\epsilon$, showing the left continuity of $F(\ccdot-0)$.}. 
+Note also that, if $F$ is non-decreasing, one always has $F(z) \leq F(y-0)$ whenever $z < y$. The following proposition provides a basic mechanism for Monte-Carlo sampling.
+
+
+\begin{proposition}
+\label{prop:sampling}
+Let $Z$ be a real-valued random variable with c.d.f. $F_Z$.
+For  $u\in [0,1]$, define
+\[
+F_X^-(u) = \max\{z: F_Z(z-0) \leq u\}.
+\]
+Let $U$ be uniformly distributed over $[0,1]$. Then $F_Z^-(U)$ has the same distribution as $Z$.
+\end{proposition}
+\begin{proof}
+Let $A_z = \{u\in [0,1]: F_Z^-(u) \leq z\}$.  
+Assume first that $u<F_Z(z)$. Then $F_Z(y-0) \leq u$ implies that $y\leq z$, since $y>z$ would imply that $F_Z(z) \leq F_Z(y-0)$. This shows that $\sup\{z': F_Z(z'-0) \leq u\} \leq z$, i.e., $u\in A_z$. 
+
+Now, take $u>F_Z(z)$. Because c.d.f.'s are right continuous, there exists $y>z$ such that $u>F_Z(y)$, which implies that $F_Z^-(u) \geq y$ and $u\not \in A_z$. 
+
+We have therefore shown that $[0, F_Z(z)) \sub A_z \sub [0, F_Z(z)]$. 
+If $U$ is uniformly distributed on $[0,1]$, then $P(U< F_Z(z)) = P(U \leq F_Z(z)) = F_Z(z)$, showing that
+\[
+\myP(F_Z^-(U) \leq z) = \myP(U\in A_z) = F_Z(z).
+\]
+\end{proof}
+
+This proposition shows that one can generate random samples of a real-valued random variable $Z$ as soon as one can compute $F_Z^-$ and generate uniformly distributed variables. Note that, if $F_Z$ is strictly increasing, then $F_Z^- = F_Z^{-1}$, the usual function inverse.
+
+The proposition also shows how to sample from random variables taking values in finite sets. Indeed, if $Z$ takes values in $\tOm_Z = \{z_1, \ldots, z_n\}$ with $p_i = \myP(Z=z_i)$, sampling from $Z$ is equivalent to sampling from the integer valued random variable $\widetilde Z$ with $\myP(\widetilde Z = i) = p_i$. For this variable, $F_{\tilde Z}^-(u)$ is the largest $i$ such that $p_1 + \cdots + p_{i-1} \leq u$ (this sum being zero if $i=1$), which provides the standard sampling scheme for discrete probability distributions. 
+
+\section{Rejection sampling}
+While the previous approach can be generalized to multivariate distributions, it quickly becomes unfeasible when the dimension gets large, excepting simple cases in which the variables are independent, or, say, Gaussian. Rejection sampling is a simple algorithm that allows, in some cases, for the generation of samples from a complicated distribution based on repeated sampling of  a simpler one. 
+
+Let us assume that we want to sample from a variable $Z$ taking values $\CR_Z$, and that there exists a measure $\mu$ on $\CR_Z$ with respect to which the distribution of $Z$ is absolutely continuous, i.e., so that this distribution has a density $f_Z$ with respect to $\mu$. For example, $\CR_Z = \mR^d$, and $f_Z$ is the p.d.f. of $Z$ with respect to Lebesgue's measire. Assume that $g$ is another density functions (with respect to $\mu$) from which it is ``easy'' to sample. Consider the following algorithm, which includes a function $a: z\mapsto a(z) \in [0,1]$ that will be specified later.
+\begin{algorithm}[Rejection sampling with acceptance function $a$ and base p.d.f. $g$]
+\begin{enumerate}
+\item Sample a realization $z$ of a random variable with p.d.f. $g$.
+\item  Generate $b\in \{0,1\}$ with $\myP(b=1) = a(z)$.
+\item If $b=1$, return $Z=z$ and exit. 
+\item Otherwise, return to step 1. 
+\end{enumerate}
+\end{algorithm}
+
+The probability of exiting at step 3 is $\rho = \int_{\mR^d} g(z) a(z) \mu(dz)$. So, the algorithm simulates a random variable with p.d.f.
+\[
+\tilde f(z) = g(z) a(z) (1+(1-\rho)+(1-\rho)^2 +\cdots) = \frac{g(z)a(z)}{\rho}.
+\]
+As a consequence, in order to simulate $f_Z$, one must choose $a$ so that $f_Z(z)$ is proportional to $g(z) a(z)$, which, (assuming that $g(z) > 0$ whenever $f_Z(z) > 0$), requires that $a(z)$ is proportional to $f_Z(z)/g(z)$. Since $a(z)$ must take values in $[0,1]$, but should otherwise be chosen as large as possible to ensure that fewer iterations are needed, one should take
+\[
+a(z) = \frac{f_Z(z)}{cg(z)}
+\]
+where $c = \max\{f_Z(z)/g(z): z\in\mR^d\}$, which must therefore be finite. This fully specifies a rejection sampling algorithm for $f_Z$. Note that $g$ is free to choose (with the restriction that $f_Z(z)/g(z)$ must be bounded), and should be selected so that sampling from it is easy, and the coefficient $c$ above is not too large. 
+
+
+\section{Markov chain sampling}
+When dealing with high-dimensional distributions, the constant $c$ in the previous procedure is typically extremely large, and the rejection-sampling algorithm becomes unfeasible, because it keeps rejecting samples for very long times. In such cases, one can use alternative simulation methods that iteratively updates the variable $Z$ by making small changes at each step, resulting in a procedure that asymptotically converges to a sample of the target distribution. Such sampling schemes are usually described as Markov chains, leading to the name Markov-chain Monte Carlo (or MCMC) sampling.
+
+
+
+
+%Both Gibbs Sampling and Metropolis-Hastings algorithms are examples of Markov chain sampling methods, for which now provide some basic definitions and properties. Providing a complete presentation of the theory of Markov chains, even
+%in their simplest setting (finite state space) is however out of our scope, and we will restrict to the few notions that are needed
+%in order to understand and design basic sampling algorithms. 
+
+Assume that we want to sample from a random variable that takes values in some (measurable) set $\CB = \CR_X$.\footnote{We will assume in this chapter that $\CB$ is a complete metric space with a dense countable subset, with the associated Borel $\sigma$-algebra.}
+A Markov chain is the probabilistic analogous of a recursive sequence
+$X_{n+1} = \Phi(X_n)$, which is fully defined by the function $\Phi:\mathcal B\to \mathcal B$ and the
+initial value $X_0\in \mathcal B$. 
+
+\subsection{Definitions}
+
+For Markov chains, $X_0$ is a random variable,
+which therefore does not have a fixed value, but follows a probability
+distribution that we will generally denote $\mu_0$: $P^0(x) = P(X_0=x)$. The computation of
+$X_{n+1}$ given $X_n$ is not deterministic either, but given the conditional probabilities
+\[
+P^{n,n+1}(x, A) = \myP(X_{n+1} \in A \mid X_n =  x).
+\]
+where $A\subset \CB$ is measurable. The left-hand side of this equation, $P^{n,n+1}$ is called a transition probability, according to the following definition.
+\begin{definition}
+\label{def:trans.prob}
+Let $F_1$ and $F_2$ be two sets equipped with $\sigma$-algebras $\CA_1$ and $\CA_2$. A transition probability from
+$F_1$ to $F_2$ is a function $p:F_1\times \CA_2 \to [0,1]$  such that, for
+all $x\in F_1$, the function $A \mapsto p(x, A)$ is a probability on $F_2$ and for all $A\in \CA_2$, the function $x\mapsto p(x, A)$, $x\in F_1$, is measurable.
+
+When $F_2$ is discrete, the probabilities are fully specified by their values on singleton sets, and we will write $p(x,y)$ for $p(x, \{y\})$.
+\end{definition}
+
+ When $P^{n,
+n+1}(x, \cdot)$ does not depend on $n$, the Markov chain is said to
+be homogeneous. To simplify notation, we will restrict to homogeneous
+chains (and therefore only write $P(x, A)$), although some of the chains used in MCMC sampling may be
+inhomogeneous. This is not a very strong loss of generality, however,
+because inhomogeneous Markov chains can be considered as homogeneous
+by extending the space $\Om$ on which they are defined to $\Om\ti
+\mN$, and defining the transition probability
+\[
+\tilde p\big((x,n), A\times \{r\}\big) = \bfone_{r=n+1} p^{n,n+1}(x, A).
+\]
+
+
+An important special case is when $\CB$ is countable, in which case one only needs to specify transition probabilities for singletons $A = \{y\}$, and we will write
+\[
+p(x, y) = P(x, \{y\}) = \myP(X_{n+1} =y \mid X_n =  x)
+\]
+for the p.m.f. associated with $P(x, \cdot)$.
+
+Another simple situation is when $\CB = \mR^d$ and each $P(x, \cdot)$ has a p.d.f. that we will also denote as $p(x, \cdot)$. In this latter case, assuming that $P^0$ also have a p.d.f. that we will denote by $\mu_0$, the joint p.d.f. of $(X_0, \ldots, X_n)$ on $(\mR^d)^{n+1}$ is given by
+\begin{equation}
+\label{eq:mc.pdf}
+f(x_0, x_1, \ldots, x_n) =  \mu_0(x_0) p(x_0, x_1)\cdots p(x_{n-1}, x_n).
+\end{equation}
+The same expression holds for the joint p.m.f. in the discrete case.
+
+In the general case (invoking measure theory), the joint distribution is also determined by the transition probabilities, and we leave the derivation of  the expression to the reader. An important point is that, in both special cases considered above, and under some very mild assumptions in the general case , these transition probabilities also uniquely define the joint distribution of the infinite process $(X_0, X_1, \ldots)$ on $\CB^\infty$, which gives theoretical support to the consideration of asymptotic properties of Markov chains. In this discussion, we are interested in conditions ensuring that the chain asymptotically samples from a target probability distribution $Q$, i.e., whether $\myP(X_n \in A)$ converges to $Q(A)$ (one says that $X_n$ converges in distribution to $Q$). In practice, $Q$ is given or modeled, and the goal is to determine the transition probabilities.
+Note that the marginal distribution of $X_n$ is computed by integrating (or summing) \cref{eq:mc.pdf} with respect to $x_0, \ldots, x_{n-1}$, which is generally computationally challenging. 
+
+Given a transition probability $P$ on $\CB$, we will use the notation, for a function $f:\CB \to \mR$:
+\[
+Pf(x) = \int_\CB f(y) P(x, dy).
+\]
+If $Q$ is a probability distribution on $\CB$, it will also be convenient to write
+\[
+Qf(x) = \int_\CB f(y) Q(dy).
+\]
+
+\subsection{Convergence}
+We will denote $\myP_x(\cdot)$ the conditional distribution $\myP(\cdot \mid X_0 = x)$ and $P^n(x, A) = \myP_x(X_n\in A)$, which is a probability distribution on $\CB$. The goal of Markov Chain Monte Carlo sampling is to design the transition probabilities such that $P^n_{x}(A)$ converges to $Q(A)$ when $n$ tends to infinity. One furthermore wants to complete this convergence with a law of large numbers, ensuring that
+\[
+\frac1 n\sum_{k=1}^n f(X_k)\to \int_{\CB} f(x) Q(dx)
+\] 
+when $n\to \infty$, where $X_n$ is the generated Markov chain and $f$ is $Q$-integrable.
+
+Introduce the  total variation distance between two probability measures on a given probability space, 
+\begin{equation}
+\label{eq:total.var}
+D_{\mathrm{var}}(\mu_1,\mu_2)  = \sup_A(\mu_1(A) - \mu_2(A)).
+\end{equation}
+where the supremum is taken over all measurable sets $A$. 
+We will say that the Markov chain with transition $P$ asymptotically samples from $Q$ if 
+\begin{equation}
+\label{eq:mcmc.goal}
+\lim_{n\to \infty} D_{\mathrm{var}}(P^n(x, \cdot),Q) = 0
+\end{equation}
+for $Q$-almost all $x\in \CB$. The chain must satisfy specific conditions for this to be guaranteed.
+
+
+
+We now discuss some properties of the total variation distance that will be useful later. First, we note that the supremum in the r.h.s. of \cref{eq:total.var} is achieved. Indeed, there exists a set $A_0$ such that, for all measurable sets $A$, $\mu_1(A\cap A_0) \geq \mu_2(A\cap A_0)$ and $\mu_1(A\cap A^c_0) \leq \mu_2(A\cap A^c_0)$. If $\CB$ is a finite set, it suffices to let $A_0= \{x\in \CB: \mu_1(x) \geq \mu_2(x)\}$; if both $\mu_1$ and $\mu_2$ have p.d.f.'s $\phi_1$ and $\phi_2$ with respect to Lebesgue's measure (with $\CB = \mR^d$), then one can take  
+$A_0= \{x\in \CB: \phi_1(x) \geq \phi_2(x)\}$. In the general case, one can take $\mu = \mu_1+\mu_2$ so that $\mu_1, \mu_2\ll \mu$, and letting $\phi_i = d\mu_i/d\mu$, also take $A_0= \{x\in \CB: \phi_1(x) \geq \phi_2(x)\}$. (This is also a special case of  the Hahn-Jordan decomposition of signed measures \citep{dudley2018real}). 
+
+Now, it is clear that, for any $A$
+\begin{align*}
+\mu_1(A) - \mu_2(A) &= \mu_1(A\cap A_0) - \mu_2(A\cap A_0) + \mu_1(A\cap A^c_0) - \mu_2(A\cap A^c_0)\\
+&\leq \mu_1(A\cap A_0) - \mu_2(A\cap A_0) \\
+&\leq \mu_1(A\cap A_0) - \mu_2(A\cap A_0) + \mu_1(A^c\cap A_0) - \mu_2(A^c\cap A_0)\\
+&= \mu_1(A_0) - \mu_2(A_0)
+\end{align*}
+showing that
+\[
+D_{\mathrm{var}}(\mu_1,\mu_2)  = \mu_1(A_0) - \mu_2(A_0).
+\]
+
+The following proposition lists additional properties.
+\begin{proposition}
+\label{prop:var.dist}
+\begin{enumerate}[label=(\roman*)]
+\item If $\mu_1, \mu_2$ have a densities $\phi_1, \phi_2$ with respect to some positive measure $\mu$ (such as $\mu_1+\mu_2$), then
+\[
+D_{\mathrm{var}}(\mu_1,\mu_2)  = \frac12 \int_{\CB} |\phi_1(x) - \phi_2(x)|\mu(dx).
+\]
+In particular, if $\CB$ is finite
+\[
+D_{\mathrm{var}}(\mu_1,\mu_2)  = \frac12 \sum_{x\in \CB} |\mu_1(x) - \mu_2(x)|.
+\]
+
+
+\item For general $\CB$,
+\begin{equation}
+\label{eq:total.var.2}
+D_{\mathrm{var}}(\mu_1,\mu_2)  = \sup_f\left(\int_\CB f(x) \mu_1(dx) - \int_\CB f(x) \mu_2(dx)\right).
+\end{equation}
+where the supremum is taken over all measurable functions $f$ taking values in $[0,1]$.
+\item If $f: \CB \to \mR$ is bounded, define the maximal oscillation of $f$ by
+\[
+\mathit{osc}(f) = \sup\{f(x) - f(y): x, y\in \CB\}.
+\]
+Then 
+\[
+D_{\mathrm{var}}(\mu_1,\mu_2) = \sup\left\{ \int_{\CB} f(x) \mu_1(dx) - \int_{\CB} f(x) \mu_2(dx) : \mathit{osc}(f) \leq 1\right\}
+\]  
+
+\item Conversely, for any bounded measurable $f: \CB\to \mR$,
+\[
+\mathit{osc}(f) = \sup\left\{ \int_{\CB} f(x) \mu_1(dx) - \int_{\CB} f(x) \mu_2(dx) : D_{\mathrm{var}}(\mu_1,\mu_2) \leq 1\right\}
+\]
+\end{enumerate}
+\end{proposition}
+\begin{proof}
+If one takes $A_0= \{x\in \CB: \phi_1(x) \geq \phi_2(x)\}$, then
+\[
+D_{\mathrm{var}}(\mu_1,\mu_2)  = \int_{A_0} (\phi_1(x) - \phi_2(x))\mu(dx) = \int_{A_0} |\phi_1(x) - \phi_2(x)|\mu(dx).
+\]
+But, because both $\mu_1$ and $\mu_2$ are probability measures
+\[
+\int_{\CB} (\phi_1(x) - \phi_2(x))\mu(dx) = 0
+\]
+so that 
+\[
+\int_{A_0^c} (\phi_1(x) - \phi_2(x))\mu(dx) = - \int_{A_0} (\phi_1(x) - \phi_2(x))\mu(dx).
+\]
+However, the l.h.s. is also equal to 
+\[
+- \int_{A_0^c} |\phi_1(x) - \phi_2(x)|\mu(dx)
+\]
+so that 
+\[
+\int_{\CB} |\phi_1(x) - \phi_2(x)|\mu(dx) = 2 \int_{A_0} (\phi_1(x) - \phi_2(x)) = 2 D_{\mathrm{var}}(\mu_1,\mu_2),
+\]
+which proves (i). 
+
+
+To prove (ii), first notice that, for all $A$, 
+\[
+\mu_1(A) - \mu_2(A) = \int_\CB f(x) \mu_1(dx) - \int_\CB f(x) \mu_2(dx)
+\]
+for $f = \bfone_A$, so that 
+\[
+D_{\mathrm{var}}(\mu_1,\mu_2)  \leq \sup_f\left(\int_\CB f(x) \mu_1(dx) - \int_\CB f(x) \mu_2(dx)\right).
+\]
+Conversely, using $A_0$ as above, and taking $f$ with values in $[0,1]$
+\begin{align*}
+\int_\CB f(x) \mu_1(dx) - \int_\CB f(x) \mu_2(dx) &= 
+\int_{A_0} f(x) (\mu_1-\mu_2)(dx) + 
+\int_{A_0^c} f(x) (\mu_1-\mu_2)(dx) \\
+&\leq 
+\int_{A_0} f(x) (\mu_1-\mu_2)(dx)\\ 
+&\leq 
+\int_{A_0} (\mu_1-\mu_2)(dx) =  D_{\mathrm{var}}(\mu_1,\mu_2)
+\end{align*}
+
+This shows (ii). For (iii), one can note that, if $f$ takes values in $[0,1]$, then $\mathit{osc}(f) \leq 1$ so that 
+\[
+D_{\mathrm{var}}(\mu_1,\mu_2) \leq \sup\left\{ \int_{\CB} f(x) \mu_1(dx) - \int_{\CB} f(x) \mu_2(dx) : \mathit{osc}(f) \leq 1\right\}
+\] 
+Conversely, take $f$ such that $\mathit{osc}(f) \leq 1$, $\epsilon > 0$ and $y$ such that $f(y) \geq inf_x f(x) + \epsilon$. Let $f_\epsilon(x) = (f(x) - f(y) + \epsilon)/(1+\epsilon)$, which takes values in $[0,1]$. Then
+\begin{align*}
+D_{\mathrm{var}}(\mu_1,\mu_2) &\geq 
+\int_\CB f_\epsilon(x) \mu_1(dx) - \int_\CB f_\epsilon(x) \mu_2(dx)\\
+&= \frac{1}{1+\epsilon}\left(
+\int_\CB f(x) \mu_1(dx) - \int_\CB f(x) \mu_2(dx)\right)
+\end{align*}
+and since this is true for all $\epsilon>0$, we get
+\[
+\int_\CB f(x) \mu_1(dx) - \int_\CB f(x) \mu_2(dx)\leq D_{\mathrm{var}}(\mu_1,\mu_2)
+\]
+which completes the proof of (iii). 
+
+Using (iii), we find, for any $\mu_1, \mu_2$ and any bounded $f$
+\[
+\int_{\CB} f(x) \mu_1(dx) - \int_{\CB} f(x) \mu_2(dx) \leq D_{\mathrm{var}}(\mu_1,\mu_2) \mathit{osc}(f)
+\]
+which shows that
+\[
+\sup\left\{ \int_{\CB} f(x) \mu_1(dx) - \int_{\CB} f(x) \mu_2(dx) : D_{\mathrm{var}}(\mu_1,\mu_2) \leq 1\right\} \leq \mathit{osc}(f).
+\]
+However, taking $\mu_1 = \delta_x$ and $\mu_2 = \delta_y$, so that  $D_{\mathrm{var}}(\mu_1,\mu_2) = 0$ is $x=y$ and 1 otherwise, we get
+\begin{align*}
+f(x) - f(y) &= \int_{\CB} f(x) \mu_1(dx) - \int_{\CB} f(x) \mu_2(dx)\\
+&\leq  \sup\left\{ \int_{\CB} f(x) \mu_1(dx) - \int_{\CB} f(x) \mu_2(dx) : D_{\mathrm{var}}(\mu_1,\mu_2) \leq 1\right\} 
+\end{align*}
+which yields (iv) after taking the supremum with respect to $x$ and $y$.
+\end{proof}
+
+
+
+
+\subsection{Invariance and reversibility}
+\label{sec:mcmc.reversible}
+If a Markov chain converges to $Q$, then $Q$ must be an ``invariant distribution,'' in the sense that, if $X_n \sim Q$ for some $n$, then so does $X_{n+1}$ and as a consequences all $X_m$ for $n\geq m$. This can be seen by writing
+\[
+P^{n+1}(x,A) = \myP_x(X_{n+1} \in A) = \myE_x(P(X_n, A)) = E_{P^n(x, \cdot)}(P(\cdot, A))
+\]
+If $P^n(x, \cdot)$ (and therefore also $P^{n+1}(x, \cdot)$) converges to $Q$, then passing to the limit above yields
+\[
+Q(A)= E_{Q}(P(\cdot, A))
+\]
+and this states that, if $X_n\sim Q$, then so does $X_{n+1}$. If $Q$ has a p.d.f. (resp. p.m.f.), say, $q$, this gives
+\[
+q(y) = \int_{\mR^d} p(x, y)q(x)dx, (\text{resp. } q(y) = \sum_{x\in\CB} p(x, y)q(x)).
+\]
+So, if one designs a Markov chain with a target asymptotic distribution $Q$, the first thing to ensure is that $Q$ is invariant. 
+
+
+
+
+
+
+While invariance leads to an integral equation for $q$, a stronger condition, called reversibility is easier to assess. 
+
+Assume that $Q$ is invariant by $P$. Make the assumption that $P(x, \cdot)$ has a density $p_*$ with respect to $Q$ (this is, essentially, no loss of generality, see argument below), so that
+\[
+P(x, A) = \int_{A} p_*(x, y) Q(dy).
+\]
+ Taking $A= \CB$ above, we have
+\[
+\int_{\CB} p_*(x, y) Q(dy) = P(x, \CB) = 1
+\]
+but we also have, because $Q$ is invariant, that 
+\[
+\int_{\CB} p_*(x, y) Q(dx) = Q(\CB) = 1.
+\]
+One says that the  density is ``doubly stochastic'' with respect to $Q$.
+
+Conversely, if a transition probability $P$ has a doubly stochastic density $p_*$ with respect to some probability $Q$ on $\CB$, then $Q$ is invariant by $P$, since
+\begin{multline*}
+\int_{\CB} P(x,A) Q(dx) = \int_{\CB} \int_A p_*(x,y) Q(dy) Q(dx) \\
+= \int_{A} \int_{\CB} p_*(x,y) Q(dx) Q(dy) =   \int_A Q(dy) = Q(A).
+\end{multline*}
+
+The property of being doubly stochastic can be reinterpreted in terms of time reversal for Markov chains. Let $Q_0$ be an initial distribution for a Markov chain with transition $P$ (not necessarily invariant) so that, for any $n\geq 0$, the distribution of $X_n$ is $Q_n = Q_0P^n$. Fixing any $m>0$, we are interested in the reversed process $\tilde X_k = X_{m-k}$. We first notice that the conditional distribution of $X_n$ given its future $X_{n+1}, \ldots, X_m$ (with $n<m$) only depends on $X_{n+1}$, so that the reversed process is also Markov. Indeed, for any positive function $f: \CB \to \mR$, $g: \CB^{m-n} \to \mR$, one has, using the fundamental properties of conditional expectations and the fact that $(X_n)$ is a Markov chain,
+\begin{align*}
+\myE(f(X_n) g( X_{n+1}, \ldots, X_m) ) &=  \myE\left(\myE(f(X_n) g( X_{n+1}, \ldots, X_m)\mid X_n, X_{n+1})\right)\\
+&=  \myE\left(f(X_n)\myE( g( X_{n+1}, \ldots, X_m)\mid X_n, X_{n+1})\right)\\
+&=  \myE\left(f(X_n)\myE( g( X_{n+1}, \ldots, X_m)\mid X_{n+1})\right)\\
+&=  \myE\left(E(f(X_n)\mid X_{n+1}) \myE( g( X_{n+1}, \ldots, X_m)\mid X_{n+1})\right)\\
+&=  \myE\left(E(f(X_n)\mid X_{n+1}) g( X_{n+1}, \ldots, X_m)\right).
+\end{align*}
+This shows that 
+\[
+\myE(f(X_n) \mid X_{n+1}, \ldots, X_m) = \myE(f(X_n) \mid X_{n+1}),
+\]
+ which is what we wanted. To identify the conditional distribution of $X_n$ given $X_{n+1}$, we note that for any $x\in \CB$, the transition probability $P(x, \cdot)$ is absolutely continuous with respect to $Q_{n+1}$ since
+\[
+Q_{n+1}(A) = \int_{\CB} P(x, A) Q_n(dx)
+\]
+and the r.h.s. is zero only if  $P(x, A) = 0$ $Q_n$-almost everywhere \footnote{The ``almost everywhere'' statement a priori depends on $A$, but can be made independent of it under the mild assumption (that we will always make) that $\CB$ has a countable basis of open sets.}. This shows that there exists a function $r_{n+1}: \CB\times \CB \to \mR$ such that, for all $A$
+\[
+P(x,A) = \int_A r_{n+1}(x,y) Q_{n+1}(dy).
+\]
+Given this point, one can write
+\begin{align*}
+\myE(f(X_n) g(X_{n+1}) &= \int_{\CB^2} f(x_n) g(x_{n+1}) P(x_n, dx_{n+1}) Q_n(dx_n) \\ 
+&= \int_{\CB^2} f(x_n) g(x_{n+1}) r_{n+1}(x_n, x_{n+1}) Q_{n+1}(dx_{n+1}) Q_n(dx_n) \\ 
+&= \int_{\CB} \left(\int_{\CB} f(x_n)  r_{n+1}(x_n, x_{n+1}) Q_n(dx_n)\right) g(x_{n+1}) Q_{n+1}(dx_{n+1})  
+\end{align*} 
+which shows that the conditional distribution of $X_n$ given $X_{n+1} = x_{n+1}$ has density $x_n \mapsto r_{n+1}(x_n, x_{n+1})$ relatively to $Q_{n}$. Note that, for discrete probabilities, one has
+\[
+r_{n+1}(x,y) = \frac{P(x,y)}{Q_{n+1}(y)}
+\]
+and 
+\begin{equation}
+\label{eq:reversed.general}
+\myP(X_n = x \mid X_{n+1}= y) = \frac{Q_n(x) P(x,y)}{Q_{n+1}(y)}.
+\end{equation}
+The formula is identical if both $Q_0$ and $P(x, \cdot)$ have p.d.f.'s with respect to a fixed reference measure $\mu$ on $\CB$ (for example, Lebesgue's measure when $\CB = \mR^d$), denoting these p.d.f's by $q_0$ and $p(x, \cdot)$. Then, the p.d.f. of the  distribution of $ X_n$ given $X_{n+1}=y$ is 
+\begin{equation}
+\label{eq:reversed.pdf.gen}
+\tilde p_n(y, x) = \frac{q_n(x) p(x,y)}{q_{n+1}(y)}
+\end{equation}
+where $q_n$ is the p.d.f. of $Q_n$. Note that the transition probabilities of the reversed Markov chain depend on $n$, i.e., the reversed chain is non-homogeneous in general.
+
+However, if one assumes that $Q_0 = Q$ is invariant by $P$, then $Q_n = Q$ for all $n$ and therefore $r_n(x,y) = p_*(x,y)$, using the previous notation. In this case, the reversed chain  has transitions independent of $n$ and its transition probability has density
+\[
+\tilde p_*(x, y) = p_*(y, x)
+\] 
+with respect to $Q$. In the discrete case, letting $p(x,y) = P(X_{n+1} = y\mid X_n=x)$, we have $ p_*(x,y) = p(x,y) / Q(y)$, so that the reversed transition (call it $\tilde p$) is such that
+\[
+\frac{\tilde{p}(x,y)}{Q(y)} = \frac{p(y,x)}{Q(x)},
+\]
+i.e.,
+\begin{equation}
+\label{eq:reversed.discrete}
+Q(y) p(y,x) = Q(x) \tilde p(x,y).
+\end{equation}
+One retrieves easily the fact that  if $p$ is such that there exists $Q$ and $\tilde p$ such that \cref{eq:reversed.discrete} is satisfied, then (summing the equation over $y$) $Q$ is an invariant probability for $p$. 
+
+Let $Q$ be a probability on $\CB$. 
+One says that the Markov chain (or the transition probability $p$) is $Q$-reversible if and only if $p(x, \cdot)$ has a density $p_*(x, \cdot)$ with respect to $Q$ such that $p_*(x,y) = p_*(y,x)$ for all $x,y\in \CB$. Since such a density is necessarily doubly stochastic, $Q$ is then invariant by $p$. Reversibility is equivalent to the property that,  whenever  $X_n \sim Q$, the joint distribution of $(X_n, X_{n+1})$ coincides with that of $(X_{n+1}, X_{n})$. Alternatively,
+ $Q$-reversibility requires that for all $A, B\subset \CB$, 
+\begin{equation}
+\label{eq:reversibility}
+\int_{A} P(z, B) dQ(z) = \int_{B} P(z, A) dQ(z) .
+\end{equation}
+
+In the discrete case, \cref{eq:reversibility} is equivalent to the ``detailed balance'' condition:
+\begin{equation}
+\label{eq:reversible.discrete}
+Q(y) p(y,x) = Q(x) p(x,y).
+\end{equation}
+
+While $Q$ can be an invariant distribution for a Markov chain without that chain being $Q$-reversible, the latter property is  easier to ensure when designing transition probabilities, and most sampling algorithms are indeed reversible with respect to their target distribution. 
+\begin{remark}
+\label{rem:reversible.iterate}
+A simple example of non-reversible Markov chain with invariant probability $Q$ is often obtained in practice by alternating two or more  $Q$-reversible transition probabilities. Assume, to simplify, that $\CB$ is discrete and that $p_1$ and $p_2$ are transition probabilities that satisfy \cref{eq:reversible.discrete}. Consider a composite Markov chain for which the transition from $X_n$ to $X_{n+1}$ consists in generating first $Y_n$ according to $p_1(X_n, \cdot)$ and then $X_{n+1}$ according to $p_2(Y_n, \cdot)$. The resulting composite transition probability is 
+\[
+p(x,y) = \sum_{z\in \CB} p_1(x,z) p_2(z, y).
+\]
+Trivially, $Q$ is invariant by $p$, since it is invariant by $p_1$ and $p_2$, but $p$ is not $Q$-reversible. Indeed, $p$ satisfies \cref{eq:reversed.discrete} with 
+\[
+\tilde p(x,y) = \sum_{z\in \CB} p_2(x,z) p_1(z, y).
+\]
+\end{remark}
+
+
+\subsection{Irreducibility and recurrence}
+While necessary, invariance is not sufficient for a Markov chain to converge to $Q$ in distribution. However, it simplifies the general ergodicity conditions compared to the  general theory of Markov chains \citep{nummelin2004general,revuz2008markov}, as summarized below, following \citep{tierney1994markov} (see also  \citep{athreya1996convergence}). We therefore assume that the transition probability $P$ is such that $Q$ is $P$-invariant.
+
+%Let $\psi$ be a measure on $\CB$.
+One says that the Markov chain is $Q$-irreducible (or, simply, irreducible in what follows) if and only if, for all $z\in \CB$ and all (measurable) $B\sub \CB$ such that $Q(B)>0$, there exists $n>0$ with $\myP_z(X_n\in B) > 0$. (Irreducibility implies that $Q$ is the only invariant probability of the Markov chain.)
+
+%When $\CB$ is finite, one generally requires that the maximal irreducibility measure is the counting measure on $\CB$, such that
+%\[
+%\int_{\CB} f(x) \psi(dx) = \sum_{x\in \CB} s(x).
+%\]
+
+A Markov chain is called periodic if there exists $m>1$ such that $\CB$ can be covered by disjoint subsets $\CB_0, \ldots, \CB_{m-1}$ that satisfy $P(x, \CB_j) = 1$ for all $x\in \CB_{j-1}$ if $j\geq 1$ and all $x\in \CB_{m-1}$ if $j=0$. In other terms, the chain loops between the sets  $\CB_0, \ldots, \CB_{m-1}$. If such a decomposition does not exists, the chain is called aperiodic. 
+
+A periodic chain cannot satisfy \cref{eq:mcmc.goal}. Indeed, periodicity implies that $P_x(X_n \in \CB_i) = 0$ for all $x\in \CB_i$ unless $i = 0\ (\mathrm{mod}\ d)$. Since the sets $\CB_i$ cover $\CB$, \cref{eq:mcmc.goal} is only possible with $Q=0$.  Irreducibility and aperiodicity are therefore necessary conditions for ergodicity. Combined with the fact that $Q$ is an invariant probability distribution, these conditions are also sufficient, in the sense that \cref{eq:mcmc.goal} is true for  $Q$-almost all $x$. (See \cite{tierney1994markov} for a proof.)
+
+ Without the knowledge that the chain has an invariant probability, showing convergence usually requires showing that the chain is recurrent, which means that, for any set $B$ such that $Q(B) > 0$, the probability that, starting from $x$, $X_n\in B$ for an infinite number of $n$, written as $\myP_x(X_n \in B\ \mathit{i.o.})$ (for infinitely often) is positive for all $x\in E$ and equal to 1 $Q$-almost surely. The fact that irreducibility and aperiodicity combined with $Q$-invariance imply recurrence (or, more precisely, $Q$-positive recurrent \citep{nummelin2004general}) is an important remark that significantly simplifies the theory for MCMC simulation. Note that, by restricting $\CB$ to a suitable set of $Q$-probability 1, one can assume that $\myP_x(X_n \in B \ \mathit{i.o.}) = 1$ for all $x\in \CB$, which is called {\em Harris recurrence}.  It the chain is Harris recurrent, then \cref{eq:mcmc.goal} holds with $\mu_0 = \delta_x$ for all $x\in \CB$. \footnote{Harris recurrence is also associated with the uniqueness of right eigenvectors of $P$, that is functions $h: \CB \to \mR$ such that
+\[
+Ph(x) \defeq \int_{\CB} P(x, dy) h(y)  = h(x).
+\]
+Such functions are also called harmonic for $P$.
+Because $P$ is a transition probability, constant functions are always harmonic. Harris recurrence, in the current context, is equivalent to the fact that every bounded harmonic function is constant.}
+
+
+One says that $C\subset \CB$ is a ``small'' set if $Q(C)>0$ and there exists a triple
+ $(m_0, \eps, \nu)$, with $\eps>0$ and $\nu$ a probability distribution on $\CB$,  such that
+\[
+P^{m_0}(x, \cdot) \geq \eps \nu(\cdot)
+\]
+for all $x\in C$.
+A slightly different result, proved in \citep{athreya1996convergence}, replaces irreducibility by the property that there exists a small set  $C\subset \CB$ such that 
+\[
+\myP_x(\exists n: X_n\in C) > 0
+\]
+for $Q$-almost all $x\in \CB$.  One then replaces aperiodicity by the similar condition that the greatest common divisor of the set of integers $m$ such that  there exists $\epsilon_m$ with $P^{m}(x, \cdot) \geq \eps_m \nu(\cdot)$
+for all $x\in C$ is equal to 1. These two conditions combined with $Q$-invariance also imply that \cref{eq:mcmc.goal} holds for $Q$-almost all $x\in \CB$.
+
+
+
+
+\subsection{Speed of convergence}
+
+It is also important to quantify the speed of convergence in \cref{eq:mcmc.goal}. Efficient algorithms typically have a geometric convergence speed, namely
+\begin{equation}
+\label{eq:geom.ergod}
+D_{\mathrm{var}}(P^n_x, Q) \leq M(x) r^n
+\end{equation}
+for some $0\leq r < 1$ and some function $M(x)$, or uniformly geometric convergence speed, for which the function $M$ is bounded (or, equivalently, constant).  
+
+%This type of convergence is associated to similar degrees of recurrence, measured by how fast the chain returns to a given set after leaving it. 
+%Let $S_C$ denote the time of first return to a set $C$, i.e., 
+%\[
+%S_C = \inf\{n\geq 1, X_n\in C\}\,.
+%\]
+%Then, one says that the Markov chain is geometrically recurrent if $E(r^{S_C}) < \infty$ for a set $C$ such that $Q(C) >0$ and 
+
+A sufficient condition for geometric ergodicity is provided in \citet[Proposition 5.21]{nummelin2004general}.  Assume that the chain is Harris recurrent and that there exist $r>1$,  a small set $C$ and a ``drift function'' $h$ with
+\begin{subequations}
+\begin{equation}
+\label{eq:drift.1}
+\sup_{x\not \in C} (r\myE(h(X_{n+1})\mid X_n = x) - h(x)) < 0
+\end{equation}
+and
+\begin{equation}
+\label{eq:drift.2}
+\sup_{x\in C} \myE(h(X_{n+1}) \bfone_{X_{n+1}\not \in C} \mid X_n = x) <\infty.
+\end{equation}
+\end{subequations}
+Then the Markov chain is geometrically ergodic. Note that $ \myE(h(X_{n+1})\mid X_n = x) = Ph(x)$. \Cref{eq:drift.1,eq:drift.2} can be summarized in a single equation \citep{meyn2012markov}, namely
+\begin{equation}
+\label{eq:drift.12}
+Ph(x) \leq \beta h(x) + M \bfone_C(x)
+\end{equation}
+with $\beta = 1/r < 1$ and $M\geq 0$. 
+
+
+%
+%
+%
+%One says that the transition probability $P$ has an atom if one has
+%\[
+%P(x, A) \geq s(x) \nu(A)
+%\]
+%for all $x, A$, where $s: \CB: [0, +\infty)$ and $\nu$ is a probability measure on $\CB$ and $\int_{\CB}s(x) \psi(dx) >0$. (And the atom is the pair $(s, nu)$). For example, when $\CB$ is finite, one may take $\nu = \delta_z$ for some fixed $z\in \CB$ and $s(x) = p(x,z)$ and the requirement is that 
+%\[
+%\sum_{x\in \CB} p(x, z) > 0,
+%\]
+%which is always true if the chain is irreducible.
+%
+%Given an atom $(s, \nu)$, one can always decompose $P$ in the form
+%\[
+%P(x, A) = s(x) \nu(A) + (1-s(x)) \tilde P(x, A)
+%\]
+%where $\tilde P$ is another transition probability. Sampling from $X_{n+1}$ given $X_n$ can then be done by first sampling an auxiliary variable $Y_n$ that follows a Bernoulli distribution with parameter $s(X_n)$, then let $X_{n+1} \sim \nu$ if $Y_{n}=1$ and $X_{n+1}\sim \tilde P(x, \cdot)$ if $Y_n = 0$. The  process $( (X_n, Y_n))$ is a   Markov chain on the space $\CB\times \{0,1\}$, called the ``split chain'' and has the property that, every time $Y_n=1$, the distribution of $(X_{n+1}, Y_{n+1})$ does not depend on $X_n$. This implies that the split chain essentially starts afresh every time $Y_n = 1$, and that the blocks of variables between such events  behave independently from the ``past'' (which must be defined suitably since these events appear at random times). 
+%
+%This justifies heuristically, that, if the events $Y_n=1$ occur sufficiently often, the chain should  have an asymptotic behavior similar to that of independent variables. This leads to introducing the hitting time
+%\[
+%T_\nu = \inf\{n\geq 0: Y_n = 1\}
+%\]
+%and a Harris recurrent chain is said to be positive recurrent if $\myE_\nu(T_\nu) < \infty$, i.e., if the the average time to $Y_n = 1$ for a chain initialized with $X_0\sim \nu$ is finite. A positive recurrent chain always satisfies \cref{eq:mcmc.goal}. 
+%
+%%Let $S_C$ denote the time of first return to a set $C$, i.e., 
+%%\[
+%%S_C = \inf\{n\geq 1, X_n\in C\}\,.
+%%\]
+%A set $C$ is said to be small if there exists a positive measure $\tilde\nu$ and $m_0>0$ such that $P^{m_0}(x, A) \geq \tilde \nu(A)$ for all $x\in C$ and $A$ measurable. 
+%%The Markov chain is positive recurrent if and only if $\sup_{x\in C}E_x(S_B) < \infty$.
+%
+%One way to prove positive recurrence for a Harris recurrent chain is to 
+%
+%It is positive recurrent 
+%
+%Irreducible, aperiodic and recurrent Markov chains have a unique invariant probability that they asymptotically sample (one also says that such chains are {\it ergodic}). If the chain has been designed so that it is $Q$-reversible, then $Q$ must be the limit probability.
+%
+%From these three properties, the last one is, apparently, the least obvious to check or design. One can understand its importance from the heuristic fact that, when a Markov chain returns to a given ``small'' region of space (ideally, to the same point, but this is not always possible with non-discrete spaces), it essentially restarts from scratch (it ``regenerates'') and its runs between such returns are near independent from each others, allowing (when such returns happen an infinite number of times) for convergence results akin to those provided by the law of large numbers.
+%
+%Unsurprisingly, recurrence is strongly connected to the time of first return to a given set. 
+%
+%
+%It can also be given various flavors, which in turn entail variable speed of convergence of the Markov chain simulation. The simplest one is called uniform recurrence and ensures convergence at an exponential rate. It requires that, for some probability measure $\nu$, some positive constant $\beta$ and some integer $m\geq 1$, one has
+%\begin{equation}
+%\label{eq:uniform.erg}
+%P(X_m\in A\mid X_0 = x) \geq \beta \nu(A)
+%\end{equation}
+%for all $x\in \CB$ and measurable $A\subset \CB$. If this holds, there exists constants $C\geq 0$ and $\rho\in [0, 1)$ such that, for all $n\geq 1$, all measurable $A$ and all $x\in\CB$,
+%\begin{equation}
+%\label{eq:uniform.exp}
+%|P(X_n\in A\mid X_0 = x) - Q(A)| \leq C\rho^n
+%\end{equation}
+%where $Q$ is the unique invariant distribution of the Markov chain. One important example, which covers a number of practical situations, is when the set $\CB$ is finite. In this case a chain is uniformly ergodic 
+%recurrent as soon as it is irreducible ($\psi$ being the uniform measure on $\CB$) and 
+
+\subsection{Models on finite state spaces}
+
+Uniform geometric ergodicity is implied by the simple condition that the whole set $\CB$ is small, requiring in a uniform lower bound, for some probability distribution $\nu$,
+\begin{equation}
+\label{eq:ergodic.unif}
+P^{m_0}(x, \cdot) \geq \eps \nu(\cdot)
+\end{equation}
+for all $x\in \CB$.
+
+Such uniform conditions usually require strong restrictions on the space $\CB$, such as compactness or finiteness. 
+To illustrate this consider the case in which the set $\CB$ is finite. Assume, to simplify,  that $Q(x)>0$ for all $x\in \CB$ (one can restrict the Markov chain to such $x$'s otherwise).
+ Arbitrarily labeling elements of $\CB$ as $\CB = \{x_1, \ldots, x_N\}$, we can consider $p(x,y)$ as the coefficients of a matrix
+$\bfP = (p(x_k, x_l), k,l=1, \ldots, N)$. Such a matrix, which has
+non-negative entries and  row sums equal to 1, is called a stochastic
+matrix.
+
+We will  denote the $n$th power of $\bfP$ as $\bfP^n = (\pe p n(x_k,x_l), k,l=1, \ldots, N)$. One immediately sees that irreducibility is equivalent to the fact that, for all $x, y\in \CB$, there exists $m$ (that may depend of $x$ and $y$) such that $\pe p m(x,y) >0$. One can furthermore 
+show that the chain is irreducible and aperiodic if one can choose $m$ independent of $x$ and $y$ above, that is, if there exists $m$ such that $\bfP^m$ has positive coefficients. This condition clearly implies uniformly geometric ergodicity, which is therefore valid for all irreducible and aperiodic Markov chains on finite sets.
+
+This result can also be deduced from properties of matrices with non-negative or positive coefficients. The Perron-Frobenius theorem \cite{horn2012matrix} states that the eigenvalue 1 (associated with the eigenvector $\dsone$) is the largest, in modulus, eigenvalue of   a stochastic matrix $\tilde{\bfP}$ with positive entries, that it has multiplicity one and that all other eigenvalues have a modulus strictly smaller that one. If $\bfP^m$ has positive entries, this implies that all the eigenvalues of $(\bfP^m - \dsone Q)$ (where $Q$ is considered as a row vector) have modulus strictly less than one. This fact can then be used to prove uniformly geometric ergodicity. 
+
+\subsection{Examples on $\mR^d$}
+\label{sec:mcmc.rd}
+To take a geometrically ergodic example that is not uniform, consider the simple random walk provided by the iterations
+\[
+X_{n+1} = \rho X_n + \tau^2 \epsilon_n
+\]
+where $\epsilon_n \sim \CN(0, \Id[d])$, $\tau^2>0$ and $0<\rho < 1$. One shows easily by induction that the conditional distribution of $X_n$ given $X_0=x$ is Gaussian with mean $m_n = \rho^n x$ and covariance matrix $\sigma_n^2 \Id[d]$  with
+\[
+\sigma^2_n = \frac{1-\rho^{2n}}{1-\rho^2}\tau^2.
+\]
+In particular, the distribution $Q = \CN(0, \sigma^2_\infty\Id[d])$, with $\sigma^2_\infty = \tau^2 /(1-\rho^2)$, is invariant. Estimates on the variational distances between Gaussian distributions, such as those provided in  \citet{devroye2018total}, can then be used to show that 
+\[
+D_{\mathrm{var}}(P^n_x, Q) \leq M(x) \rho^n
+\]
+where $M$ grows linearly in $x$ but is not bounded. 
+
+
+Situations in which on can, as above, compute the probability distributions of $X_n$ are rare, however, and proving geometric convergence is significantly more difficult than for finite-state chains. For chains on $\mR^d$ (or, more generally, locally compact metric spaces), the drift function criterion \cref{eq:drift.12} can be used. Assume that $Ph(\cdot)$, given by
+\[
+Ph(x)  = \myE(h(X_{n+1})\mid X_n = x) = \int_{\mR^d} h(y) P(x, dy)
+\]
+is continuous as soon as the function $h: \mR^d \to \mR$ is continuous (one says that the chain is weak Feller). This true, for example, if $P(x, \cdot)$ has a p.d.f. with respect to Lebesgue's measure which is continuous in $x$. In such a situation, one can see that compact sets are small sets, and \cref{eq:drift.12} can be restated as the existence if  a positive function $h$ with compact sub-level sets and such that $h(x) \geq 1$, of a compact set $C\subset \mR^d$ and of positive constants $\beta< 1$ and $b$ such that, for all $x\in \mR^d$,
+\begin{equation}
+\label{eq:geom.drift}
+P h(x) \leq \beta h(x) + b \bfone_C(x).
+\end{equation}
+
+
+As an example, consider the Markov chain defined by
+\[
+X_{n+1} =X_n  -\delta \nabla H(X_n) + \tau \epsilon_{n+1}
+\]
+where $\epsilon_2, \epsilon_2,\ldots$ are i.i.d. standard $d$-dimensional Gaussian variables and $H:\mR^d \to \mR$ is $C^2$. This chain is clearly irreducible (with respect to Lebesgue's measure). One has
+\[
+Ph(x) = \frac{1}{(2\pi\tau^2)^{d/2}}\int_{\mR^d} h(y) e^{-\frac{1}{2\tau^2} |y - x  +\delta \nabla H(x)|^2} dy = \frac{1}{(2\pi)^{d/2}}\int_{\mR^d} h(x  -\delta \nabla H(x) + \tau u) e^{-\frac{ |u|^2}2} dy.
+\]
+
+Let us make the assumption that $H$ is $L$-$C^1$ for some $L>0$ (c.f. \cref{def:lck}) and furthermore assume that $|\nabla H(x)|$ tends to infinity when $x$ tends to infinity, ensuring the fact that the sets $\{x: |\nabla H(x)| \leq c\} $ are compact for $c>0$. We want to show that, if $\delta$ is small enough, \cref{eq:geom.drift} holds for $h(x) = \exp(m H(x))$ and $m$ small enough.
+
+We first compute an upper bound of
+\[
+g(x, u) = m H(x  -\delta \nabla H(x) + \tau u) - \frac{ |u|^2}2.
+\]
+Using the $L$-$C^1$ property, we have
+\begin{align*}
+g(x,u) &\leq mH(x) +m (-\delta\nabla H(x) + \tau u)^T \nabla H(x) + \frac{mL}{2}|\delta\nabla H(x) - \tau u|^2 - \frac{ |u|^2}2\\
+& = m H(x) - m\delta( 1 - \delta L/2)|\nabla H(x)|^2 + m\tau (1 - \tau L)\nabla H(x)^T u - \frac{1 - mL\tau^2}{2} |u|^2 \\
+&= m H(x)  - \frac{1 - mL\tau^2}{2} \left|u - \frac{m\tau (1-\tau L)}{1-mL\tau^2}\nabla H(x)\right|^2\\
+& \qquad -m\left(\delta( 1 - \delta L/2) - \frac{m\tau^2 (1-\tau L)^2}{2(1-mL\tau^2)}\right)|\nabla H(x)|^2
+\end{align*}
+Assume that $mL\tau^2 \leq 1$.
+It follows that
+\begin{multline*}
+Ph(x) = \frac{1}{(2\pi)^{d/2}}\int_{\mR^d} e^{g(x,u)}\, du \leq \frac{h(x)}{(1 - mL\tau^2)^{d/2}}\\
+ \exp\left( -m\left(\delta( 1 - \delta L/2) - \frac{m\tau^2 (1-\tau L)^2}{2(1-mL\tau^2)}\right)|\nabla H(x)|^2\right)
+ \end{multline*}
+Using this upper bound, we see that \cref{eq:geom.drift} will hold if one first chooses $\delta$ such that $\delta L < 2$, then $m$ such that $mL\tau^2 < 1$ and 
+\[
+\frac{m\tau^2 (1-\tau L)^2}{2(1-mL\tau^2)} < \delta( 1 - \delta L/2)
+\]
+and finally choose $C = \{x: |\nabla H(x)| \leq c\}$ where $c$ is large enough so that 
+\[
+\frac{1}{(1 - mL\tau^2)^{d/2}}
+ \exp\left( -m\left(\delta( 1 - \delta L/2) - \frac{m\tau^2 (1-\tau L)^2}{2(1-mL\tau^2)}\right) c^2\right) < 1.
+ \]
+ 
+ Note that this Markov chain is not in detailed balance. Since $P(x, \cdot)$ has a p.d.f., being in detailed balance  requires the ratio $p(x,y)/p(y,x)$ to simplify as a ratio $q(y)/q(x)$ for some function $q$, which does not hold. However, we can identify the invariant distribution approximately with small $\delta$ and $\tau$, that we will assume to satisfy $\tau = a\sqrt{\delta}$ for a fixed $a >0$, with $\delta$ a small number.
+ 
+We can write
+\begin{align*}
+p(x,y) &= \frac{1}{(2\pi\tau^2)^{d/2}}
+ \exp\left(-\frac{1}{2\tau^2} |y - x  +\delta \nabla H(x)|^2\right) \\
+ &=  \frac{1}{(2\pi\tau^2)^{d/2}}
+ \exp\left(-\frac{1}{2\tau^2} |y - x|^2  -\frac{\delta}{\tau^2} (y-x)^T \nabla H(x) - \frac{\delta^2}{2\tau^2} |\nabla H(x)|^2\right).
+\end{align*}
+ If $q$ is a density, we have
+\begin{align*}
+qP(y) &= \int_{\mR^d} q(x) p(x,y) dx\\ 
+&= \frac{1}{(2\pi)^{d/2}} \int_{\mR^d} q(y +a \sqrt\delta u ) \exp\left(-\frac{1}{2} |u|^2  + \frac{\sqrt\delta}{a} u^T \nabla H(y + a\sqrt\delta  u) - \frac{\delta}{2a^2} |\nabla H(y+a \sqrt\delta  u)|^2\right) du
+\end{align*} 
+Make the expansions:
+\[
+q(y +a \sqrt\delta u ) = q(y) + a \sqrt\delta  \nabla q(y)^T u + \frac{a^2\delta}{2} u^T \nabla^2 q(y) u + o(\delta |u|^2)
+\]
+and
+\begin{multline*}
+\exp\left( \frac{\sqrt\delta}{a} u^T \nabla H(y + a\sqrt\delta u) - \frac{\delta}{2a^2} |\nabla H(y+a \sqrt\delta u)|^2\right) \\
+= 1 + \frac{\sqrt\delta}{a} u^T \nabla H(y) - \frac{\delta}{2a^2} |\nabla H(y)|^2 + \delta u^T \nabla^2 H(u) u + \frac{\delta}{2a^2} (u^T \nabla H(y))^2 + o(\delta |u|^2).
+\end{multline*}
+Taking the product and using the fact that 
+$(2\pi)^{-d/2} \int_{\mR^d} u \exp(-|u|^2/2)du = 0$ and that 
+$(2\pi)^{-d/2} \int_{\mR^d} u^TAu \exp(-|u|^2/2)du = \trace(A)$ for any symmetric matrix $A$, we can write, taking the product:
+\[
+qP(y) = q(y) + \delta \left(\frac{a^2}{2} \Delta q(y) + \nabla H(y)^T \nabla q(y)  + q(y) \Delta H(y)\right) +o (\delta)
+\]  
+This indicates that, if $q$ is invariant by $P$, it should satisfy
+\[
+\frac{a^2}{2} \Delta q(y) + \nabla H(y)^T \nabla q(y)  + q(y) \Delta H(y) = o(1).
+\]
+The partial differential equation
+\begin{equation}
+\label{eq:kolm.invariant}
+\frac{a^2}{2} \Delta q(y) + \nabla H(y)^T \nabla q(y)  + q(y) \Delta H(y) =0
+\end{equation}
+is satisfied by the function 
+$ y\mapsto e^{-\frac{2H(y)}{a^2}}$. Assuming that this function is integrable, this computation suggests that, for small $\delta$, the Markov chain approximately samples from the probability distribution 
+\[
+q_0 = \frac{1}{Z}e^{-\frac{2H(x)}{a^2}}.
+\]
+This is further discussed in the next remark that involves stochastic differential equations. We will also present a correction of this Markov chain that samples from $q_0$ for all $\delta$ in \cref{sec:continuous.met}.
+
+\begin{remark}[Langevin equation]
+
+\label{rem:langevin}
+This chain is indeed the Euler discretization \citep{kloeden1992numerical} of the stochastic differential equation,
+\begin{equation}
+\label{eq:langevin}
+dx_t = - \nabla H(x_t) dt + a dw_t
+\end{equation}
+where $w_t$ is a Brownian motion.
+Under general hypotheses, this stochastic diffusion equation, called a {\em Langevin equation}, indeed converges in distribution to $q_0(x)$. 
+\footnote{Providing a rigorous account of the  theory of stochastic differential equations is beyond our scope, and we refer the reader to the many textbooks on the subject, such as \citet{mckean1969stochastic,ikeda1981stochastic,ethier1986markov} (see also \citet{berglund2021long} for a short introduction).} 
+
+Such diffusions are continuous-time Markov processes $(X_t, t\geq 0)$, which means that the probability distribution of $X_{t+s}$ given all events  before and including time $s$  only depends on $X_s$ and is provided by a transition probability $P_t$, with
+\[
+\myP(X_{t+1} \in A \mid X_s = x) = P_t(x, A).
+\]
+Similarly to deterministic ordinary differential equations, one shows that under sufficient regularity conditions (e.g., $\nabla H$ is $C^1$), equations such as \cref{eq:langevin} have solutions up to some positive (random) explosion time, and that this explosion time is finite under additional conditions that ensure that $|\nabla H(x)|$ does not grow too fast when $x$ tends to infinity. 
+
+If $\phi$ is a smooth enough function (say, $C^2$, with compact support), the function $(t, x) \mapsto P_t\phi(x)$ satisfies the partial differential equation, called Kolmogorov's backward equation,
+\[
+\partial_t P_t\phi(x) = - \nabla H(x)^T\nabla P_t\phi(x) + \frac {a^2}2 \Delta P_t\phi(x)
+\] 
+with initial condition $P_0\phi(x) = \phi(x)$. If $P_t(x, \cdot)$ has at all times $t$ a p.d.f. $p_t(x, \cdot)$, then this p.d.f. must satisfy the forward Kolmogorov equation:
+\[
+\partial_t p_t(x, y) = \nabla_2 \cdot (\nabla H(y) p_t(x,y)) + \frac {a^2}2 \Delta_2 p_t(x,y)
+\] 
+where $\nabla_2$ and $\Delta_2$ indicate differentiation with respect to the second variable ($y$). (Recall that $\delta f$ denotes the Laplacian of $f$.)  
+Moreover, if $Q$ is an invariant distribution with p.d.f. $q$, it satisfies the equation 
+\[
+\nabla\cdot (q \nabla H) + \frac {a^2}2 \Delta q(y) = 0.
+\]
+Noting that $\nabla\cdot (q \nabla H) = \nabla q^T \nabla H + q \Delta H$, we retrieve \cref{eq:kolm.invariant}. Convergence properties (and, in particular, geometric convergence) of the Langevin equation to its limit distribution are studied in \citet{roberts1996exponential}, using methods introduced in \citet{meyn1993stabilityII,meyn1993stabilityIII,meyn2012markov}
+\end{remark} 
+
+
+
+\section{Gibbs sampling}
+
+\subsection{Definition}
+The Gibbs sampling algorithm \citep{geman1984stochastic} was introduced to sample from a distribution on large sets for which direct sampling is intractable and rejection samping is inefficient. It generates a Markov chain that converges (under some hypotheses) in distribution to this target probability. A general version of this algorithm is described below. 
+
+Let $Q$ be  a probability distribution on $\CB$. Consider a finite family $U_1, \ldots, U_K$ of random variables defined on $\CB$ with values in measurable spaces $\CB'_1, \ldots, \CB'_K$. Let $Q^i = Q_{U^i}$ denote the image of $Q$ by $U^i$, defined by $Q^i(B_i) = Q(U_i\in B_i)$ for $B_i \subset \mathcal B_i$. Also, assume that there exists, for all $i$, a regular family of conditional probabilities for $Q$ given $U_i$, defined as a collection of transition probabilities $(u_i, A) \mapsto Q_i(u_i, A)$ for $u_i\in \CB_i$ and $A\subset \CB$, that satisfy
+\[
+\int_A g(U_i(x)) Q(dx) = \int_{\CB_i} Q_i(u_i, A) g(u_i) Q^i(du_i)
+\]
+for all nonnegative measurable functions $g: \CB_i \to \mR$. In simpler terms, $Q_i(u_i, A)$ determine a consistent set of conditional probabilities for $Q(A\mid U_i = u_i)$. For discrete random variables (resp. variables with p.d.f.'s on $\mR^d$), they are just elementary conditional probabilities. 
+
+
+We then consider the following algorithm.
+\begin{algorithm}[Gibbs sampling]
+\label{alg:gibbs.sampling}
+ Initialize the algorithm with some $z(0) = z_0\in \CB$ and iterate the following two update steps given a current $z(n)\in\CB$:
+\begin{enumerate}[label= (\arabic*), wide=0.5cm]
+    \item Select $j\in \{1, \ldots, K\}$ according to some pre-defined scheme, i.e., at random according to a probability distribution $\pi^{(n)}$ on the set $\{1, \ldots, K\}$. 
+    \item Sample a new value $z(n+1)$ according to the probability distribution $Q_j(U_j(z(n)), \cdot)$.
+\end{enumerate}
+\end{algorithm}
+One typically chooses the probability distribution in Step 1 equal to the uniform distribution on $\{1, \ldots, K\}$ (in which case it is independent on $n$), or to $\pi^{(n)} = \de_{j_n}$ where $j_n = 1 + (n \ \mathrm(mod)\  K)$ (periodic scheme). Strictly speaking, Gibbs sampling is a Markov chain if $\pi^{(n)}$ does not depend on $n$, and we will make this simplifying assumption in the rest of our discussion (therefore replacing  $\pi^{(n)}$ by $\pi$). One obvious requirement for the feasibility of the method is that step (2) can be performed efficiently since it must be repeated a very large number of times.
+
+One can see that the Markov chain generated by this algorithm is $Q$-reversible. Indeed, assume that $X_n\sim Q$. For any (measurable) subsets $A$ and $B$ in $\CB$, one has, using the definition of conditional expectations, 
+\begin{equation}
+\label{eq:gs.theory.1}
+\myP(X_n\in A, X_{n+1}\in B) = \sum_{i=1}^K \myE\big(\bfone_{Z\in A} Q_i(U_i(Z), B)\big) \pi(i).
+\end{equation}
+Now, for any $i$
+\begin{align*}
+\myE\big(\bfone_{Z\in A} Q_i(U_i(Z), B)\big) &=
+\int_A Q_i(U_i(z), B) Q(dz)\\
+&= \int_{\CB_i} Q_i(u_i, A) Q_i(u_i, B) Q^i(du_i)
+\end{align*}
+which is symmetric in $A$ and $B$.
+
+Note that, in the discrete case
+\begin{equation}
+\label{eq:gs.discrete}
+P(z, \tilde z) = \sum_{i=1}^n \pi (i) \frac{Q(\tilde z)\bfone_{U^i(\tilde z) = U^i(z)}}{\sum_{z': U^i(z') = U^i(z)} Q(z')}
+\end{equation}
+and the relation $Q(z) P(z, \tilde z) = Q(\tilde z) P(\tilde z, z)$ is obvious.
+
+The conditioning variables $U_1, \ldots, U_K$ should ensure, at least, that the associated Markov chain is irreducible and aperiodic. For irreducibility, this requires 
+that $Z$ can visits $Q$-almost all elements of $\CB$ by a sequence of steps that lead one of the $U_i$'s invariant.  
+
+
+\begin{remark}
+\label{rem:gibbs.sampling.1}
+In the standard version of Gibbs sampling, $\CB$ is a product space $\CB_1 \times \cdots \times \CB_K$, and
+\[
+\CB'_j = \CB_1 \times \cdots \times \CB_{j-1} \times \CB_{j+1} \times \cdots\times \CB_K.
+\]
+One then takes
+$U_j(z^{(1)}, \ldots, z^{(K)}) =  (z^{(1)}, \ldots, z^{(i-1)}, z^{(i+1)}, \ldots, z^{(K)})$. In other terms, step 2 in the algorithm replaces the current value of $z^{(j)}(n)$ by a new one sampled from the conditional distribution of $Z^{(j)}$ given the current values of $z^{(i)}(n), i\neq j$. 
+\end{remark}
+
+\begin{remark}
+\label{rem:gibbs.sampling.2}
+We have considered a fixed number of conditioning variables, $U_1, \ldots, U_K$, for simplicity, but the same analysis can be carried on if one replaces $U_j$ by a function $U: (x, \theta)\mapsto U_\theta (x)$ defined on a product space $\CB\times \Theta$, taking values in some space $\tilde \CB$, where $\Theta$ is a probability space equipped with a probability distribution $\pi$ and $\CB$ is measurable.  The previous discussion corresponds to $\Theta = \{1, \ldots, K\}$ and $\CB = \bigcup_{i=1}^K \{i\}\times \CB_i$ (so that $U_i(x)$ is replaced by $(i, U_i(x))$).
+
+One may then define $Q^\theta$ as the image of $Q$ by $U_\theta$ and let $Q_\theta(u, A)$ provide a version of $Q(A\mid U_\theta = u)$. The only change in the previous discussion (besides using $\theta$ in index) is that \cref{eq:gs.theory.1} becomes 
+\[
+\myP(X_n\in A, X_{n+1}\in B) = \int_\Theta \myE\big(\bfone_{Z\in A} Q_\theta(U_\theta(Z), B)\big) \pi(d\theta).
+\]
+\end{remark}
+
+\begin{remark}
+\label{rem:gibbs.sampling.3}
+Using notation from the previous remark, and allowing $\pi=\pe \pi n$ to depend on $n$, it is possible to allow $\pe\pi n$ to depend on the current state $z(n)$ using the following construction.
+
+%If $\tilde \Theta$ is a subset of $\Theta$, define $\CA_\Theta$ as the family of functions $U: \CB \to \tilde \CB$ such that, for all $\theta \in \Theta$, $U(\cdot) = f_\theta(U_\theta(\cdot))$ (up to a $Q$-negligible set) for some function $f_\theta: \tilde \CB \to \tilde \CB$. 
+
+For every step $n$, assume that  there exists a subset $\Theta_n$ of $\Theta$ such that  
+%$\pe \pi n$ takes the form $\pe \pi n(z, A) \in \CA_{\Theta_n}$ for all $A$ and 
+$ \pe \pi n(z, \Theta_n) = 1$ and that, for all $\theta\in \Theta_n$, $\pe\pi n$ can be expressed in the form
+\[
+\pe \pi n(z,\cdot) = \pe\psi n_\theta(U_\theta(z), \cdot)
+\]
+for some transition probability $\pe\psi n_\theta$ from $\CB_\theta$ to $\Theta_n$. The resulting chain remains $Q$-reversible, since
+\begin{align*}
+\myP(X_n\in A, X_{n+1}\in B) &= \int_{\CB} \int_{\Theta_n} \bfone_{z\in A} Q_\theta(U_\theta(z), B) \pe \pi n(z, d\theta) Q(dz)\\
+&= \int_{\Theta_n} \int_{\CB} \bfone_{z\in A} Q_\theta(U_\theta(z), B) \pe {\psi_\theta} n(U_\theta(z), d\theta) Q(dz)\\
+&= \int_{\Theta_n} \int_{\tilde \CB} Q_\theta(u, A) Q_\theta(u, B) \pe \psi n_\theta(u, d\theta) Q^\theta(du).
+\end{align*}
+
+
+\end{remark}
+
+
+\subsection{Example: Ising model}
+\label{sec:gibbs.ising}
+We will see  several examples of applications of Gibbs sampling in the next few chapters. Here, we consider a special instance of Markov random field (see \cref{chap:mrf}) called the Ising model. For this example,  $\CB = \{0,1\}^L$, and
+\[
+q(z) = \frac1{C} \exp\left( \sum_{j=1}^L \alpha \pe zj + \sum_{i,j=1, i< j}^L \beta_{ij} \pe z i \pe z j\right).
+\]
+Note that, although $\CB$ is a finite set, its cardinality, $2^L$, is too large for the enumerative procedure described in \cref{sec:gen.samp} to be applicable as soon as $L$ is, say, larger than 30. In practical applications of this model, $L$ is orders of magnitude larger, typically in the thousands or tens of thousands.
+
+We here apply standard Gibbs sampling, as described in \cref{rem:gibbs.sampling.1}, defining $\CB_j = \{0,1\}$ and 
+\[
+U_i(z^{(1)}, \ldots, z^{(L)}) =  (z^{(1)}, \ldots, z^{(i-1)}, z^{(i+1)}, \ldots, z^{(L)}).
+\]
+ The conditional distribution of $Z^{(j)}$ given $U_j(z)$ is a Bernoulli distribution with parameter
+\[
+q_{Z^{(j)}}(1\,|\,U_j(z)) = \frac{\exp(\alpha + \sum_{j'=1, j'\neq j}^L \beta_{jj'} \pe z {j'})}{1 + \exp(\alpha + \sum_{j'=1, j'\neq j}^L \beta_{ij} \pe z j)}
+\]
+(taking  $\beta_{jj'} = \beta_{j'j}$ for $j>j'$).  
+Gibbs sampling for this model will generate a sequence of variables $Z(0), Z(1), \ldots$ by fixing $Z(0)$ arbitrarily and, given $Z(n) = z$, applying the two steps:
+\begin{enumerate}[label=\arabic*., wide=0.5cm]
+    \item Select $j\in \{1, \ldots, L\}$  at random according to a probability distribution $\pi^{(n)}$ on the set $\{1, \ldots, L\}$. 
+    \item Sample a new value $\zeta\in \{0,1\}$ according to the Bernoulli distribution with parameter $q_{Z_n^{(j)}}(1\,|\,U_j(z))$, and set $Z^{(j)}(n+1) = \zeta$ and $Z^{(j')}(n+1) = Z^{(j')}(n)$ for $j'\neq j$.
+\end{enumerate}
+
+Let us now consider the Ising model with fixed total activation, namely the previous distribution conditional to $S(z) \defeq \pe z 1 + \cdots + \pe z L = h$ where $0  < h < L$.  The distribution one wants to sample from now is
+\[
+q_h(z) = \frac1{C_h} \exp\left( \sum_{j=1}^L \alpha \pe zj + \sum_{i,j=1, i< j}^L \beta_{ij} \pe z i \pe z j\right) \bfone_{S(z) = h}.
+\]
+In that case, the previous choice for the one-step transitions does not work, because fixing all but one coordinate of $z$ also fixes the last one (so that the chain would not move from its initial value and would certainly not be irreducible). One can however fix all but two coordinates, therefore defining
+\[
+U_{ij}(z^{(1)}, \ldots, z^{(L)}) =  (z^{(1)}, \ldots, z^{(i-1)}, z^{(i+1)}, \ldots, z^{(j-1)}, z^{(j+1)}, \ldots, z^{(L)})
+\]
+and $B_{ij} = \{0,1\}^2$. If $U_{ij}(z)$ is fixed, the only acceptable configurations are $z$ and the configuration $z'$ deduced from $z$ by switching the value of $\pe z i$ and $\pe z j$. Thus, there is no possible change is $\pe z i = \pe z j$. If $\pe z i \neq \pe z j$, then the probability of flipping the values of $\pe z i$ and $\pe z j$ is
+$q_h(z') / (q_h(z) + q_h(z'))$.
+
+
+\section{Metropolis-Hastings}
+
+\subsection{Definition}
+Gibbs sampling is a special case of a generic MCMC algorithm called Metropolis-Hastings that is defined as follows \citep{metropolis1953equation,hastings1970monte}. Assume that the distribution $Q$  has a density  $q$ with respect to a measure $\mu$ on  $\CB$. Specify a  transition probability on $\CB$, represented by a family of density functions with respect to $\mu$, $(g(z, \cdot), z\in \CB)$, and a family of acceptance functions $(z,z') \mapsto a(z,z') \in [0,1]$.
+Two basic examples are when $\CB$ is finite, $\mu$ is the counting measure, and $q$ and $g$ are probability mass functions, and when $\CB = \mathbb R^d$, $\mu$ is  Lebesgue's measure and   $q$ and $g$ are probability density functions.
+
+The sampling algorithm is then defined as follows. It invokes a function $a$ that will be specified below.
+\begin{algorithm}[Metropolis-Hastings]
+\label{alg:met.hast}
+Initialize the algorithm with $Z(0) = z(0) \in \CB$. At step $n$, the current value $Z(n) = z$ is then updated as follows.
+\begin{enumerate}[label=$\bullet$]
+\item ``Propose'' a new configuration $z'$ drawn according to $g(z, \cdot)$.
+\item ``Accept'' $z'$ (i.e., set $Z(n+1)=z'$) with probability $a(z,z')$. If the new value is rejected, keep the current one, i.e., let $Z(n+1)=z$.
+\end{enumerate}
+\end{algorithm}
+
+The transition probabilities for this process are
+$p(x,y) = g(x,y)a(x,y)$ if $x\neq y$ and 
+$p(x,x) = 1-\sum_{y\neq x} p(x,y)$. The chain is $Q$-reversible is the 
+detailed balance equation
+\begin{equation}
+\label{eq:met.hast.db}
+q(z)g(z,z') a(z,z') = q(z')g(z',z)a(z',z)
+\end{equation}
+is satisfied. The functions $g$ and $a$ are part of the design of the algorithm, but \cref{eq:met.hast.db} suggest that $g$ should satisfy the ``weak
+symmetry'' condition:
+\begin{equation}
+\label{eq:weak.sym}
+\forall x,y\in \Om: g(x,y) = 0 \Leftrightarrow g(y,x) = 0.
+\end{equation}
+Note that this condition is necessary to ensure \cref{eq:met.hast.db} if $q(z)>0$ for all $z$. If $q(z)>0$, the fact that acceptance probabilities are less than 1 requires that 
+\[
+a(z,z') \leq \min\left(1, \frac{q(z')g(z',z)}{q(z)g(z,z')}\right).
+\]
+If one takes $a(z,z')$ equal to the r.h.s., so that
+\begin{equation}
+\label{eq:met.hast.update}
+a(z,z') = \min\left(1, \frac{q(z')g(z',z)}{q(z)g(z,z')}\right),
+\end{equation}
+then \cref{eq:met.hast.db} is satisfied as soon as  $q(z)>0$.  If $q(z) = 0$, then this definition ensures that $a(z', z) = 0$ and \cref{eq:met.hast.db} is also satisfied. Note also that the case $g(z, z') = 0$ is not relevant, since $z'$ is not attainable from $z$ in one step in this case. This shows that \cref{eq:met.hast.update} provides a $Q$-reversible chain. Obviously, if $g$ already satisfies $q(z)g(z,z') = q(z')g(z',z)$, which is the case for Gibbs sampling, then one should take $a(z,z') = 1$ for all $z$ and $z'$.  
+
+\subsection{Sampling methods for continuous variables}
+\label{sec:continuous.met}
+
+
+While the Gibbs sampling and Metropolis-Hastings methods can be (and were) formulated for general variables and probability distributions,  proving that the related chains are ergodic, and checking conditions for  geometric convergence speed is much harder when dealing with general state spaces than with finite or compact spaces (see, e.g., \citep{roberts1994geometric,mengersen1996rates,amit1996convergence,
+roberts2004general}).
+On the other hand, interesting choices of proposal transitions for Metropolis-Hastings are available when $\CB = \mR^d$ and $\mu$ is Lebesgue's measure, taking advantage, in particular, of differential calculus.  More precisely, assume that $q$ takes the form
+\[
+q(z)= \frac{1}{C} \exp(- H(z))
+\]
+for some smooth function $H$ (at least $C^1$), such that $\exp(-H)$ is integrable. We saw in \cref{sec:mcmc.rd} that, under suitable assumptions, the Markov chain
+\begin{equation}
+\label{eq:langevin.euler}
+X_{n+1} = X_n - \frac\delta 2  \nabla H(X_n) + \sqrt{\delta} \epsilon_{n+1}
+\end{equation}
+with $\epsilon_{n+1} \sim \CN(0, \Id[d])$ has $q$ as invariant distribution in the limit $\delta \to 0$. Its transition probability, such that $g(z, \cdot)$ is the p.d.f. of $\CN( z - \frac \delta 2 \nabla H(z), \delta \Id[d])$, is therefore a natural choice for a proposal distribution in the Metropolis-Hastings algorithm. In addition to converging  from the exact target distribution, this ``Metropolis Adjusted Langevin Algorithm'' (or MALA) can also be proved to satisfy geometric convergence under less restrictive hypotheses than \cref{eq:langevin.euler} \citep{roberts1996exponential}.
+
+
+Another approach, similar to MALA is the Hamiltonian Monte-Carlo methods (or hybrid Monte-Carlo) \citep{duane1987hybrid,neal2012mcmc}. Inspired by physics, the method introduces a new variable, $p\in \mR^d$, called ``momentum,'' and defines the ``Hamiltonian:''
+\[
+\CH(z, m) = H(z) +\frac{1}{2} |m|^2.
+\]
+Fix a time $\theta>0$.
+The proposal transition $g(z, \cdot)$ is then defined as the value $\zeta(\theta)$ that is obtained by solving the Hamiltonian dynamical system
+\begin{equation}
+\label{eq:ham.mcmc.system}
+\left\{
+\begin{aligned}
+\partial_t \zeta(t) &= \partial_p \CH(\zeta(t), \mu(t)) = \mu(t)\\
+\partial_t \mu(t) &= -\partial_z \CH(\zeta(t), \mu(t)) = -\nabla H(\zeta(t))
+\end{aligned}
+\right.
+\end{equation}
+with $\zeta(0) = z$ and $\mu(0) \sim \CN(0, \Id[d])$. One can easily see that $\partial_t \CH(\zeta(t), \mu(t)) = 0$, which implies that 
+\[
+H(\zeta(t)) + \frac{1}{2} |\mu(t)|^2 = H(z) + \frac{1}{2} |\mu(0)|^2 
+\]
+at all times $t$, or, denoting by $\phi_{\CN}$ the p.d.f. of the $d$-dimensional standard Gaussian, 
+\[
+q(\zeta(t)) \phi_{\CN}(\mu(t))  = q(\zeta(0)) \phi_{\CN}(\mu(0)).
+\]
+Moreover, if one denotes by $\Phi_t(z, m) = (\bfz_t(z, m), \bfm_t(z, m))$ the solution $(\zeta(t), \mu(t))$ of the system started with $\zeta(0)= z$ and $\mu(0) = m$, one can also see that $\det(d\Phi_t( z, m)) = 1$ at all times. Indeed, applying \cref{eq:det.log.der} and the chain rule, we have
+\[
+\partial_t \log \det(d\Phi_t( z, m)) = \trace(d\Phi_t( z, m)^{-1} \partial_t d\Phi_t(t,m)).
+\]
+From
+\[\left\{
+\begin{aligned}
+\partial_t \bfz_t(z, m) &= \bfm_t(z,p)\\
+\partial_t \bfp_t(z, m) &= - \nabla H(\bfz_t(z,m))
+\end{aligned}
+\right.
+\]
+we get
+\begin{align*}
+\partial_t d\Phi_t(z, m)& = 
+\begin{pmatrix} 
+\partial_z \bfm_t(z, m) & \partial_m \bfm_t(z,m) \\
+ - \nabla^2 H(\bfz_t(z,m)) \partial_z \bfz_t(z, m) & - \nabla^2 H(\bfz_t(z,m)) \partial_m \bfz_t(z, m)
+ \end{pmatrix}\\
+ &=   \begin{pmatrix} 0 & \Id[d] \\ 
+  - \nabla^2 H(\bfz_t(z,m)) & 0
+ \end{pmatrix} d\Phi_t(z,m).
+ \end{align*}
+ We therefore get 
+\[
+\partial_t \log \det(d\Phi_t( z, m)) = \trace\begin{pmatrix} 0 & \Id[d] \\ 
+  - \nabla^2 H(\bfz_t(z,m)) & 0
+ \end{pmatrix} = 0
+\]
+showing that the determinant is constant.
+Since $\Phi_0(z,m) = (z,m)$ by definition, we get $\det(d\Phi_t( z, m)) = 1$ at all times. 
+
+
+Let $\bar q_t$ denote the p.d.f. of $\Phi_t(z,m)$ and assume that $\bar q_0(z, m) = q(z) \phi_{\CN}(m)$. We have, using the change of variable formula
+\[
+\bar q_t(\Phi_t(z,m)) |\det d\Phi_t(z,m)| = q(z) \phi_{\CN}(m)
+\]
+but the r.h.s. is, from the remarks above also equal to
+\[
+q(\bfz_t(z,m)) \phi_{\CN}(\bfm_t(z,m)) |\det d\Phi_t(z,m)|
+\]
+yielding the identification
+\[
+\bar q_t(z', m') = q(z') \phi_{\CN}(m')
+\]
+This shows that $Q$ (with p.d.f. $q$) is left invariant by this Markov chain. One can actually show that chain is in detailed balance for the joint density $\bar q(z, m) = q(z) \phi_{\CN}(m)$. This is due to the fact that the system \eqref{eq:ham.mcmc.system} is reversible, in the sense that 
+\[
+\Phi_t(\bfz_t(z, m), -\bfm_t(z, m)) = (z, -m),
+\]
+i.e., the system solved from its end point after changing the sign of the momentum returns to its initial state after changing the sign of the momentum a second time. 
+In other terms, letting $J(z,m)  = (z, -m)$, we have $\Phi_t^{-1} = J \Phi_t \circ J$. 
+So, consider a function $f: (\mR^d\times \mR^d)^2 \to \mR$. Denoting the Markov chain by $(Z_n, M_n)$, we assume that the next pair $Z_{n+1}, M_{n+1}$ is computed by (i) sampling $M'_n \sim \CN(0, \Id[d])$; (ii) solving \cref{eq:ham.mcmc.system}, with initial conditions $\zeta(0) = Z_n$ and $\mu(0) = M'_n$; (iii) taking $Z_{n+1} = \zeta(\theta)$ and sampling $M_{n+1} \sim \CN(0, \Id[d])$.
+
+We have
+\[
+\myE(f(Z_n, M_n, Z_{n+1}, M_{n+1})) = 
+\int f(z, \tilde m, \bfz(z, m), \bar m) \phi_{\CN}(m) \phi_{\CN}(\bar m) \phi_{\CN}(\tilde m) q(z) dm d\bar m d\tilde m dz.
+\]
+Make the change of variables $z' = \bfz(z, m)$, $m' = \bfm(z,m)$, which has Jacobian determinant 1, and is such that $z = \bfz(z', -m')$, $m = -\bfm(z',-m')$. We get
+\begin{align*}
+& \myE(f(Z_n, M_n, Z_{n+1}, M_{n+1}) ) \\
+& = \int f(\bfz(z', -m'), \tilde m, z', \bar m) \phi_{\CN}(-\bfm(z',-m')) \phi_{\CN}(\bar m) \phi_{\CN}(\tilde m) q(\bfz(z', -m')) dm' d\bar m d\tilde m dz'\\
+ &= 
+\int f(\bfz(z', -m'), \tilde m, z', \bar m) \phi_{\CN}(\bfm(z',-m')) \phi_{\CN}(\bar m) \phi_{\CN}(\tilde m) q(\bfz(z', -m')) dm' d\bar m d\tilde m dz'\\
+ &= 
+\int f(\bfz(z', -m'), \tilde m, z', \bar m) \phi_{\CN}(-m') \phi_{\CN}(\bar m) \phi_{\CN}(\tilde m) q(z') dm' d\bar m d\tilde m dz',
+\end{align*}
+using the conservation of $\CH$. Making the change of variables $m' \to -m'$, we get
+\begin{multline*}
+\myE(f(Z_n, M_n, Z_{n+1}, M_{n+1}) \\ = \int f(\bfz(z', m'), \tilde m, z', \bar m) \phi_{\CN}(m') \phi_{\CN}(\bar m) \phi_{\CN}(\tilde m) q(z') dm' d\bar m d\tilde m dz'
+\end{multline*}
+which is equal to $\myE(f(Z_{n+1}, M_{n+1}, Z_{n}, M_{n}))$ showing the reversibility of the chain.
+
+
+This simulation scheme can potentially make large moves in the current configuration $z$ while maintaining detailed balance (therefore not requiring an accept/reject step). However, practical implementations require discretizing \cref{eq:ham.mcmc.system}, which breaks the conservation properties that were used in the argument above, therefore requiring a Metropolis-Hastings correction. For example, a second-order Runge Kutta (RK2) scheme with time step $\alpha$ gives 
+\[
+\left\{
+\begin{aligned}
+Z_{n+1} &= Z_n + \alpha M_n - \frac{\alpha^2}{2} \nabla H(Z_n)\\
+M_{n+1} &= M_n - \frac{\alpha}{2}(\nabla H(Z_n) + \nabla H(Z_n + hM_n))
+\end{aligned}
+\right.
+\]
+Only the update for $Z_n$ matters, however, since $M_{n+1}$ is discarded and resampled at each step. Importantly, if we let $\delta = \sqrt \alpha$ the first equation in the system becomes 
+\[
+Z_{n+1} = Z_n  - \frac{\delta}{2} \nabla H(Z_n) + \delta M_n
+\]
+with $M_n \sim \CN(0,1)$, which is exactly \cref{eq:langevin.euler}.  Note that one can, in principle, solve \cref{eq:ham.mcmc.system} for more that one discretization step (the continuous equation can be solved for an arbitrary time), but one must then face the challenge of computing the Metropolis correction since the Hamiltonian is not conserved at each step.
+
+One can however use schemes that are more adapted to solving Hamiltonian systems \citep{leimkuhler2005simulating}, such as the St\"ormer-Verlet scheme, which is
+\[
+\left\{
+\begin{aligned}
+M_{n+1/2} & = M_n - \frac{\alpha}{2} \nabla H(Z_n)\\
+Z_{n+1} &= Z_n + \alpha M_{n+1/2}\\
+M_{n+1} & = M_{n+1/2} - \frac{\alpha}{2} \nabla H(Z_{n+1})
+\end{aligned}
+\right.
+\]
+This scheme computes $\psi_1\circ \psi_2 \circ \psi_1(z,m)$ with $\psi_1(z,m) = (z, m - (\alpha/2) \nabla H(z))$ and $\psi_2(z,m) = (z+ \alpha m, m)$. Because both $\psi_1$ and $\psi_2$ have a Jacobian determinant equal to 1, so does their composition. This scheme is also reversible, since we have
+\[
+\left\{
+\begin{aligned}
+  -M_{n+1/2} &= - M_{n+1} - \frac{\alpha}{2} \nabla H(Z_{n+1})\\
+  Z_{n} &= Z_{n+1} - \alpha M_{n+1/2}\\
+-M_{n} & = -M_{n+1/2} - \frac{\alpha}{2} \nabla H(Z_n)
+\end{aligned}
+\right.
+\]
+These properties are conserved if one applies the St\"ormer-Verlet scheme more than once at each iteration, that is, fixing some $N>0$ and letting $\Phi(z,m) = (\psi_1 \circ \psi_2 \circ \psi_1)^{\circ N}$, then $\Phi^{-1} = J\Phi \circ J$, with $J(z,m) = (z,-m)$ with $\det d\Phi = 1$. Considering again the augmented chain which, starting from $(Z_n, M_n)$, samples $\tilde M \sim \CN(0, \Id[d])$, then computes $(Z', \tilde M') = \Phi(Z_n, \tilde M)$ and finally samples $M'\sim \CN(0, \Id[d])$ as a Metropolis-Hastings proposal to sample from $(z,m) \mapsto q(z) \phi_{\CN}(m)$, then, assuming that $(Z, M)$ follows this target distribution and letting $(Z', M')$ be the result of the proposal distribution, we have, as computed above 
+\begin{align*}
+& \myE(f(Z, M, Z', M') ) \\
+&= \int f(z, \tilde m, \bfz(z, m), \bar m) \phi_{\CN}(m) \phi_{\CN}(\bar m) \phi_{\CN}(\tilde m) q(z) dm d\bar m d\tilde m dz
+\\
+ &= 
+\int f(\bfz(z', m'), \tilde m, z', \bar m) \phi_{\CN}(\bfm(z',m')) \phi_{\CN}(\bar m) \phi_{\CN}(\tilde m) q(\bfz(z', m')) dm' d\bar m d\tilde m dz'
+\end{align*}
+This shows that the acceptance probability in the Metropolis step is
+\begin{align*}
+a(z,m, z', m') &= \min\left(1, \frac{\phi_{\CN}(\bfm(z',m'))q(\bfz(z', m'))}{\phi_{\CN}(m)q(z)}\right) \\
+&= \exp\left( - \max\left( \CH(\bfz(z', m'), \bfm(z',m')) -\CH(z,m)\right), 0\right)
+\end{align*}
+While the Hamiltonian is not kept invariant by the St\"ormer-Verlet scheme, so that an accept-reject step is needed, it is usually quite stable over extended periods of time so that the acceptance probability is generally close to one.
+
+
+ 
+ \section{Perfect sampling methods}
+\label{sec:perfect}
+The  Markov chain simulation methods, provided in the previous sections  do not provide exact samples from the distribution
+$q$, but only increasingly accurate approximations.
+ Perfect sampling algorithms \citep{pp96,pp98,fill98} use Markov chains ``backwards'' to generate exact samples. To describe them, it is easier to describe a
+Markov chain as a stochastic recursive equation of the form
+\begin{equation}
+\label{eq:mc.rec}
+X_{n+1} = f(X_n, U_{n+1})
+\end{equation}
+where $U_{n+1}$ is independent of  $X_n, X_{n-1}, \ldots$, and the $U_k$'s are identically distributed. In the discrete case (assumed in this section), and given a
+stochastic matrix $P$, one can take $U_n$
+to be the uniformly distributed variable used to sample from
+$(p(X_n, x), x\in\CB)$. Conversely, the transition probability
+associated to \cref{eq:mc.rec} is
+$p(x,y) = P(f(x, U) = y).$
+
+It will be convenient to consider negative times also. For $n>0$,
+recursively define
+$F_{-n}(x, u_{-n+1}, \ldots, u_0)$ by
+$$
+F_{-n-1} (x, u_{-n}, \ldots, u_0) = F_{-n}(f(x, u_{-n}), u_{-n+1},
+\ldots, u_0)
+$$
+and $F_{-1}(x,u_0) = f(x, u_0)$. 
+Denote, for short, $U_{-n}^0 =
+(U_{-n}, \ldots, U_0)$. The function $F_{-n}(x, u_{-n+1}^0)$ provides
+the value of $X_0$ when $X_{-n}=x$ and $U_{-n+1}^0 =
+u_{-n+1}^0$. 
+
+For an infinite past sequence, $u_{-\infty}^0$, let $\nu(u_{-\infty}^0)$ denote the
+first integer $n$ such that $F_{-n}(x, u_{-n+1}^0)$ does not depend on
+$x$ (the function
+``coalesces''). Then, the following theorem is true:
+\begin{theorem}
+\label{th:p.s}
+Assume that the chain defined by \cref{eq:mc.rec} is
+ergodic, with invariant distribution $Q$. Then $\nu = \nu(U_{-\infty}^0)$ is finite with probability 1,
+and 
+\begin{equation}
+\label{eq:p.s}
+X_*:= F_{-\nu}(x, U_{-\nu+1}^0)
+\end{equation}
+(which is independent of $x$) has distribution $Q$.
+\end{theorem}
+\begin{proof}
+Because the  chain is ergodic, we know that there exists an integer
+$N$ such that one can pass from any state to any other with positive
+probability. So the chain can, starting from anywhere, coalesce with positive probability in
+$N$ steps; $\nu$ being infinite would imply that this event never
+occurs in an infinite number of trials, and this has probability 0.
+
+For any $k>0$ and any $x\in\CB$, we have
+\begin{equation}
+\label{eq:inv.past}
+X_*= F_{-\nu}(f_{-k}(x, U_{-\nu-k+1}^{-\nu}), U_{-\nu+1}^0) = F_{-\nu-k}(x, U_{-\nu-k+1}^0).
+\end{equation}
+But, because the chain is ergodic, we have, for any $x\in\CB$
+$$
+\lim_{k\to\infty} \myP(F_{-k}(x, U_{-k+1}^0) = y) = Q(y).
+$$
+We can write
+\begin{align*}
+\myP(F_{-k}(x, U_{-k+1}^0) = y) 
+& = \myP(F_{-k}(x, U_{-k+1}^0) = y, \nu\leq k) + \myP(F_{-k}(x, U_{-k+1}^0) = y, \nu> k)\\
+& = \myP(X_* = y, \nu\leq k)
++ \myP(F_{-k}(x, U_{-k+1}^0) = y, \nu> k)
+\end{align*}
+The right-hand side tends to $\myP(X_* = y)$ when $k$ tends to infinity
+(because $\myP(\nu>k)$ tends to 0), and the left-hand side tends to
+$Q(y)$, which gives the second part of the theorem.
+\end{proof}
+
+From  \cref{eq:inv.past}, which is the key step in proving
+that $X^*$ follows the invariant distribution, one can see why it is
+important to consider sampling that expands backward in time rather
+than forward. More specifically, consider the coalescence
+time for the forward chain, letting
+$\tilde\nu(u_0^\infty)$ be the first index for which 
+\[
+\tilde X_* := F_{\tilde\nu}(x, u_0^{\tilde\nu})
+\]
+is independent from the starting point, $x$. For any $k\geq 0$, one
+still has the fact that  $F_{\tilde\nu+k}(x, u_0^{\tilde\nu+k})$ does
+not depend on $x$, but its value depends on $k$ and will not be equal
+to $\tilde X_*$ anymore, which  prevents the rest of the proof of 
+ \cref{th:p.s} to carry on. 
+
+
+An equivalent algorithm is described in the next proposition (the
+proof is easy and left to the reader).
+\begin{proposition}
+\label{prop:perf.samp.alg}
+Using the same notation as above, the following algorithm generates a
+perfect sample, $\xi_*$, of the invariant
+distribution of an ergodic Markov chain. 
+
+Assume that an
+infinite sample $u_{-\infty}^0$ of $U$ is available. Given
+this sequence, the algorithm, starting with $t_0=2$, is:
+\begin{itemize}
+\item[1.] For all $x\in \CB$, define $\xi^x_{-t}, t=-t_0, \ldots, 0$ by
+$\xi^x_{-t_0} = x$ and $\xi_{-t+1}^x = f(\xi_{-t}^x, u_{-t+1})$.
+\item[2.] If $\xi_0^x$ is constant (independent of $x$), let $\xi_*$
+be equal to this constant value and stop. Otherwise, return to step 1
+replacing $t_0$ with $2t_0$.
+\end{itemize}
+\end{proposition}
+In practice, the $u_{-k}$'s are only generated when they are needed. But
+it is important to consider the sequence as fixed: once $u_{-k}$ is generated,
+it must be stored (or identically regenerated, using the same seed) for further use. It is
+important to strengthen the fact that this algorithm works backward in
+time, in the sense that the first states of the sequence are not
+identical at each iteration, because they are generated
+using random numbers with indexes further in the past.
+
+Such an algorithm is not feasible when  $|\CB|$ is too large, since
+one would have to consider an intractable number of Markov chains (one
+for each $x\in\CB$). However there are cases in which the constancy of $\xi_0^x$ over all $\CB$ can be
+decided from its constancy over a small subset of $\CB$. 
+
+One situation in which this is true is when the Markov chain is
+monotone, according to the following definition. Assume that $\CB$ can be
+partially ordered, and that $f$ in  \cref{eq:mc.rec} is
+increasing in $x$, i.e.,
+\begin{equation}
+\label{eq:mon.f}
+x \leq x' \Ria \forall u, f(x,u) \leq f(x',u).
+\end{equation}
+Let $\CB_{\mathrm{min}}$ and $\CB_{\mathrm{max}}$ be the set of
+minimal and maximal elements in $\CB$. Then the sequence coalesces for
+the algorithm above if and only if it coalesces over
+$\CB_{\mathrm{min}} \cup \CB_{\mathrm{max}}$. Indeed, any $x\in \CB$ is
+smaller than some maximal element, and larger than some minimal
+element in $\CB$. By \cref{eq:mon.f}, these inequalities remain true
+at each step of the sampling process, which implies that when chains
+initialized with extremal elements coalesce, so do the other
+ones. Therefore,  it
+suffices to run the algorithm with extremal configurations only.
+
+One
+can rewrite \cref{eq:mon.f} in terms of transition probabilities
+$p(x,y)$, assuming that $U$ follows a uniform distribution on $[0,1]$
+and, for all $x\in \CB$, there exists a partition
+$(I_{xy}, y\in\CB)$  of $\CB$, such that
+\[
+f(x,u) = y \Leftrightarrow u\in I_{x,y}
+\]
+and $I_{xy}$ is
+an interval with length $p_{xy}$.
+ Condition \cref{eq:mon.f} is then
+equivalent to
+\[
+x \leq x' \Ria \forall y\in \CB, I_{xy} \sub \bigcup_{y'\geq y}
+I_{x'y'}.
+\]  
+This requires in particular that $\sum_{y\geq y_0}p(x,y) \leq
+\sum_{y\geq y_0} p(x',y)$ whenever $x\leq x'$ (one says that $p(x, \cdot)$
+is stochastically smaller than $p(x', \cdot)$). %This does not, however, provide a sufficient condition.
+
+One example in which this reduction works is with the ferromagnetic Ising
+model, for which $\CB = \{-1,1\}^L$ and 
+$$
+q(x) = \frac{1}{C} \exp\big(\sum_{s, t=1, s<t}^L \be_{st} \pe x s
+\pe x t\big)
+$$
+with $\be_{st} \geq 0$ for all $\{s,t\}$. 
+Then, the Gibbs sampling algorithm iterates the following steps: take a
+random $s\in \{1, \ldots, L\}$ and update $\pe x s$ according to the conditional
+distribution
+$$
+g_s(\pe ys\mid \pe x {s^c}) = \frac{e^{\pe y s v_s(x)}}{e^{-v_s(x)} + e^{v_s(x)}}
+$$
+with $v_s(x) = \sum_{t\neq s}
+\be_{st} \pe x t$. Order $\CB$ so that $x\leq \tilde x$ if and only if
+$\pe x s\leq \pe {\tilde x}s$ for all $s=1, \ldots, L$. The minimal and maximal elements are
+unique in this case, with $\pe{x_{\mathrm{min}}}s\equiv -1$ and $\pe {x_{\mathrm{max}}} s\equiv 1$. Moreover,
+because all $\be_{st}$ are non-negative, $v_s$ is an increasing function
+of $x$ so that, if $x\leq \tilde x$, then $g_s(1\mid \pe x s) \leq
+g_s(1\mid \pe {\tilde x}s)$. 
+
+To define the stochastic iterations, first introduce
+\[
+f_s(x,u) =
+\begin{cases}
+ \pe 1 s\wedge \pe x {s^c} \text{ if }  u \leq q_s(1\mid \pe x s)\\
+\pe{(-1)}s\wedge \pe x {s^c} \text{ if } u > q_s(1\mid \pe x s),
+\end{cases}
+\]
+which satisfies \cref{eq:mon.f}. The whole updating scheme
+can then be implemented with the function
+$$
+f(x, (u,\tilde u)) = \sum_{s=1}^L \de_{I_s}(\tilde u) f_s(x,u)
+$$
+where $(I_s, s\in V)$ is any partition of $[0,1]$ in intervals of
+length $1/L$. This is still monotonic. The algorithm described in
+ \cref{prop:perf.samp.alg} can therefore be applied to 
+sample exactly, in finite time, from the ferromagnetic Ising model.

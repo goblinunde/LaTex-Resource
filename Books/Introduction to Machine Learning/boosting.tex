@@ -1,0 +1,222 @@
+% !TEX root = machine_learning.tex
+\chapter{Boosting methods}
+
+Boosting methods refer to algorithms in which classifiers are enhanced by
+recursively training them on harder data. We first address the issue
+of classification, and describe the original  algorithm (Adaboost). We then
+interpret it as greedy gradient descent to optimize a combination of
+classifiers.
+
+\section{Classification}
+Boosting for classification is essentially restricted to two-class
+problems. In this context, we want to design a function $x \mapsto f(x) \in \{-1, 1\}$ on the
+basis of a training set $(y_1, x_1), \ldots, (y_N, x_N)$. With the 0-1
+loss, minimizing the  empirical error is equivalent to maximizing
+$$
+\CE_T(f) = \frac{1}{N} \sum_{i=1}^N y_i f(x_i)
+$$
+
+Boosting algorithms build a function $f$ as a weighted combination of
+simple classifiers, $f_1, \ldots, f_M$, taking
+$$
+f(x) = \text{sign}\left(\sum_{k=1}^M \al_k f_k(x)\right)\,.
+$$
+
+Each $f_j$ is learned on the basis of weighted
+data. We therefore assume that the  learning algorithm for simple classifiers takes as input the training set $X_1,\ldots,X_N$ as well as positive weights $w_1, \ldots, w_N$,   minimizing, for example, a loss function of the form
+$$
+\sum_{k=1}^N w_k R(y_k, f(x_k)).
+$$
+Boosting algorithms  estimate new $f_j$ and $\al_j$ at step $j$, while updating the current data weights. The basic algorithm works as follows.
+\begin{enumerate}[label=(\arabic*),wide]
+\item Start with uniform weights, letting  $w_k = 1/N$, $k=1, \ldots, N$.
+\item Step $j$: fit a classifier $f_j$ using the current weights and
+estimate the weighted error
+$$\CE_{w} = \sum_{k=1}^N w_k \chi_{[y_k\neq f_j(x_k)]}/\sum_{k=1}^N
+w_k.$$
+Define $\al_j = (1/2)\log((1-\CE_w)/\CE_w)$ and update the weights by
+$$ w_k \mapsto w_k \exp(-\al_j \chi_{[y_k\neq f_j(x_k)]}).$$
+\item Iterate the previous step while $j\leq M$.
+\end{enumerate}
+
+Notice that for the algorithm to run, $\al_j$ should be positive (i.e., the $j$th classifier must do
+better than pure chance on the training set).
+The boosting effect comes from the fact that misclassified data at step $j$
+are provided with a higher weight for the next step. This implies that
+the algorithm focuses on the hardest cases. 
+
+
+We now provide an interpretation of this algorithm. Even if the $f_q$ are binary, their linear combination is not
+anymore. The classification rule only uses the sign of the product $Yf(X)$, but the value also has an
+important interpretation, since, when it is positive, it can be interpreted as a margin with which
+$X$ is correctly classified (provided, of course that $f$ is properly
+normalized, since one can always improve the margin by multiplying $f$
+by a constant). 
+
+Assume that the function $f$ is evaluated, not only on the basis of
+its classification error, but also based on this margin,
+using a loss function of the kind
+$$
+\sum_{k=1}^N g(y_kf(x_k))
+$$
+where $g$ is decreasing. The boosting algorithm can then be interpreted as an classifier which
+incrementally improves this cost function.
+Denote by
+$f^{(j)}$ the  classifier at step $j$:
+$$
+f^{(j)} = \sum_{q=1}^j \al_q f_q\,.
+$$
+The new classifier $f^{(j+1)}$ takes the form $f^{(j)} + \al_{j+1}
+f_{j+1}$, where  
+$f_{j+1}$ and $\al_{j+1}$ minimize, with respect
+to $\tilde f$ and $\al \geq 0$, the function
+$$
+U(\al, \tilde f) = \sum_{k=1}^N g\left(y_kf^{(j)}(x_k) + \al y_k \tilde
+f(x_k)\right)
+$$
+
+Using the fact that $\tilde f$ is a binary classifier, this can be written
+\begin{eqnarray*}
+U(\al, \tilde f) &=& \sum_{k=1}^N g(y_kf^{(j)}(x_k) + \al) \chi_{[y_k
+= \tilde f(x_k)]} + \sum_{k=1}^N g(y_kf^{(j)}(x_k) - \al) \chi_{[y_k
+\neq \tilde f(x_k)]}\\
+&=& \sum_{k=1}^N (g(y_kf^{(j)}(x_k) - \al) - g(y_kf^{(j)}(x_k) + \al)) \chi_{[y_k
+\neq \tilde f(x_k)]} \\
+&&+ \sum_{k=1}^N g(y_kf^{(j)}(x_k) + \al)
+\end{eqnarray*}
+This shows that, for a given $\al$, the classifier $\tilde f$ must
+minimize a weighted empirical error with weights
+$$ w_k  = g(y_kf^{(j)}(x_k) - \al) - g(y_kf^{(j)}(x_k) + \al) \geq 0,$$
+since $g$ is decreasing. 
+However, the combined derivation of $\al_{j+1}$ and $f_{j+1}$ is, in general, computationally intensive, typically requiring to  loop over an estimation of
+$f_{j+1}$ with fixed $\al_{j+1}$, and optimization of $\al_{j+1}$
+by gradient descent, for example, with fixed $f_{j+1}$. There is anyway one situation in which the
+computation can be made analytically: it is when the function $g$ is
+exponential, $g(t) = e^{- t}$. In this case, the weights are
+$$w_k = (e^{\al} - e^{-\al})   e^{- y_k f^{(j)}(x_k)}$$
+and the constant factor $(e^{\al} - e^{-\al})$ does not affect
+the solution of the minimization in $\tilde f$, which can therefore be
+computed with
+$w_k = \exp(- y_k f^{(j)}(x_k))$, a problem which is independent of $\al$. The value of $\al$, afterward,
+can be computed by  minimizing:
+$$
+(e^{\al} - e^{-\al}) \left(\sum_k w_k \chi_{[y_k
+\neq \tilde f(x_k)]}\right) + e^{-\al} \sum_k w_k
+$$
+This yields $ \al = \frac{1}{2} \log((1-E)/E)$ with
+$$
+E = \sum_k w_k \chi_{[y_k
+\neq \tilde f(x_k)]}/ \sum_k w_k.
+$$
+This provides the previously described algorithm.
+
+\bigskip
+One critic that can be addressed to this algorithm is that it does
+not properly handles the maximization of the margin, since the
+$f^{(j)}$'s  are not normalized. One possibility is to require that
+the $\al_q$ are positive and sum to 1.
+The new classifier $f^{(j+1)}$ will then have the form $(1-\al_{j+1})f^{(j)} + \al_{j+1}
+f_{j+1}$, and the function to minimize would be
+$$
+U(\al, \tilde f) = \sum_{k=1}^N g((1-\al) y_kf^{(j)}(x_k) + \al y_k \tilde
+f(x_k)).
+$$
+
+Taking as before an exponential $g$: $g(t) = e^{-\la t}$, the final
+problem becomes less simple because $\al$ and $\tilde f$ do not
+separate: the weights are    
+$$w_k = (e^{\la \al} - e^{-\la \al})   e^{-\la(1-\al) y_k f^{(j)}(x_k)}$$
+and $\al$ cannot be factorized out. The solution has to be computed
+numerically, which can be costly in some cases. The general algorithm
+for creating a new component $f_{j+1}$ is to loop over the following
+two steps, starting with an initial guess $f_{j+1}$ (computed, for
+example, with the weights provided by the standard boosting algorithm).
+\begin{enumerate}[label=(\arabic*),wide]
+\item Minimize $U$ with respect to $\al$.
+\item Update $f_{j+1}$ using the new weights 
+$$
+w_k = g((1-\al) y_kf^{(j)}(x_k) - \al) - g((1-\al) y_kf^{(j)}(x_k) + \al)
+$$
+\end{enumerate}
+One can compute the derivatives of $U$ with respect to $\al$; we have
+\begin{eqnarray*}
+\prt_\al{U} & = & \sum_{k=1}^N y_k (f(x_k)-f^{(j)}(x_k)) g'((1-\al) y_kf^{(j)}(x_k) + \al y_k \tilde
+f(x_k))\\
+{\prt^2_\al U} & = & \sum_{k=1}^N (f(x_k)-f^{(j)}(x_k))^2 g''((1-\al) y_kf^{(j)}(x_k) + \al y_k \tilde
+f(x_k))
+\end{eqnarray*}
+One sees in particular that $U$ is convex as a function of $\al$ as
+soon as $g$ is convex (as is the exponential). A typical Newton-Raphson algorithm to solve
+step 1 is
+$$
+\alpha(t+1) = \alpha(t) - \frac{1}{2} \prt_\al {U}/
+{\prt^2_\al U}.
+$$
+
+
+\subsection{Choice of $f_j$}
+The ``simple classifiers'' $f_j$ can be anything that accepts
+weights. Notice that, for the algorithm to work, the
+classifier does not have to minimize the weighted  classification error, but
+simply to reduce it: the cost in the Adaboost algorithm is 
+\begin{eqnarray*}
+\CE{(j+1)}  &=& (e^{\al_{j+1}} - e^{-\al_{j+1}}) \sum_{k=1}^N w_k^{(j+1)} \chi_{[y_k
+\neq \tilde f_{j+1}(x_k)]} + e^{-\al_{j+1}} \CE^{(j)}\\
+&=&  \left((e^{\al_{j+1}} - e^{-\al_{j+1}}) \ep_{j+1} +
+e^{-\al_{j+1}}\right)\CE^{(j)}
+\end{eqnarray*}
+where $\ep_{j+1}$ is the error corresponding to the $(j+1)$th
+classifier alone and $\CE^{(j+1)}$ the combined cost. So, to have a
+reduction of the cost, it suffices that 
+$$(e^{\al_{j+1}} - e^{-\al_{j+1}}) \ep_{j+1} +
+e^{-\al_{j+1}} < 1\,.$$
+This is exactly the expression minimized by the boosting algorithm, and
+at the optimal, $\al_{j+1} = \frac{1}{2}
+\log((1-\ep_{j+1})/\ep_{j+1})$, this factor is $2
+\sqrt{\ep_{j+1}(1-\ep_{j+1})}$, which is always smaller than 1, and
+strictly smaller as soon as the error is strictly smaller than
+$1/2$. So, exact minimization of the error is not needed at each step.
+
+This implies that estimators such as LDA, linear separating hyperplanes,
+etc. can be used as soon as they do better than chance. They do not
+directly minimize the error, but weights on the training set always
+have a natural way to be incorporated in their learning algorithms. For
+example, assuming that weights sum to 1, a weighted LDA would use the class
+centroids
+$$
+\mu_g = \sum_{k, y_k=g} w_k x_k
+$$
+and within-class covariance matrix
+$$
+\sum_{k=1}^N w_k (x_k - \mu_{y_k})(x_k - \mu_{y_k})^T.
+$$ 
+
+Similarly, a weighted SVM would minimize
+$$
+\norm{\be}^2 + \lambda N \sum_{k=1}^N w_k \xi_k
+$$
+under the constraints $\xi_k \geq 0$, $y_k(\be_0 + \scp{\be}{x_k})
+\geq 1 - \xi_k$. In the dual variables, the problem becomes: maximize
+$$
+\sum_{k=1}^N \al_k - \frac{1}{2} \sum_{k,l=1}^N \al_k\al_l y_ky_l
+K(x_k, x_l)
+$$
+under the constraints $0\leq \al_k\leq N\ga w_k$, $\sum_{k=1}^N \al_k y_k =
+0$. One retrieves the usual SVM formulation with the change of
+variables $\al_k \to \al_k/w_k$ and $y_k \to w_ky_k$.
+
+\subsection{Boosting and regression}
+The same idea can be applied, up to some extent, to non-linear regression problems. Here,
+the coefficients  $\al_j$ are not needed because, most of the time,
+if a function $f$ belongs to a regression class, the function $\al f$
+will also belong to it. So, in this case, the issue is to find 
+$$
+f = f_1 + \cdots + f_K$$
+by a greedy (online) procedure, to minimize, say, the mean square
+error. Then, the procedure at step $j+1$ is to minimize
+$$
+\sum_{k=1}^N (y_k - f^{(j)}(x_k) - f(x_k))^2,
+$$
+which corresponds to the regression of the residuals $y_k -
+f^{(j)}(x_k)$ on $x_k$. This has been applied with tree models, which are described in the next chapter.
+

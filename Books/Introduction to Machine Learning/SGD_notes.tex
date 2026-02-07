@@ -1,0 +1,93 @@
+\documentclass[12pt]{book}
+\usepackage[small]{titlesec}
+\usepackage{amssymb,bbm,bbold,dsfont,mathtools}
+\usepackage[standard,thmmarks,amsmath]{ntheorem}
+\usepackage{kpfonts}
+\usepackage[capitalize]{cleveref}
+\usepackage{stackrel}
+\usepackage{enumitem}
+\usepackage{graphicx}
+\usepackage{fancyhdr}
+\usepackage{color}
+\usepackage[margin=3cm]{geometry}
+% \makeatletter
+%   \@addtoreset{equation}{\thechapter}
+%   \@addtoreset{proposition}{\thechapter}
+% \makeatother  
+   
+\usepackage{natbib}
+\usepackage{tikz}
+\usetikzlibrary{positioning}
+\usetikzlibrary{decorations.pathreplacing,calc} 
+\usetikzlibrary{shapes.geometric}
+\usepackage{palatino}
+ 
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{553.740: Introduction to Machine Learning}
+\rhead{Page \thepage}
+\cfoot{{\color{red} FOR CLASS USE ONLY. DO NOT DISTRIBUTE.}}
+
+
+%\usepackage[tt]{titlesec}
+
+
+%\renewcommand{\mathbb}{\mathbbm}
+\input../Newcom/newcom
+\input ../Newcom/ml_preamble
+
+\newcommand{\Eq}[1]
+{
+\[
+\displaystyle #1
+\]
+}
+
+\newcommand{\alert}[1]{{\em #1}}
+
+
+\renewtheorem{definition}{Definition}[chapter]
+\renewtheorem{theorem}{Theorem}[chapter]
+\newtheorem{result}{Result}[chapter]
+\renewtheorem{proposition}{Proposition}[chapter]
+\newtheorem{conditions}{Conditions}[chapter]
+\newtheorem{hypothesis}{Hypothesis}[chapter]
+\renewtheorem{corollary}{Corollary}[chapter]
+\renewtheorem{lemma}{Lemma}[chapter]
+\newtheorem{properties}{Properties}[chapter]
+\newtheorem{property}{Property}[chapter]
+
+\theorembodyfont{\rm}
+\renewtheorem{remark}{Remark}[chapter]
+\newtheorem{notation}{Notation}[chapter]
+
+
+\theoremstyle{break}
+\theoremprework{\bigskip\hrule}
+\theorempostwork{\hrule\bigskip}
+\newtheorem{algorithm}{Algorithm}[chapter]
+
+\crefname{algorithm}{Alg.}{Algs.}
+\setlist[enumerate]{label=\arabic*., wide=0.5cm}
+
+\renewcommand{\cite}{\citep}
+
+%\numberwithin{section}{chapter}
+%\numberwithin{subsection}{chapter}
+
+\title{SGD}
+\author{Laurent Younes}
+
+\begin{document}
+ \bibliographystyle{plainnat}
+
+\maketitle
+
+\section{Textbooks}
+
+\subsection{Metivier-Priouret \cite{benveniste2012adaptive}}
+
+%\bibliographystyle{siam}
+\bibliography{machine_learning}
+
+\end{document}

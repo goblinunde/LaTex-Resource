@@ -1,0 +1,3719 @@
+\chapter{Groups of diffeomorphismes}
+\label{grp.diff}
+\section{Introduction}
+
+Shapes, alone or within images, are typically subject to rigid or
+non-rigid deformations. In order to compare two of them, or to extract common
+features, one typically needs to develop a matching procedure, which
+consists in finding a generally one-to-one correspondence between the shapes.
+
+From a formal point of view, we will consider ``objects'' as functions
+defined on some set $\Om$ with values in some set $F$.  For example,
+parameterized curves will be defined on an interval, with values in
+$\mR^2$. An image is defined on a subset of $mR^2$ (or $\mR^3$), with
+values in $\mR$. Similar objects will have similar features (corners,
+patterns), at similar, but not identical, locations. The matching
+problem consists in aligning the objects, which is a one-to-one map
+from $\Om$ onto $\Om$ that register the features between the two objects.
+
+To simplify, we will assume that $\Om$ is a bounded subset of $\mR^n$
+(although the theory can be extended to unbounded sets). Its boundary
+will be denoted  $\prt\Om$, and its closure $\bOm$. Deformable objects
+are functions $m: \bOm \mapsto F$, with $F\sub \mR^d$. Matching two
+objects $m$ and $\tm$ consists in defining a bijection $g: \bOm\mapsto
+\bOm$ wihich is not too far from the identity, and such that
+$m\circ g$ is close to $\tm$.
+
+The issue, of course, is to rigorously define these measures of
+proximity, between bijections and objects. In this part, are goals are
+as follows.
+
+\begin{itemize}
+\item Build a group $G$ that contains diffeomorphisms of $\Om$
+\item Equip  $G$ with a differential structure that allows for the
+composition of infinitesimal elements, like for Lie groups.
+\item Equip $G$ with a metric associated to a Riemannian structure
+(\ref{geo.diff}) to evaluate the size of deformations.
+\end{itemize}
+\index{diffeomorphism}
+
+We will not build here a Lie group of diffeomorphism (Lie groups in
+infinite dimensions generally are intricate objects; for
+diffeomorphisms, they generally require using $C^\infty$
+functions). One of the simple way to define a group of diffeomorphisms
+is by
+$$
+G_k = \defset{g: C^k \text{-diffeomorphisme sur } \overline{\Om}, g^{-1} \text{
+    de classe } C^k}.
+$$
+Although this group can be equipped with a structure of complete
+metric space
+\cite{mic72, df01}, it is not suitable for differential calculs. One
+practical way do induce infinitesimal perturbations in $G_k$ is via
+the action of flows of differentla equations  (\cite{df01}). But these
+flows can be used directly to build new groups of diffeomorphisms,
+typically different from  $G_k$ \cite{tro98}. We will follow this
+construction here.
+
+
+As a motivation for the inroduction of flows, let us study the idea of
+building diffeomorphisms by composing small deformations. Let a
+diffeomorphism near the identity be written as $h(x) = x + \de v(x)$,
+$\de$ being an arbitrarily small number. It is not hard to show that
+this is a diffeomorphism for $\de \leq \de_0$, $\de_0$ depending on
+$\norm{v}_\infty$ and $\norm{Dv}_\infty$. Consider now $n$ such
+deformations,  $h_i = \id +\de v_i$,
+$i=1, \ldots, n$, and denote $g_n = h_n\circ\cdots\circ h_1$. We have
+the formula
+$$
+g_{n+1} = (\id + \de v_n) \circ g_n = g_n + \de v_n\circ g_n.
+$$
+Write this under the form
+$$
+\frac{1}{\de} (g_{n+1} - g_n) = g_n\circ v_n;
+$$
+for small $\de$, this equation can be interpreted as a time
+discretization of an ordinary differential equation of the form
+\begin{equation}
+\label{flot.1}
+\der{\bfg}{t} = \bfv(t, \bfg).
+\end{equation}
+Here, $\bfv$ is a time dependent vector field on $\Om$. It is the main
+ingredient in the construction of groups of diffeomorphism proposed in
+ \cite{tro98} (see also
+\cite{dgm98}).
+
+\section{Flows of diffeomorphismes}
+\index{flows of diffeomorphisms}
+\subsection{Construction}
+
+The general principle is to fix a suitable functional space to which
+the time-dependent vector field $\bfv$ belongs, and to define the
+elements of $H$ to be solutions of  (\ref{flot.1}). It has to be
+ensured that, for the considered  $\bfv$, (\ref{flot.1}) has solutions
+over all times, and that they form a group. This is the goal of the
+following definitions.
+
+Let $L^\infty(\bOm, \mR^n)$ be the set of bounded measurable functions
+from $\bOm\sub \mR^n$ to $\mR^n$. Let $C_0^1(\Om,
+\mR^n)$ be the set of all $C^1$ vector fields $v$ on  $\bOm$ such that
+$v$ and $Dv$ vanish on  $\prt\Om$. We will use the norm, for which
+$C_0^1(\Om, \mR^n)$ is a Banach space:
+$$\|v\|_{1, \infty} = \|v\|_\infty + \|dv\|_\infty\,.$$
+
+We define the set $\CW$ of trajectories $\bfv: [0, 1] \ria
+C_0^{1}(\Om,\mR^n)$ for which
+$$
+\|\bfv\| := \int_0^1 \|\bfv(t)\|^2_{1, \infty} dt
+$$
+is finite.
+For all $t$, $\bfv(t)$ is a vector field on $\Om$, that we shall also
+denote $\bfv(t, .)$. We also let $\CW^\infty$ be the subset of  $\CW$
+that contains time-dependent vector fields  $\bfv$ such that $\bfv(t, .)\in
+C^\infty(\Om, \mR^n)$ at all times.
+
+
+For $\bfv\in\CW$, and for $x\in \bOm$, denote $\bfg_{\bfv}(.,
+x)$ the solution (if it exists) of the ODE (\ref{flot.1}) with initial
+condition $\bfv(0, x) = x$.
+
+\encadre{
+\begin{theorem}
+\label{flot.exist}
+If $\bfv\in\CW$, then, for all $x\in \bOm$, $\bfg_{\bfv}(t, x)$ exists
+for all 
+$t\in[0,1]$ and is uniquely defined. At all time $t$, the function $x\mapsto
+\bfg_\bfv(t, x)$ is a diffeomorphism of $\Om$. Its differential is the
+solution of the linear differential equation
+\begin{equation}
+\label{flot.diff}
+\pdr{}{t}d_x\bfg_\bfv(t, .) = d_{\bfg_\bfv(t, x)} \bfv(t,
+.).d_x\bfg_\bfv(t, .)
+\end{equation}
+with initial condition $d_x\bfg_\bfv(0, .) = \Id$. 
+\end{theorem}}
+\begin{proof}
+We first show existence and uniqueness. Fix $t\in [0, 1]$ and $\de
+>0$. Let $I = I(t, \de)$ denote the interval
+$[0,1]\,\cap\, ]t-\de, t+\de[$. Fix also $x\in\bOm$.
+
+If $\phi$ is a continuous function from $I$ to $\mR^3$ such that 
+$\phi(t)=x$, define, for $s\in I$
+$$
+\Ga(\phi)(s) = x + \int_t^s \bfv(u, \phi(u)) du
+$$
+The function $\Ga(\phi)$ is also continuous on $I$ and is such that 
+$\Ga(\phi)(t) = x$. The set of all such function being a Banach space
+for the supremum norm, it suffices to show that $\Ga$ is contractant
+for small enough $\de$ to prove the existence of a unique fixed point.
+
+From Schwartz inequality, we have
+%\begin{multline}
+\begin{equation}
+\label{eq:***} \|\Ga(\phi) - \Ga(\psi)\|_\infty \leq
+\|\phi-\psi\|_\infty \int_{s\wedge t}^{s\vee t} \|\bfv(u, .)\|_{1,
+\infty} du
+%\\ 
+\leq
+\sqrt{|t-s|}\,\|\bfv\|\,\|\phi-\psi\|_\infty.
+\end{equation}
+%\end{multline}
+So its suffices to take  $\de < \|\bfv\|^{-2}$ to ensure that $\Ga$ is
+contractant. This shows that a unique solution (given its value at
+$t$) of  (\ref{flot.1})
+exists on intervals of radius $\de$ around $t$. But we have found that
+$\de$ can be chosen uniformly in $t$, which implies that the solution
+exists and is unique over all $[0,1]$ (and in fact any time interval),
+since one can extend any solution by intervals of radii smaller than
+$\de$.
+
+The continuity of  $\bfg_\bfv$ in its initial conditions is a standard
+consequence of Gronwall's lemma that we give without proof:
+\begin{theorem}[Gronwall's lemma]
+\label{th:gronwall}
+Assume that $\phi, \psi$ and $w$ and bounded, positive functions on an
+interval $[0, c]$, and that
+$$
+w(t) \leq \phi(t) + \int_0^t \psi(s) w(s) ds.
+$$
+Then
+$$
+w(t) \leq \phi(t) + \int_0^t \phi(s)\psi(s) e^{\int_s^t \psi(u)du}ds.
+$$
+\end{theorem}
+
+ 
+
+If $x,
+y\in\bOm$, we have
+\begin{eqnarray*}
+|\bfg_\bfv(t, x) - \bfg_\bfv(t, y)| &=& \left| x-y + \int_0^t
+\left(\bfv(s, \bfg_\bfv(s, x)) - \bfv(s, \bfg_\bfv(s,
+y))\right)ds\right|\\
+&\leq & |x-y| + \int_0^t \|\bfv(s, .)\|_{1, \infty} |\bfg_\bfv(s, x) -
+\bfg_\bfv(s, y)| ds\\
+&\leq& |x-y| + \sqrt{\int_0^t \|\bfv(s, .)\|^2_{1, \infty}ds \int_0^t |\bfg_\bfv(s, x) -
+\bfg_\bfv(s, y)|^2 ds}
+\end{eqnarray*}
+Letting $M_t = |\bfg_\bfv(s, x) - \bfg_\bfv(s, y)|^2$,
+we get
+$$
+M_t \leq 2|x-y|^2 + 2\|\bfv\|^2 \int_0^t M_s ds
+$$
+which implies
+\begin{equation}
+\label{asc.1}
+M_t \leq 2|x-y| \exp(2\|\bfv\|^2),
+\end{equation}
+which proves the continuity of  $\bfg_\bfv$ with respect to $x$.
+
+To show that $\bfg_\bfv(t, .)$ is a homeomorphism (i.e., invertible
+with a continuous inverse), it suffices to notice that, for all $t>0$,
+the function $\bfw(s, .) = -\bfv(t-s,
+.)$ for  $s\in [0, t]$ and $\bfw(s, .) = 0$ pour $s > t$ belongs to
+$\CW$, and is such that $\bfg_\bfw(t,.) =
+[\bfg_\bfv(t, .) ]^{-1}$. Indeed, define $\bfh : (s, x)\mapsto
+\bfg_\bfv(t-s, x)$. We have $bfh(s,x) = bfg_\bfw(s, \bfg_\bfv(t, x))$,
+because these two functions are solutions of 
+$$
+\pdr{\psi}{s}(s,x) = - \bfv(t-s, \psi(s, x))
+$$
+with initial conditions $\psi(0, x) = \bfg(t, x)$. Therefore, 
+$$
+\bfg_\bfw(t, \bfg_\bfv(t, x)) = \bfh(1, x) = \bfg_\bfv(0, x) = x$$
+which shows that $\bfg_\bfv(t, .)$ is invertible, with a continuous inverse
+(since it also comes from an element of $\CW$), hence is a
+homeomorphism of $\bOm$.
+
+Let's show now that  $\bfg_\bfv(t, .)$ is a diffeomorphism. Assuming
+that this is the case, we can formally compute the differential of the
+equation
+$$
+\pdr{\bfg_\bfv}{t}(t, x+\ep\de) = \bfv(t, \bfg_\bfv(t, x+\ep\de))
+$$ at $\ep=0$ and get
+$$
+\pdr{}{t}d_x\bfg_\bfv(t,.).\de = d_{\bfg_\bfv(t,x)}\bfv(t, .)d_x\bfg_\bfv(t,.).\de.
+$$
+In view of this,, let's introduce the linear differential equation
+$$
+\pdr{W}{t} = d_{\bfg_\bfv(t,x)}\bfv(t, .) W
+$$
+with initial condition $W(0) = \de$. This equation has a unique
+solution on any interval (by the same kind of argument used to prove
+that \eqref{flot.1} has a unique solution). The previous formal
+computation shows that this solution should coincide with
+$d_x\bfg_\bfv(t, .).\de$, but this remains to prove.
+
+For this, introduce
+$$
+a_\ep(t) = \left(\bfg_\bfv(t, x+\ep\de) - \bfg_\bfv(t, x)\right)/\ep -
+W_t.
+$$
+We need to prove that $a_\ep(t)$ tends to 0 when $\ep$ tends to
+0. Introduce a modulus of continuity for $d_x\bfv(t, .)$ on
+$\Om$, letting
+$$
+\mu_t(\al) = \max\defset{\abs{d_x\bfv(t, .) - d_y\bfv(t, .)}: x,
+  y\in\Om, \abs{x-y} \leq \al}.
+$$
+Since $d_x\bfv(t, .)$ is uniformly continuous on the compact set 
+$\overline{\Om}$, we know that $\mu_t(\al)\to 0$ if $\al\to 0$. We can
+have, using the intehral version of the differential equations that
+define  $\bfg_\bfv$
+and $W$: 
+\begin{align*}
+a_\ep(t) &= \frac{1}{\ep}\int_0^t \left(\bfv(s, \bfg_\bfv(s, x+\ep\de)) - \bfv(s,
+\bfg_\bfv(s, x))\right) ds - \int_0^t   d_{\bfg_\bfv(s,x)}\bfv(s,.) W(s) ds \\
+&= \int_0^t d_{\bfg_\bfv(s,x)}\bfv(s,.) a_\ep(s) ds \\
+&+
+\frac{1}{\ep}\int_0^t \left(\bfv(s, \bfg_\bfv(s, x+\ep\de)) - \bfv(s,
+\bfg_\bfv(s, x))\right. \\
+&\ \ \ \ \ \ -\left. \ep d_{\bfg_\bfv(s,x)}\bfv(s,.) \left(\bfg_\bfv(s,
+x+\ep\de) - \bfg_\bfv(s, x)\right) \right) ds
+\end{align*}
+Using the fact that, for all $x, y\in\Om$:
+$$
+\abs{\bfv(t, y) - \bfv(t, x) - d_x\bfv(t, .)(y-x)} \leq \mu_s(\abs{x-y})
+\abs{x-y}
+$$
+and combining this to \eqref{asc.1}, we can write 
+$$
+\abs{a_\ep(t)} \leq  \int_0^t \norm{\bfv(s, .)}_{1, \infty}
+\abs{a_\ep(s)} ds + C(\bfv) \abs{\de} \int_0^1 \mu_s(\ep
+C(\bfv)\abs{\de}) ds
+$$
+for some constant $C(\bfv)$ which only depends on $\bfv$. The
+convergence of $a_\ep$ to 0 will be obtained as a consequence of
+Gromwall's lemma as soon as we will have proved that 
+$$
+\lim_{\al \to 0}  \int_0^1 \mu_s(\al)ds = 0.
+$$
+But this fact is a consequence of the pointwise convergence of $\mu_s$
+to 0, of the upper bound $\mu_s(\al) \leq 2 \norm{\bfv}_{1, \infty}$
+and of the dominated convergence theorem.
+\end{proof}
+
+The inequality (\ref{asc.1}) shows that, if $\CV$ is a bounded subset
+of  $\CW$, the family of functions $\bfg_\bfv(t, .)$ for $\bfv\in \CV$
+is equicontinuous (i.e., has a common modulus of continuity). The same
+tachnique can be used to prove the analogous result for  $\bfg_\bfv(.,
+x)$, and therefore for the family $\bfg_\bfv$ of time dependent vector
+fileds. Ascoli's theorem therefore implies that the map $\bfv \mapsto
+\bfg_\bfv$ is compact from 
+$\CW$ to $C^0([0,1]\ti\bOm, \bOm)$ (i.e., carries bounded sets onto
+compact sets).
+
+The other fundamental result that can be deduced from the previous
+proof is that the image of  $\CW$ by the map $\bfv
+\mapsto \bfg_\bfv$ is a subgroup of the group of diffeomorphisms of
+$\bOm$. Indeed, the stability by composition is obtained by
+concatenating two flows, and the existence of the inverse has been
+shown in the proof of theorem
+\ref{flot.exist}. We can therefore provide the following definition.
+\begin{definition}
+\label{g.infty}
+We let $G = G(\CW)$ be the group of diffeomorphisms of $\bOm$ defined by
+$$
+G = \{\bfg_\bfv(1, .), \bfv\in\CW\}
+$$
+\end{definition}
+(There is no loss of generality in restriction to diffeomorphisms at
+time 1since $\bfg_{t\bfv}(1, .) = \bfg_\bfv(t,, .)$.)
+
+The group which is defined in this way is consistent with the
+intuition of constructing diffeomorphisms by iterating infinitesimal
+deformations. This approach also provides a distance on $G$, letting,
+for  $g, g'\in G$
+$$
+d_\CW(g, g')^2 = \inf\defset{\int_0^1 \|\bfv(t, .)\|_{1, \infty}^2
+dt: \bfg_\bfv(1, g(x)) \equiv g'(x)\|}
+$$
+
+The fact that $d$ is a distance will be proved later in a more general
+case. Another important  property of the space  $\CW$ is the behavior
+of the solutions of  (\ref{flot.1}) when $\bfv$ weakly converges in
+the following sense.
+
+\begin{definition}
+\label{weak*}
+A sequence $\bfv_n$ in $\CW$ weakly converges to $\bfv\in \CW$ if and
+only ifm for all $C^\infty$ function, $\phi:[0,1]\ti\overline{\Om} \ria
+\mR$, 
+we have 
+$$
+\int_0^1\int_\Om \phi(t, x) \bfv_n(t, x)dt dx \ria \int_0^1\int_\Om
+\phi(t, x) \bfv(t, x)dt dx
+$$
+\end{definition}
+
+We then have the following theorem
+\medskip
+\encadre{
+\begin{theorem}
+\label{weak.closed}
+If $\bfv_n$ is a bounded sequence in $\CW$ that weakly converges to
+$\bfv^*\in \CW$, then $\bfg_{\bfv_n}$ converges uniformly on $[0,
+1]\ti\bOm$ to $\bfg_{\bfv^*}$.
+\end{theorem}}
+
+\begin{proof}
+The proof here is adapted from \cite{dgm98}. Since we know that $\bfv \mapsto
+\bfg_\bfv$ is compact, it suffices to show that any subsequence of
+$\bfg_{\bfv_n}$ that converges uniformly also converges to 
+$\bfg_{\bfv^*}$. Fix such a subsequence, that will still be denoted
+$\bfv_n$, and let  $\bfg$ be its
+limit. To show that $\bfg = \bfg_{\bfv^*}$, it suffices to prove that,
+for all $t$ and all $x$
+$$
+\bfg(t, x) = x + \int_0^t \bfv^*(s, \bfg(s, x)) ds.
+$$
+Since this identity is true for  $\bfg_{\bfv_n}$ (with $\bfv_n$ in
+place of  $\bfv^*$), and since $\bfg_{\bfv_n}$ converges uniformly to
+$\bfg$, all we have to show is that, for all $t$ and $x$,
+$$
+\int_0^t [\bfv^*(s, \bfg(s, x)) - \bfv_n(s, \bfg_{\bfv_n}(s, x))] ds
+\ria 0.
+$$
+We have
+\begin{multline*}
+\left|\int_0^t [\bfv^*(s, \bfg(s, x)) - \bfv_n(s, \bfg_{\bfv_n}(s,
+x))] ds\right|
+\leq \\
+\int_0^t
+\left|\bfv_n(s, \bfg(s, x)) - \bfv_n(s, \bfg_{\bfv_n}(s,
+x))\right| ds
++ \left|\int_0^t \bfv^*(s, \bfg(s, x)) - \bfv_n(s,
+\bfg(s,x)) ds \right|
+\end{multline*}
+For the first integral, write
+\begin{eqnarray*}
+\int_0^t
+\left|\bfv_n(s, \bfg(s, x)) - \bfv_n(s, \bfg_{\bfv_n}(s,
+x))\right| ds &\leq& \int_0^1 \|\bfv_n(t, .)\|_{1, \infty} |\bfg(s, x)
+- \bfg_{\bfv_n}(s, x)| ds\\
+&\leq& \|\bfg-\bfg_{\bfv_n}\|_\infty \|\bfv_n\|.
+\end{eqnarray*}
+Since $\|\bfv_n\|$ is bounded and 
+$\bfg_{\bfv_n}$ uniformly converges to $\bfg$, this integral converges
+to 0. For the second integral, we can use the following lemma:
+\begin{lemma}
+\label{lemme.weak}
+If $\bfv_n$ is bounded in $\CW$ and weakly converges to $\bfv^*$,
+then, for all continuous function $\phi: [0, 1]\to \bOm$, we have, for
+all
+$t\in [0,1]$,
+\begin{equation}
+\label{eq.weak}
+\lim_{n\ria\infty} \int_0^t (\bfv_n(s, \phi(s)) - \bfv^*(s, \phi(s)))
+ds  = 0.
+\end{equation}
+\end{lemma}
+Since any continuous function can be uniformly approached by a piecewise
+constant function, it suffices to prove this for a piecewise constant
+function (we skip the limiting argument here, which can be done like
+we have estimated the first integral, using the fact that $\bfv_n$ is
+bounded in $\CW$). Moreover,  as piecewise constant
+functions, we obviously only need to consider  $\phi$ of the form $\phi(s) =
+x.\bfone_A(s)$ where $A= [t_1, t_2]$ is a subinterval of  $[0,
+1]$. Writing the associated integral as a difference between an
+integral on $[0,
+t_1]$ and an integral on $[0, t_2]$, we see that the lemma only needs
+to be proved for all $t$ and constant $\phi$. So let's assume that
+$\phi(s) = x$ and denote 
+$$
+Q_n(t, x) = \int_0^t (\bfv_n(s, x) - \bfv^*(s, x)) ds.
+$$
+Proceding like for equation (\ref{eq:***}), we show that 
+$Q_n$ is an equicontinuous family of functions $[0,
+1]\ti\bOm$; since $Q_n(0, x) = 0$ for all $x$, Azrela-Ascoli's theorem
+implies that this sequence is relatively compact. It therefore
+suffices to show that any converging subsequence of  $Q_n$ converges to 0.
+Fix such a subsequence, still denoting it  $Q_n$ to save on notation,
+and let $Q$ be its limit. Let $f(t, x)$ be a $C^\infty$ function on
+$[0, 1]\ti \bOm$. We have 
+$$
+\int_0^1\int_\Om Q^n(t, x) f(t, x) dt dx = \int_0^1 \int_\Om
+(\bfv_n(s, x) - \bfv^*(s, x)) \left(\int_s^1 f(t, x) dt\right)ds dx.
+$$
+From the weak convergence of  $\bfv_n$, the right-hand term tends to
+0. Since  $Q_n$ converges uniformly to $Q$, we have
+$$
+\int_0^1\int_\Om Q(t, x) f(t, x) dt dx = 0
+$$ 
+for all $C^\infty$ $f$, which implies the desired result.
+\end{proof}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Extension}
+\label{ext.diff}
+
+The group $G$ in the previous section has been built using vector
+fields in the space $\CW = C^{1}_0(\Om, \mR^n)$. Clearly, all the properties
+that have been shown above remain valid in this space is replaced by a
+smaller Banach spaces (i.e., that can be continuously embedded in
+it). Following  \cite{tro98}, we introduce the definition
+\encadre{
+\begin{definition}
+\label{adm}
+A Banach space $\CB\subset L^2(\Om, \mR^n)$, with norm $\|.\|_\CB$,
+is admissible if and only if $C^\infty_0(\Om, \mR^n)$ is dense in
+$\CB$ and there exists a constant $K > 0$ such that, for all
+$v\in C^\infty_0(\Om, \mR^n)$, we have
+$$
+\|v\|_{1, \infty} \leq K\|v\|_\CB
+$$
+\end{definition}}
+
+All the results that precede remain true if the norm $\|\,.\,\|_{1,
+\infty}$ is replaced by $\|\,.\,\|_\CB$. One can therefore build a
+group $G(\CB) \sub G(\CW)$ and a new distance  $d_\CB$ on $G(\CB)$
+defined by
+$$
+d_\CB(g, g')^2 = \inf\defset{ \int_0^1 \|\bfv(t, .)\|_\CB^2 dt:
+\bfv(1, g(x)) \equiv g'(x)\|}
+$$
+
+Using Sobolev inclusions \cite{ada75,bre83}, $\CB$ can be chosen to be
+some $W^{m, p}_0(\Om)$, which contains functions for which all partial
+derivatives of order lower or equal to  $m$ belong to $L^p$ (the
+subscript 0 means null boundary conditions). Whithin these spaces, the
+easier to use (both in theory and practice) are the Hilbert spaces
+$W_0^{m,2}$, that can be equipped with the norm
+$$
+\|v\|_m^2 = \sum_{|\al| = m} \int_\Om
+\left(\frac{d^mv}{dx_1^{\al_1}\ldots dx_n^{\al_n}}\right)^2 dx
+$$
+the sum being over all multi-indices $(\al_1, \ldots,
+\al_n)$ such that $|\al| = \al_1 + \cdots+ \al_n = m$. The smallest
+$m$ that makes this norm admissible depends on the dimension. One can
+take $m=2$ in dimension 1, $m=3$ in dimension 2
+and 3.
+
+In the last case, the space $L^2([0,1], \CB)$ also is a Hilbert space,
+with norm
+$$
+\|\bfv\|_{2, \CB}^2 = \int_0^1 \|\bfv(t, .)\|^2 dt
+$$
+and
+$$
+d_\CB(g, g') = \inf\{ \|\bfv(., .)\|_{2, \CB}: \bfg_\bfv(1,g(x)) \equiv g'(x)\}
+$$
+
+For Hilbert spaces, bounded sets are weakly relatively compact, and
+the norm is lower semi-continuous. This implies that, if 
+$\bfv_n$ is a mminimizing sequence for the distance  $d_\CB$, that is
+if  $\|\bfv_n\|\ria
+d_\CB(g, g')$ and for all $n$, $\bfg_{\bfv_n}(1,g(x)) \equiv
+g'(x)$, then there exists a sub-sequence of  $\bfv_n$ that weakly converges
+in $L^2([0,1], \CB)$ to some $\bfv^*\in\CB$ such that
+$\|\bfv^*\| \leq d_\CB(g, g')$. One can prove that weak convergence
+for the Hilbert structure is a stronger condition than the one given
+in definition
+\ref{weak*}; from theorem \ref{weak.closed}, we get the fact $\bfg_{\bfv^*}(1,g(x)) \equiv
+g'(x)$. This implies that $d_\CB(g, g') = \|\bfv^*\|$: $\bfv^*$
+provides an optimal matching trajectory between $g$ and $g'$. The
+existence of such an optimal trajectory is very important in practice,
+since, as we will see later, it is closely related to the issue of
+aligning deformable objects.
+
+
+\chapter{Estimation of Diffeomorphisms}
+\label{est.diff}
+\section{Introduction}
+In the previous chapters, we have already noticed the importance of
+performing a correct registration betwee deformable objects.
+Such a registration can formally be interpreted as estimating a
+diffeomorphism between the compared objects.
+
+This chapter provides several algorithms that achieve this task. It is
+organized as follows. We first provide a list of measures that
+evaluate the ``size'' of a diffeomorphism. These definitions will
+provide essential components for matching techniques, which will be
+presented in the second part of the chapter.
+
+
+\section{Quantitative Evaluation of Diffeomorphisms}
+\label{size}
+\subsection{Definitions}
+We first introduce some notation. We let $\Om$ be a bounded open set
+in $\mR^d$. We will consider a group $G$ of
+diffeomorphisms (like one of those proposed in the previous chapter)
+
+This group acts on {\em deformable structures} that will correspond to
+shapes or other visiaull objects. For example, one can define the
+action on configurations of points and on images as follows
+
+\medskip
+\encadre{
+\begin{definition}
+\label{action}
+If $\bfx = (x_1, \ldots, x_N) \in
+\Om^N$, and $g\in G$, we let
+$$
+g.\bfx = (g(x_1), \ldots, g(x_N))
+$$
+If $I$ is an image defined on $\Om$ and $g\in G$, we define $g.I$ by
+$$
+g.I(x) = I \circ g^{-1}(x)
+$$
+\end{definition}
+}
+\medskip
+
+It is easy to check that these define actions. Let us do it for
+images, since the case of landmarks is really straightforward. We want
+to prove $g.(h.I) = (g\circ h).I$. But the former is $g.(I\circ
+h^{-1}) = I \circ h^{-1} \circ g^{-1} = I \circ (g\circ h)^{-1} =
+(g\circ h).I$. We will study these actions (and some other) in more
+detail in the next chapter. For now, our goal is to quantify the size
+of an element $g$ in $G$, by a quantity denoted $E(g)$, which will
+measure, in some way, how $g$ differs from the identity mapping. The
+idea, in order to quantify the variation of deformable
+objects, will be to use this measure to evaluate the amount of
+distorsion that is required to align them.
+
+\subsection{Standard norms on functions}
+One approach, to evaluate the signe of $g\in G$, is to define $u = g-
+\id$ and use one of the numerous norms provided by functional analysis
+to measure $u$. We cannot provide a complete outlook of these norms
+here, but present some important families of examples.
+
+We first start with norms of Sobolev type, that is, involving the
+$L^p$ norms of some derivatives of $u$. The simplest example, say in
+dimension 1, is to let
+$$
+E(g)=\int_\Om (g_x-1)^2 dx\,
+$$
+with some suitable boundary condition (e.g. $u=0$ at the extrimities
+of $\Om$.
+
+More generally, we can take, this time in any dimension
+$$
+E(g) = \|u\|_L^2 = \scp{Lu}{u}_2 = \int_\Om \scp{Lu(x)}{u(x)} dx\,.
+$$
+where $L$ is an operator defined on a space $\CH_L\subset \CL^2(\Om,
+\mR^n)$, with the assumption that $\scp{Lu}{u} \geq c \norm{u}_2^2$,
+for some $c>0$
+($L$ said to be strictly monotonous). One of the advatages of this
+last assumption is that it allows one to complete $\CH_L$, equipped
+with $\|.\|_L$, into a
+Hilbert space embedded in $L^2$ (this is the Friedrich extension,
+cf. \cite{zei95}). One simple choice is to take $L = (\al - \Delta)^k$
+for some $k>0$. For such norms, Sobolev inclusion theorem are
+typically used to control the smoothness properties of elements of $\CH_L$.
+
+
+\bigskip
+One can also build a norm using an orthonormal basis of  $\CL^2(\Om,
+\mR^k)$, that we shall denote $(f_1, \ldots, f_n, \ldots)$. Any $u$ in
+$L^2(\Om, \mR^k)$ can be decomposed under the form
+$$
+u = \sum_k u_k f_k
+$$
+with
+$$
+u_k = \int_\Om u(x) f_k(x) dx.
+$$
+Letting $c = (c_1, \ldots, c_k, \ldots)$ be a sequence of positive numbers,
+we can set
+$$
+\|u\|_c^2 = \sum_{k=1}^\infty c_k u_k^2\,.
+$$
+
+When the $c_k$'s are bounded, this will converge for all $u\in
+\CL^2(\Om, \mR^k)$. But this is not the interesting situation; when
+the $c_k$'s tend to infinity, the set $H_c$ that contains all $u$'s such
+that $\|u\|_c$ is bounded is a strict subspace of $L^2(\Om, \mR^k)$,
+which forms a Hilbert space when equipped with $\|.\|_c$. In this case,
+for an image $u$ to belong to $H_c$, its high order coefficient must
+tend to 0 faster than they would have had under the usual $L^2$
+constraint which requires that the sum of squares of the $u_k$
+converge. Because orthonormal bases of $L^2(\Om, \mR^k)$ are usually
+ordered so that high order coefficients analyze high frequencies of
+the function, a function in $H_c$ will generally be a smooth
+function. For several bases (like Fourier, wavelets), the smoothness
+of $u$ can be deduced from the rate of convergence of its coefficients
+to 0   \cite{mey92}. 
+
+
+There is another advantage in using such a decomposition, which comes
+from the fact that it
+provides a graded representation of the function. By truncating this
+decomposition, one can obtain a good approximation of $u$. When
+solving an optimization problem involving $u$, it becomes easy to
+start clamping high order coefficients to zero, and progressively
+release them during the procedure. This provides a coarse-to-fine
+algorithm that is often computationally efficient, and also
+potentially avoids being trapped in early local minima. One of the
+problems with this representation, however, is that the evaluation of
+$u$ at a point $x\in \Om$ can sometime be expensive, since it requires
+summing the series that decomposes $u$. Fast transform exits, however,
+for this purpose, on the most popular orthonormal bases (Fourier, wavelets).
+
+
+\bigskip
+These two points of view are equivalent when the basis $(f_k)$
+diagonalizes the operator $L$. In such a case, letting
+$L f_k = c_k f_k$, we have
+$$
+\int_\Om |Lu|^2 = \sum_{k=1}^\infty c_k u_k^2.
+$$
+Such a decomposition has been used to optimize deformations, for
+example in
+ \cite{ap91, dss96, ass98}, \cite{tro98}.
+
+
+\subsection{Hyperelastic models}
+
+\index{hyperelasticity}
+The theory of elasticity uses a few ``universal'' principles,
+like material indifference, or isotropy to derive general constraints
+on the evaluation of the deformation that is applied on an object. To
+these principles, that remain valid for many shape recognition
+problems, one adds the constraint the the elastic energy only depens
+on the first derivative of the deformation. Such constraints naturally
+lead to the definition of a hyperelastic material; if   $g$ is a
+diffeomorphism defined on  $\Om$, its associated deformation energy
+must take the form 
+$$
+E(g) = \int_\Om W(x, C) dx
+$$
+where $C = {}^tDg.Dg$ is called the Cauchy stress tensor. For a
+homogeneous material, $W$ does not depend on $x$. If the material is
+also isotropic, $W$ only depends on the eigenvalues of $C$ (the
+singular values of $Dg$). In this case, designing $W$ is simply
+designing a function of $d$ variables (where $d$ is the dimension).
+
+There are several classical definitions of such models. The simplest
+nonlinear model is for  Saint-Venant Kirchhoff materials, for which (leting $E =
+(C- I)/2$)
+$$
+W(C) = \frac{\la}{2} \left[\trace(E) \right]^2 + \mu \trace
+\left(E^2\right).
+$$
+Here, $\la$ and $\mu$ are called the {\em Lam\'e} coefficients of the material (cf.
+\cite{rwcm95}).
+
+Most often, one uses the linearized version of this energy. If $g =
+\id + u$ and $u$ is small, the approximation  $E
+\simeq (du + {}^t du)/2$ can be made. Replacing $u$ by this
+approximation yields an energy which is quadratic in $u$ and linear
+Euler equations. An interesting matching algorithm based on this model
+is presented in  \cite{ric02}.
+
+One of the issues with Saint-Venant Kirchhoff materials is that their
+energy does not penalize small eigenvalues of the tensor. This may
+lead to singularities, and non-diffeomorphic solutions in large
+deformation matching problems. To avoid this, one needs to penalize
+small determinants of $C$. For example  \cite{hgygm99}, one can use
+(in 2D) 
+\begin{equation}
+\label{elas.ax}
+W(C) = W(\al, \be) = (\al^2+\be^2) (1+(\al\be)^{-2})
+\end{equation}
+$\al$ and $\be$ being the eigenvalues of $C$.
+
+\subsection{Geodesic energies}
+\label{viscous}
+In chapter \ref{grp.diff}, we have considered diffeomorphisms $h$ for
+which there exist solutions $\bfv$  of the boundary value problem
+\begin{equation}
+\label{ode}
+\der{\bfg}{t}(t, .) = \bfv(t, g(t, .))
+\end{equation}
+with conditions $\bfg(0, .) = \id$ and $\bfg(1, .) = h$,
+where $\bfv$ is a time dependent vector field such that
+$$
+\Ga(\bfv) := \int_0^1 \|\bfv(t,.)\|^2 dt < \infty,
+$$
+with the admissibility condition on $\|\bfv(t,.)\|$, as described in
+section \ref{ext.diff}, chapter \ref{grp.diff}.
+
+When they exist, the solutions $\bfv$ associated to a given $h$ are
+not unique. It is natural to let the size of $h$ be the minimum of
+$\Ga(\bfv)$ over all such $\bfv$; more precisely, letting $\CV_h$ be
+the set of all time-dependent vector fields  $t\mapsto \bfv(t, .)$ on
+$\Om$ such that the solution of the ordinary differential equation
+$$
+\der{y}{t} = \bfv(t, y)
+$$
+with initial condition $y(0) = x$ satisfies, for all $x$,  $y(1) =
+h(x)$. We define
+$$
+E(h) = \inf_{\bfv\in \CV_h}\int_0^1 \|\bfv(t)\|^2 dt
+$$
+
+This may seem a rather awkward way to define the size of $h$. In
+particular, defining it as an optimization problem may be
+computationally inefficient. Also, for a given $h$, it is generally
+difficult to decide whether  $\CV_h\neq \emp$, and even harder to
+describe its elements.
+
+This point of view, however, has several advantages. First, the
+description of $\CV_h$ can be avoided by parameterizing the problem
+dircetly in terms of  $\bfv$: instead of looking for the smallest $h$
+achieving a given matching problem, one would look for the smallest
+$\bfv$ such that the solution of the ODE at time  1 solves the
+same matching problem. les mêmes contraintes. There is a numerical
+cost, however, since this add a new dimension (time) to the
+problem. But the additional complexity if balanced by the simplicity
+of the cost function expressed in terms of $\bfv$. The continuous time
+deformation
+process (flow) that is obtained by integrating $\bfv$ also has some
+interest, since it can provide smooth continuous evolution of one
+initial deformable object to another
+(cf. \cite{lv98}).
+
+Anther advantage (that we will check later) is that the minimized cost
+function can be interpreted as a metric distance (between the identity
+and the function  $h$) on the group $G$. This diatance can in turn
+induce distances between deformable objects. Symmetry and especially
+triangular inequality are much harder to obtain with elastic
+formulations.
+
+
+\section{Landmark matching interpolation}
+
+We start our review of specific matching problems with what is in fcat
+an interpolation issue. In this setting, a certain number of point
+correspondences are given, and the goal is to extrapolate them to a
+global diffeomorphism on $\Om$. Unsurprisingly, the relevant methods
+in this framework will borrow largely from the theory of interpolating
+splines.
+
+As before, $\Om$ is the support of the  configurations. We assume that
+two sets of landmarks $(x_1, \ldots,
+x_N)$ and $(y_1,
+\ldots, y_N)$, bothe belonging to $\Om^N$. Our goal is to find a
+diffeomorphism $g$ on $\Om$, with minimal size (as defined in the
+previous section), such that, for all  $i$, $g(x_i) = y_i$ ({\em exact
+  interpolation}), or,  $g(x_i) \simeq y_i$ ({\em inexact
+  interpolation}). The last situation will be implemented using
+penalities on the difference within an optimization problem.
+Before providing a solution of these problems, we need to present some
+required results for spline theory.
+\index{splines}
+
+\subsection{Splines} 
+
+From an abstract point of view, spline approximation can be seen as
+the application of the following very simple algebraic problem.
+Let $\CH$ be a Hilbert space, and assume that $f_1, \ldots, f_N\in
+\CH$, and $c_1, \ldots, c_N\in \mR$ are given. We introduce two
+variational problems:
+\begin{itemize}
+\item[1.] Minimize $\|h\|$ over $h\in \CH$, under the constraints that
+$\scp{f_i}{h}  = c_i$ for $i=1, \ldots, N$.
+\item[2.] For a parameter $\la > 0$,  minimize $\|h\|^2 + \la \sum_{i=1}^N
+(\scp{f_i}{h} - c_i)^2$
+\end{itemize}
+The two problems will respectively correspond to exact and inexact
+interpolation.
+The constraints, case 1., and the penalty in case 2., are not affected
+when $h$ is replaced by $h+v$ and $v$ is othogonal to the finite
+dimensional vector space generated by $f_1, \ldots, f_N$.
+
+Introduce the $N$ by $N$ matrix $S$ with $S_{ij} =
+\scp{f_i}{f_j}$. Acording to the discussion above, we can look for $h$ under the form
+$$
+h =\sum_{i=1}^N \al_i f_i,$$
+for which $\|h\|^2 = \trp{\al} S \al$. 
+
+Consider problem 1. We need to minimize $\trp{\al} S \al$ under the
+constraints  $S\al = c$ ($\al$ and $c$ being vectors with coordinates
+$\al_i$ and $c_i$). Assume that $S$ is invertible: then, the only
+solution satisfying the constraints is $\al = S^{-1} c$ and there is
+no minimization issue. When $S$ is not invertible, we must assume that
+$c$ belongs to the renge of $S$, otherwise the problem will have no
+solution. This implies that $c = S \al_0$ for some $\al_0$, and any
+solution $\al$ must take the form $\al= \al_0 + \be$ with $\be \in
+\text{ker}(S)$. But, for any such solution, we have $\trp{\al} S \al
+= \trp{\al_0} S \al_0$ so that any $\al$ is a valid minimizer.
+
+The fact that $S$ is not invertible is equivalent to the existence of
+a non-vanishing $\be$ such that $\trp{\be} S \be = 0$, which can be
+rewritten as $\|\sum_{i=1}^N \be_i f_i\|^2 = 0$. In other terms, $S$
+is not invertible if and only if $f_1, \ldots, f_N$ are linearly
+dependent. The solution $\al$ is this case is thus defined up
+to
+$\be$'s for which $\sum_{i=1}^N \be_i f_i=0$  which is  
+obvious since adding such a linear combination does not change the
+value of $h$.
+
+Consider now problem 2. We need to minimize
+$$\trp{\al} S \al + \la \trp{(S\al - c)}(S\al - c)$$
+with respect to $\al$. This is a convex function of $\al$ and its
+gradient is $S((\la S + I)\al - \la c)$. If $S$ is invertible, the
+unique solution is $\al = S_\la c$ with $S_\la = S + I/\la$. In the
+general case, it takes the form $S_\la^{-1}(c + \be)$ with $S\be = 0$.
+Note that in this case, a solution always exists.
+\bigskip
+
+We now make the connection with spline interpolation. The goal here is
+to find a smooth real-valued function $h$ à valeurs réelle, defined on
+$\Om$, such that  $h(x_i) = c_i$ (or
+$h(x_i)\simeq c_i$) for some $x_i\in\Om$ and
+$c_i\in\mR$. The smoothness of $h$ is measured by a Hilbert space
+norm, for example
+$$
+\|h\|^2_L = \int_\Om \scp{Lh}{h}^2 dx
+$$
+where is is a strictly monotonous operator. We let $\CH_L$ be the
+corresponding Hilbert space.
+
+We can educe the linear constraints  $h(x_i) = c_i$ to those in the
+abstract problem provided there exists, for each  $x_i$, an element
+$f_{x_i}$ in $\CH_L$ such that, for all $h\in \CH_L$
+$$
+h(x_i) = \scp{f_{x_i}}{h}_L.
+$$
+By the Riesz representation theorem, this is equivalent to the fact
+that the evaluation functional $h \mapsto h(x)$ is continuous for the
+Hilbert structure. Spaces that satisfy this property for every $x$ are
+called {\em reproducing kernel Hilbert spaces} (RKHS). The fact that a
+space $\CH_L$ as above is a RKHS can typically be proed by invoking a
+Sobolev inclusion theorem. We will henceforth assume that this is the
+case, and therefore obtain the existence, for each $x$, of a function
+$f_x\in \CH_L$ with, for all $h\in\CH_L$, $
+h(x) = \scp{f_{x}}{h}_L.$ 
+
+It can be noted that, taking $h=f_y$ in the previous formula yields 
+$f_y(x) = \scp{f_{x}}{f_y}_L = f_x(y).$ The function of two variables
+$(x,y) \mapsto K(x,y) = f_x(y)$ is the kernel of the space $\CH_L$,
+which therefore satisfies the eproducing identity
+$$
+K(x,y) = \scp{K(x,.)}{K(y,.)}_L.
+$$
+
+Returning to our interpolation problem, we see that the constraints
+now are  $\scp{f_{x_i}}{h}_L = c_i$ with $f_{x_i} = K(x_i, .)$ which
+places us directly in the abstract situation we have studied. We
+therefore obtain solutions $h$ of the form
+$$
+h(.) = \sum_{i=1}^N \al_i K(., x_i).
+$$
+The matrix $S$ being formed with the dot products of the $f_{x_i}$'s
+is there the matrix with coefficients $S_{ij} = K(x_i, x_j)$, which
+yields explicit formulas to compute $\al$ when $K$ is known.
+
+\medskip
+
+The availability of an explicit expression for $K$ is therefore an
+essential practical requirement. When $L$ is a differential operator, there are very few situations in
+which this kernel (which is also called the Green kernel of the
+operator $L$) is computable. They generally are limited to cases for
+which $L$ is some polynomial of the Laplacian, and to specific
+boundary conditions on $\Om$ (or at infinity if $\Om$ is not bounded).
+An important case of affine conditions at infinity provides thin-plate
+splines, and will be presented in section \ref{bookstein}. For
+operators of the form $(a - \Delta)^n$, the kernel can be computed via
+the evaluation of Bessel functions. Explicit expressions for $L = -
+\nabla ^n$ on rectangular domains with zero
+boundary conditions is also available.
+
+I one does not restrict to differential operators, however, there is
+an explicit way to proceed, which consists in directly defining the
+kernel $K$, provided one can prove that a valid $L$ exists without
+necessarily having to compute it. Note that for the practical use of
+the spline problem,
+only $K$ is needed, not $L$.
+
+Suficient conditions for $K$ can be taken as follows.
+\begin{itemize}
+\item Symmetry: $f_x(y) = f_y(x)$
+\item $K$ is continuous and, for all $x\in\Om $
+$$
+\int_\Om K(x,y)^2 dy < \infty
+$$
+\item $K$ induces a positie operator on  $\CL^2$: for all $u\in \CL^2$
+$$\int_\Om u(x) u(y) f_x(y) dx dy \geq 0.$$
+\end{itemize}
+One simple way to ensure the last condition is to take $K(x,y) =
+F(x-y)$ where 
+$F$ is the Fourier transform of an even, positive function; $K$ is, in
+this case, a convolution kernel.
+
+One can also restrict to radial kernels, which take the form $K(x,y) =
+G(|x-y|)$ (\cite{ar95}, \cite{adry94}). For such a kernel to be valid
+in every dimension, one can show that  $q(t)
+= G(\sqrt{t})$
+must be the Laplace transform of a meaure $\mu$ on $\mR^+$:
+$$
+q(t) = \int_0^{+\infty} e^{-\la u} d\mu(\la)\,.
+$$
+When $\mu$ is a Dirac measure, we obtain the important example of a
+Gaussian kernel given by
+$$
+G(t) = \exp\left(-\frac{t^2}{\sig^2}\right).
+$$
+For more details, we refer to \cite{dyn89} and references therein.
+\index{Gaussian kernel}
+
+
+
+\subsection{Diffeomorphic interpolation}
+
+\label{par:splines}
+\subsubsection{Generalities}
+
+We now extend spline theory to our diffeomorphic interpolation: extend
+to $\Om$ a correspondence $x_i \to y_i, i=1, \ldots, N$. One important
+remark, in this context, is that the interpolation to e computed is a
+function from $\Om$ to $\Om$ and not from $\Om$ to $\mR$ as before. We
+will therefore have to deal with several components. 
+
+
+Before addressing the corespondence problem, we first start
+with a direct generalization of the prevous section, in which we
+consider a Hilbert space $\CH$ of smooth vector fields on $\Om$ and the
+issue is to find a function $h$ in $\CH$ subject to
+the constraints $h(x_i)= v_i$ for $x_1, \ldots, x_N\in\Om$ and $v_1,
+\ldots, v_N \in\mR^d$. We will assume as before that the evaluation
+function $h\mapsto h(x)$ is continuous.
+
+The difference with the previous problem therefore is that the
+function $h$ takes vector values, so that the function $h\to h(x)$ is
+not a linear form anymore. Clearly, one can consider coordinate
+functions and apply the previous theory. More generally, one can
+associate to any vector $a\in \mR^d$ and any $x\in\Om$ the linear form
+$\de_x^a: h \mapsto a^T h(x)$. By Riesz representation theorem, there
+exists a vector field $f_x^a\in \CH$ such that $\scp{f_x^a}{h} = a^T
+h(x)$ for all $h\in H$. Since $\de_x^a$ is linear in
+$a$, the same property is true for $f_x^a$. Fixing $x,y\in \Om$, we
+therefore obtain the fact that $a \mapsto f_x^a(y)$ in linear from
+$\mR^d$ to $\mR^d$. It can therefore be put under the form
+$f_x^a(y) = K(y, x)a$ where $K(y, x)$ is a $d$ by $d$ matrix. The
+matrix-valued function $K$, defined on $\Om^2$, if the reproducing
+kernel of the space $\CH$. It is characterized by the property that,
+for all $h\in \CH$, for all $x\in\Om$ and $a \in \mR^d$:
+$$
+a^Th(x) = \scp{K(x,.)a}{h}_V.
+$$
+This implies in particular that, for all $x$ and $a$, $K(., x) a \in
+\CH$. Moreover, we can write, for all $x,y\in\Om$, for all
+$a,b\in\mR^d$:
+$$
+\scp{K(., x)a}{K(., y)b}_\CH = a^T K(x,y) b
+$$
+which is the $d$-dimensional reproducing property of the kernel
+$K$. This implies in particular the symmetry property: $K(x,y) =
+K(y,x)^T$ for all $x,y\in\Om$.
+
+Returning to our interpolation problem, each constraint $h(x_i) = v_i$
+is equivalent to $e_k^T h(x_i) = v_{ik}$ for $k=1, \ldots, d$, where
+$e_1, \ldots, e_d$ is the canonical basis of $\mR^d$ and $v_i =
+(v_{i1}, \ldots, v_{id})$ is the decomposition of $v_i$ in this
+basis. Since $e_k^T h(x_i) = \scp{K(., x_i)e_k}{h}_\CH$, we are reduced
+to our previous abstract problem, this time with $d N$ constraints
+instead of $N$. We obtain, in particular the fact that an optimal
+solution for the exact and inexact interpolation problems can be
+written under the form, for some real numbers $\al_{ik}$,
+$$
+h(.) = \sum_{i=1}^N \sum_{k=1}^d \al_{ik} K(., x_i) e_k
+$$
+which can also be expressed as (letting $al_i = (\al_{i1}, \ldots, \al_{id})^T\in\mR^d$)
+$$
+h(.) = \sum_{i=1}^N K(., x_i) \al_i.
+$$
+
+The solution of the exact matching problem now can be obtained by
+solving the linear system
+$h(x_j) = \sum_{i=1}^N K(x_j, x_i) \al_i$. Introducing the $dN$ by
+$dN$ matrix $S$, organized in $d$ by $d$ blocs, with $i, j$ bloc given
+by $K(x_i, x_j)$, and assuming that $S$ is invertible, the solution if
+the the system is
+$$
+\begin{pmatrix} \al_1\\ \vdots \\ \al_N\end{pmatrix} = S^{-1}
+\begin{pmatrix} h(x_1)\\ \vdots \\ h(x_N)\end{pmatrix}.
+$$
+
+The solution of the inexact matching problem, namely minimize
+$$
+\|h\|_{\CH} + \la \sum_{i=1}^N |h(x_i) -  v_i|^2
+$$
+is given by the same expression with $S$ replaced by $S_\la  = S +
+\Id/\la$. 
+
+The systems above becomes simpler uneder the assumption, which is
+widely made in practice, that the kernel is diagonal, i.e.,
+$K(x,y) = k(x,y) \Id$ with $k(x,y)\in\mR$. In this case, the previous
+solution can be reordered as
+$$
+\begin{pmatrix} \al_{11} \ldots \al_{1d} \\ \vdots \\ \al_{N1} \ldots
+\al_{Nd} \end{pmatrix} = \tilde S^{-1}
+\begin{pmatrix} h_1(x_1)\ldots h_d(x_1) \\ \vdots \\ h_1(x_N)\ldots
+h_d(x_N) \end{pmatrix}
+$$
+where $\tilde S_{ij}  = k(x_i,x_k)$ is a $N$ by $N$ matrix. This
+reduces the issue of solving a $dN$-dimensional system to solving $d$
+$N$-dimensional systems, which is much less expensive.
+
+\subsubsection{Invariance of the inner-product}
+
+We haven't discussed so far under which criteria the dot product (or
+the operator $L$) should be selected. One important criterion, in
+particular for shape recognition is equivariance or invariance with
+respect to rigid transformations. We here consider the situation $\Om
+= \mR^d$.
+
+Our first requirement is as follows. Let $x_1, \ldots, x_N$ be the
+landmarks, and $v_1, \ldots, v_N$ the vectors. We want the obtained
+interpolation $h$ to be invariant by an orthogonal change of
+coordinates. This means that, if $A$ is a rotation and $b\in\mR^d$, and if we consider the problem associated
+to the landmarks $Ax_1+b, \ldots. Ax_N+b$ and the constraints $Av_1,
+\ldots, Av_N$, the obtained function $h^{A,b}$ must satisfy
+$h^{A,b}(Ax+b) = A h(x)$ or $h^{A,b}(x) = A h (A^{-1}x - A^{-1} b) := ((A,b)\star h)(x) $.
+The transformation $h \to (A,b)\star h$ is an action of the group of
+translations-rotations on functions defined on $\Om$. To ensure that
+$h^{A,b}$ always satisfies this condition, it is sufficient to enforce
+that the norm is invariant by this transformation: $\|(A,b)\star h\|_\CH  = \|h\|_\CH$.
+
+So, we need the action of translation and rotations to be an isometry
+in $\CH$. Assume that $\|h\|_\CH^2 = \lform{Lh}{h}$ for some operator
+$L$, and define the operator $A*L$ the fact that, for all $h, \tilde h\in
+\CH$ 
+$$
+\lform{L((A,b)\star h)}{(A,b)\star \tilde h} = \lform{((A,b)\star L) h}{\tilde h}
+$$
+so that, the invariance condition becomes expressed in terms of $L$:
+$(A,b)\star L  = L$. 
+
+Denoting $h_k$ the $k$th coordinate of $h$, and
+$(Lh)_k$ the $k$th coordinate of $Lh$, we can write the matrix
+operator $L$ under the form
+$$
+(Lh)_k  = \sum_{l=1}^d L_{kl} h_l
+$$
+where $L_{kl}$ is a scalar operator.  We first consider the case when
+eack $L_{kl}$ is a pseudo-differential operator in the sense that, for
+any $C^\infty$ scalar function $u$, the Fourier transform of $L_{kl} u$ takes the
+form, for $\xi\in\mR^d$:
+$$
+\hat{L_{kl} u} (\xi) = f_{kl}(\xi) \hat u(\xi) 
+$$
+for some scalar function $f_{kl}$. An interesting case is when
+$f_{kl}$ is a polynomial, which corresponds, from standard properties
+of the Fourier transform, to $L_{kl}$ being a differential
+operator. Also, by the isometric property of Fourier transforms,
+\begin{eqnarray*}
+\lform{Lh}{h} &=& \sum_{k=1}^d \lform{(Lh)_k}{h_k} \\
+&=& \sum_{k, l=1}^d \lform{L_{kl} h_l}{h_k} \\
+&=& \sum_{k, l=1}^d \lform{\hat{(L_{kl} h_l)}}{\hat h_k} \\
+&=& \sum_{k, l=1}^d \lform{f_{kl} \hat h_l}{\hat h_k}.
+\end{eqnarray*}
+Note that since we want $L$ to be a positive operator, we need the
+matrix $f(\xi) = (f_{kl}(\xi))$ to be a complex, positive, Hermitian
+matrix. Moreover, since we want $\lform{Lh}{h} \geq c \lform{h}{h}$
+for some $c>0$, it is natural to enforce that the smallest eigenvalue
+of $f(\xi)$ is uniformly bounded from below (by $c$). 
+
+To use this expression, we need to compute $\hat{(A,b)\star h}$ in
+function of $\hat h$. We have
+\begin{eqnarray*}
+\hat{(A,b)\star h}(\xi) &=& \int_{\mR^d} e^{-i\xi^T x} (A,b)\star h(x)
+dx\\
+&=& \int_{\mR^d} e^{-i\xi^T x} Ah(A^{-1} x - A^{-1} b)
+dx\\
+&=& \int_{\mR^d} e^{-i\xi^T (Ay+b) } Ah(y) dy\\
+&=& e^{-i\xi^T b}A h(A^T \xi)
+\end{eqnarray*}
+where we have used the fact that $\det A = 1$ (since $A$ is a rotation
+matrix) in the change of variable. We can therefore write, denoting
+$\phi_b$ the function $\xi \mapsto \exp(-i\xi^T b)$
+\begin{eqnarray*}
+\lform{L(A\star h)}{A\star h} &=& \sum_{k, l=1}^d \sum_{k', l'=1}^d
+\lform{\phi_b f_{kl} a_{ll'} \hat h_{l'} \circ A^T}{\phi_b a_{kk'} \hat
+h_{k'}\circ A^T}\\
+&=& \sum_{k, l=1}^d \sum_{k', l'=1}^d
+\lform{ f_{kl} \circ A  a_{ll'} \hat h_{l'}}{a_{kk'} \hat
+h_{k'}}.
+\end{eqnarray*}
+We have used the fact that $\det A = 1$ and that $A^T = A^{-1}$. The
+function $\phi_b$ cancels in the complex product:
+$$
+\lform{u}{v} = \int_{\mR^d} u \bar v d\xi
+$$
+where $\bar v$ is the complex conjugate of $v$.
+
+Reodering the last equation, we obtain 
+$$
+\lform{L(A\star h)}{A\star h} = \sum_{k', l'=1}^d
+\lform{ \sum_{k, l=1}^d a_{kk'} f_{kl} \circ A  a_{ll'} \hat h_{l'}}{ \hat
+h_{k'}}
+$$
+which yields our invariance condition in terms of the $f_{kl}$: for
+all $k,l$
+$$
+f_{kl} = \sum_{k', l'=1}^d a_{k'k} f_{k'l'} \circ A  a_{l'l}
+$$
+or representing $f$ as a hermitian matrix $A^T f(A\xi) A = f(\xi)$ for all $\xi$ and
+all rotation matrix $A$. 
+
+Consider first the case $\xi=0$. The identity $A^Tf(0) A = f(0)$ for
+all $A$ implies, by a standard linear algebra theorem, that $f(0) =
+\la \Id$ for some $\la \in \mR$.  
+We now fix $\xi\neq 0$, and let $\eta_1 = \xi/|\xi|$. Extend $\eta_1$
+into an orthonormal basis, $(\eta_1, \ldots, \eta_d)$ and let $(e_1,
+\ldots, e_d)$ be the canonical basis of $\mR^d$. Define $A_0$ by $A_0
+\eta_i = e_i$ so that $A_0\xi = |\xi| e_1$ and
+$f(\xi) = A_0^T f(|\xi| e_1) A_0 = M_0$. Now, for any  rotation $A$ that
+leaves $eta_1$ invariant, we also have
+$f(\xi) = A^T A_0^T f(|\xi| e_1) A_0 A$ since $A_0 A\eta_1 =
+e_1$. This yield the fact that, for any $A$ such that $A \eta_1  =
+\eta_1$, we have $A^T M_0 A = M_0$.
+
+This property implies, in particular that $A^T M_0\eta_1 = M_0 \eta_1$
+for all $A$ such that $A\eta_1 = \eta_1$. Taking a decomposition of
+$M_0\eta_1$ on $\eta_1$ and $\eta_1^\perp$, it is easy to see that
+this implies that $M_0 \eta_1 = \al \eta_1$ for some $\al$. So
+$\eta_1$ is an eigenvector of $M_0$, which implies that $\eta^\perp$
+is closed by the action of $M_0$. But the fact that $A^T M_0 A  = M_0$
+for any rotation $A$ of $\eta_1^\perp$ implies that $M_0$ restricted
+to $\eta_1\perp$ is a homothetie, i.e., that there exists $\la$ such
+that $M_0\eta_i = \la \eta_1$ for
+$i\geq 2$. 
+
+Using the decomposition $u= \scp{u}{\eta_1} \eta_1 + u -
+\scp{u}{\eta_1} \eta_1$, we can write
+$$
+M_0u= \al \scp{u}{\eta_1} \eta_1 + \la (u -
+\scp{u}{\eta_1} \eta_1) = ((\al-\la) \eta_1 \eta^T  + \la \Id) u
+$$
+which finally yields the fact that (letting $\mu = \al- \la$ and using
+the fact that the eigenvalues of $M_0 = A^T f_0(\|xi\| e_1) A$ are the
+same as those of $f_0(|\xi|e_1)$ and therefore only depend on $|\xi|$) 
+$$
+f(\xi) = \mu(|\xi|) \frac{\xi\xi^T}{|\xi|^2} + \la(|\xi|)\Id.
+$$
+Note that, since we know that $f(0) = \la\Id$, we must have $\mu(0) =
+0$.
+
+Let's first consider the case $\mu = 0$: in this case, we have $f_{kl}
+= 0 $ if $k\neq l$ and $f_{kk} (\xi) = \la(|\xi|)$ for all $k$, which
+implies that $L_{kl} = 0$ for $k\neq l$ and all $L_{kk}$ are equal to
+a fixed scalar operator $L_0$, i.e.,
+$$
+Lh = (L_0h_1, \ldots, L_0 h_d).
+$$
+
+This is the type of operators which is mostly used in practice. If one
+wants $L_0$ to be a differential operator, $\la(|\xi|)$ must be a
+polynomial in the coefficients of $\xi$, which is only possible  if it
+tales the form
+$$
+\la(|\xi|) = \sum_{i=0}^p \la_p |\xi\|^{2p}
+$$
+in which case the corresponding operator is $L_0 u = \sum_{i=0}^p
+(-1)^p \Delta^p u$. For example, if $\la(|\xi|) = (\al + 
+|\xi|^2)^2$, we get $L_0 = (\al I - \Delta)^2$. 
+
+Let's consider an example of valid differential operator with $\mu\neq
+0$, and take $\mu(|\xi|) = \al |\xi\|^2$ and $\la$ as above. This
+yields the operator 
+$$L_{kl} u  =  - \al   \frac{\prt^2 u}{\prt x_k\prt x_l} + \de_{kl} \sum_{i=0}^p
+(-1)^p \Delta^p u$$
+so that
+$$
+Lh = - \al \nabla \text{div} h + (\sum_{i=0}^p
+(-1)^p \Delta^p )h.
+$$
+
+\bigskip
+
+The Kernel (or Green function) associated to an operator associated to
+a given $f$ can be computed simply in the Fourier domain. It is indeed
+given by
+$$
+\hat{K_{kl} u} (\xi) = g_{kl}(\xi) \hat u(\xi) 
+$$
+with $g= f^{-1}$ (the matrix inverse), as can be checked by a simple
+computation. Note that, for the spline application, we need $K\de_x^a$
+to be well defined. The $k$th component of $\de_x^a$ being $a_k
+\de_x$, we can write $\hat {(\de_x^a)_k} (\xi) = a_k \exp(-i\xi^T x)$
+so that
+$$
+\hat{(K\de_x^a)_k} = \sum_{l=1}^d g_{kl}(\xi) a_l \exp(-i\xi^T x).
+$$
+A sufficient condition for this to provide a well-defined function is
+that all $g_{kl}$ are integrable , in which case
+$$
+(K\de_x^a(y))_k = \sum_{l=1}^d \tilde g_{kl}(y-x) a_l
+$$ 
+where $\tilde g$ is the inverse Fourier transform of $g$.
+In the case $f = \la \Id + \mu \eta \eta ^T$, we have 
+$$
+f^{-1} = \frac{1}{\la} (\Id - \frac{\mu}{\la + \mu} \eta \eta^T).
+$$
+
+Let $\rho(\xi) = 1/\la(|\xi|)$ and $\psi(\xi) = \mu(\xi) / (\la(\xi)
+|\xi|^2 (\la(\xi) +
+\mu(\xi)))$, so that
+$f^{-1}(\xi) = \rho(|\xi|) \Id - \psi(|\xi|) |\xi|^2 \eta
+\eta^T$. The eigenvalues of $f^{-1}$ therefore are $\rho(\xi)$ and
+$\rho(\xi) - \psi(\xi) |\xi|^2$. Since the eigenvalues of $f$ must be
+bounded from below by $c$, we obtain the following constraints on
+$\rho$ and $\psi$:
+$$ |\xi|^2 \max(\psi, 0) \leq \rho \leq c. $$ 
+
+We can moreover obtain the expression of the Kernel in terms of the
+inverse Fourier transforms of $\rho$ and $\psi$, which is:
+$$
+K(x,y)_{kl} = \tilde g_{kl}(x-y) = \de_{kl} \tilde \rho (x-y) + \pddr{\tilde\psi}{x_k}{x_l}(x-y).
+$$
+
+The inverse Fourier transform of a radial function is a radial
+function. We have in fact
+\begin{eqnarray*}
+\tilde\rho(x) &=& \int_{\mR^d} \rho(|\xi|) e^{i\xi^T x} d\xi \\
+&=& \int_0^\infty \rho(t) t^{d-1} \int_{S^{d-1}} e^{i\eta^T t x}
+ds(\eta) \\
+&=& \int_0^\infty \rho(t) t^{d-1} \int_{S^{d-1}} e^{i\eta_1 t |x|}
+ds(\eta) 
+\end{eqnarray*}
+where $S^{d-1}$ is the unit sphere in $\mR^d$, and the last identity
+comes from the fact that the integral is invariant by roration of $x$,
+which allows us to replace $x$ by $|x|$. The last integral can in trun
+be expressed in terms of the Bessel function $J_{d/2}$ (\cite{so97}),
+which will not be used here.
+
+There therfore exists two functions $\ga_1$ and $\ga_2$ such that
+$\rho(x) = \ga_1(|x|^2)$ and $\psi(x) = \ga_2(|x|^2)$ and the
+expression for $K$ becomes
+$$
+K(x,y) = (\ga_1(|x-y|^2) + 2 \ga'_2(|x-y|^2)) I + 2\ga''_2(|x-y|^2) (x-y)(x-y)^T.
+$$
+
+Again, the choice $\ga_2 = 0$ is commonly made in practice, yielding
+diagonal radial kernels \cite{dyn89}.
+\index{radial kernels}
+
+
+
+\subsection{Thin plate interpolation}
+\label{bookstein}
+\index{Thin plates}
+
+Thin plate theory corresponds to the situation in which the operator
+$L$ is some power of the Laplacian. As a tool for shape analysis, it
+is been originally described by  Bookstein
+\cite{boo91}. Consider the following bilinear form
+\begin{equation}
+\label{lapl}
+\scp{f}{g}= \int_{\mR^2} \Delta f \Delta g dx\,.
+\end{equation}
+
+We need to define it on a Hilbert space which is somewhat
+unusual. We consider the space $\CH_1$ of all functions in $\mR^d$ with
+square integrable second derivatives, which have a bounded gradient at
+infinity. In this space, $\|f\| = 0$ is equivalent to the fact that $f$
+is affine, i.e., $f(x) = a^Tx + b$, for some $a\in \mR^d$ and
+$b\in\mR$. The Hilbert space we consider is the space of $f\in \CH$
+modulo the affine functions, i.e., the set of equivalent classes
+$$
+[f] = \defset{g: g(x) = f(x) + a^T x + b, a\in\mR^d, b\in\mR}.
+$$ 
+For $f\in\CH_1$. Obviously the norm associated to \eqref{lapl} is
+constant over $[f]$ and $\|f\| = 0$ if and only if $[f] = [0]$ so that
+
+This space also has a kernel, although the analysis has to be
+different from what we have done previously, since the evaluation
+functional is not defined on $\CH$ (functions are only known up to the
+addition of an affine term). However, the following is true 
+\cite{mei79}. Let $ U(r) = (1/8\pi) r^2\log r$ if the dimension, $d$, is 2, and
+$U(r) = (1/16\pi) r^3$ for $d=3$. Then, for all $u\in\CH_1$, there
+exists $a_u\in\mR^d$ and $b_u\in\mR$ such that 
+$$
+u(x) = \int_{\mR^2} U(|x-y|) \Delta^2 u(y) dy + a_u^Tx + b_u.
+$$
+We wil denote $U_x$ the function $y\mapsto U(|x-y|)$.
+
+Fix, as in the previous section, landmarks $x_1, \ldots, x_N$ and
+function values  $(c_1, \ldots,
+c_N)$. Again, the constraint $h(x_i) = c_i$ has no meaning in $\CH$,
+but the constraint  $\scp{U_{x_i}}{h}_\CH = c_i$ does, and means
+$$
+h(x_i) + a_h^Tx_i + b_h = c_i,
+$$
+i.e., $h$  satisfies the constraints un to an affine term.
+
+Denote, as before
+$S_{ij} =  U(|x_i-x_j|).$
+The function $h$ which is optiml under the constraints
+$\scp{U_{x_i}}{h}_\CH = c_i, i=1, \ldots N$ will therfore take the form
+$$
+h(x) = \sum_{i=1}^N\al_i U(|x-x_i|) + a^Tx + b.
+$$
+The corresponding interpolation problem is: minimize $\|h\|$ under the
+constraint that there exists $a,b$ such that $h(x_i) + a_h^Tx_i + b_h
+= c_i, i=1, \ldots, N$.The inexact matching problem simply consists in
+minimizing
+$$
+\|h\|^2_\CH + \la \sum_{i=1}^N (h(x_i) + a^Tx_i + b - c_i)^2
+$$
+with respect to $h$ {\em and} $a,b$. 
+
+Replacing $h$ by its expression in terms of the $\al$'s, $a$ and $b$
+yields the finite dimensional problem: minimize
+$$\al^T S \al$$
+under the constraint  $S\al + Q\ga = c $ with $\ga = (a_1, \ldots, a_d,
+b)^T$ (with size $d+1 \ti 1$) and $Q$, with size $N\ti d+1$ given by
+(letting $x_i = (x_i^1, \ldots, x^d_i)$):
+$$
+Q = \left(\begin{matrix}
+x_1^1& \cdots & x_1^d&1\\
+\vdots&\vdots&\vdots\\
+x_N^1&\cdots & x_N^d&1
+    \end{matrix}\right).
+$$
+The optimal   $(\al, \ga)$ can be computed by identifying the gradient
+to 0. One obtains
+$$
+\hat{\gamma} = \left(Q^T S^{-1}Q\right)^{-1} Q^T S^{-1}c
+$$
+et
+$\hat{\al} = S^{-1}(c - Q\hat{\ga})$.
+
+For the inexact matching problem, one minimizes
+$$\al^T S \al + \la{}(S\al + {}^tax_i + b - c)^T(S\al + {}^tax_i + b
+- c)\,,$$
+and the solution is provided by the same formulae, simply replacing
+$S$ by $S_\la = S + (1/\la)I$.
+
+When the function $h$ (and the $c_i$) take $d$-dimensional values
+(e.g., correspond to displacements), the above computation has to be
+applied to each coordinate, which simply corresponds to using a
+diagonal operator, each component equal to $\Delta^2$, in the
+definition of the dot product.
+
+The figure \ref{book.ex} provides an example of such an 
+interpolation, togother with an interpolation with radial functions (\cite{ar95}).
+\begin{figure}
+\begin{center}
+\includegraphics[width=4cm]{TUTORIALPS/one.ps}\ \
+\includegraphics[width=4cm]{TUTORIALPS/two.ps}\\
+\includegraphics[width=4cm]{TUTORIALPS/onetotwo.ps}\ \
+\includegraphics[width=4cm]{TUTORIALPS/twotoone.ps}\\
+\includegraphics[width=4cm]{TUTORIALPS/onetotwoG.ps}\ \
+\includegraphics[width=4cm]{TUTORIALPS/twotooneG.ps}\\
+\end{center}
+\caption{\label{book.ex} Exact landmark interpolation. First Row:
+landmaks placed on original images; Second Row: thin-plate
+interpolation, form the first image to the second and vice-versa;
+Third Row: interpolation using radial functions, with $K(x, y) = log(|x-y|^2 + c)$
+(images take from the olivetti face database).}
+\end{figure}
+
+\medskip
+
+
+When thin-plate spline methods (or the spline interpolation methods)
+are applied to displacement field, there is no constraing that
+guarantees that the obtained function, $\id + h$ is a
+diffeomorphism. It is indeed not rare to observe folds in the
+obtained solution. The following section describe a solution to
+diffeomorphic interpolation.
+
+
+\subsection{Diffeomorphic interpolation}
+\label{joshi}
+
+The distance we have defined on groups of diffeomorphisms (chapter
+\ref{grp.diff}) can be used to interpolate landmark correspondences
+\cite{jos97}. In this framework we introduce a time-dependent velocity
+field on $\Om$, denoted   $t\mapsto v(t, .)$, and the ODE
+$$
+\der{y}{t} = \bfv(t, y)
+$$
+Let $\bfg_\bfv(t, x)$ be the solution of this equation at time $t$
+with initial condition $\bfg_\bfv(0, x) = x$. The exact matching
+problem consists in finding 
+$\bfv$ to minimize
+$$
+E(\bfv) = \int_0^1 |\bfv(t)|^2_{\CH} dt
+$$
+under the constraints 
+ $\bfg_\bfv(1, x_i) = y_i$ for $i=1, \ldots, N$.
+
+Introduce the time dependent displacements, at each landmark, given by
+$u_i(t) = \bfg_\bfv(t, x_i) $; these trajectories are unknown,
+but once they are obtained, $\bfv$ can be reconstructed in a simple
+way. Indeed, let's fix  $u_i(t), i=1, \ldots N, t\in[0, 1]$. First
+notice that we have
+$$
+\der{}{t} u_i(t) = \bfv(t, u_i(t))
+$$
+so that specifying the $u_i$'s also specifies the values of 
+$\bfv(t,  .)$ at $u_i(t)$ (it is in fact equivalent, when
+combined with the initial condition $u_i(0) = x_i$). The remaining
+problem therefore boils down to: minimize $E(\bfv)$ under the
+constraints that $\bfv(t, u_i(t)) = \prt u_i /\prt t$. This
+problem can be solved separately for each time, 
+ i.e., minimize, for all $t$, $\|\bfv(t)\|_{\CH}$ under the
+constraints. This is exactly the kind of problem that have been solved
+in the previous sections. Let $(x,y) \mapsto K_x(y) =
+K(x,y) $ be the reproducing kernel for $\CH$. Let $S(\bfu(t))$ be the bloc
+matrix composed with $s_{ij}(t) = K(u_i(t),
+x_j+u_j(t))$, we have, stacking the $u_i$ in a coloumn vertor $\bfu$,
+$$
+\bfv(t, x) = \sum_{i=1}^N  K_{u_i(t)}(x) \al_i(t)
+$$
+with $\al(t) = S(\bfu(t))^{-1} \der{\bfu}{t}$.
+Again, when $K$ is diagonal, the computation can be split in $d$ $N$
+dimensional systems.
+
+Using this we obtained a residual energy which only depends on the
+evolution of the $Nd$-dimensional vector $\bfu$:
+ L'énergie obtenue est
+$$
+E(\bfv) = E(\bfu) = \int_0^1 {}^t\der{\bfu}{t} S(\bfu(t))^{-1} \der{\bfu}{t} dt
+$$
+which needs to be minimized with constraints $u_i(0) = x_i$ and
+$u_i(1) = y_i$. Several algorithms have been proposed for this purpose
+\cite{jos97,
+vmty04, aty05} and we refer the reader to these references for
+implementation details. It is quite easy to come up with examples in
+which the spline approach fails whereas the diffeomorphic
+interpolation provides a smooth diffeomorphism
+(Fig. \ref{fig:splines}).
+
+\begin{figure}
+\begin{center}
+\includegraphics[width=0.4\textwidth]{FIGURES/init.eps}
+\includegraphics[width=0.4\textwidth]{FIGURES/final0.eps} \\
+\includegraphics[width=0.4\textwidth]{FIGURES/final.eps}
+\includegraphics[width=0.4\textwidth]{FIGURES/trajectories.eps}
+\caption{\label{fig:splines} Comparison between linear and
+diffeomorphic landmark interpolation. First Row: Initial landmarks and
+their displacements (Left); Deformation obtained by linear splines
+(Right). Second Row: Deformation obtained by diffeomorphic inexact
+matching, using the method proposed in \cite{aty05} (Left); Optimal
+trajectories ($u_i(t)$) provided by diffeomorphic inexact landmark
+matching.}
+\end{center}
+\end{figure}
+
+
+\section{Matching Unlabelled Points}
+
+\subsection{The assignment problem}
+
+\subsection{Assignment combined with thin plates}
+
+\subsection{Measure matching}
+
+\section{Matching Images}
+
+Matching images is somewhat different from matching sets of points that we
+have considered so far. The matching procedure is not driven here by
+the information of which point or set is matched to another, but by
+the fact that some numerical quantity (a signature) is transported by
+the deformation. This signature can be gray values for scalar images,
+but can also, as we shall see, have other interpretation.
+
+We will consider, here again, a bounded open subset $\Om \sub \mR^d$,
+and images $I$ will be scalar or vector-valued functions $f:\Om\to
+\mR^k$. If a deformation $g$ acts on $\Om$, each points $x$ is
+transformed into $g(x)$. If the value of the function has moved with
+$x$, we will therefore retrieve the value $I(x)$ at location $y =g(x)$
+on the deformed image, $I'$. We therefore have $I'(g(x)) = I(x)$ or $I' =
+I\circ g^{-1}$.
+
+The transformation $I \mapsto I\circ g^{-1}$ represent the action of
+the diffeomorphism $g$ on functions defined on $\Om$. The matching
+problem in this case can be formulated as: given $I$ and $I'$, find a
+diffeomorphism $g$, as ``small'' as possible, such that $I\circ g{-1}$
+is similar to $I'$.
+ 
+
+\subsection{Variational approaches}
+
+Starting with \cite{bb82}, a very large number of algorithms have been
+based on variational formulations. In this framework, one looks for
+the minimum of
+\begin{equation}
+\label{eq:var.U}
+U(g) = S(g) + \lambda D(I\circ g^{-1}, I')
+\end{equation}
+where $\lambda$ is a est un parameter, $S(g)$ measures the size of the
+diffeomorphism (like in section \ref{size}) and
+$D$ is some metric that evaluates the difference between $I\circ g^{-1}$ and
+$I'$, for example
+$$
+D(I\circ g^{-1}, I') = \int_\Om \left|I\circ g^{-1} - I'\right|^2 dx
+$$
+
+
+\subsubsection{1D matching}
+
+\nocite{ma97, pj87, pd95, sc78, gmk88, ggcv95}
+
+One of the first situations in which these techniques have been
+applied is for speech processing. If two acoustic signals are recorded
+during a certain time, they need to be synchronized before safely
+compariung them. Although current methods use a probabilistic approach
+for this problem (with hidded Markov models), earlier attemps have
+modeled distorsions due to variations in speech speed by a
+diffeomorphism acting on the time variable. a  signal $I$ becoming
+$I\circ g^{-1}$. The dynamic time warping technique has been
+introduced for this purpose \cite{sc78}. It can be summarized as
+follows. Assume that the signals are discretized, denoting  $I = (I_1,
+\ldots, I_N)$ and $I' = (I'_1, \ldots, I'_{N'})$. The original algorithm
+minimizes a function of the form 
+$$
+\De(I,I') = \sum_{k=1}^N d(I_k, I'_{\psi(k)})
+$$
+where $\psi(k)$ is the intex of the point which is homologous to
+$I_k$ in $I'$. This term is the direct analogue of the second term in
+\eqref{eq:var.U}. The smoothness penalty in \eqref{eq:var.U} is
+replaced in DTW by a hard constraint on the differences  $\psi(k+1)
+- \psi(k)$. The minimization is performed by dynamic programming
+(which accounts for the D in DTW). Dynamic programming algorithms will
+be described in appendix \ref{prog.dyn}.
+
+DTW in general does not incorporate a diffeomorphic constraint. An
+interesting contribution that accounts for this can be found in
+\cite{pst98}. There two continuous signals $I$ and $I'$ are matched by
+minimizing 
+$$
+U(g) = \arccos\left[\int_0^1 \sqrt{{g}_x} dx\right] + \la
+\int_0^1(I(g^{-1}(x)) - I'(x))^2 dx.
+$$
+The unusual smoothness term is in fact, as we shall see later, a
+geodesic distance on a particular group of diffeomorphisms.
+
+One dimensional matching has direct implications for shape comparison,
+when the compared shapes are paremetrized (say by arc-length). Indeed,
+they are, in this case, functions from some interval to $\mR^2$, and
+therefore belong in the very general class of images we are
+considering here. The only issue is that curves withe different
+lengths are defined ion different intervals, but this can be addressed
+by rescaling all curves to have length 1, with is justifed since it provides
+a scale invariant matching. Two curves $I,I': [0,1] \to \mR^2$ can then be matched by
+minimizing 
+$$
+\De(I, I') = S(g) + \la \int_0^1 |I'(t) - I\circ g(t)|^2 dt,
+$$
+although most of the applications in shape comparison prefer working
+with invariant signatures of the curve (like the curvature) rather
+than curves as $R^2$-valued functions.
+
+There is an extra complication to this framework when working with
+shapes, because they are generally represented as closed curves. This
+creates an undeterminacy in the arc-length representation, which comes
+from the choice of the origin of the parameterization (the point for
+which $s=0$). In most cases, this choice is arbitrary, so that a valid
+matching procedure must also ensure that the origins in both curves
+are chosen consistently, inducing an extra variable on which the
+quality of the correspondence must be optimized. From a mathematical
+point of view, this extra variable can be taken into account by
+assuming that parameterizations are defined on the unit circle rather
+than the unit interval. Modeling $g$ as a diffeomorphism of the unit
+circle incorporates the change of origin. Unfortunately, this
+variation has very little use for practical algorithms, because the
+very efficient dynamic programming implementation require knowing the
+origins which is therefore estimated separately (or via an exhaustive search). 
+
+
+\subsubsection*{Examples}
+\begin{itemize}
+\item A generic method for matching plane curves would apply
+\eqref{eq:var.U} to a geometric representation of the curve. For
+example, assuming that all curves are defined on $[0,1]$, $I(s)$ can
+be the Euclidean curvature of the curve (which is rotation and
+translation invariant) or the angle of the tangent with the horizontal
+(which is scale and translation invariant), or any other signature,
+being given that the fewer derivatives the signature involves, the
+more robust the method is likely to be. A typical energy in this
+context can be
+$$
+U(g) = \int_0^1 |g_x|^2 dx + \la \int_0^1 (I \circ g^{-1}(x) - I'(x))
+dx.
+$$
+
+\item A variant of this formulation \cite{cas92} can be given as
+follows. Let $I$ and $J$ be parameterized with arc-length, $I$ having
+length 1 and  $J$ length $\al$. Matching is searched as a bijection
+$g: [0,\al]\to [0,1]$, that minimizes
+$$
+U(g) = \int_0^\al (\ka_I(g^{-1}(s)) - \ka_J(s))^2 ds + \la \int_0^\al
+\left|\der{}{s}(I(g^{-1}(s)) - J)\right|^2 ds
+$$
+where $\ka_I$ and $\ka_J$ are the curvatures of $I$ an $J$.
+
+Let's
+rewite this energy in a form which is closer to the variatioal problem
+we have been discussing. Introduce the unit tangents
+ $T_I$ and $T_J$, and expand the second integral which becomes,
+letting $h=g^{-1}$ and using the fact that $I$ and $J$ are
+parameterinzed with arc-length,
+$$
+\al + \int_0^\al {h}_s^2 ds - 2\int_0^\al {h}_s
+\scp{T_J}{T_I\circ h}(s) ds
+$$
+If $(s'\mapsto J(s'))$ is reparameterized by $s'\mapsto s'/\al$, and if
+$\tilde h(s) = h(\al s)$, the previous formula becomes
+$$
+\al + \al^{-1}\int_0^1 \tilde h_s^2 ds - 2 \int_0^1 {\tilde h}_s
+\scp{T_J}{T_I\circ \tilde h}(s) ds
+$$
+which is 
+$$
+\al + \al^{-1}\int_0^1 \tilde h_s^2 ds - 2 \int_0^1 
+\scp{T_J\circ \tilde h^{-1}}{T_I}(s) ds.
+$$
+This can finally be rewritten as 
+$$
+\al  - 2 + \al^{-1}\int_0^1 \tilde h_s^2 ds + \int_0^1
+|T_J \circ \tilde h^{-1} - T_I|^2 ds.
+$$
+Going back to the initial energy, we have to minimize
+\begin{eqnarray*}
+\tilde U(\tilde h) &=&  \la \al^{-1}\int_0^1 \tilde h_s^2 ds +
+\int_0^\al (\ka_I(\tilde h(s/\al)) -
+\ka_J)^2 ds \\
+&+& \la \int_0^1
+|T_J \circ \tilde h^{-1} - T_I|^2 ds.
+\end{eqnarray*}
+The first term is an elastic deformation energy for $\tilde h$. The
+last two compare the curvature and unit tangents at homologous points.
+ \nocite{ggcv95}
+
+\item Some curve-matching energy have been proposed on an axiomatic
+basis. The problem with such approaches is that different choices of
+axioms lead to different forms of energy, so that they cannot be
+expected to provide a universal answer, but nonetheless define
+interesting families of matching problems.
+
+One of these approaches \cite{bcgj95} let to constraints for which a
+typical energy is
+$$
+U(g) = \int_0^1 |g_s - 1| ds + \la \int_0^1 (g_s + 1) |f(\ka_I\circ g) -
+f(\ka_J)|ds
+$$
+with $f(\ka) = c\ka - \text{sign}(\ka) e^{-\al \ka}$. Another choice is
+$$
+U(g) = \int_0^1 |g_s - 1| ds + \la \int_0^1 |g_s \ka_I\circ g  - \ka_J|ds
+$$
+
+In \cite{ty00}, another set of axioms has been used, leading to
+energies of the kind
+$$
+U(g) = \int_0^1 \sqrt{\dg} F(I, I'\circ g^{-1}) ds.
+$$
+Here, $U$ must be maximized in $g$; $F$ must be a symmetric, positive
+function and satisfy the condition
+$$
+F(u, v) \leq \sqrt{F(u, u) F(v, v)}.
+$$
+
+\item One particular instance of the energy $U$ in \cite{ty00} is \cite{you98}
+$$
+U(g) = \frac{ \sqrt{2}}{2} \int_0^1
+\sqrt{\dg\left(1 + \scp{T_I\circ g}{T_J}\right)}ds
+$$
+We will give later a justification of this energy in terms of
+distances between plane curves.
+
+
+
+\item Energies similar to \eqref{eq:var.U} can also be devised for 3D
+curves. A simple choice  \cite{bgkm00} is to use the intrinsic
+representation of section \ref{sec:3D.curve}, chapter \ref{surfaces}
+and minimize, $I$ and $J$ being two curves with curvature $\ka_I$ and
+$\ka_J$ and torsion $\tau_I$ and $\tau_J$, the energy
+$$
+U(g) = \int_0^1 g_s ds + \int_0^1 \big((\ka_I\circ g^{-1} - \ka_J)^2 +
+(\tau_I\circ g^{-1} - \tau_J)^2\big)ds.
+$$
+\end{itemize}
+
+Most of the energies described above can be minimized, in a very
+efficient way, by dynamic programming (once a choice of the origins
+has been made for closed curves). More details can be found in
+appendix \ref{prog.dyn}.
+
+
+\subsubsection{Matching higher dimensional images}
+
+The main problem, when passing to high dimensional images (high
+starting at 2 here) is of numerical nature. Feasible problem in 1D can
+be challenging in 2D and simply impossible in 3D. Solving such
+problems require either large scale computational power, or some
+efforts in devising suitable simplifications and approximations.
+
+Let us first review some specific domains of application of image matching.
+
+\subsubsection*{Optical flow and stereo-vision}
+These two old problems in image processing involve in one way or
+another the use of a matching procedure.
+
+For motion estimation, a displacement field  $u$ (the optical flow)
+must be estimated between two consecutive images  $I$ and $I'$, in
+order that $I(x-u) \simeq
+I'(x)$. There is a very rich literature on this subject, which is one
+of the most important problems in image processing. We will not try to
+provide an exhaustive account of the methods, which fall outside the
+scope of this book anyway \cite{fp02}.
+
+A large variety of variational approaches used for optical flow,
+however, are variants of the one initially introduced by Horn and
+Schunk  \cite{hs81}, in which one minimizes the energy  (with $g = \id - u$),
+\begin{equation}
+\label{hs.en}
+U(g) = \int_{\Om} \al^2 |u(x)|^2du +  \int_{\Om} |I(g(x)) -
+I'(x)|^2 dx.
+\end{equation}
+Most of the time, the second term is lenearized in a neighborhood of
+$u=0$ and replaced by
+$$
+I(x) - I'(x) - \nabla I(x).u(x)
+$$
+
+In stereo vision \cite{msks03}, matching two images that have been
+simultaneously acquired by two cameras allows one to compute a depth
+map within the matched parts of the two images. Compared to the
+optical flow, there is an additional constraint (called epipolar)
+which ensures that homologous points belong to specific lines which
+only depend on the relative position of the cameras and their internal
+geometry. 
+
+
+\subsubsection*{Face comparison}
+\nocite{bhk97} 
+
+Deformation also plays an important role in the analysis of facial
+images. One can list three main factors for the variation of face images
+of a single person: illumination, position and expression. We focus on
+the latter than can be represented as a diffeomorphism (for a complete
+theory including the three factors, we refer to 
+\cite{hgygm99}).
+
+Although using non-rigid matching methods is not systematic in this
+domain, some fundamental contributions have been made using this
+technique \cite{fe73}. In the work of  Von
+der Malsburg and his collaborators, for example \cite{dkl92, wv93},
+face comparison incorporates a discrete form of elastic deformation,
+represented as neural networks; the aligned quantities are not image
+grey levels, but Gabor filters \cite{gab46}, in accordance with biological
+observations.
+
+In \cite{hgygm99}, a (quite complex) model is proposed for face variation in terms of illumination,
+position and expression, to provide a single variational problem. The
+deformation part incorporates the hyperelastic energy we have
+described in equation
+(\ref{elas.ax}).
+
+
+
+
+\subsubsection*{Medical imaging}
+
+Medical imaging may be the primary domain of application of
+deformations, in 2, but mainly 3, dimensions.
+Increasingly sophisticated acquisition systems provide anatomical
+images in higher number with more and more accuracy, with new informations and
+modalities. The need to, at least partially, automatize the processing
+and analysis of these images has become more and more important. The
+whole field of computerized analysis of medical images is called
+computational anatomy \cite{gm98}. Several matching methods applied to
+brain images are described in  \cite{tog99}.
+
+\subsection{Using flows of diffeomophisms}
+\label{fluid.grad}
+
+Like for interpolation, the previous techniques do not 
+guarantee that the optimal deformation is a diffeomorphim. Such a
+property can be obtained by using the formulation given in chapter
+\ref{grp.diff}. This leads to minimizing
+$$
+U(\bfv) = \int_0^1 \int_\Om \scp{L\bfv(t, .)}{\bfv(t, .)} dx dt + \la \int_\Om
+\left(I\circ \bfg_\bfv(1,x) - I'(x)\right)^2 dx
+$$
+with respect to  $\bfv$, where $L$ is a strictly monotonous admissible
+operator (i.e., such that $\CH_L$, according to definition \ref{adm}),
+and, as before,  $\bfg_\bfv(t,x)$ is the value at time 
+$t$ of the solution of $y_t = \bfv(t, y)$ with initial condition
+ $y(0) = x$ ($x\in\Om$).
+
+Because the operator $L$ is admissible, the function  $U$ achieves a
+global minimum, for a time-dependent vector filed  $\bfv$ that
+generates a diffeomorphim. Let's prove this in the case when  $I$ and
+$I'$ are continuous on $\Om$ (the result remains true for $L^2$
+functions). The mapping
+$$
+g\mapsto q(g) = \int_\Om |I'(x) - I\circ g(x)|^2 dx
+$$
+is continuous for uniform convergence: if $g_n$ converges to $g$
+uniformly on $\Om$, then, from the continuity of $I$ and the dominated
+convergence theorem,  $q(g_n)$ converges to $q(g)$. This fact,
+combined with theorem \ref{weak.closed} and to the lower
+semi-continuity of norms on Hilbert spaces implies that there exists a
+$\bfv^*$ minimizing $U(\bfv)$.
+
+\bigskip
+To minimize this expression using gradient descent, we need to compute
+the differential of of $U$ with respect to  $\bfv$. This require some
+care, in particular for the term  $\bfg_\bfv$. We now proceed to this
+computation assuming that $I$ and $I'$ are $C^1$ functions. We
+evaluate the 
+variation $U(\bfv+ \ep h) - U(\bfv)$ for small $\ep$.
+
+The first term of $U(\bfv+\ep h) - U(\bfv)$ is $\|\bfv+\ep h\|^2 -
+\|\bfv\|^2$, which can be written $\ep \scp{h}{\bfv} + o(\ep)$ with
+$$
+\scp{h}{\bfv} = \int_0^1 \int_\Om \scp{Lh}{\bfv} dx dt.
+$$
+The study of the second term, which is
+$$
+\int_\Om \left(I\circ \bfg_{\bfv+\ep h}(1,x) - I'(x)\right)^2 dx -
+\int_\Om \left(I\circ \bfg_{\bfv}(1,x) - I'(x)\right)^2 dx
+$$
+requires more work.
+
+We first show that the differential
+$$
+q_h(t) = \pdr{}{\ep}\bfg_{\bfv+\ep h}(t, x)_{|_{\ep=0}}
+$$
+exists. This can be handled in the same way as the existence of the
+differential  of $\bfg_\bfv$ with respect to $x$ (theorem
+\ref{flot.exist}), and we rapidly sketch the details. One first
+formally computes a candidate by writing
+$$
+\pdr{}{t} \bfg_{\bfv+\ep h}(t, x) = \bfv(t, \bfg_{\bfv+\ep h}(t, x)) +
+\ep h(t, \bfg_{\bfv+\ep h}(t, x))
+$$
+to get
+\begin{equation}
+\label{qh}
+\der{q_h}{t} = D \bfv(t, .) (\bfg_\bfv(t, x)) q_h + h(t,\bfg_{\bfv}(t,x)).
+\end{equation}
+This is a linear, non-homogeneous differential equation, for which we
+introduce a solution $\tilde{q}_h$ (with
+$\tilde{q}_h(0) = 0$). It remains to make this formal computation
+rigorous, by showing that 
+$q_h$ does exist, and is equal to $\tilde{q}_h$. This can be done by
+returning to the definition of the derivative and use Gronwall's lemma
+like in the proof of theorem \ref{flot.exist}.
+
+Remarking that the homogeneous equation associated to \eqref{qh} is in
+fact \eqref{flot.diff},  $q_h$ can be computed analytically by the
+mathod of variation of the constant, yielding
+$$
+q_h(t, x) = D\bfg_\bfv(t,x)\int_0^t D\bfg_\bfv(s,x)^{-1}.h(s,
+\bfg_\bfv(s,x)) ds.
+$$
+
+The previous computation therefore yields
+\begin{multline*}
+U(\bfv+\ep h) - U(\bfv) = 2 \ep \scp{h}{\bfv} \\
++ 2\ep \la \int_\Om \scp{I\circ
+\bfg_\bfv(1,x) - I'(x)}{DI\circ \bfg_\bfv(1,x)q_h(1,x)} dx
++
+o(\|h\|).
+\end{multline*}
+Replacing  $q_h$ b its expression, we get, denoting 
+$\ga_\bfv(t, .)$ the inverse of $\bfg_\bfv(t,.)$
+\begin{multline*}
+\int_\Om \scp{I\circ \bfg_\bfv(1,x) - I'(x)}{DI\circ
+\bfg_\bfv(1,x).q_h(1,x)} dx
+\\ = \int_0^1\int_\Om \left\langle I\circ
+\bfg_\bfv(1,x) - I'(x), \right. \\
+\left.DI\circ
+\bfg_\bfv(1,x).d\bfg_\bfv(1,x)d\bfg_\bfv(t,x)^{-1}.h(t,
+\bfg_\bfv(t,x)) \right \rangle dx dt
+\\=
+ \int_0^1\int_\Om \lan  DI\circ
+\bfg_\bfv(1,\ga_\bfv(t,y))D\bfg_\bfv(1,\ga_\bfv(t,y))D\bfg_\bfv(t,\ga_\bfv(t,y))^{-1}.
+h(t, y),
+\\ I\circ \bfg_\bfv(1,\ga_\bfv(t,y)) -
+I'(\ga_\bfv(t,y))\ran |\det D\ga_\bfv(t,y)|dy dt.
+\end{multline*}
+To simplify this formula, introduce the function $\chi_\bfv(t, y) = \bfg_\bfv(1,
+\ga_\bfv(t,y))$, and the notation $\bfJ(t,y) = I(\chi_\bfv(t,y))$
+and $\bfJ'(t,y) = I'(\ga_\bfv(t,y))$. We have
+$$D\bfg_\bfv(t,\ga_\bfv(t,y))^{-1} = D\ga_\bfv(t,y)\,,
+\ \ 
+D\bfg_\bfv(1,\ga_\bfv(t,y)) D\ga_\bfv(t,y) = D\chi_\bfv(t,y)
+$$
+and
+$\dps
+D\bfJ(t,y) = DI\circ \bfg_\bfv(1,\ga_\bfv(t,y)) D\chi_\bfv(t,y)\,.$
+We finally obtain the expression
+\begin{multline*}
+\int_\Om \scp{I\circ \bfg_\bfv(1,x) - I'(x)}{DI\circ
+\bfg_\bfv(1,x) q_h(1,x)}
+\\ =   \int_0^1\int_\Om \scp{\bfJ(t,y) - \bfJ'(t,y)}{D\bfJ(t,y) |\det
+D\ga_\bfv(t,y)| h(t, y)} dy dt \\ = \int_0^1\int_\Om |\det
+D\ga_\bfv(t,y)|\scp{D\bfJ(t,y)^T (\bfJ(t,y) - \bfJ'(t,y))}{h(t,
+y)} dy dt
+\end{multline*}
+and the proposition
+\encadre{
+\begin{proposition} [Beg et al., 2002]
+\label{grad.prop}
+Let
+$$
+U(\bfv) = \int_0^1 \int_\Om |L\bfv|^2 dx dt + \la \int_\Om
+\left(I\circ \bfg_\bfv(1,x) - I'(x)\right)^2 dx
+$$
+If $u \mapsto \left(\int_\Om |Lu|^2 dx\right)^{1/2}$ induces an
+admissible norm on functions $u:\Om\to\mR$, we have, letting
+$\|\bfv\|^2 = \int_0^1 \int_\Om |L\bfv|^2 dx dt\,:$
+$$
+U(\bfv+\ep h) = 2 \ep \scp{\bfv}{h} + 2\ep \la \int_0^1\int_\Om
+\scp{b_\bfv(t,y)}{h(t,y)} dy + o(\ep)
+$$
+with
+$$
+b_\bfv(t, y) = |\det D\ga_\bfv(t,y)|D\bfJ(t,y)^T (\bfJ(t,y) -
+\bfJ'(t,y))
+$$
+where $\ga_\bfv(t, y)$ is the inverse of $\bfg_\bfv(t,y)$ and
+$
+\bfJ(t, y) = I(\bfg_\bfv(1,\ga_\bfv(t, y)))$, $\bfJ'(t,y) =
+I'(\ga_\bfv(t, y))$.
+\end{proposition}
+}
+
+Figure \ref{match.beg} provides a matching experiment using this
+algorithm for shape matching.
+
+\begin{figure}
+\begin{center}
+\includegraphics[width=5.5cm]{TUTORIALPS/SY0.ps}\hfill
+\includegraphics[width=5.5cm]{TUTORIALPS/SY299.ps}\\
+\includegraphics[width=5.5cm]{TUTORIALPS/SYgrid270.ps}
+\end{center}
+\caption{\label{match.beg} First Row: two shapes before
+alignment. Second Row: Estimated deformation applied to a regular grid.}
+\end{figure}
+
+
+\subsection{Numerical aspects}
+In this section, we make (without geting into imlpementation details)
+some important remarks on the numerical 
+implementation of diffeomorphic matching. 
+
+\subsubsection{Discretization}
+The simplest and mostly used way to discretize a function is to use a
+regular grid, approximate integrals by sums and derivatives by finite
+differences. This leads to rather simple implementations, but involves
+a huge number of variables, that can require considerable computer
+power in 3D.
+
+One can also use a decomposition on a basis of functions. One
+possibility is to use finite elements 
+\cite{rwcm95}, which consists  \cite{zt89} in defining a basis of
+smooth function (generally piecewise polynomial, with compact support)
+on which the unknow diffeomorphism is projected. Another possible
+choice of basis are the eigenvectors of the operator $L$ which form an
+orthonormal basis of  $\CL^2$.
+
+
+\subsubsection{Definition of the gradient}
+
+Here is a simple, but fundamental remark, on gradient descent
+algorithms. At the difference of the differential of a function, the
+gradient depens on a dot product (or a Riemannian structure) on the
+ambient space. For example, if $U$ is a differentiable function on
+$\mR^p$, the differential of $U$ at $g$ is a linear operator, $DU(g)$,
+defined by 
+$U(g+\ep h) \simeq U(g) + \ep DU(g).h + o(\ep)$, avec
+$$
+DU(g).h = \sum_{i=1}^p \pdr{U}{g_i} h_i.
+$$
+To define a gradient, we need a Eclidean or Riemannian
+structure. Denoting it  $\scp{.}{.}_g$, the gradient of  $U$ at $g$ is {\em defined}
+by
+$$
+\forall h,  DU(g).h = \scp{\nabla U(g)}{h}_g.
+$$
+The discrete gradient descent algorithm with step  $\ga$ is
+$$
+g(\tau+1) - g(\tau) = -\ga \nabla U(g(\tau)).
+$$
+This algorithm therefore also depends on the Riemannian structure. On
+$\mR^p$, the standard Euclidean structure provides the usual gradient
+descent, 
+$$
+g(\tau+1) - g(\tau) = - \ga \der{U}{g}
+$$
+where $\der{U}{g}$ is the vector composed with partial derivatives of $U$
+at $g(\tau)$; but, letting
+$$
+\scp{u}{v}_g = {}^tuA_gv,
+$$
+where $A_g$ is a symmetric positive matrix, the algorithm becomes
+$$
+g(\tau+1) - g(\tau) = - \ga A_{g(\tau)}^{-1}\der{U}{g}.
+$$
+
+Such variations may have importance consequences on the quality and
+stability of the algorithm, especially in infinite dimensions. From a
+heuristic point of view, the Riemannian metric defines directions that
+are easier to take than other in the space, and make others almost
+impossible. If  $g$ is a function, a suitable choice of the metric
+will favor trajectories where $g$ remains bounded or smooth, for example.
+Even in finite dimensions, selecting a good metric can lead to
+improved algorithms. For example, when a function is optimized over
+invertible matrices, one can ensure that the matrix remains invertible
+along the algorithm (like for independent component analysis, appendix
+\ref{ica}). 
+
+Let's provide some illustrations of this for the optimization over
+functions. Consider the following typical situation in the calculus of
+variation where a function $g$ defined n $\O$ is searched to minimize
+$$
+U(g) = \int_\Om F(Dg(x), g(x), x) dx.
+$$
+We first compute the equivalent of directional derivatives, which
+coreespond to computing a function $b_g$ defined on $\Om$, such that,
+for every function $h$ with compact support in $\Om$
+$$
+\der{}{\ep} U(g+\ep h) = \int_\Om b_g(x).h(x) dx
+$$
+at $\ep=0$. This can be interpreted as a gradient of $U$ for the
+$\CL^2$ dot product
+$$
+\scp{h}{k}_2 = \int_\Om k h dx\,.
+$$
+
+Take, for example, $\Om = ]0,1[$ and
+$$
+U(g) = \int_0^1 (|\dg|^2 + V(g(x))) dx
+$$
+where $V$ is a positive function and  $g: [0,1]\to [0,1]$ satisfies
+$g(0) = 0$ and $g(1) = 1$. By a standard computation using integration
+by parts, we obtain, at $\ep=0$,
+$$
+\der{}{\ep}U(g+\ep h) = \int_0^1(-\dder{g}{x} + V'\circ g).h dx.
+$$
+This provides the $\CL^2$-gradient of $U$
+$$
+\nabla_g U = -\dder{g}{x} + V'\circ g.
+$$
+The gradient dscent algorithm (expressed in continuous time) is
+$$
+\pdr{g}{\tau} = -\dder{g}{x} + V'\circ g.
+$$
+
+\bigskip
+
+Return now to the general case. Assume that the dot product is
+selected so that 
+$$
+\scp{h}{k} = \int_\Om \scp{k}{Lh} dx
+$$
+where $L$ is a strictly monotnus operator. Still assuming that we can
+write
+$$
+\der{}{\ep}U(g+\ep h) = \int_\Om \scp{b_g}{h} dx\,,
+$$
+we see that the gradient of $U$ for the new dot.product must satisfy
+$Lv = b_g$, yielding the numerical scheme
+$$
+\left\{
+\begin{array}{l}
+\dps \pdr{g}{\tau} = - v\\
+\ \\
+\dps Lv = b_g
+\end{array}
+\right. .
+$$
+In this discussion, we have neglected the boundary conditions on $\prt
+\Om$ (or implicitely assumed that valid variations $h$ must vanish at
+the boundary, like in our example, so that they do not add any new
+term in the integration by parts).
+
+Let's return to out 1D example, and consider the dot product
+$$
+\scp{k}{h}_L = \int_0^1 \dot{k}\dh dx = \int_0^1 k Lh dx
+$$
+with $Lh = - \dder{h}{x}$; this yields the algorithm
+$$
+\left\{
+\begin{array}{l}
+\dps \pdr{g}{\tau} = - v\\
+\ \\
+\dps \dder{v}{x} = -\dder{g}{x} + V'\circ g\\
+\ \\
+\dps v(0) = v(1) = 0
+\end{array}
+\right.
+$$
+
+We have therfore built a two-step numerical scheme. First compute the
+$\CL^2$ gradient then {\em smooth it}, by applying to it the inverse
+of the operator $L$, to obtain the increment of the crent function
+$g$. More precisely, if $K = L^{-1}$ is a kernel operator, the
+algorithm is
+$$
+\pdr{g}{\tau} = -\int_{\Om} K(x, y) b_g(y) dy.
+$$
+This implies in particular that $g$ inherits the smoothness of the
+kernel during evolution, which is generally a factor of stability in
+the algorithm.
+
+The situation is even more interesting in the case of groups of
+diffemorphisms, in which we deal here with a ``true'' Riemannian metric and
+not a change of Hilbert space dot product. The application of this
+idea to groups of diffeomorphisms has been suggested in
+\cite{tro98}. Consider the function
+\begin{equation}
+\label{eq:image.data}
+U(g) = \int_\Om \left| I \circ g(x) - J(x) \right|^2 dx
+\end{equation}
+where $I$ and $J$ are two $C^1$ images defined on $\Om$, and $g$ is a
+diffeomorphism of $\Om$. It is very easy to compute the
+$\CL^2$ gradient of $U$, and is given by
+\begin{equation}
+\label{grad.l2}
+b_g(x) = 2(I(g(x)) - J(x)) DI(g(x)).
+\end{equation}
+The $\CL^2$ gradient descent would therefore be given by
+$$
+\pdr{g}{t} = - (I(g(x)) - J(x)) DI(g(x)).
+$$
+
+This procedure is extremely unstable. It is in fact never used as such,
+and always combined with some form of regularization (see the method
+of deamons in the next section). Another issue is that the procedure
+does not take into acount the fact that  $g$ must be a
+difeomorphism. Let's consider a Riemannian dot product for
+diffeomorphisms, given by
+$$
+\scp{h}{k}_g = \int_\Om \scp{L(h\circ g^{-1})}{k\circ g^{-1}} dx.
+$$
+(The operator $L$ is applied to the function $h\circ g^{-1}$.) This
+choice will be justfified in chapter \ref{dist.diff}. To obtain the
+associated gradient descent, we need to express
+\begin{equation}
+\label{eq:grad.img}
+\der{}{\ep}U(g+\ep h)  \int_\Om 2(I(g(x)) - J(x)) DI({g(x)}) h(x)
+dx 
+\end{equation}
+under the form
+$$
+\der{}{\ep}U(g+\ep h) = \scp{\beta_g}{h}_g. $$
+Let us first make the change of variables  $y = g(x)$ in
+\eqref{eq:grad.img}. This yields
+$$
+\der{}{\ep}U(g+\ep h) = \int_\Om 2(I(y) - J(g^{-1}(y)))
+DI(y) h(g^{-1}(y)) |\det Dg^{-1}(y)| dy + o(\ep).
+$$
+This implies that  $\beta_g$ must be such that $\beta_g\circ g^{-1}$
+satisfies the equation
+$$
+L.u(y) = 2|\det Dg^{-1}(y)|(I(y) - J(g^{-1}(y)))
+DI(y).
+$$
+
+This means that the gradient descent for the considered dot product
+must proceed as follows.Solve
+\begin{equation}
+\label{eq:flow.grad}
+\pdr{g}{\tau}(\tau,x) = u(\tau, g(\tau,x))
+\end{equation}
+with 
+\begin{equation}
+\label{eq:smooth.grad}
+L(t,.) = - 2|\det D{g}^{-1}(y)|(I(y) - J({g}^{-1}(y)))
+DI(y).
+\end{equation}
+Equation \eqref{eq:smooth.grad} is a smoothing operation applied to
+the $\CL^2$ gradient. The particular form of the evolution equation
+\eqref{eq:flow.grad} is a dircet consequence of the form that has been
+selected for the Riemannian metric. It shows that the evolution
+generated by this particular
+implementation of gradient descent s a flow (a solution of an ODE)
+that generates a diffeomorphism as long as $u$ remains smooth. A
+similar algorithm as been proposed by \cite{crm96}, based on different
+motivations. 
+
+It is important to note that that the function $U$ in \eqref{eq:image.data} contains no
+regularization term for $g$. This implies that, unless $I$ and $J$ are
+can be made in correspondence exactly by diffeomorphism, there is
+probably no global minimum, and the evolution will generate wild
+deformations if pushed too far. A suitable stopping rule must be
+designed \cite{tro98}. 
+
+
+
+
+\subsubsection{Deamons algorithm}
+
+The method of deamons is a popular matching algorithm in medical
+imaging \cite{thi98, thi99, gram99}. Although it does not exactly
+correspond to a gradient descent implementation, it can almost be
+interpreted as such. Consider the energy
+$$
+U(g) = \int_\Om |J(x) - I(g(x))|^2 dx
+$$
+with $\CL^2$ gradient given by
+$$b_g(x) = 2(I(g(x)) - J(x)) DI ({g(x)})$$
+
+Consider the following dot product
+$$
+\scp{h}{k}_g = \int_\Om (|J(x) - I(g(x))|^2 + |D J(x)|^2) h(x)
+Lk(x) dx
+$$
+for some operator $L$.
+The gradient of  $U$ for this dot product is given by
+$$
+L^{-1} \Big(\frac{b_g(x)}{|J(x) - I(g(x))|^2 + |D J(x)|^2}\Big)
+$$
+that can be approached by
+$$
+-2L^{-1}\left(\frac{J(x) - I(x)}{|J(x) - I(g(x))|^2 + |D J(x)|^2} D
+J(x)\right).
+$$
+
+This provides a gradient descent algorithm which can be written, in
+discrete time, under the form (letting $K=L^{-1}$)
+\begin{equation}
+\label{thi}
+u(\tau+1, y) = u(\tau, y) + \ga\int K(y,x) \frac{J(x) - I(x)}{|J(x) - I(g(\tau, x))|^2 + |\nabla J(x)|^2} \nabla
+J(x) dx
+\end{equation}
+with $g(\tau, x) = x + u(\tau, x)$. The method of deamons applies an
+additional smoothing to the current $u$ before adding the increment,
+yielding
+\begin{multline*}
+u(\tau+1, y) = \int K(y,x) u(\tau,x))dx\\
+ + \int K(y,x) \ga\frac{J(x) - I(x)}{|J(x) - I(g(\tau, x))|^2 + |\nabla J(x)|^2} \nabla
+J(x) dx.
+\end{multline*}
+This addictional smoothing is hard to interpret and to justify.
+To interpret the dot product introduced in this section, one must
+remember that the norm
+$\scp{h}{h}_g$ can be interpreted as an infinitesimal cost function
+for the variation $g\to g+h$; as we have already noticed, the operator
+$L$ penalizes a lack of smoothness; the multiplicative factor
+penalizes variations at location $x$ according to the value of  $|J(x)
+- I(g(x))|^2 + |D J(x)|^2$. This implies that changes of $h(x)$
+are limited when the matching is unsatisfactory and when $J$ has a
+large gradient. 
+
+
+
+\nocite{yos70}
+
+\subsubsection{Multigrid approaches}
+
+For these very high dimensional, non-convex, multigrid algorithms
+often bring significant improvements, both in efficiency and
+quality, in avoiding some local minima. Several strategies are available for this.
+One can start solving a problem with coarser images and discretization grids, to
+progressively refine the solutions. One can also use representations
+of the unknown variable (the diffeomorphism) that allow for a
+progressive release of the degrees of freedom. This can be done easily
+by using a decomposition on orthogonal bases and playing with the
+number of coefficients that are retained \cite{bk89, ghlb97, bk99}.
+
+
+
+
+
+
+
+
+
+\chapter{Distances and group actions}
+\label{dist.grp}
+
+\section{General principles}
+\subsection{Distance induced by a group action}
+
+This chapter shows how transformation groups acting on spaces can help
+defining or altering distances on these spaces. The first part will
+essentially focus of the algebraic aspects of the contructions based
+on the least action principle. In the second part, we will develop the
+related
+differential point of view, when a Lie group acts on a manifold.
+
+\index{distance (axioms)}
+
+\bigskip
+We start with some terminology. A distance on a set  $\CC$ is a mapping
+$d:\CC^2\mapsto \mR_+$ such that, for all $m, m', m''\in\CC$,\\
+\indent D1) $d(m, m') = 0 \Leftrightarrow m= m'$.\\
+\indent D2) $d(m. m') = d(m', m)$\\
+\indent D3) $d(m, m'') \leq d(m, m') + d(m', m'')$.
+
+If D1 is not satisfied, but only the fact that $d(m, m)=0$ pour tout
+$m$, we will say (still assuming D2 and D3) that $d$ is a {\em pseudo-distance}.
+
+If $G$ is a group acting on $\CC$, we will say that a distance $d$ on
+$\CC$ is $G$-equivariant if and only if for all $g\in G$, for all
+$m, m'\in \CC$, $d(g.m, g.m') = d(m, m')$.
+
+A mapping $d:\CC^2\mapsto \mR_+$ is a $G$-invariant distance if and
+only if it is a pseudo-distance such that $d(m, m') = 0
+\Leftrightarrow \exists g\in G,\, g.m = m'$. This is equivalent to
+stating that $d$ is a distance distance on the coset space $\CC/G$,
+composed with orbits
+$$
+[m] = \{g.m, g\in G\},
+$$
+with the identification $d([m], [m']) = d(m,, m')$.
+
+The next proposition shows how a $G$-equivariant distance induces a
+$G$-invariant pseudo-distance.
+%\encadre{
+\begin{proposition}
+\label{modulo}
+Let $d$ be equivariant for the left action of $G$ on $\CC$. The function $\td$,
+defined by
+$$
+\td([m], [m']) = \inf\{d(gm, g'm'), g, g'\in G\}
+$$
+is a pseudo-distance on $\CC/G$.
+\end{proposition}
+%}
+\index{invariant distance} \index{equivariant distance}
+Since $d$ is $G$-equivariant, we could have defined $\td$ in the
+previous proposition by
+$$
+\td([m], [m']) = \inf\{d(gm, m'), g\in G\}.
+$$
+\begin{proof}
+The symmetry of $\td$ is obvious, as well as the fact that $\td((m],
+[m]) =0$ for all $m$. For the triangle inequality, D3, it suffices to
+show that, for all $g_1, g'_1, g'_2, g''_1\in G$, there exists $g_2,
+g''_2\in G$ such that
+\begin{equation}
+\label{eq:d3}
+d(g_2m, g''_2 m'') \leq d(g_1m, g'_1m') + d(g'_2m', g''_1m'').
+\end{equation}
+Indeed, if this is true, the minimum of the right-hand term in $g_1, g'_1, g'_2, g''_1$, which is
+$\td([m], [m']) + \td([m'], [m''])$ is larger than the minimum of the
+left-hand term in $g_2, g''_2$, which is $\td([m], [m''])$, which is
+precisely D3. To prove \eqref{eq:d3}, write $d(g'_2m', g''_1m'') = d(g'_1m', g'_1 (g'_2)^{-1}
+g''_1m'')$, and take $g_2 = g_1$ and 
+$g''_2 = g'_1 (g'_2)^{-1}
+g''_1$; \eqref{eq:d3} is just an application of the triangle
+inequality for $d$.
+\end{proof}
+
+Whether $\td$ is a distance, and not just a pseudo-distance is
+statement about the minimizer of a function. Excepted in the trivial
+case of finite groups, this will require some topological assumptions
+on the structure of $G$ and of the action.
+
+The same statement can clearly be made with $G$ acting on the right on $m$,
+with $m \mapsto m.g$. We state it without proof
+\begin{proposition}
+\label{modulo.right}
+Let $d$ be equivariant for the left action of $G$ on $\CC$. The function $\td$,
+defined by
+$$
+\td([m], [m']) = \inf\{d(mg, m'g'), g, g'\in G\}
+$$
+is a pseudo-distance on $G\backslash \CC$.
+\end{proposition}
+Here $G\backslash M$ denotes the coset space for the right action of $G$.
+
+
+
+\subsection{Distance altered by a group action}
+
+In this section, $G$ is still a group acting on the left on  $\CC$, but we consider
+the product space $\CO  = G\ti \CC$ and project on $\CC$ a distance
+defined on $\CO$.
+
+The group $G$ acts on the right on $\CO$, letting, for $k\in G$,
+$o=(h, m)\in \CO$, $o.k = (hk, k^{-1}m)$. For $o=(h, m)\in \CO$, we define
+the projection 
+$\pi(o) = hm$. This projection is such that, for all $k\in G$,
+$\pi(o.k) = \pi(o)$. 
+
+Let $d_\CO$ be a distance on $\CO$. We let, for $m, m'\in \CC$
+\begin{equation}
+\label{inv.eq.gen}
+d(m, m') = \inf\{d_\CO(o, o'), o, o'\in \CO, \pi(o) = m,  \pi(o') = m'\}.
+\end{equation}
+
+We have the proposition
+\encadre{
+\begin{proposition}
+\label{inv.gch.gen}
+If $d_\CO$ is equivariante by the right-action of $G$, then, the
+function $d$ defined by \ref{inv.eq.gen} is a pseudo-distance on $\CC$.
+\end{proposition}}
+
+This is in fact a corollary of proposition \ref{modulo.right}. One only has
+to remark that the quotient space  $G\backslash \CO$ can be identified to $\CC$
+via the projection $\pi$, and that the distance in \eqref{inv.eq.gen}
+then becomes the projection distance introduced in proposition
+\ref{modulo.right}.
+
+\subsection{Existence of a minimum}
+
+We assume that the group  $G$ is a topological space, but no special
+structure on $\CC$.
+For $m\in \CC$, define the mapping $I_m: G\mapsto \CO$ by
+$I_m(h) = (h, h^{-1}m)$. We make the following hypotheses.
+\begin{itemize}
+\item The canonical projection  $(h, m)\in
+\CO \to h$ of sets of finite diameters for  $d_\CO$ are sequentially
+precompact sets in $G$.
+\item For all $o\in \CO$, for all $m\in \CC$, the function $h\mapsto
+d_\CO(o, I_m(h))$ is lower semi-continuous: if $h_n\to
+h$ in $G$, then
+$$
+d_\CO(o, I_m(h)) \leq \liminf d_\CO(o, I_m(h_n))
+$$
+\end{itemize}
+A subset  $A$ of the topological space $G$ is sequentially precompact
+if one can extract a sequence that converges in $G$ from any sequence
+in  $A$.
+
+We have
+\begin{proposition}
+\label{exist.gen}
+Assume the previous hypotheses. If $d_\CO$ is equivariant by the
+left-action of  $G$, then, for all  $m,
+m'\in\CC$, there exists $o, o'\in G$ such that $\pi(o) = m$,
+$\pi(o')=m'$ and $d(m, m') = d_\CO(o, o')$. In particular, $d$ is a
+distance on  $\CC$.
+\end{proposition}
+\begin{proof}
+Let $m$ and $m'$ be two elements of $\CC$. From the definition of
+$d$, there exists two sequences  $(o_n, n\geq 0)$ and $(o'_n, n\geq
+0)$ such that  $\pi(o_n) = m$, $\pi(o'_n) = m'$, and $d_\CO(o_n, o'_n) \ria
+d(m, m')$. From the definition of  $\pi$, $o_n$ takes the form $o_n =
+(h_n, h_n^{-1}.m)$, and $o'_n = (h'_n, {h'_n}^{-1}.m')$. Using the
+left-equivariance, we can replace  $o_n$ and $o'_n$ by $h_n o_n$ and
+$h_n o'_n$; this is equivalent to assuming that  $h_n = \id_G$ for
+all $n$, that we shall do without changing the notation, letting
+$o_n \equiv o=(\id_G, m)$ for al $n$. Since $o_n$ is constant, the
+sequence  $(o'_n, n\geq 0)$ is bounded in $\CO$, so that we can
+extract a converging subsequence from  $(h'_n, n\geq 0)$; we let
+$h'\in G$ be the limit. We have $o'_n = I_{m'}(h'_n)$, and, letting
+$o'=(h', h'^{-1}m') = I_{m'}(h')$, our second hypothesis yields
+$$
+d_\CO(o, o') \leq \liminf d_\CO(o, o'_n) = d(m, m').
+$$
+Since $d(m, m') \leq d_\CO(o, o')$, we obtain the required result.
+\end{proof}
+
+\subsection{Transitive action}
+\subsubsection{Induced distance}
+An important particular instance of the previous construction is when
+$\CO$ itself is a group that acts transitively on $\CC$. This means
+that for any $m, m'$ in $\CC$, there exists an element $o\in\CO$ such
+that $m' = om$.
+
+So our initial assumption is that $\CO$ is a group that acts
+transitively on the set $\CC$. We fix a reference element 
+ $m_0$ in $\CC$, and define the group $G$ by
+$$G = \{o\in \CO, o.m_0 = m_0\}\,.$$
+This group $G$ is called the stabilizer of  $m_0$ in $\CO$. The
+relation to the previous section comes with the identification of
+$\CO$ with $G\ti\CC$. 
+
+One way to see that is by assuming that a function  $\rho: \CC\to \CO$
+has been defined, such that for all $m\in\CC$, $m = \rho(m).m_0$. This
+is possible, since the action is transitive (using anyway
+the axiom of choice). Define
+$$
+\map{\Psi}{G\ti\CC}{\CO}{(h, m)}{\rho(h.m)h}.
+$$
+We show that $\Psi$ is a bijection: if $o\in \CO$, one can write, we
+look for $(h,m)$ such that 
+$o = \Psi(h, m)$. If this is true, we have 
+$$o.m_0 = \rho(hm)h m_0 = \rho(hm)m_0 = hm$$
+which imples that $\rho(hm) = \rho(om_0)$ and therefore $h =
+\rho(om_0)^{-1} o$ which is uniquely specified; but this also specifies $m =
+h^{-1}om_0$. This proves that $\Psi$ is one-to-one and onto
+and provides the identification we are looking for.
+
+The right action of $G$ on $G\ti\CC$, which is $(h, m)k = (hk,
+k^{-1}m)$, translates to $\CO$ via $\Psi$ with
+$$
+\Psi(hk, k^{-1}m) = \rho(hkk^{-1}m)hk = \Psi(h,m)k
+$$
+which coincides with the right action of $G$ on $\CO$. Finally, the
+constraint $\pi(h,m_1) = m$ which is involved in 
+Proposition \ref{inv.gch.gen} becomes $om_0 = m$ via the
+identification. All this provides a new version of Proposition
+\ref{inv.gch.gen} in our present context given by
+\begin{corollary}
+\label{inv.gch}
+Let $d_\CO$ be a distance on $\CO$, which is invariant under the
+right-action of  $G$, the stabilizer of $m_0\in\CC$. Define, for all
+$m, m'\in\CC$
+\begin{equation}
+\label{inv.eqg}
+d(m, m') = \inf\{d_\CO(o, o'), o.m_0 = m, o'.m_0=m'\}\,.
+\end{equation}
+Then $d$ is a pseudo distance on  $\CC$.
+\end{corollary}
+
+The translation of the hypotheses made for 
+proposition  \ref{exist.gen} is as follows. We assume that  $G$ can
+be equipped with a topology such that
+\begin{itemize}
+\item Images of sets of finite diameters for  $d_\CO$ by $o \mapsto
+\rho(om_0)^{-1} o$ are sequentially compact sets in  $G$.
+\item For all  $o\in \CO$, for all $m\in \CC$, the function  $h\mapsto
+d_\CO(o, \rho(m)h)$ is lower semi-continuous..
+\end{itemize}
+We have
+\begin{corollary}
+\label{exist.gch}
+We assume the previous hypotheses. If $d_\CO$ is equivariant by the
+right action of  $G$, then, for all $m, m'\in\CC$, there exists $o,
+o'\in \CO$ such that $\pi(o) = m$, $\pi(o')=m'$ and $d(m, m') = d_\CO(o,
+o')$. In particular, $d$ is a distance on $\CC$.
+\end{corollary}
+
+
+
+
+
+\subsubsection{Effort functional}
+\bigskip
+\index{Effort functional}
+As formalized in \cite{gre93}, one can built a distance on
+ $\CC$ on which a group acts transitively using the notion of effort
+functionals. The definition we give here is slightly more general than
+in  \cite{gre93}, to take into account a possible influence of the
+deformed object on the effort. We also make a connection with the
+previous, distance based, formulations.
+
+We attribute a cost $\Ga(o, m)$ to  a transformation $m\ria o.m$. If
+$m$ and 
+$m'$ are two objects, we define 
+$d(m, m')$ as the minimal cost (effort) required to transform  $m$ in
+$m'$, i.e.,
+\begin{equation}
+\label{ga.gch}
+d(m, m') = \inf\{\Ga(o,m), g\in G, o^{-1}.m = m'\}
+\end{equation}
+
+The proof of the following proposition is almost obvious.
+\begin{proposition}
+\label{cout.gch}
+If $\Ga$ satisfies
+
+C1) $\Ga(o, m) = 0 \Leftrightarrow o=e$
+
+C2) $\Ga(o, m) = \Ga(o^{-1}, om)$
+
+C3) $\Ga(oo', m) \leq \Ga(o, m) + \Ga(o', om)$
+
+Then, $d$ defined by (\ref{ga.gch}) is a pseudo-distance on $\CC$.
+\end{proposition}
+
+In fact, this is equivalent to the construction of corollary
+\ref{inv.gch}. To see this, let as before  $G$ be the stabilizer of
+$m_0$ for the action of $\CO$ on $\CC$. We have
+\begin{proposition}
+\label{cdis.gch}
+If $\Ga$ satisfies C1), C2) and C3), then, for all $m_0\in\CC$, the
+function  $d_\CO$ defined by
+$$
+d_\CO(o, o') = \Ga((o')^{-1}o, o^{-1}.m_0)
+$$
+is a distance on $\CO$ which is equivariant for the left action of
+$G$. Conversely, given such a distance $d_\CO$, one build an effort
+functional  $\Ga$ satisfying C1), C2), C3) b letting
+$$\Ga(h, m) = d_\CO(oh, o)$$
+where $o$ is any element of $\CO$ with the property $o.m = m_0$.
+\end{proposition}
+Here again, we leave the proposition to the reader.
+
+
+\subsection{Infinitesimal approach}
+\label{var}
+The previous sections have demonstrated the interest of equivariant
+distances on $\CO$. It may be, however, very difficult to come up with
+an analytical expression for such a distance. Very often, fortunately
+(in particular when  $\CC$ is a differential manifold and $G$ is a Lie
+group) a left invarant Riemannian metric  can be designed, leading to a
+left-invariant distance defined as a variational problem.
+
+We need to build a left invariant metric on $\CO$. Recall that a
+Riemannian metric on $\CO$ defines, for all $o\in\CO$, a dot product
+$\scp{.}{.}_o$ on the tangent space, $T_o\CO$,  to $\CO$ at $o$, which
+depends smoothly on $o$. With such a metric, one can define
+the energy of a differentiable path  $\bfo$ in $\CO$ by
+\begin{equation}
+\label{ener.1}
+E(\bfo) = \int_0^1 \left\|\der{\bfo}{t}\right\|^2 dt.
+\end{equation}
+The associated Riemannian distance on $\CO$ is
+\begin{equation}
+\label{geod.1}
+d_\CO(o, o') = \inf\{ \sqrt{E(\bfo)}, \bfo(0) = o, \bfo(1) = o'\}.
+\end{equation}
+
+To obtain a left invariant distance, it suffices to ensure that the
+metric has this property. For $h\in G$, we left $L_h$ denote the left
+action of $h$ on $\CO$: $L_h: o \mapsto h.o$. Let $d_oL_h$ be its
+differential at $o\in \CO$. It is a linear map, defined on 
+$T_o\CO$, with values in $T_{h.o}\CO$ such that, for all
+differentiable path $\bfo$ on $\CO$ such that $\bfo(0)=o$, we have
+\begin{equation}
+\label{left.trans}
+\der{h\bfo}{t}_{|_{t=0}} = d_oL_h.\der{\bfo}{t}_{|{t=0}}.
+\end{equation}
+The left invariance of the metric is expressed by the identity, true
+for all  $o\in \CO$, $A\in T_o\CO$ and $h\in G$,
+\begin{equation}
+\label{left.inv.1} 
+\|A\|_o = \left\|d_oL_h.A\right\|_{ho}.
+\end{equation}
+
+When  $\CO = G\ti \CC$, condition
+(\ref{left.inv.1}) implies that it suffices to define $\scp{.}{.}_o$
+at elements  $o\in \CO$ of the form $o = (\id, m)$ with $m\in
+\CC$. The metric at a generic point $(h,m)$ can then be computed, by
+left invariance, from the metric at $(\id, h^{-1}m)$. Since the metric
+at $(\id, m)$
+can be interpreted as a way to attribute a cost to a deformation
+$(\id, h(t)m)$ with $h(0) = \id$ and small $t$, defining it
+corresponds to an analysis of the cost of an infinitesimal
+perturbation of $m$ by an element of $G$.
+
+In the next sections, we will apply this construction to several
+situations, depending on the choice of the deformable objects and on
+the group $G$.
+
+
+\section{Invariant distances between landmarks}
+
+\subsection{Introduction}
+The purpose of this section is to present the construction provided by
+Kendall \cite{ken84} on distances between landmarks, under the
+infinitesimal point of view that we have just outlined. Here,
+configurations of landmarks are considered up to similitude
+(translation, rotation, scaling).
+
+We only consider the 2D case, which is also the simplest. For a fixed
+integer  $N >0$ let $\CP_N$ denote the set of configurations of 
+$N$ points $(z_1, \ldots, z_N) \in (\mR^2)^{N}$. We assume that the
+order in which the points are listed maters, which says that we
+consider labelled landmarks. The set $\CP_N$ can therfore be ientified
+to 
+$\mR^{2N}$.
+
+If the order between points is important, we will consider however,
+that their global location in the 2D space is irrelevant.Two
+configurations $(z_1, \ldots, z_N)$ and $(z'_1, \ldots, z'_N)$ will be
+identified  if one can be deduced from the other by the composition
+$g$ of a translation and a plane similitude, i.e., $z'_i = g.z_i$ for
+all $i$. Objets of interest therefore are equivalent classes of
+landmark configurations, which will be referred to as
+$N$-shapes.
+
+It will be convenient to identify the plane  $\mR^2$ with the set of
+complex numbers $\mC$, a point $z =
+(x,y)$ being represented as $x+iy$. A plane similitude composed with a
+translation canthen be written under the form
+$z \mapsto a.z + b$ with $a, b\in \mC$, $a\neq 0$.
+
+For $Z = (z_1, \ldots, z_N)\in \CP_N$, we let $\bz$ be the center of inertia
+$$
+\bz = (z_1+\cdots+z_N)/N.$$
+We also let  $\dps \|Z\|^2 = \sum_{i=1}^N |z_i-\bz|^2$.
+
+
+\subsection{Space of planar $N$-shapes}
+
+\subsubsection{Construction of a distance}
+Let $\Sig_N$ be the quatient space of  $\CP_N$ by the equivalent
+relation  $Z\,\CR\, Z'$ if there exists $a, b\in\mC$ such that
+$Z'= aZ+b$. We denote $[Z]$ th equivalence class of 
+$Z$. We shall define a distance between two equivalence classes $[Z]$
+and $[Z']$. 
+
+We can apply the results of the previous sections, which ensures that,
+in order to define a distance in the quotient space, it suffices to
+start with a distance on  $\CP_N$ which is equivariant for the
+considered operations. So we need a  distance $D$ such that for all
+$a, b\in\mC$ and all $W, Z\in \CP_N$,
+$$
+D(aZ+b, aW+b) = D(Z, W).
+$$
+
+To obtain such a distance, it suffices to definr a Riemannian metric
+on $\CP_N = 
+\mR^{2N}$ which is invariant by the action. We therefore must define,
+for all  $Z\in \CP_N$, a norm $\|A\|_Z$ defined for all $A = (a_1,
+\ldots, a_N)\in 
+\mC^N$ such that for all $a, b\in \mC$:
+$$
+\|A\|_Z = \|a.A\|_{a.Z + b}.
+$$
+This formula implies that i suffices to define such a norm for  $Z$
+such that $\|Z\| = 1$ and $\bz = 0$, since we have, for all
+$Z$,
+$$
+\|A\|_Z = \|\frac{1}{\|Z\|}.A\|_{\frac{Z-\bz}{\|Z\|}}.
+$$
+Once the metric has been chosen, the distance $D(W, Z)$ is defined by
+$$
+D(W, Z)^2 = \inf \int_0^1 \norm{\der{\bfZ}{t}}^2_{\bfZ(t)} dt
+$$
+the infimum being taken over all paths  $\bfZ(.)$ such that $\bfZ(0)
+= W$ and $\bfZ(1)  = Z$.
+
+Le's make the following choice. When $\bz = 0$ and $\|Z\|=1$, we let
+$$
+\|A\|_Z = \sum_{i=1}^N |a_i|^2
+$$
+so that we need to minimize, among all paths between  $W$ and $Z$,
+$$
+\int_0^1
+\frac{\sum_{i=1}^N|\dot{\bfZ_i}(t)|^2}{\sum_{i=1}^N|\bfZ_i(t)-\bar{\bfz}(t)|^2}
+dt.
+$$
+Denote $\bfv_i(t) = (\bfZ_i(t) - \bfz(t))/\|\bfZ(t)\|$ and $\rho(t) =
+\|\bfZ(t)\|$. The path $\bfZ(.)$ is uniquely $(\bfv(.), \rho(.),
+\bz(.))$. Moreover, we have
+$$
+\der{\bfZ_i}{t} = \der{\bfz}{t} + \rho \der{\bfv}{t} + \bfv \der{\rho}{t}
+$$
+so that we need to minimize
+$$
+\int_0^1 \sum_{i=1}^N
+\left|\frac{\der{\bfz}{t}}{\rho}+\frac{\der{\rho}{t}}{\rho}.\bfv_i + 
+\der{\bfv_i}{t} \right|^2 dt.
+$$
+This is equal (using $\sum_i \bfv_i = 0$ and $\sum_i|\bfv_i|^2 =
+1$, together with the differential on these expressions) to
+$$
+N\int_0^1 \left(\frac{\der{\bfz}{t}}{\rho}\right)^2
++ \int_0^1 \left(\frac{\der{\rho}{t}}{\rho}\right)^2 dt + \int_0^1
+\sum_{i=1}^N \left|\der{\bfv_i}{t}\right|^2 dt\,.
+$$
+The boundary conditions directly deduced from those on  $W$ and $Z$.
+
+The last term of this expression, which only depends on $\bfv$, can be
+minimized explicitly, under the constraints 
+$\sum_i \bfv_i = 0$ and $\sum_i|\bfv_i|^2 = 1$, which imply that
+$\bfv$ varies on a $(N-1)$-dimensional sphere. The geodesic distance
+is therefore given by the length of great circles, which yields the
+expression of the minimum of the last term:
+$ \arccos(\scp{\bfv(0)}{\bfv(1)})^2$.
+
+We therefore have
+\begin{eqnarray*}
+D(W, Z)^2 &=& \inf \left(N\int_0^1 \left(\frac{\der{\bfz}{t}}{\rho}\right)^2
++ \int_0^1 \left(\frac{\der{\rho}{t}}{\rho}\right)^2 dt\right)\\
+&& + \arccos\left(\scp{\frac{W-\bw}{\|W\|}}{\frac{Z-\bz}{\|Z\|}}\right)^2,
+\end{eqnarray*}
+where the first infimum is over functions $t\mapsto
+(\bfz(t), \rho(t)) \in \mC \ti [0, +\infty[$, such that $\bfz(0) =
+\bw$, $\bfz(1) = \bz(1)$, $\rho(0) = |W|$, $\rho(1) = |Z|$.
+
+The induced distance on  $\Sig_N$ is then given by
+$$
+d([Z], [W]) = \inf\{D(Z, aW+b), a, b\in \mC\}.
+$$
+Since we can always select  $|a|$ and $b$ such that $|Z| =
+|aW+b|$ and $\bz = a \bw + b$, we have
+$$
+d([Z], [W]) = \inf_{a}
+\left[\arccos\left(\scp{\frac{a}{|a|}\frac{W-\bw}{\|W\|}}{\frac{Z-\bz}{\|Z\|}}\right)\right].
+$$
+Finally, optimizing this over the unit vector $a/\abs{a}$, we get
+\encadre{
+\begin{equation}
+\label{dist.pol}
+d([Z], [W]) =
+\arccos\left|\scp{\frac{W-\bw}{\|W\|}}{\frac{Z-\bz}{\|Z\|}}\right|.
+\end{equation}
+}
+
+Remark that the class $[Z]$ is characterized by $v = (Z-
+\bz)/\|Z\|$, which varies in a complex sphere of dimension
+$N-2$, denoted $\tS^{N-2}$, because it is the intersection of the
+$(N-2)$-dimensional sphere and the 
+complex hyperplane $\bz=0$. We have the equivalence
+l'équivalence
+\begin{equation}
+\label{carte}
+[Z] = [Z'] \Leftrightarrow \exists \nu \in\mC: |\nu| = 1 \text{ and }
+\Phi(Z) = \nu \Phi(Z')
+\end{equation}
+
+Denote by $S^{2N-3}$ the set of  $v = (v_1, \ldots, v_{N-1})\in
+\mC^{N-1}$ such that 
+$\sum_i |v_i|^2 = 1$ (this can be identified to a real sphere of
+dimension  $2N-3$). The complex projective space, denoted $\mC
+P^{N-2}$, is defined as the space $S^{2N-3}$ quotiented by the
+equivalence relation $v\CR v'$ if and only if $\exists
+\nu\in\mC$ such that $v'= \nu v$; in other words, $\mC P^{N-2}$
+contains all sets
+$$
+S^1.v = \{\nu.v, \nu\in\mC, |\nu| = 1\|$$ when $v$ varies in
+$S^{2N-3}$ (this is also called the {\em Hopf fibration} of spheres of
+odd dimension). This set has a strcte of $(N-2)$ dimensional complex
+manifold, which means that it can be covered by an atlas of open set
+which are in bijection with open subsets of  $\mC^{N-2}$. It suffices
+indeed to define  $\CO_i$ to be the set of $S^1. v
+\in\mC P^{N-2}$ with $v_i\neq 0$, and then to set $\Psi(S^1 v) =
+(v_1/v_i, \ldots, v_{i-1}/v_i, v_{i+1}/v_i, \ldots, v_{N-1}/v_i)
+\in \mC^{N-2}$ for all $S^1 v\in \CO_i$. This provides $\mC
+P^{N-2}$ with a structure of $C^\infty$ complex manifold. The
+equivalence (\ref{carte}) therefore provides a representation of 
+$\Sig_{N}$ as a $C^{\infty}$ complex manifold.
+
+Let us be more precise with this identification \cite{ken84}. We
+associate to $Z = (z_1, \ldots,
+z_N)$ the family $(\ze_1, \ldots, \ze_{N-1})$ defined by
+$$
+\ze_i = (jz_{j+1} - (z_1+\cdots+z_j))/\sqrt{j^2+j}.
+$$
+One can verify that  $\sum_{i=1}^{N-1} |\ze_i|^2 = \|Z\|^2$. Denote
+$F(Z)$ the element $S^1.(\ze/\|Z\|)$ in $\mC P^{N-2}$. One checks that
+$F(Z)$ only depends on $[Z]$ and that $[Z]\mapsto F(Z)$ is a bijection
+between  $\Sig_N$ and $\mC P^{N-2}$.
+
+
+\subsubsection{The space of triangles}
+Consider the case $N=3$, which coresponds to labelled triangles. For a
+triangle $Z = (z_1, z_2, z_3)$, the previous function $F(Z)$ can be
+written 
+\begin{eqnarray*}
+F(Z) &=& S^1.\left\{\frac{1}{\sqrt{|z_2-z_1|^2/2 + |2z_3 - z_1 -
+z_2|^2/6}}\left[ \frac{z_2-z_1}{\sqrt{2}}, \frac{2z_3 - z_1 -
+z_2}{\sqrt{6}} \right] \right\}\\
+&=& S^1.[v_1, v_2].
+\end{eqnarray*}
+On the set $v_1 \neq 0$ (i.e., the set $z_1\neq z_2$) we have the
+local chart
+$$
+Z \mapsto v_2/v_1 = \frac{1}{\sqrt{3}}\left(\frac{2z^3 - z_2 -
+z_1}{z_2 -z_1}\right) \in\mC. 
+$$
+If we let $v_2/v_1 = \tan\frac{\th}{2} e^{i\phi}$, and $M(Z) =
+(\sin\th\cos\phi, \sin\th\sin\psi, \cos\th) \in\mR^3$, we obtain a
+correspondence between the  triangles and the unit sphere $S^2$. This
+correspondence is isometric: the distance between two triangles  $[Z]$
+and $[\tZ]$, which has been defined above by 
+$$
+d([Z], [Z']) = \arccos \left|\frac{\sum_{i=1}^3 z_i\tz_i^*}{\|Z\|.\|\tZ\|}\right|
+$$
+gives, after passing to coordinates $\th$ and $\phi$, exactly the
+lenth of the great circle between the images  $M(Z)$ and $M(Z')$. We
+therefore obtain a representation of labelled triangular shapes as
+points on the sphere $S^2$, with the possibility of comparing them
+using the standard metric on  $S^2$.
+
+
+\subsection{Extension to plane curves}
+
+It is interesting to analyze whether this distance has a limit when
+the landmarks correspond to increasingly refined discretizations of
+plane curves. Consider for this two plane curves $m$ and $\tm$,
+parameterized on $[0,1]$. Discretize the interval  $[0,1]$ into $N+1$
+points $t_k =  k/N, k=0,
+\ldots, N$. Denote $Z_k = m(t_k)$ and $W_k = \tm(t_k)$. Let also 
+$m^N$ and $\tm^N$ be the piecewise constant approximations of  $m$ and
+$\tm$ given by $m^N(t) = Z_k$ (resp. $\tm^N(t) = W_k$)
+on $]t_{k-1}, t_k]$.
+
+We have $\dps \bz = (1/N)\sum_k m(t_k) \simeq \int_0^1 m(t) dt$. Similarly
+$$
+\|Z\|^2  \simeq N \left[\int_0^1 |m(t)|^2 dt - \left|\int_0^1
+m(t)dt\right|^2\right]
+$$
+and
+$$
+\scp{Z}{W} \simeq N \left[\int_0^1 m(t)\tm(t)^* dt - \int_0^1
+m(t)dt\int_0^1\tm(t)^*dt\right]
+$$
+which gives, for large  $N$,
+$$
+d(m, \tm) = \arccos\left\{\frac{\dps \left|\int_0^1 m(t)\tm(t)^* dt - \int_0^1
+m(t)dt\int_0^1\tm(t)^*dt\right|}{\left[ V_m\right]^{1/2} \left[V_{\tilde m}\right]^{1/2}}\right\}
+$$
+with $V_m = 
+\dps \int_0^1 |m(t)|^2 dt - \left|\int_0^1
+m(t)dt\right|^2$ (and a similar definition for $V_{\tilde m}$).
+
+We can get rid of the translation component by comparing the
+differences $Z_k = m(t_k) - m(t_{k-1})$ instead of the points
+$m(t_k)$. Doing so, we obtain the same formula, replacing  $m(t)$ by
+$dm/dt$. Since 
+$$
+\int_0^1\der{m}{t}dt = m(1) - m(0),
+$$
+we have, if $m$ and $\tm$ are closed, which will be assumed for
+simplification,
+$$
+d(m, \tm) = \arccos\left\{\frac{\dps \left|\int_0^1
+\der{m}{t}\der{\tm}{t}^* dt\right|}{\left[\int_0^1
+\left|\der{m}{t}\right|^2 dt \right]^{1/2} \left[\int_0^1
+\left|\der{\tm}{t}\right|^2 dt \right]^{1/2}}\right\}.
+$$
+(If the cures are open, the obtanied formulae
+coresponds to comparing them after application of the closing
+operation  $m(t) \mapsto m(t) - t (m(1)-m(0))$.)
+
+We now introduce a parameterization in this formula. Assume that the
+curves have length one (which is no loss of generality, since the
+distance is scale-invariant). We let  $s = \phi(t)$ for curve $m$ and $s
+= \psi(t)$ for curve $\tm$, where $s$ is the arc-length. We then have
+$\der{m}{t} = \dphi(t) 
+\tau(\phi(t))$ where $\tau$ is the unit tangent (expressed in function
+of the arc-length). To keep with complex notation, we let $\tau =
+e^{i\th}$. We then have 
+$$
+\int_0^1 \left|\der{m}{t}\right|^2 dt = \int_0^1 \dphi(t)^2 dt
+$$
+and
+$$
+\int_0^1 \der{m}{t}\der{\tm}{t}^* dt = \int_0^1 \dphi(t)\dpsi(t)
+e^{i(\th(\phi(t))-\tth(\psi(t)))} dt.
+$$
+This yields the formula
+$$
+d(m, \tm) = \arccos \left\{\frac{\left|\int_0^1 \dphi(t)\dpsi(t)
+e^{i(\th(\phi(t))-\tth(\psi(t)))} dt\right|}
+{\sqrt{\int_0^1 \dphi(t)^2 dt}\sqrt{\int_0^1 \dpsi(t)^2 dt}}\right\}.
+$$
+The interest in making the parameterization apparent is that this
+offers the possibility for optimizing the distance with respect to it,
+which relates to the optimal matching problems discussed in the
+previous section.
+
+
+
+
+\section{Distances and Diffeomorphisms}
+\label{dist.diff}
+\subsection{Invariant Distances between Diffeomorphisms}
+\label{dist.inv.diff}
+
+Our goal here is to build a right invariant distance between
+diffeomorphisms. This study has its own interest, but will also be
+useful when we will deal with  more general
+actions involving diffeomorphisms. It will also allow us to retrieve
+the construction that we have made previously for the groups of
+diffeomorphisms.
+
+We only make here a formal (non-rigorous) discussion. We consider a
+group  $G$ of diffeomorphisms of $\Om$, and define (to fix the ideas)
+the tangent space to $G$ at $g$ by the set of  $u:\Om\to\mR^d$ such
+that $\id + tu\circ
+g^{-1}\in G$ for small enough $t$. Since the ``product'' on $G$ is the
+composition, $gh = g\circ h$, the right translation $R_g:
+h\mapsto h\circ g$ is linear, and therefore equal to its differential:
+for 
+$u\in T_hG$:
+$$
+d_h R_g . u = u\circ g.
+$$
+
+A metric on  $G$ is right invariant if, for all  $g, h\in G$ and for
+all $u\in T_hG$:
+$$
+\|d_h R_g u\|_{h\circ g} = \|u\|_h
+$$
+which yields, taking $g = h^{-1}$:
+$$
+\|u\|_h = \|u\circ h^{-1}\|_\id.
+$$
+
+
+This implies that the energy of a path $(t\mapsto \bfg(t, .))$ in 
+$G$ must be defined by
+$$
+E(\bfg) = \int_0^1 \left\|\pdr{\bfg}{t}(t, \bfg^{-1}(t, .))\right\|^2_\id dt.
+$$
+Define 
+$$\bfv(t, x) = \pdr{\bfg}{t}(t, \bfg^{-1}(t, x))$$
+so that the energy can be written
+$$
+E(\bfg) = \int_0^1 \left\|\bfv(t,.)\right\|^2_\id dt
+$$
+with the identity
+$$
+\pdr{\bfg}{t}(t, x) = \bfv(t, \bfg(t, x)).
+$$
+This implies that $\bfg$ is the flow associated to the velocity field
+$\bfv(t, .)$, which provides the construction given in chapter \ref{grp.diff}.
+
+The construction of $G$ directly from flows of diffeomorphisms
+therefore becomes natural, as well as the condition that  $\|.\|_\id$
+is admissible, according to definition \ref{adm}. The right invariant
+distance on  $G$ therefore is 
+$$
+d(g_0, g_1) = \inf\sqrt{\int_0^1 \left\|\bfv(t,.)\right\|_\id^2 dt}
+$$
+where the minimum is taken over all $\bfv$ such that, for all
+$x\in\Om$, the solution of the ODE
+$$
+\der{y}{t} = \bfv(t,y)
+$$
+with initial conditions $y(0) = g_0(x)$ is such that $y(1) =
+g_1(x)$. This provides an interpretation of the cost function defined
+in section \ref{viscous}, chapter \ref{est.diff} as a squared distance
+to the identity
+$$
+E(g)= d(\id, g)^2.
+$$
+
+An explicit computation of this distance is generally impossible, but
+there exists an exception, in 1D. Take  $\Om = [0,1]$
+and
+$$
+\|u\|^2_\id = \int_0^1 \left| u_x\right|^2 dx.
+$$
+This not is not admissible, because it cannot control the supremum
+norm of  $u_x = \prt u/\prt x$. One can define anyway the energy of a
+path of diffeomorphisms  $\bfg(t,.)$
+by
+$$
+U(\bfg) = \int_0^1 \int_0^1 \left|\pdr{\ }{x}\left(\pdr{\bfg}{t}\circ \bfg(t,
+.)\right)\right|^2dxdt.
+$$
+This gives, after expanding the derivative and making the change of
+variables  $ x = \bfg(t, y)$:
+$$
+U(\bfg) = \int_0^1 \int_0^1 \left|\pddr{\bfg}{t}{x}\right|^2
+\left|\pdr{\bfg}{x}\right|^{-1} dy dt.
+$$
+Define $q(t, y) = \sqrt{\der{\bfg}{x}(t,y)}$: we have
+$$
+U(\bfg) = 4 \int_0^1 \int_0^1 \left|\der{q}{t}\right|^2 dy dt
+$$
+which yields
+$$
+U(\bfg) = 4 \int_0^1\norm{\der{q}{t}(t, .)}_2^2 dt.
+$$
+If the problem was to minimize this energy under the constraints  $q(0, .) =
+\sqrt{\der{g_0}{x}}$ and $q(1, .) =
+\sqrt{\der{g_1}{x}}$, the solution $q$ would be given by the line segments
+$$
+q(t, x) = t q(1, x) + (1-t) q(0, x).
+$$
+There is however an additional constraint that comes from the fcat
+that $q(t, .)$ must provide a homeomorphism of $[0,1]$ for all $t$,
+which implies  $\bfg(t, 1) = 1$, or, in terms of $q$
+$$
+\|q(t, .)\|_2^2 = \int_0^1 q(t, x)^2 dx = 1.
+$$
+
+We therefore need to minimize the length of the path $q$ under the
+constraint that it remains on a Hilbert ($\CL^2$) sphere. Like in
+finite dimension, geodesics on Hilbert spheres are great circles. This
+implies that the optimal  $q$ is given by
+$$
+q(t, .) = \frac{1}{\sin \al} (\sin(\al(1-t)) q_0 + \sin(\al t) q_1)
+$$
+with $\al = \arccos\scp{q_0}{q_1}_2$. The length of  the geodesic is
+precisely given by  $\al$, which provides a closed-form expression of
+the distance on  $G$
+\encadre{
+$$
+d(g_0, g_1) = 2\arccos\int_0^1 \sqrt{\der{g_0}{x}\der{g_1}{x}} dx.
+$$}
+
+If one defines the cost of a diffeomorphism $g$ by its squared
+distance to the identity, one gets
+\encadre{
+$$
+E(g) = 2\arccos\int_0^1 \sqrt{\der{g_0}{x}} dx
+$$}
+\noindent which has been used in \cite{pst98}.
+
+
+\subsection{Distance between deformable objects}
+\subsubsection{Distance between Landmarks}
+
+We here define a metric on the set $\Om^N$, composed with $N$-tuples
+of labelled landmarks. Let $G$ be a group of diffeomorphisms, as built
+in chapter  \ref{grp.diff}. We consider the space $\CO = G\ti
+\Om^N$. The action of  $G$ on $\Om^N$ is
+$$
+g.(x_1, \ldots, x_N) = (g(x_1), \ldots, g(x_N))
+$$
+and the right action on $\CO$ is
+$$
+(h, x_1, \ldots, x_N)g = (h\circ g, g^{-1}(x_1), \ldots, g^{-1}(x_N)).
+$$
+The derivative of the right action therefore is
+$$
+dR_g(\xi, \al_1, \ldots, \al_N) = (\xi\circ g, Dg^{-1}(x_1)\al_1,
+\ldots, Dg^{-1}(x_N)\al_N).
+$$
+
+We want to apply the construction given in section \ref{var}, and
+therefore build a metric on $\CO$ which is right invariant by the
+action of $G$. This metric must satisfy, for all  $(g, x_1, \ldots,
+x_N)\in\CO$:
+\begin{multline*}
+\|(\xi, \al_1, \ldots, \al_N)\|_{g, x_1, \ldots, x_N} = \\
+\|(\xi\circ
+g^{-1}, Dg(x_1) \al_1, \ldots, Dg (x_N) \al_N)\|_{\id, g(x_1),
+\ldots, g(x_N)}
+\end{multline*}
+
+Let a curve $\bfo(t) = (\bfg(t), \bfx_1(t), \ldots, \bfx_N(t))$ be
+given in  $\CO$. Denote $y_i = \bfg(t,\bfx_i)$ and introduce 
+$\bfv$ such that
+$$
+\pdr{\bfg}{t} = \bfv(t, \bfg).
+$$
+
+The previous formula provides the energy of the curve, which is
+\begin{eqnarray*}
+E(\bfo(.)) &=& \int_0^1 \norm{\der{\bfo}{t}}_{\bfo(t)}^2 dt\\
+ &=& \int_0^1 \norm{\bfv,
+\der{y_1}{t} - \bfv(t, y_1),\ldots, \der{y_N}{t} - \bfv(t, y_N)
+}_{\id, y_1, \ldots, y_N}^2 dt\\
+&=&\tE(\bfv, y)
+\end{eqnarray*}
+using the fact that 
+$$
+\der{y_i}{t} = \der{}{t} \bfg(t, x_i) = \bfv(t, y_i) +
+D\bfg(x_i)\der{x_i}{t}.
+$$
+
+The geodesic distance associated to  $D$ on $\CO$ can be obtained by
+minimizing this energy with fixed boundary conditions. These
+conditions are, if the
+compared objects are  $o_0$ et $o_1$, 
+$$
+o_0 = \bfo(0) = (\bfg(0)^{-1}, \bfg(0, y_1(0)), \ldots, \bfg(0,
+y_N(0)))
+$$
+and
+$$
+o_1 = \bfo(1) = (\bfg(1)^{-1}, \bfg(1, y_1(1)), \ldots, \bfg(1,
+y_N(1))).
+$$
+
+The projected distance between two landmark configurations is then
+given by, denoting  $y^0 = (y^0_1, \ldots, y^0_N)$ and $y^1 = (y^1_1, \ldots,
+y^1_N)$,
+\begin{eqnarray*}
+d(y^0, y^1) &=& \inf\defset{D(o_0, o_1): o_0 = (g^{-1}, g.y^0), o_1 = (h^{-1},
+hy^1)}\\
+&=& \inf\defset{\sqrt{E(\bfo)}: o(0) = (g^{-1}, g.y^0), o(1) = (h^{-1},
+h.y^1)}\\
+&=& \inf\defset{\sqrt{\tE(\bfv, y)}: y(0) = y^0, y(1) = y^1}.
+\end{eqnarray*}
+We can see that the last expression does not involve the
+diffeomorphism in the boundary conditions: $\bfv$ becomes an
+auxilliary variable for the minimization. This will allow us to define
+a new form of interpolating splines.
+
+For this, let's make the following choice for the norm at the identity
+$$
+\|\xi, \al_1, \ldots, \al_N\|^2_{\id, y_1, \ldots, y_N} = \|\xi\|^2 +
+\la \sum_{i=1}^N |\al_i|^2,
+$$
+with an admissible norm for $\xi$, so that
+\encadre{
+$$
+\tE(\bfv, y) = \int_0^1 \|\bfv\|^2 dt + \la\sum_{i=1}^N \left|
+\der{y_i}{t} - \bfv(t, y_i)\right|^2
+$$}
+
+If the norm that is used for $\bfv$ comes from a dot product
+associated to a kernel $K: (x, y)\mapsto K(x, y)$, with values in the
+set of $d$ by $d$ matrices, such that, for all $a\in \mR^d$ and
+$x\in\Om$, $a^T v(x) =  \scp{K(x,
+.)a}{v}$. With the same arguments as in section \ref{joshi}, chapter
+\ref{est.diff}, the optimal path $\bfv$ is such that there exist
+vectors $a_1(t), \ldots, a_N(t)$ such that, for all  $t$:
+$$
+v(t, x) = \sum_{i=1}^N K(x, y_i(t))a_i(t).
+$$
+This implies that $\tE$ can be written
+\begin{multline*}
+\tE(a, y) = \sum_{i, j=1}^N \int_0^1 {}^ta_i(t) K(y_i(t), y_j(t))
+a_j(t)dt \\
++ \la\sum_{i=1}^N \int_0^1 \left|\der{y_i}{t} - \sum_{j=1}^n
+K(y_i(t), y_j(t)) a_j(t)\right|^2 dt.
+\end{multline*}
+The vectors $a_1, \ldots, a_N$ can be computed explicitly given the
+trajectories $y_1, \ldots, y_N$, namely
+$$
+a = (S(y) + \la I)^{-1} \der{y}{t}.
+$$
+This provides an expression of the energy in terms of $y_1, \ldots,
+y_N$ that can be minimized by gradient descent, for example. Figure
+\ref{fig:splines0} provides some examples of deformations using this
+method, called {\em geodesic splines} \cite{cy01}, with a comparison
+to the linear techniques of section \ref{par:splines}, chapter \ref{est.diff}.
+
+\begin{figure}
+\begin{center}
+\includegraphics[width=0.48\textwidth]{FIGURES/ini3.eps}\  
+\includegraphics[width=0.48\textwidth]{FIGURES/path3.eps}\\ 
+\includegraphics[width=0.48\textwidth]{FIGURES/diff3.eps}\  
+\includegraphics[width=0.48\textwidth]{FIGURES/stat3.eps}
+\end{center}
+\caption{\label{fig:splines0} First Row: Random displacements of
+16 points uniformly distributed on a grid (left). Optimal trajectories
+for Geodesic Splines (right). Second Row: Grid deformation provided by
+geodesic splines (left). Grid deformation provided by classic splines.} 
+\end{figure}
+
+
+
+
+\subsubsection{Distance between functions}
+\label{cons.cons}
+In this section, the object space  $\CC$ contains function  $m:
+\Om\to\mR^d$. We use the same construction as before, the action of
+$G$ on $\CC$ being here $g.m = m\circ g^{-1}$. We let again $\CO = G\ti \CC$.
+
+The right action of $G$ on $\CO$ is $R_h(g,m) = (g\circ h, m\circ
+h)$. If $o=(g, m)$, the tangent space to $\CO$ at $m$ contains pairs of
+function  $(\xi, \eta)$ defined on $\Om$, and the diffrential of the
+right translation at $o$ is given by $DR_h(o) (\xi, \eta) = (\xi \circ h,
+\eta\circ h)$.
+To define a right-invariant metric on, we must provide, for all $o$, a
+norm
+$$
+(\xi. \eta)\mapsto \|\xi, \eta\|_o
+$$
+such that, for all $h$,
+$$
+\|\xi\circ h, \eta\circ h\|_{(g\circ h, m\circ h)} = \|\xi,
+\eta\|_{(g, m)}.
+$$
+This implies that it suffices to define $\|\xi, \eta\|_{(\id, m)}$ for
+all $m$ and to set
+$$
+\|\xi, \eta\|_{(g, m)} = \|\xi\circ g^{-1}, \eta\circ g^{-1}\|_{(\id, m\circ g^{-1})}.
+$$
+
+Given such a metric, we evaluate the energy of a path $\bfo(.)$ in
+$\CO$, given as always by
+$$
+E(\bfo) = \int_0^1 \norm{\der{\bfo}{t}(t)}^2_{\bfo(t)}dt.
+$$
+
+Introduce, as before, $\bfv(t, .) = \pdr{\bfg}{t} \circ \bfg^{-1}(t,
+.)$. Let also $\bfM(t, .) = \bfm(t, \bfg^{-1}(t, .))$. We have
+$$
+\pdr{\bfm}{t} (t, y) = \pdr{\bfM}{t}(t, g(t, y)) + \pdr{\bfM}{x}(t,
+\bfg(t, y)).\pdr{\bfg}{t}(t, y)
+$$
+so that 
+$$
+E(\bfo) = F(\bfv, \bfM) := \int_0^1 \left\|\bfv(t, .),
+\pdr{\bfM}{t}(t, .) + \pdr{\bfM}{x}(t,.).\bfv(t, .) \right\|_{\id, \bfM(t, .)}dt.
+$$
+
+Let $\bfg_\bfv$ denote the solution of
+$$
+\pdr{\bfg_\bfv}{t}(t, x) = \bfv(t, \bfg_\bfv(t, x))
+$$
+with $\bfg_\bfv(0, x) = x$ for all $x$. We obtain a distance
+$d_\CO(o, o')$ by setting (with
+$o=(g, m)$ and $o'= (g', \tm)$)
+$$
+d_\CO(o, o') = \inf \sqrt{F(\bfv, \bfM)}$$
+where the infimum is taken over all paths $(\bfv, \bfM)$ such that
+$\bfg_\bfv(1, g(x)) = g'(x)$, $\bfM(0, g(x)) = m(x)$ and $\bfM(1,
+g(x)) = \tm(x)$ (this is simply the definition of the geodesic
+distance on $\CO$ expressed in terms of the new variables  $\bfv$ and
+$\bfM$).
+
+The projected distance between two functions  $M$ and $M'$ is the
+infimum of the previous expression, over all pairs  $o=(g, m)$ and
+$o'= (g', \tm)$ such that
+$m\circ g^{-1} = M$ and $\tm\circ {g'}^{-1} = M'$. By the right
+equivariance of $d_\CO$,  it is also the infimum of 
+$d_\CO[(\id, M), (g, \tm)]$ over all pairs $(g, \tm)$ such that
+que $\tm\circ g^{-1} = M'$. Returning to the energy, it is therefore
+the minimum of  $F(\bfv, \bfM)$ among all paths such that $\bfM(0,
+x) = M(x)$ and $\bfM(1, \bfg_\bfv(1, x)) = \tm(x) = M(\bfg_\bfv(1,
+x))$. It is therefore the  infimum of $F(\bfv, \bfM)$ over all paths
+such that $\bfM(0, .) = M$ and $\bfM(1, .) = M'$. Here again, the
+diffeomorphism does not appear in the boundary conditions.
+
+
+\subsubsection{Application: comparison of plane curves}
+\subsubsection*{Comparison based on orientation}
+
+We first consider the issue of comparing plane curves on the basis of
+the orientation of their tangents  \cite{you98}. If  $m$ is a plane
+curve parameterized with arc-length, and $L$ is it length, we define
+the normalized tangent  $T_m$ by
+$$\map{T_m}{[0,1]}{S^1}{s}{\dm(Ls)}$$
+where $S^1$ is the unit disc in $\mR^2$. The function $T_m$
+characterizes $m$ up to translation and scaling, and the pair $(L,
+T_m)$ characterizes $m$ up to translation.
+
+We will identify, as we have done before, the sets $\mR^2$ and
+complexe $\mC$. We consider a group of diffeomorphisms $G$ of $\Om
+= (0,1)$, which acts on functions $T:[0,1]\to S^1$ par $gT =
+T\circ g^{-1}$, and apply the construction of section
+\ref{cons.cons} with
+\begin{equation}
+\label{n.tau}
+\norm{\xi, \eta}^2_T= \norm{\xi, \eta}^2 = \int_0^1
+\left[\left(\der{\xi}{x}\right)^2 + \eta^2\right] dx.
+\end{equation}
+
+The cost of the path $(\bfg(t, .), \bfT(t, .))$ is then
+$$
+U(\bfg, \bfT)= \int_0^1 \norm{\pdr{\bfg}{t}\circ \bfg^{-1},
+\pdr{\bfT}{t}\circ \bfg^{-1}}^2 dt.
+$$
+Expand the derivative and make the change of  variables $x = \bfg(t,y)$
+to write
+$$
+U(\bfg, \bfT) = \int_0^1 \int_0^1 \left[\left(\pddr{\bfg}{t}{x}\right)^2
+\left(\pdr{\bfg}{x}\right)^{-1} +  \pdr{\bfg}{x}
+\left|\pdr{\bfT}{t}\right|^2\right] dy dt
+$$
+Let $q(t, .)$ be differentiable in $t$ such that
+$$q(t, x)^2 = \pdr{\bfg}{x}(t,x) \bfT(t,x)$$
+($\bfT$ being considered as a unit complex number). Such a path always exists: for all  $x$, there exists (since $|\bfT(.,x)|=1$ a unique lifting  $\bfT(t, x) = \exp(i\th(t,x))$ with $\th(t,x)$
+ differentiable in $t$ and $\th(0,x)\in[0, 2\pi[$. One can then define
+\begin{equation}
+\label{sqrt.q}
+q(t, x) = \sqrt{\pdr{\bfg}{x}(t,x)} \exp(i\th(t,x)/2).
+\end{equation}
+This path is not uniquely defined, since one can always change the sign of $q(t,x)$, uniformly in $t$, for all $x$.
+
+We have
+$$
+\pdr{q^2}{t}(t,x) = \pddr{\bfg}{t}{x}(t,x) \bfT(t,x)
++\pdr{\bfg}{x}(t,x) \pdr{\bfT(t,x)}{t}.
+$$
+Take the absolute value and use the fcat that $\bfT$ is orthogonal to
+its derivative to obtain
+$$
+\abs{\pdr{q^2}{t}(t,x)}^2 = \left|\pddr{\bfg}{t}{x}(t,x)\right|^2
++\left(\pdr{\bfg}{x}(t,x)\right)^2
+\left|\pdr{\bfT(t,x)}{t}\right|^2.
+$$
+Moreover
+$$
+\abs{\pdr{q^2}{t}(t,x)}^2 = 4|q(t,x)|^2\abs{\pdr{q}{t}(t,x)}^2 =
+ 4\pdr{\bfg}{x}(t,x)\abs{\pdr{q}{t}(t,x)}^2
+$$
+which implies
+$$
+|\pdr{q}{t}(t,x)|^2 = \frac{1}{4}\left[\left(\pddr{\bfg}{t}{x}\right)^2
+\left(\pdr{\bfg}{x}\right)^{-1} +  \pdr{\bfg}{x}
+\left|\pdr{\bfT}{t}\right|^2\right]
+$$
+so that
+\begin{equation}
+\label{eq:Uq}
+U(\bfg, \bfT) = 4 \int_0^1 \int_0^1 \abs{\pdr{q}{t}(t,x)}^2 dx
+dt.
+\end{equation}
+
+
+We now consider paths linking 
+$(g_0, T_0)$ and $(g_1, T_1)$. We can already state that the  minimum
+of $U(\bfg, \bfT)$ is larger than the minimum of the right-hand term of
+\eqref{eq:Uq} over functions $q$ such that  $q(0,
+.)^2 = \pdr{g_0}{x} T_0$ et $q(1, .)^2 = \pdr{g_1}{x} T_1$. We now
+show that equality is true, provided that  $\pdr{g_0}{x}$ and
+$\pdr{g_1}{x}$ are almost everywhere positive on  $[0,1]$.
+
+First, note that, the computation the minimum of the right-hand
+term of \eqref{eq:Uq} with fixed boundary conditions  $q_0$ and $q_1$
+fixées can be handled similarly to the distance for 1D diffeomorphisms
+that we have computed at the end of section \ref{dist.inv.diff}, the
+only difference here being that $q$ is a complex-valued
+function. Since we still have the constraint that the integral of the
+squared modulus of $q$ is 1, we are still computing geodesics on an infinite
+dimensional sphere. The optimal path is therefore given by
+$$
+\bfq(t, x) = \frac{1}{\sin \al} (\sin(\al(1-t)) q_0(x) + \sin(\al t) q_1(x))
+$$
+with $\al = \arccos\scp{q_0}{q_1}_2$ and
+$$
+\scp{q_0}{q_1}_2 = \int_0^1 \Re(q_0(x) \bar{q}_1(x)) dx
+$$
+where $\bar{q}_1$ is the complex conjugate of $q_1$. For any choice of
+$q_0$ and $q_1$ satisfying $q_0^2 =
+\pdr{g_0}{x} T_0$ and $q_1^2 = \pdr{g_1}{x} T_1$, the optimal path
+$\bfq$ uniquely satisfies the path  $(\bfg(t, .), \tau(t,
+.)$ as long as $\bfq$ does not vanish.
+
+Let us choose  $q_0$ and $q_1$ to ensure that $\al$ is minimal. This
+is achieved by choosing, for all  $x$, $q_0(x)$ and $q_1(x)$ such that
+$\Re(q_0(x) \bar{q}_1(x)) \geq 0$ (since $\arccos$ is
+decreasing); we then have
+\begin{eqnarray*}
+|\bfq(t, x)|^2 &=& \frac{1}{\sin^2 \al} (\sin^2(\al(1-t)) |q_0(x)|^2 +
+ \sin^2(\al t) |q_1(x)|^2 \\
+ &&+ 2 \sin(\al(1-t))\sin(\al t) \Re(q_0(x)
+ \bar{q}_1(x)))\\
+&\geq & \frac{1}{\sin^2 \al} (\sin^2(\al(1-t)) |q_0(x)|^2 +
+ \sin^2(\al t) |q_1(x)|^2).
+\end{eqnarray*}
+The last inequality shows that the function 
+$\bfq(t,x)$ can vanish (for $t\in (0,1)$) only if both $q_0(x)$ et
+$q_1(x)$ vanish. We are assuming that this can happen only when $x$
+belongs to a set of Lebesgue's measure 0 in  $[0,1]$. On this set, the
+function $t\mapsto\bfT(t,x)$ is undefined, but we can make an
+arbitrary choice without changing the value of $\al$.
+
+We have therefore showed that the distance between  $o_0 = (g_0, \tau_0=
+e^{i\th_0})$ and $o_1  = (g_1,
+\tau_1=e^{i\th_1})$ was given by 
+$$
+D(o_0, o_1) = 2 \arccos \int_0^1 \sqrt{\der{g_0}{x}\der{g_1}{x}}|\cos((\th_0(x) -
+\th_1(x))/2)| dx
+$$
+since $|\cos((\th_0(x) -\th_1(x))/2)|$ is equal to  the real part of
+the square root of  $T_0\bar{T}_1$ for which $\al$ is minimized. This
+can also be written
+$$
+D(o_0, o_1) = 2\arccos \frac{\sqrt{2}}{2}\int_0^1
+\sqrt{\der{g_0}{x}\der{g_1}{x}}\sqrt{1 +
+\scp{\tau_0(x)}{\tau_1(x)}}dx .
+$$
+with $\scp{z}{z'} = \Re(z\bar{z}')$ for complex numbers $z$ and $z'$.
+
+The resulting distance between two functions $T$ and $T'$ is,
+according to  (\ref{inv.eq.gen})
+\begin{eqnarray*}
+d(T, T') &=& \inf\{D(o_0, o_1), o_0 = (g_0, T_0), o_1 = (g_1,
+T_1), T_0\circ g_0^{-1} = T, T_1\circ g_1^{-1} = T'\}\\
+&=& \inf\{D(o_0, o_1), o_0 = (\id, T), o_1 = (g,
+T_1), T_0\circ g_0^{-1} = T, T_1 = T'\circ g^{-1} \}
+\end{eqnarray*}
+which finally yields
+\encadre{
+$$
+d(\tau, \tau') = 2\arccos \sup_g \int_0^1 \sqrt{\der{g}{x}} |\cos((\th - \th'\circ
+g)/2)| dx.
+$$}
+
+The existence (under some conditions on $\th$ and $\th'$) of an
+optimal $g$ in the previous formula is proved in \cite{ty00}. Figure
+\ref{fig:exp.1D} provides examples of curve matching that can be
+obtained using this method.
+
+\begin{figure}
+\begin{center}
+\includegraphics[width=5cm]{FIGURES/curveMatching1.ps}
+\includegraphics[width=5cm]{FIGURES/curveMatching2.ps}\\
+\includegraphics[width=4cm]{FIGURES/curveMatching3.ps}
+\includegraphics[width=6cm]{FIGURES/curveMatching4.ps}\\
+\end{center}
+\caption{\label{fig:exp.1D} Diffeomorphic matching between curves. In
+each image, the geodesic is computed between the outer curve and the
+inner curve. Scaling is for visualization only (the computation is
+scale invariant).}
+\end{figure}
+
+\subsubsection*{Infinitesimal analysis}
+We now provide an infinitesimal justification for the choice of the
+metric  (\ref{n.tau}), which also offers alternative definitions.
+
+We therefore consider infinitesimal variations of plane curves. Let
+$m$ be a parameterized curve, defined on  $[0, 1]$, such that, for all  $x$
+$$\left|\der{m}{x}\right|\equiv L(m)$$
+where $L(m)$ is the length of $m$ (this corresponds to the arc-length
+normalized by the length). Let's consider a small perturbation along
+$m$, denoted  $x \mapsto \ep
+\De(x)\in\mR^2$. We assume that $\ep$ is small
+and only keep terms of order one in the following computation. The
+deformed curve is $x\mapsto m(x) + \ep \De(x)$, that we parameterize by
+normalized arc-length to obtain a new curve $\tm$, still defined on
+$[0,1]$. We denote by $g$ the diffeomorphism providing the change of
+parameter, so that, for all  $x\in [0,1]$,
+$$
+\tm \circ g(x) = m(x) + \ep \De(x).
+$$
+Let $\xi(x) = g(x) - 1$. Let $T$, $N$ and $\ka$ be the tangent, normal
+and Euclidean curvature of $m$. We have (denoting derivatives as subscripts)
+$$
+m_x = L(m) T,
+$$
+$$
+m_{mx} = L(m)  T_x = L(m)^2 \ka N.
+$$
+Similarly, let  $\tT$, $\tN$, $\tka$, be the tangent, normal and
+curvature of $\tm$; let finally $L = L(m)$ and $\tL = L(\tm)$. At
+firest order, we have  
+\begin{eqnarray*}
+\ep \De_x &=& (1+\xi_x) \tm_x \circ g - m_x\\
+&=& \tL \xi_x \tT\circ g + \tL\tT\circ g - L T\\
+&=& L\xi_x T + (\tL-L)T  + L(\tT\circ g - T) + o(\ep).
+\end{eqnarray*}
+We now define an infinitesimal deformation energy in terms of $\De$
+and compute its expression in terms of $g$ and the geoetric
+characteristics of the curves. Denote 
+$$
+E = \int_0^L\left|V_x\right|^2 = \frac{\ep^2}{L} \int_0^1
+\left|\De_x\right|^2dx
+$$
+where $V$ and $\De$ are related by $V(x) = \ep \De(x/L)$. At first
+order in $\ep$, $\tT\circ g-
+T$ is perpendicular to $T$, which implies 
+$$
+E = \frac{(\tL-L)^2}{L} + L \int_0^1\left|\xi_x\right|^2
+dx + L \int_0^1|\tT\circ g - T|^2dx + o(\ep^2).
+$$
+Introduce the group $G$ of diffeomorphisms of  $[0,1]$, and consider
+the set $\CO$ consisting of pairs $o = (L, T)$, with 
+$L>0$ and $T: [0, 1]\mapsto \mR^2$ such that $|T(x)| = 1$ for all
+$x$. There exists a unique curve  $m$ (modulo translation) with length
+$L$ and having $T$ as a unit tangent. Denote
+$$
+\norm{\xi, \de_L, \de_T}_{L, \tau}^2 = L \int_0^1 \left|\xi_x\right|^2 dx
+\frac{\de_L^2}{L} +
+L\int_0^1|\de_T|^2dx.
+$$
+Without the length component, this is exactly the metric introduced in
+the previous section. An explicit computation of the associated
+geodesic distance is still possible. Let   $o_0 = (g_0,
+L_0, T_0)$
+and $o_1 = (g_1, L_1, T_1)$. We obtain \cite{you98}
+$$
+D(o_0, o_1) = L_0 + L_1 - \sqrt{2}L_0L_1 \int_0^1
+\sqrt{\der{g_0}{x}\der{g_1}{x}}\sqrt{1 + \scp{T_0(x)}{T_1(x)}}dx
+\ .
+$$
+
+\bigskip
+Let us consider higher derivatives, which will allow us to also deal
+with rotation invariance. We have
+\begin{eqnarray*}
+\ep \De_{xx} &=& L^2 \xi_x \ka N +
+L\xi_{xx} T + L(\tL-L)\ka N + L\tL (1+\xi_x)\tka\circ g
+N\circ g - L^2 \ka N +_ o(\ep)\\
+& = & L\xi_{xx} T + 2L^2 \xi_x\ka N
++2L(\tL-L)\ka N + L^2(\tka\circ g - \ka)N + L^2\ka(\tN\circ g -
+N) + o(\ep)
+\end{eqnarray*}
+At order 1, 
+$L(\tN\circ g - N)$ is perpendicular to $N$, and can be computed by
+applying a $\pi/2$-rotation to the vector
+$L(\ttau\circ g - \tau)$, the latter being the normal component of the
+first derivative of $\ep \De$. We can therefore write
+$L^2(\tN \circ g - N) = -L\ep \scp{\De_x}{N} T$, which yields
+$$
+\ep \De_{xx} + L\ep\ka\scp{\De_x}{N} T = L\xi_{xx} T + 2L^2 \xi_x\ka N
++2L(\tL-L)\ka N + L^2(\tka\circ g - \ka) N. 
+$$
+
+This computation suggests the definition of the following operator
+along $m$:
+$$
+E = \frac{\ep^2}{L^3} \int_0^1 \left|\De_{xx} +
+L\ka\scp{\De_x}{N} T \right|^2 dx,
+$$
+which is invariant by (infinitesimal) rotation. (The factor $L^{-3}$
+comes from an analysis using  $V(x) = \De(x/L)$.) This energy is equal
+to 
+$$
+E = \frac{1}{L}\int_0^1 \left|\dder{\xi}{x}\right|^2dx +
+L\int_0^1 \left|2\der{\xi}{x}\ka
++2\frac{\tL-L}{L}\ka + \tka\circ g - \ka\right|^2dx + o(\ep^2).
+$$
+
+This leads us to considering curve representation under the form $m =
+(L, \ka)$, $L$ being the length, and  $\ka$ the curvature
+parameterized by the normalized arc-length. The previous analysis
+provides a natural candidate for the norm  $\norm{.}_{L,
+\ka}$. Applying our general theory (section \ref{cons.cons}), this
+defines the energy of  a path in $G\ti\CC$. Introduce the variable 
+$\bfv$ as before, and the evolving object,  $(\bfL,
+\bfK)$, which depend on time $t$. The energy of a path can then be
+written as
+$$
+\int_0^1\int_0^1 \frac{1}{\bfL}\left|\dder{\bfv}{x}\right|^2dxdt +
+\int_0^1\int_0^1 \bfL \left|2\der{\bfv}{x}\bfK
++2\frac{1}{\bfL}\bfK\der{\bfL}{t} + \pdr{\bfK}{t} +
+\bfv\pdr{\bfK}{x}\right|^2dxdt.
+$$
+
+
+
+
+\subsubsection{Application: images matching}
+
+We now provide a simple application of the formulas of section
+\ref{cons.cons} for image comparison. The set $\Om$ is here a square
+(or a rectangle) in $\mR^2$, for example $[0,1]^2$, and objects are
+images, considered as functions defined on  $\Om$ and taking values in
+$\mR$. We let
+$$
+\|\xi, \eta\|_{\id, m} = \int_\Om \scp{L\xi}{\xi}^2dx + \la \int_{\Om}
+|\eta|^2dx
+$$
+where $L$ is a strictly monotonous admissible operator.
+
+From the general formula, the energy of a path is given by
+\begin{equation}
+\label{eq:img.sign}
+\tE(\bfv, \bfM) = \int_0^1\int_\Om \scp{L\bfv}{\bfv}^2 dx dt + \la \int_0^1
+\int_\Om \left|\pdr{\bfM}{t} + \scp{\nabla \bfM}{\bfv}\right|^2dx dt.
+\end{equation}
+
+Figures \ref{fig:quadrature} and \ref{fig:nova1} provide two examples
+of images matched using this energy. The numerical scheme is described
+in the next section.
+
+
+
+\begin{figure}
+\begin{center}
+\includegraphics[width=2.5cm]{FIGURES/quadra-newI01.eps}
+\includegraphics[width=2.5cm]{FIGURES/quadra-newI03.eps}
+\includegraphics[width=2.5cm]{FIGURES/quadra-newI06.eps}
+\includegraphics[width=2.5cm]{FIGURES/quadra-newI11.eps}\\
+\includegraphics[width=2.5cm]{FIGURES/quadra-grid01.eps}
+\includegraphics[width=2.5cm]{FIGURES/quadra-grid03.eps}
+\includegraphics[width=2.5cm]{FIGURES/quadra-grid06.eps}
+\includegraphics[width=2.5cm]{FIGURES/quadra-grid11.eps}
+\end{center}
+\caption{\label{fig:quadrature} Estimation of a geodesic between a
+disc and a square. First Row: Image evolution in time. Second Row:
+evolution of the diffeomorphism.}
+\end{figure}
+
+\begin{figure}
+\begin{center}
+\includegraphics[width=2.5cm]{FIGURES/nova1-newI01.eps}
+\includegraphics[width=2.5cm]{FIGURES/nova1-newI03.eps}
+\includegraphics[width=2.5cm]{FIGURES/nova1-newI06.eps}
+\includegraphics[width=2.5cm]{FIGURES/nova1-newI11.eps}\\
+\includegraphics[width=2.5cm]{FIGURES/nova1-grid01.eps}
+\includegraphics[width=2.5cm]{FIGURES/nova1-grid03.eps}
+\includegraphics[width=2.5cm]{FIGURES/nova1-grid06.eps}
+\includegraphics[width=2.5cm]{FIGURES/nova1-grid11.eps}
+\end{center}
+\caption{\label{fig:nova1} Geodesic between an empty image and a disc.
+First Row: Image evolution in time. Second Row:
+evolution of the diffeomorphism.}
+\end{figure}
+
+\subsubsection{Discretization of \eqref{eq:img.sign}}
+
+Some care is required for the discretization of 
+\eqref{eq:img.sign}. This is mainly due to the ``hyperbolic'' term
+$\pdr{\bfM}{t} + \scp{\nabla \bfM}{\bfv}$, which represent the total
+derivative of $\bfM$ along the flow. The stablest results have been
+obtained using the following scheme.
+
+Introduce the auxilliary variable $w = L^{1/2}v$, so that $v =
+K^{1/2}w$ where $K= L^{-1}$ (the numerical implementation would in
+fact define $\tK = K^{1/2}$ and let $K = \tK^2$). The following
+discretized energy has been used in the experiments of Figures
+\ref{fig:quadrature} and \ref{fig:nova1}. 
+$$
+E = \sum_{t=1}^T \sum_{x\in \tilde\Om} \abs{w(x)}^2 + \la\de_t^{-2} 
+\sum_{t=1}^T \sum_{x\in \tilde\Om} \abs{M(t+1, x + \de_t (K^{1/2}w)(t, x))
+- M(t, x)}^2
+$$
+Where $x$ and $t$ now are discrete variables, $\tilde\Om$ a
+discrete grid on $\Om$ and $\de_t$ the time discretization step.
+
+
+

@@ -1,0 +1,2894 @@
+% !TEX root = machine_learning.tex
+\chapter{Introduction to Optimization}
+\label{sec:optim}
+\label{chap:optim}
+
+This chapter summarizes some fundamental concepts in optimization that will be used later in the book. The reader is referred to textbooks, such as \citet{beck2014introduction,eiselt2019nonlinear,nocedal2006nonlinear,boyd2011distributed}  and many others for proofs and deeper results.
+
+\section{Basic Terminology}
+\begin{enumerate}[label={\bf \arabic*.}]
+\item If $I$ is a subset of $\mR$, a lower bound of $I$ is an element $u\in [-\infty, +\infty]$ such that $u\leq x$ for all $x\in I$. Among these lower bounds, there exists a largest element, denoted $\inf I \in [-\infty, +\infty]$, called the infimum of $I$ (by convention,  the infimum of an empty set is $+\infty$). Similarly, one defines the supremum of $I$, denoted $\sup I$, as the smallest upper bound of $I$ (and the supremum of an empty set is $-\infty$). Every set in $\mR$ has an infimum and a supremum, but these numbers do not necessarily belong to $I$. When they do, they are respectively called minimal and maximal elements of $I$, and are denoted $\min I$ and $\max I$. So, the statement ``$u= \min I$'' means $u\in I$ and $u\leq v$ for all $v\in I$.
+
+\item If $F:\Omega \to \mR$ is a real-valued function defined on a subset $\Omega \subset \mR^d$, the infimum of $F$ over $\Omega$ is defined by
+\[
+\inf_{\Omega} F = \inf\{F(x): x\in \Omega\} %\in [-\infty, +\infty] 
+\]
+and its supremum is
+\[
+\sup_{\Omega} F = \sup\{F(x): x\in \Omega\}.
+\]
+As seen above both numbers are well defined, and can take infinite values. One says that $x\in \Omega$ is a (global) minimizer (resp. maximizer) of $F$ if $F(y) \geq F(x)$ (resp. $F(y)\leq F(x)$) for all $y\in \Omega$.  One also says that $F$ reaches its minimum (resp. maximum), or is minimized (resp. maximized) at $x$. Equivalently, $x$ is a minimizer (resp. maximizer) of $F$ if and only if $x\in \Omega$ and
+\[
+F(x) = \min \{F(y): y\in \Omega\} \ (\text{resp. } \max\{F(y): y\in \Omega\}).
+\]
+In such cases, one also writes $F(x) = \min_\Omega F$ or $F(x) = \max_\Omega F$. In particular, the
+notation $u = \min_\Omega F$ indicates that $u = \inf_\Omega F$ and that there exists an $x$ in $\Omega$ such that $F(x) = u$ (i.e., that the infimum of $F$ over $\Omega$ is realized at some $x\in \Omega$).  Note that the infimum of a function always exists, but not necessarily its minimum. Also note that minimizers, when they exist, are not necessarily unique. We will denote by $\argmin_{\Omega} F$ (resp. $\argmax_\Omega F$) the (possibly empty) set of minimizers (resp. maximizers) of $F$
+
+\item One says that $x$ is a local minimizer (resp. maximizer) of $F$ on $\Omega$ if there exists an open ball $B\subset \mR^d$ such that $x\in B$ and $F(x) = \min_{\Omega \cap B} F$ (resp. $F(x) = \max_{\Omega \cap B} F$). 
+
+\item An optimization problem consists in finding a minimizer or maximizer of an ``objective function'' $F$.
+Focusing from now on on minimization problems (statements for maximization problems are symmetric), we will always implicitly assume that a minimizer exists. The following provides some general assumptions on $F$ and $\Omega$ that ensure this fact. 
+%It is natural to assume that $\Omega\neq \emptyset$ (i.e., the problem is feasible), but also that $\Omega$ is a closed subset of $\mR^d$, which means that if any sequence $x_n\in \Omega$ converges to a limit $x$, then necessarily, $x\in\Omega$.  
+
+The sublevel sets of $F$ in $\Omega$  are denoted $[F\leq u]_\Omega$ (or simply $[F\leq u]$ when $\Omega = \mR^d$) for $u\in [-\infty, + \infty]$ with
+\[
+[F\leq u]_\Omega = \defset{x\in\Omega: F(x) \leq u}.
+\] 
+Note that 
+\[
+\argmin_\Omega F = \bigcap_{u>\inf F} [F\leq u]_\Omega\,.
+\]
+
+A typical requirement for $F$ is that its sublevel sets are  closed in $\mR^d$,  which means that, if a sequence $(x_n)$ in $\Omega$ satisfies, for some $u\in \mR$, $F(x_n) \leq u$ for all $n$ and converges to a limit $x$, then $x\in \Omega$ and $F(x) \leq u$. 
+If this is true, one says that $F$ is {\em lower semi-continuous}, or l.s.c, on $\Omega$. If, in addition to being closed, the sublevel sets of $F$ are bounded (at least for $u$ small enough---larger than $\inf F$), then $\argmin_\Omega F$ is an intersection of nested compact sets, and is therefore not empty (so that  the optimization problem has at least one solution).  
+
+\item Different assumptions on $F$ and $\Omega$ lead to different types of minimization problems, with specific underlying theory and algorithms.
+\begin{enumerate}[label= \arabic*.,wide=10pt]
+\item If $F$ is $C^1$ or smoother and $\Omega = \mR^d$, one speaks of an unconstrained smooth optimization problem. 
+\item For constrained problems, $\Omega$ is often specified by a finite number of inequalities, i.e., 
+\[
+\Omega = \{x\in \mR^d: \gamma_i(x) \leq 0, i=1, \ldots, q\}.
+\]
+If $F$ and all functions $\gamma_1, \ldots, \gamma_q$ are $C^1$ one speaks of smooth constrained problems. 
+\item If $\Omega$ is a convex set (i.e., $x, y\in \Omega \Rightarrow [x,y]\in \Omega$, where $[x,y]$ is the closed line segment connecting $x$ and $y$) and $F$ is a convex function (i.e., $F((1-t)x + ty) \leq (1-t) F(x) + t F(y)$ for all $x,y\in \Omega$), one speaks of a convex optimization problem. 
+
+\item Non-smooth problems are often considered in data science, and lead to interesting algorithms and solutions. 
+
+\item When both $F$ and $\gamma_1, \ldots, \gamma_q$ are affine functions, one speaks of a linear programming problem (or a linear program). (An affine function is a mapping $x\mapsto b^Tx + \beta$, $b\in \mR^d$, $\beta\in \mR$.) 
+
+If $F$ is quadratic ($F(x) = \frac12 x^TAx - b^T x$), and all $\gamma_i$'s are affine, one speaks of a quadratic programming problem.
+
+\item 
+Finally, some machine learning problems are specified over discrete or finite sets $\Omega$ (for example $\mathbb Z^d$, or $\{0,1\}^d$), leading to combinatorial optimization problems. 
+\end{enumerate}
+
+%Most of these problems (except the last ones) will be discussed in more detail later in these notes.
+
+\end{enumerate}
+
+
+
+
+
+\section{Unconstrained Optimization Problems}
+\label{sec:unconstrained}
+
+\subsection{Conditions for optimality (general case)}
+
+%\section{Conditions for optimality (smooth case)}
+
+
+Consider a function $F: \Om \to \mR$ where $\Om$ is an {\em open} subset
+of $\mR^d$. We first discuss
+ the unconstrained optimization problem of finding
+\begin{equation}
+\label{eq:min.eq}
+x^* \in \argmin_{\Om} F.
+\end{equation}
+The following result summarizes (non-identical) necessary and sufficient conditions that are applicable to such a solution.
+
+\begin{theorem}
+\label{th:opt.nec}
+\begin{enumerate}
+\item[{\bf Necessary conditions.}] 
+Assume that $F$ is differentiable over $\Om$, and that $x^*$
+is a local minimum of $F$. Then
+$\nabla F(x^*) = 0$.
+
+If $F$ is $C^2$, then, in addition, $\nabla^2F(x^*)$ must be positive semidefinite.
+\item [{\bf Sufficient conditions.}]
+\label{th:opt.suff}
+Assume that $F\in C^2(\Om)$. If $x^*\in \Om$ is such that $\nabla F(x^*) = 0$
+and $\nabla^2F(x^*)$ is positive definite, then $x^*$ is a local minimum of
+$F$.
+\end{enumerate}
+\end{theorem} 
+
+\begin{proof}
+Necessary conditions:
+Since $\Omega$ is open, it contains an open ball centered at $x^*$, with radius $\epsilon_0$ and therefore all segments $[x^*, x^*+\epsilon h]$ for all $\epsilon\in [0, \epsilon_0]$ and all unit norm vectors $h$. Since $x^*$ is a local minimum, we can choose $\epsilon_0$ so that $F(x^*+\epsilon h) \geq F(x^*)$ for all $h$ with $|h|=1$.
+
+Using Taylor formula, we get (for $\epsilon \in [0, \epsilon_0]$, $|h|=1$)
+\[
+0\leq F(x^*+\epsilon h) - f(x^*) = \epsilon \int_0^1 dF(x^* + t\epsilon h)h dt\,.
+\]
+If $dF(x^*)h \neq 0$ for some $h$, then, for small enough $\epsilon$, $dF(x^* + t\epsilon h)h$ cannot change sign for $t\in [0,1]$ and therefore $\int_0^1 dF(x^* + t\epsilon h)h dt$ has the same sign as $dF(x^*)(h)$ which must therefore be positive. But the same argument can be made with $h$ replaced by $-h$, implying that $dF(x^*)(-h) = - dF(x^*)h$ is also positive, and this gives a contradiction. We therefore have $dF(x^*)(h) = 0$ for all $h$, i.e., $\nabla F(x^*) = 0$. 
+
+Assume that $F$ is $C^2$. Then, making a second-order Taylor expansion, one gets
+\[
+0 \leq F(x^*+\epsilon h) - F(x^*) = \epsilon^2 \int_0^1 (1-t) d^2F(x^* + t\epsilon h)(h, h) dt.
+\]
+The same argument as above shows that, if $d^2F(x^* )(h, h) \neq 0$, then it must be positive. This shows that $d^2F(x^* )(h, h) \geq 0$ for all $h$ and $d^2F(x^*)$ (or its associated matrix $\nabla^2 F(x^*)$) is positive semidefinite.
+
+Now, assume that $F$ is $C^2$ and $\nabla^2 F(x^*)$ positive definite. One still has
+\[
+F(x^*+\epsilon h) - F(x^*) = \epsilon^2 \int_0^1 (1-t) d^2F(x^* + t\epsilon h)(h, h) dt
+\]
+If $\nabla^2F(x^*) \succ 0$, then $\nabla^2F(x^*+t\epsilon h)\succ 0$ for small enough $\epsilon$, showing the the r.h.s. of the identity is positive for $h\neq 0$, and that $F(x^* + \epsilon h) > F(x^*)$.
+\end{proof}
+
+Because maximizing $F$ is the same as minimizing $-F$, necessary (resp. sufficient) conditions for optimality in maximization problems are immediately deduced from the above: it suffices to replace positive semidefinite (resp. positive definite) by negative semidefinite (resp. negative definite).
+
+\subsection{Convex sets and functions}
+
+%{\noindent \bf First definitions and properties.}
+\begin{definition}
+\label{def:convex.set}
+One says that a set $\Om\sub \mR^d$ is {\em convex} if and only if, for all $x,y\in \Om$, the closed segment $[x,y]$  also belongs to $\Om$. 
+
+A function $F: \mR^d \to (-\infty, +\infty]$ is {\em convex} if, for all $\la\in [0, 1]$ and all $x,y\in \mR^d$, one has
+\begin{equation}
+\label{eq:conv.1}
+F((1-\la)x + \la y) \leq (1-\la) F(x) + \la F(y). 
+\end{equation}
+
+If, whenever the lower bound is not infinite,  the inequality above is strict for $\lambda\in (0,1)$, one says that $F$ is strictly convex. 
+\end{definition}
+
+Note that, with our definition, convex functions can take the value  $+\infty$ but not  $-\infty$. In order for the upper-bound to make sense when $F$ takes infinite values, one makes the following convention: $a + (+\infty) = +\infty$ for any $a\in (-\infty, +\infty]$; $\la\cdot (+\infty) = +\infty$ for any $\la>0$; $0\cdot (+\infty)$ is not defined but $0\cdot (+\infty) + (+\infty) = +\infty$.
+
+\begin{definition}
+\label{def:domain}
+The domain of $F$, denoted $\dom(F)$ is the set of $x\in \mR^d$ such that $F(x) < \infty$. One says that  $F$ is {\em proper} if $\dom(F)\neq \emp$. 
+
+We will only consider proper convex functions in our discussions, which will simply be referred to as convex functions for brevity.
+\end{definition}
+
+\begin{proposition}
+\label{prop:domain}
+If $F$ is a convex function, then $\dom(F)$ is a convex subset of $\mR^d$. Conversely, if $\Omega$ is a convex set and $F$ satisfies \eqref{eq:conv.1} for all $x,y\in \Om$ (i.e., $F$ is convex on $\Omega$), then the extension $\hat F$ defined by $\hat F(x) = F(x)$ if $x\in \Omega$ and $\hat F(x) = +\infty$ is a convex function defined on $\mR^d$ (such that $\dom(\hat F) = \Omega$).
+\end{proposition}
+\begin{proof} The first statement is a direct consequence of  \cref{eq:conv.1}, which implies that $F$ is finite on $[x,y]$ as soon as it is finite at $x$ and at $y$. For the second statement, \cref{eq:conv.1} for $\hat F$ is true for $x,y\in \Omega$, since it is true for $F$, and the uper-bound is $+\infty$ otherwise.
+\end{proof}
+This proposition shows that there was no real loss of generality in requiring convex functions to be defined on the full space $\mR^d$. Note also that the upper bound in \cref{eq:conv.1} is infinite unless  both $x$ and $y$ belong to $\dom(F)$, so that the inequality only needs to be checked in that case.
+
+One says that a function $F$ is {\em concave} if and only if $-F$ is convex. All definitions and properties made for convex functions then easily transcribe into similar statements for concave functions. We say that a function $f:I \to (-\infty, +\infty]$ (where $I$ is an interval) is non-decreasing if, for all $x,y\in I$, $x< y$ implies $f(x) \leq f(y)$. We say that $f$ is increasing if  if, for all $x,y\in I$, $x< y$ implies $f(x) < f(y)$ if $f(x) < \infty$ and $f(y) = \infty$ otherwise.
+
+
+
+Inequality \eqref{eq:conv.1} has important consequences on minimization problems. For example, it implies the following proposition.
+\begin{proposition}
+\label{prop:conv.2}
+Let $F$ be a convex (resp. strictly convex)  function on $\mR^d$.
+If $x\in \dom(F)$ and $y\in\mR^d$, the function
+\begin{equation}
+\label{eq:conv.2}
+\la \in (0,1] \mapsto \frac1\la (F((1-\la)x + \la y) - F(x))
+\end{equation}
+is non-decreasing (resp. increasing). 
+
+Conversely, let $\Om\subset \mR^d$ be a convex set and $F: \Om \to (-\infty, +\infty)$ be a function such that the expression in \cref{eq:conv.2} is non-decreasing (resp. increasing) for all $x\in \dom(F)$ and $y\in\mR^d$. Then, the extension $\hat F$ of $F$ defined in \cref{prop:domain} is convex (resp. strictly convex).
+\end{proposition}
+\begin{proof}
+Let $f(\lambda) = (F((1-\la)x + \la y) - F(x))/\lambda$.
+Let $\mu \leq \la$ denote $z_\la = (1-\la)x + \la y$, $z_\mu = (1-\mu)x + \mu y$. One has
+$ z_\mu = (1-\nu) x + \nu z_\la$, with $\nu = \mu/\la$, so that
+\[
+F(z_\mu) \leq (1-\mu/\la) F(x) + (\mu/\la) F(z_\la)\,.
+\]
+Subtracting $F(x)$ to both sides (which is allowed since $F(x) <\infty$) and dividing by $\mu$ yields
+\[
+ f(\mu) \leq f(\lambda)\,.
+\]
+If $F$ is strictly convex, then, either $F(z_\mu) = \infty$, in which case $f(\mu) = f(\lambda) = \infty$, or
+\[
+F(z_\mu) < (1-\mu/\la) F(x) + (\mu/\la) F(z_\la)\,.
+\]
+as soon as $0 < \mu < \lambda$, yielding
+\[
+ f(\mu) < f(\lambda)\,.
+\]
+
+Now consider the converse statement. By comparing the expression in \eqref{eq:conv.2} to that obtained with $\la=1$, we find, for all $x,y\in\Om$
+\[
+\frac1\la (F((1-\la)x + \la y) - F(x)) \leq F(y) - f(x)
+\]
+which is \cref{eq:conv.1}. Since $\hat F$ satisfies \cref{eq:conv.1} in its domain, it is convex. If the function in \cref{eq:conv.2} is increasing, then the inequality is strict for $0<\lambda < 1$ as soon as the lower bound is finite, and $F$ is strictly convex.
+\end{proof}
+
+\begin{corollary}
+\label{corr:loc.min}
+If $F$ is convex, any  local minimum of $F$ is  a global minimum.
+\end{corollary}
+\begin{proof}
+If $x$ is a local minimum of $F$, then, obviously, $x\in \dom(F)$, and for any $y\in\mR^d$ and small enough $\mu>0$, 
+$F(x) \leq F((1-\mu)x + \mu y)$. Using the function in \cref{eq:conv.2} for $\lambda = \mu$ and for  $\lambda=1$, we get
+\[
+0 \leq \frac1\mu  (F((1-\mu)x + \mu y) - F(x)) \leq F(y) - F(x)
+\]
+so that $x$ is a global minimum.
+\end{proof} 
+
+
+\subsection{Relative interior}
+
+If $\Omega$ is convex, then $\mathring \Omega$ and $\bar \Omega$ (its topological interior and closure) are convex too (the easy proof is left to the reader).  However, topological interiors of interesting convex sets are often empty, and a more adapted notion of {\em relative interior} is preferable. 
+
+Define the  {\em affine hull} of a set $\Omega$, denoted $\mathrm{aff}(\Omega)$,  as the smallest affine subset of $\mR^d$ that contains $\Omega$. The vector space parallel to $\aff(\Omega)$ (generated by all differences $x-y$, $x,y\in \Omega$) will be denoted $\vaff(\Omega)$.
+ Their dimension $k$, is the largest integer such that there exist $x_0, x_1, \ldots, x_k \in \Omega$ such that $x_1-x_0, \ldots, x_k-x_0$ are linearly independent. Moreover, given these points, elements of the affine hull are defined through {\em barycentric coordinates}, yielding
+\[
+\mathrm{aff}(\Omega) = \{ x =  \pe{\lambda}{0} x_0 + \cdots + \pe{\lambda}{k} x_k:, \pe{\lambda}{0}+\cdots + \pe{\lambda}{k} = 1\}\,.
+\]
+The coordinates $(\pe{\lambda}{0}, \ldots, \pe{\lambda}{k})$ 
+are uniquely  associated to $x\in \mathrm{aff}(\Omega)$ and depend continuously on $x$.
+They are indeed obtained by solving the linear system
+\[
+x - x_0=  \pe{\lambda}{1} (x_1-x_0) + \cdots + \pe{\lambda}{k} (x_k-x_0)
+\]
+which has a unique solution for $x\in \mathrm{aff}(\Omega)$ by linear independence. To see continuity, one can introduce the $k\times k$ matrix $G$ with entries $\pe G {ij}$ given by the inner products $(x_i-x_0)^T(x_j-x_0)$ and the vector $h(x)\in \mR^k$ with entries $\pe{h}{j}(x) = (x-x_0)^T(x_j-x_0)$. Continuity is then clear since $\lambda = G^{-1}h(x)$.
+
+
+
+%which first require us to introduce the concept of relative interior of a convex set.  
+\begin{definition}
+\label{def:relint}
+If $\Omega$ is a convex set, then its relative interior, denoted $\relint(\Omega)$, is the set of all $x\in \Omega$ such that  there exists $\epsilon >0$ such that $\mathrm{aff}(\Omega) \cap B(x, \epsilon) \subset \Omega$.
+\end{definition}
+
+ We have the following important property.
+\begin{proposition}
+\label{prop:relint.not.empty}
+Let $\Omega$ be a nonempty convex set.
+If $x\in \relint(\Omega)$ and $y\in \Omega$, then $x_\lambda = (1-\la) x + \lambda y\in \relint(\Omega)$ for all $\lambda\in [0, 1)$. 
+
+Moreover  $\relint(\Omega)$ is a nonempty convex set. 
+\end{proposition}
+\begin{proof}
+Take $\epsilon$ such that $B(x, \epsilon) \cap \mathrm{aff}(\Omega)\subset \Omega$. 
+%Then, for all $\lambda\in [0, 1)$, one has $z_\lambda = (1-\lambda) z + \lambda y\in\Omega$ for all $z\in \mathrm{aff}(\Omega)$ such that $|z-x|< \epsilon$. We have $|z_\lambda - x_\lambda} = (1-\lambda) |z-x|$ so that $z_\lambda\in  B(x_\lambda, (1-\lambda)\epsilon) \cap \mathrm{aff}(\Omega)$. 
+Take any $z\in B(x_\lambda, (1-\lambda)\epsilon) \cap \mathrm{aff}(\Omega)$. Define $\tilde z$ such that $z = (1-\lambda)\tilde  z + \lambda y$, i.e.
+\[
+\tilde z = \frac{z-\lambda y}{1-\lambda}.
+\]
+Then $\tilde z \in \mathrm{aff}(\Omega)$ and
+\[
+|\tilde z - x| = \frac{|z-x_\lambda|}{1-\lambda} < \epsilon
+\]
+so that $\tilde z$, and therefore $z$ belongs to $\Omega$. This proves that $B(x_\lambda, (1-\lambda)\epsilon) \cap \mathrm{aff}(\Omega) \subset \Omega$ so that $x_\lambda\in \relint(\Omega)$.
+
+If both $x$ and $y$ belong to $\relint(\Omega)$, then $x_\lambda \in \relint(\Omega)$ for $\lambda \in [0,1]$, showing that this set is convex.
+
+We now show that $\relint(\Omega)\neq \emptyset$.
+Let $k$ be the dimension of $\mathrm{aff}(\Omega)$, so that there exist $x_0, x_1, \ldots, x_k \in \Omega$ such that $x_1-x_0, \ldots, x_k-x_0$ are linearly independent. Consider the  ``simplex''
+\[
+S = \{ \pe{\lambda}0 x_0 + \cdots + \pe{\lambda}k x_k:, \pe\lambda 0+\cdots + \pe\lambda k = 1, \pe \lambda j\geq0, j=0, \ldots, k\},
+\]
+which
+is included in $\Omega$. Then the average $x = (x_0 + \cdots +x_k)/(k+1)$ is such that $B(x, \epsilon) \cap \mathrm{aff}(\Omega) \subset S$ for small enough $\epsilon$. Otherwise, there would exist a sequence $y(n) = \pe\lambda 0(n) x_0 + \cdots + \pe\lambda k(n) x_k$ such that $\pe\lambda 0(n) + \cdots +\pe\lambda k(n) = 1$ and at least one $\pe\lambda j(n) < 0$ that converges to $x$. Let $\boldsymbol y_j$ be the set of elements in this sequence such that $\pe\lambda j(n)<0$. This set is infinite for  at least one $j$ and provides a subsequence of $y$ that also converges to $x$.  But this would imply that the $j^\text{th}$ barycentric coordinate, which depends continuously on $x$, is non-positive, which is a contradiction.
+
+We therefore have $x\in \relint(\Omega)$, which completes the proof. 
+\end{proof}
+
+The following proposition provides an equivalent definition of the relative interior.
+\begin{proposition}
+\label{prop:relint.aff}
+If $\Om$ is a convex set, then
+\begin{equation}
+\label{eq:relint}
+\relint(\Om) = \defset{x\in \Om:\, \forall y\in \Om, \exists \ep>0 \text{ such that }x - \ep(y-x)\in \Om}.
+\end{equation}
+\end{proposition}
+So $x$ belongs in the relative interior of $\Omega$ if, for all $y\in \Omega$, the segment $[x,y]$ can be extended on the $x$ side and still remain included in $\Omega$.
+\begin{proof}
+Let $A$ be the set in the r.h.s. of \cref{eq:relint}. The proof that $\relint(\Omega) \subset A$ is straightforward and left to the reader. We consider the reverse inclusion.
+
+Let $x\in A$, and let $y\in \relint(\Omega)$, which is not empty. Then, for some $\epsilon>0$, we have
+\[
+z = x - \epsilon(y-x)\in \Omega.
+\]
+Since
+\[
+x = \frac{1}{1+\ep} (\epsilon y + z),
+\]
+\cref{prop:relint.not.empty} implies that $x\in \relint(\Omega)$.
+ \end{proof}
+ 
+Convex functions have important regularity properties in the relative interior of their domain, that we will denote $\rdom(F)$. Importantly: 
+\[
+\rdom(F) = \relint(\dom(F))  \neq \mathrm{int}(\dom(F)).
+\]
+A first such property is provided by the next proposition.
+\begin{proposition}
+\label{prop:conv.lip}
+Let $F$ be a convex function. Then $F$ is locally Lipschitz continuous on $\rdom(F)$, i.e., for every compact subset $C \sub \rdom(F)$, there exists a constant $L>0$ such that $|F(x) - F(y)| \leq L|x-y|$ for all $x,y\in C$.  
+\end{proposition}
+This implies, in particular, that $F$ is continuous on  $\rdom(F)$. 
+\begin{proof}
+Take $x\in \rdom(F)$. Let $K = \defset{h\in \vaff(\dom(F)), |h|=1}$. Then,  the segment $[x-ah, x+ah]$ is included in $\rdom(F)$ for small enough $a$ and all $h\in K$. Since $F$ is convex, we have, for $t\leq a$, 
+\[
+F(x+th) - F(x) \leq \frac{t}{a} (F(x+ah) - F(x))
+\]
+Writing $x = \lambda (x-ah) + (1-\lambda) (x+th)$ with $\lambda = t/(t+a)$, we also have
+\[
+F(x) \leq \frac{t}{t+a} (F(x-ah)  + \frac{a}{t+a}  F(x+th))
+\]
+which can be rewritten as
+\[
+F(x) - F(x+th) \leq \frac{t}{a} (F(x-ah) - F(x)).
+\]
+These two inequalities show that $F$ is continuous at $x$ along any direction in $\vaff(\dom(F))$, which implies that $F$ is continuous at $x$. Given this, the differences $F(x+ah) - F(x)$ are bounded over the compact set $C$, by some constant $M$ and, the previous inequalities show that
+\[
+|F(y) - F(x)| \leq \frac{M}{a} |x-y|
+\]
+if $y \in \rdom(F)$, $|y-x|\leq a$.
+ \end{proof}
+ 
+
+
+
+\subsection{Derivatives of convex functions and optimality conditions}
+ The following theorem provides a stronger version of optimality conditions for the minimization of differentiable convex functions. Note that we have only defined differentiability of functions defined over open sets. 
+\begin{theorem}
+Let $F$ be a convex function, with $\mathrm{int}({\dom}(F))\neq \emptyset$. Assume that
+  $x\in \mathrm{int}({\dom}(F))$ and that $F$ is differentiable at $x$. Then, for all $y\in \mR^d$:
+\begin{equation}
+\label{eq:conv.3}
+\nabla F(x)^T(y-x) \leq F(y) - F(x)\,.
+\end{equation}
+If $F$ is strictly convex, the inequality is strict for $y\neq x$. 
+In particular, $\nabla F(x) = 0$ implies that $x$ is a {\em global minimizer} of $F$. It is the unique minimizer if $F$ is strictly convex. 
+
+Conversely, if $F$ is $C^1$ on an open convex set $\Omega$ and satisfies \cref{eq:conv.3} for all $x, y\in \Omega$, then $F$ is convex. 
+\label{th:convex.gradient}
+\end{theorem}
+\begin{proof}
+\Cref{eq:conv.2} implies
+\[
+\frac1\la (F((1-\la)x + \la y) - F(x)) \leq F(y) - F(x), 0<\lambda\leq 1.
+\]
+Taking the limit of the lower bound
+ for $\la\to 0$, $\lambda >0$ yields \cref{eq:conv.3}. If $F$ is strictly convex, the inequality is strict for $\lambda < 1$ and, since the l.h.s. is increasing in $\lambda$, it remains strict when $\lambda \downarrow 0$.
+ 
+ Conversely, assuming \cref{eq:conv.3} for all $x, y\in \Omega$, the derivative of $\lambda \mapsto \frac1\la (F((1-\la)x + \la y) - F(x))$ is 
+\[
+\frac{1}{\la^2}(\la\nabla F(x+\la h)^T h - F(x+\la h) + F(x))
+\]
+with $h = y-x$, which is non-negative by \cref{eq:conv.3}. This proves that  $F$ is convex.  If \cref{eq:conv.3} holds with a strict inequality, then the derivative is positive and $\frac1\la (F((1-\la)x + \la y) - F(x))$ is increasing.
+\end{proof}
+
+The next proposition describes $C^2$ convex functions in terms of their second derivatives. 
+\begin{proposition}
+\label{prop:convex:c2}
+Let $F$ be convex and twice differentiable at $x\in \mathrm{int}(\dom(F))$. Then $\nabla^2 F(x)$ is positive semi-definite.
+
+Conversely, assume that $\Om = \dom(F)$ is an open set and that $F$ is $C^2$ on $\Om$ with a positive semi-definite second derivative. Then $F$ (or, rather, its extension $\hat F$) is convex. If the second derivative is everywhere positive definite, then $F$ is strictly convex. 
+\end{proposition}
+\begin{proof}
+Using Taylor formula \cref{eq:taylor.epsilon} at order 2, we get, for any $h\in \mR^d$ with $|h| = 1$,
+\[
+\frac12 d^2F(x)(h,h) = \frac{1}{2t^2} d^2F(x)(th,th) = \frac{1}{t^2} (F(x+th) - F(x) - t\nabla F(x)^T h) + \ep(t) \geq \ep(t)
+\]
+with $\ep(t)\to 0$ when $t\to 0$, the last inequality deriving from \cref{eq:conv.3}. This shows that $d^2F(x)(h,h)\geq 0$.
+
+
+To prove the second statement, assume that  $F$ is $C^2$ and $\nabla^2 F$ is positive semi-definite everywhere. Then \cref{eq:taylor.z} implies 
+\[
+F(y) - F(x) - \nabla F(x)^T (y-x)  = \frac12 (y-x)^T \nabla^2 F(z) (y-x)
+\]
+for some $z \in [x,y]$. Since the r.h.s. is non-negative, \cref{eq:conv.3} holds. If $\nabla^2 F$ is positive definite everywhere, then the r.h.s.\ is positive if $y\neq x$ and \cref{eq:conv.3} holds with a strict inequality.
+\end{proof}
+
+If $F$ is $C^2$ and $\nabla^2 F$ is positive definite and strictly convex, then \cref{eq:taylor.z} implies that, for some $z\in [x,y]$,
+\[
+F(y) - F(x) - \nabla F(x)^T (y-x) = \frac12 (y-x)^T \nabla^2 F(z) (y-x) \geq \frac{\rho_{\mathrm{min}}(\nabla^2 F(z))}{2} |y-x|^2
+\]
+where $\rho_{\mathrm{min}}(A)$ denotes the smallest eigenvalue of $A$. If this smallest eigenvalue is bounded from below away from zero, there exists a constant $m>0$ such that 
+\begin{equation}
+F(y) - F(x) - \nabla F(x)^T (y-x)  - \frac m2|y-x|^2 \geq 0.
+\label{eq:convex.strong}
+\end{equation}
+This property is captured by the following definition, which does not require $F$ to be $C^2$.
+\begin{definition}
+\label{def:convex.strong}
+A $C^1$ function $F$ is strongly convex if
+\begin{enumerate}[label=\arabic*.]
+\item $\mathrm{int}(\dom(F))\neq \emptyset$
+\item There exists $m>0$ such that \cref{eq:convex.strong} holds for all $x\in \mathrm{int}(\dom(F))$ and $y\in \mR^d$.
+\end{enumerate}
+\end{definition}
+
+We have the following proposition. 
+\begin{proposition}
+\label{prop:strong.strict}
+If $F$ is strongly convex, then it is strictly convex, so that, in particular $\argmin F$ has at most one element.
+
+If $\dom (F) = \mR^d$, then $\argmin F$ is not empty.
+\end{proposition}
+\begin{proof}
+The first part is  a direct consequence of  \cref{eq:convex.strong} and \cref{th:convex.gradient}. 
+
+For the second part, \cref{eq:convex.strong} implies that 
+\[
+F(x) - F(0) \geq \nabla F(0)^T x + \frac{m}{2} |x|^2 \geq |x|\left(\frac{m}{2} |x|^2 - 
+|\nabla F(0)|\right)
+\]
+This shows that $F(x) > F(0)$ if $|x| > 2|\nabla F(0)|/m := r$ so that 
+\[
+\argmin F =  \argmin_{\bar B(0, r)} F.
+\]
+The set in the r.h.s. involves the minimization of a continuous function on a compact set, and is therefore not empty.
+\end{proof}
+
+We will use the following definition.
+\begin{definition}
+\label{def:lck}
+A function $F: \Omega \to \mR^m$ is $L$-$C^k$, $L$ being a positive number, if it is $C^k$ and 
+\[
+|d^kF(x) - d^k F(y)| \leq L |x-y|.
+\]
+\end{definition}
+If $F$ is $L$-$C^k$, then Taylor formula (\cref{eq:taylor.diff}) implies
+\begin{equation}
+\left| f(x+h) - f(x) - df(x) h - \frac12 d^2 f(x)(h,h) - \cdots - \frac1{k!} d^{k}f(x)(h, \ldots, h)\right| \leq 
+\frac {L |h|^{k+1}}{(k+1)!}
+\label{eq:taylor.L}
+\end{equation}
+for which we used the fact that
+\[
+\int_0^1 t(1-t)^{k-1}dt = \int_0^1 (1-t)^{k-1} dt - \int_0^1 (1-t)^{k}dt  = \frac1k - \frac1{k+1} = \frac{1}{k(k+1)}.
+\]
+
+
+If $F$ is strongly convex and is, in addition,  $L$-$C^1$ for some $L$, then using \cref{eq:taylor.L}, one gets the double inequality, for all $x,y\in \mathrm{int}(\dom(F))$:
+\begin{equation}
+\label{eq:convex.strong.L}
+\frac m2 |y-x|^2 \leq F(y) - F(x) - \nabla F(x)^T (y-x) \leq \frac L2 |y-x|^2.
+\end{equation} 
+
+The following proposition will be used later.
+\begin{proposition}
+\label{prop:strong.convex}
+Assume that $F$ is strongly convex, satisfying \cref{eq:convex.strong}, and that $\argmin F = \{x^*\}$ with $x^* \in \mathrm{int}(\dom(F))$. Then, for all $x\in \mathrm{int}( \dom(F))$:
+\begin{equation}
+\label{eq:convex.strong.prop}
+\frac m2 |x-x^*|^2 \leq F(x) - F(x^*) \leq \frac1{2m} |\nabla F(x)|^2
+\end{equation}
+\end{proposition}
+\begin{proof}
+Since $\nabla F(x^*) = 0$, the first inequality is a consequence of \cref{eq:convex.strong} applied to $x=x^*$. Switching the role of $x$ and $x^*$, we have
+\[
+F(x^*) - F(x) - \nabla F(x)^T(x^*-x) \geq \frac m2 |x-x^*|^2
+\]
+so that 
+\begin{equation}
+0 \leq F(x) - F(x^*) \leq - \nabla F(x)^T(x^*-x) - \frac m2 |x-x^*|^2 \leq |\nabla F(x)| \, |x-x^*| - \frac m2 |x-x^*|^2
+\label{eq:convex.strong.prop.1}
+\end{equation}
+The maximum of the r.h.s. with respect to $|x-x^*|$ is attained at $|\nabla F(x)|/m$, showing that
+\[
+F(x) - F(x^*) \leq \frac{1}{2m} |\nabla F(x)|^2, 
+\]
+which is the second inequality.
+\end{proof}
+
+
+
+
+
+
+
+
+%
+%We consider a function $F: \Om \to \mR$ where $\Om$ is an open subset
+%of a normed space $\mB$, and we first discuss
+% the unconstrained optimization problem of finding
+%\begin{equation}
+%\label{eq:min.eq}
+%x^* = \argmin_{x\in \Om} F(.
+%\end{equation}
+%
+%
+%
+%The following theorem gives the usual necessary conditions for optimality. Recall that a symmetric bilinear form $a$ is called positive semidefinite if $a(h,h) \geq 0$ for all $h$, and positive definite if it is positive semi-definite and $a(h,h)=0$ if and only if $h=0$. 
+%\begin{theorem}[Necessary conditions]
+%\label{th:opt.nec}
+%Assume that $F$ is differentiable over $\Om$, and that $x^*$
+%satisfies \eqref{eq:min.eq}. Then
+%$dF(x^*) = 0$.
+%
+%If $F$ is $C^2$, then, in addition, $d^2F(x^*)$ must be positive semidefinite.
+%\end{theorem} 
+%
+%
+%Sufficient conditions are as follows:
+%\begin{theorem}[Sufficient conditions]
+%\label{th:opt.suff}
+%Assume that $F\in C^2(\Om)$. If $x^*\in \Om$ is such that $dF(x^*) = 0$
+%and $d^2F(x^*)$ is positive definite, then $x^*$ is a local minimum of
+%$F$.
+%\end{theorem} 
+%
+%Because maximizing $F$ is the same as minimizing $-F$, necessary (resp. sufficient) conditions for optimality in maximization problems are immediately deduced from the above: it suffices to replace positive semidefinite (resp. positive definite) by negative semidefinite (resp. negative definite).
+
+
+%\subsection{Gradient-based methods}
+
+\subsection{Direction of descent and steepest descent}
+Gradient-based algorithms for optimization iteratively update the variable $x$, creating a sequence governed by an equation taking the form $x_{t+1} = x_t + \alpha_t h_t$ with $\alpha_t > 0$ and $h_t \in \mR^d$. To ensure that the objective function $F$ decreases at each step, $h_t$ is chosen to be a direction of descent for $F$ at $x_t$, a notion which, as seen below, is closely connected with the direction of $\nabla F(x_t)$.
+
+\begin{definition}
+\label{def:dir.desc}
+ Let $\Omega$ be open in $\mR^d$ and $F:\Omega  \to \mR$  be a $C^1$ function. A direction of descent for $F$ at $x\in\Omega$ is a vector $h\neq 0 \in\mR^d$ such that there exists $\ep_0>0$ such that $F(x+\ep h) < F(x)$ for all $\ep\in (0, \ep_0]$.  
+ \end{definition}
+
+\begin{proposition}
+\label{prop:dir.desc}
+Assume that $F: \Omega\to \mR$  is  $C^1$ and take $x\in \Omega$. Then any direction $h$ such that $h^T\nabla F(x) < 0$ is a direction of descent for $F$ at $x$. Conversely, if $h$ is a direction of descent, then $h^T\nabla F(x) \leq 0$.
+\end{proposition}
+\begin{proof}
+We have the first-order expansion $F(x+ \ep h) - F(x) = \ep h^T\nabla F(x) + o(\ep)$. If $h^T\nabla F(x) < 0$, the r.h.s. is negative for small enough $\epsilon$ and $h$ is a direction of descent. Similarly, if $h^T\nabla F(x) > 0$, the r.h.s. is positive for small enough $\epsilon$ and $h$ cannot be a direction of descent. 
+\end{proof}
+
+In particular,  $h = -\nabla F(x)$ is always a direction of descent. It is called the steepest descent direction because it minimizes $h\mapsto \prt_\alpha F(x+\alpha h)|_{\alpha = 0}$ over all $h$ such that $|h|^2=1$. However, this designation has a character of optimality that may be misleading, because using the Euclidean norm for the condition $|h|^2 = 1$ is not necessarily adapted to the optimization problem at hand. In the absence of additional information on the problem, it does have a canonical nature, as it is (up to rescaling) the only norm invariant to rotations (including permutations) of the coordinates. Such invariance is not necessarily desirable when the variable $x$ has a known structure (e.g., it is organized on a graph) which would be broken by permutation. Also, steepest refers to a local ``greedy'' evaluation, but may not be optimal from a global perspective. A simple example to illustrate this is the case of a quadratic function
+\[
+F(x) = \frac12 x^T A x - b^T x
+\]
+where $A \in \CS^{++}_n$ is a positive definite symmetric matrix. Then $\nabla F(x) = Ax - b$, but one may argue that $\nabla_A F(x) = A^{-1} \nabla F(x)$ (defined in \cref{eq:gradient.A}) is a better choice, because it allows the algorithm to reach the minimizer of $F$ in one step, since $x - \nabla_AF(x) = A^{-1} b$ (this statement disregards the cost associated in solving the system $Ax = b$, which can be an important factor in large dimension). Importantly, if $F$ is any $C^1$ function, and $A\in \CS^{++}_n$, the minimizer of $h\mapsto \prt_\alpha F(x+\alpha h)|_{\alpha = 0}$ over all $h$ such that $h^TAh = 1$ is given by $-\nabla_A F(x)$, i.e., $-\nabla_A F(x)$ is the steepest descent for the norm associated with $A$. This yields a  general version of steepest descent methods, iterating
+\[
+x_{t+1} = x_t - \alpha_t \nabla_{A_t} F(x_t)
+\]
+with $\alpha_t >0$ and $A_t\in \CS^{++}_n$.
+
+One can also notice that $\nabla_A F(x)$ is also a minimizer of 
+\[
+F(x) + \nabla F(x)^Th + \frac12 h^T A h.
+\]
+When $\nabla^2 F(x)$ is positive definite, it is then natural to choose it as the matrix $A$, therefore taking $h = - \nabla^2 F(x)^{-1} \nabla F(x)$. This provides Newton's method for optimization. However, Newton method requires computing second derivatives of $F$, which can be computationally costly. It is, moreover, not a gradient-based method, which is the focus of this discussion.
+ 
+
+%
+%Gradient descent algorithms therefore take the form
+%\[
+%x^{(n+1)} = x^{(n)} - \alpha_{n+1} A^{(n)} \nabla F(x^{(n)})
+%\]
+%with a suitable choice of a positive-definite matrix $A^{(n)}$. 
+
+
+
+%
+%In the simplest case, one takes $A^{(n)} = \Id_{\mR^d}$ for all $n$, or some fixed ``conditioning'' matrix.  However, this choice can be improved based on the second-order expansion of $F$, which is 
+%\[
+%F(x+ h) = F(x) +  h^T\nabla F(x)  + \frac{1}2 h^T \mathrm{Hess}(F)(x) h + o(|h|^2).
+%\]
+%If $\mathrm{Hess}(F)(x)$ is positive definite, $h = -\mathrm{Hess} (F)(x)^{-1} \nabla F(x)$ is a valid direction of descent that minimizes the second-order expansion of $F$ at $x$. If, in particular, $\mathrm{Hess}(F)(x)$ is positive definite for all $x$ (which implies that $F$ is strictly convex, see below), the Newton-Raphson algorithm
+%\[
+%x^{(n+1)} = x^{(n)} - \ep \left(\mathrm{Hess} (F(x^{(n)}))\right)^{-1} \nabla F(x^{(n)})
+%\]
+%is well defined and, if $F$ has a minimum, this algorithm converges to the optimal $x$  as soon as $\ep$ is small enough. 
+%
+%Because, in many cases, the second derivative of $F$ is too costly to compute (in particular for large dimensional problems), approximations of the direction of descent provided by Newton's algorithm have been developed, leading in particular to the BFGS algorithm (the acronym refers to the initials of its inventors, who independently discovered
+%the method) and variations of it \citep{nocedal2006nonlinear}.
+
+
+
+
+\subsection{Convergence}
+We now consider a descent algorithm
+\begin{equation}
+x_{t+1} = x_t + \alpha_t h_t
+\label{eq:grad.desc}
+\end{equation}
+where $h_t$ is a direction of descent at $x_t$ for the objective function $F$. To ensure convergence,  suitable choices for the direction of descent and the step must be made at each iteration, and some assumptions on the objective function are needed. 
+
+\begin{subequations}
+Regarding the direction of descent, which must satisfy $h_k^T \nabla F(x_k) \leq 0$, we will assume a uniform control away from orthogonality to the gradient, with the condition
+\begin{equation}
+\label{eq:grad.angle}
+-h_t^T \nabla F(x_t) \geq \epsilon |h_t|\, |\nabla F(x_t)|
+\end{equation}
+for some fixed $\epsilon >0$. Without loss of generality (given that a multiplicative step $\alpha_t$ must also be chosen), we assume that $h_t$ is commensurable to the gradient, namely, that
+\begin{equation}
+\label{eq:grad.norm}
+\gamma_1 |\nabla F(x_t)| \leq |h_t| \leq \gamma_2 |\nabla F(x_t)|
+\end{equation}
+for fixed $0<\gamma_1 \leq \gamma_2$. If $h_t = \nabla_{A_t} F$, these assumptions are satisfied as soon as the smallest and largest eigenvalues of $A_t$ are controlled along the trajectory.
+\end{subequations}
+
+We have the following proposition.
+\begin{proposition}
+\label{prop:descent.gen}
+Assume that $F$ is $L$-$C^1$.
+Assume that $x_t$ satisfies \cref{eq:grad.desc} and that \cref{eq:grad.angle} and \cref{eq:grad.norm} hold. Then, there exist constants $\bar \alpha>0$ and $C>0$ that depends on $\gamma_1, \gamma_2$ and $\epsilon$, such that, for $\al_t \leq \bar\alpha$, one has
+\begin{equation}
+\label{eq:descent.gen}
+F(x_{t+1}) - F(x_t) \leq - C \alpha_t |\nabla F(x_t)|^2.
+\end{equation}
+\end{proposition}
+\begin{proof}
+Applying \cref{eq:taylor.L} to $x_t$ and $x_{t+1}$, we get
+\[
+F(x_{t+1}) - F(x_t) - \alpha_t \nabla F(x_t)^T h_t \leq \frac{L}{2} \alpha_t^2 |h_t|^2
+\]
+Using \cref{eq:grad.desc} and  \cref{eq:grad.angle}, this gives
+\[
+F(x_{t+1}) - F(x_t) + \alpha_t\epsilon\gamma_1 |\nabla F(x_t)|^2 \leq \frac{L}{2} \alpha_t^2\gamma_2^2 |\nabla F(x_t)|^2
+\]
+so that
+\[
+F(x_{t+1}) - F(x_t) \leq - \alpha_t \big(\epsilon\gamma_1 -\alpha_t \gamma_2^2 L/2\big) |\nabla F(x_t)|^2. 
+\]
+It suffices to take $\bar \alpha = \epsilon\gamma_1/L\gamma_2^2$ and $C = \epsilon\gamma_1/2$ to obtain \cref{eq:descent.gen}.
+\end{proof}
+Iterating \cref{eq:descent.gen} for $t=1$ to $t=T-1$ yields 
+\[
+\sum_{t=1}^T \alpha_t |\nabla F(x_t)|^2 \leq \frac1C (F(x_1) - F(x_T)).
+\]
+If $F$ is bounded from below, and one takes $\alpha_t = \bar\alpha$ for all $t$, one deduces that
+\[
+\min \left\{|\nabla F(x_t)|^2: t=1, \ldots, T\right\} \leq \frac{F(x_1) - \inf F}{CT \bar\alpha} .
+\]
+We can deduce from this, for example, that there exists a sequence $t_1 < \cdots < t_n<\cdots$ such that  $\nabla F(x_{t_k}) \to 0$ when $k\to\infty$. In particular, if one runs \cref{eq:grad.desc} until $|\nabla F(x_t)|$ is smaller than a given tolerance level (which is standard), the procedure is guaranteed to terminate in a finite number of steps.
+
+
+Stronger results may be obtained under stronger assumptions on $F$ and on the algorithm. The first assumption is an inequality similar to \cref{eq:descent.gen} and requires that, for some constant $C>0$,
+\begin{equation}
+\label{eq:descent.good}
+F(x_{t+1}) - F(x_t) \leq - C  |\nabla F(x_t)|^2.
+\end{equation}
+Such an inequality can be deduced from \cref{eq:descent.gen} under the additional assumption that $\alpha_t$ is bounded from below and we will discuss later line search strategies that ensure its validity. The second assumption is that $F$ is convex.   
+
+\begin{theorem}
+\label{th:grad.desc.convex}
+Assume that $F$ is convex and finite and that its sub-level set $[F\leq F(x_0)]$ is bounded. Assume that $\argmin F$ is not empty and let $x^*$ be a minimizer of $F$. If \cref{eq:descent.good} is true, 
+then
+\[
+F(x_{t}) - F(x_*) \leq \frac{R^2}{C(t+1)}
+\]
+with $R = \max\{|x - x_*|: F(x) \leq F(x_0)\}$.
+\end{theorem}
+\begin{proof}
+Note that the algorithm never leaves $[F\leq F(x_0)]$.
+We have 
+\[
+F(x_{t+1}) - F(x^*) \leq F(x_t) - F(x^*) - C |\nabla F(x_t)|^2.
+\]
+Moreover,  by convexity, $F(x^{*}) - F(x_t) \geq \nabla F(x_t)^T (x^*-x_t)$, so that 
+\[
+F(x_t) - F(x^*) \leq \nabla F(x_t)^T (x_t-x^*) \leq |\nabla F(x_t)| R.
+\]
+Combining these two inequalities, we get
+\[
+F(x_{t+1}) - F(x^*) \leq F(x_t) - F(x^*) - \frac{C}{R^2}  (F(x_t) - F(x^*))^2.
+\]
+Introducing $\delta_t = (C/R^2) (F(x_t) - F(x^*))$, this inequality implies
+\[
+\delta_{t+1} \leq \delta_t (1-\delta_t)\,.
+\]
+Taking inverses, we get
+\[
+\frac1{\delta_{t+1}} \geq \frac1{\delta_t} + \frac1{1-\delta_t} \geq \frac1{\delta_t} + 1
+\]
+which implies $\frac{1}{\delta_t} \geq t+1$ or
+$\delta_t \leq 1/(t+1)$, which in turn implies the statement of the theorem. 
+\end{proof}
+
+A faster convergence rate can be obtained if $F$ is assumed to be strongly convex. Indeed, if \cref{eq:convex.strong} and \cref{eq:descent.good} are satisfied, then (using \cref{prop:strong.convex}),
+\begin{align*}
+F(x_{t+1}) - F(x^*) &\leq F(x_t) - F(x^*) - C |\nabla F(x_t)|^2 \\
+&\leq F(x_t) - F(x^*) - 2Cm (F(x_t) - F(x^*)) 
+\\
+&= (1-2Cm)  (F(x_t) - F(x^*))\,.
+\end{align*}
+We therefore get the proposition:
+\begin{proposition}
+\label{prop:strong.convex.conv}
+If $F$ is finite and  satisfies \cref{eq:convex.strong}, and if  the descent algorithm satisfies \cref{eq:descent.good}, then
+\[
+F(x_{t}) - F(x^*) \leq (1-2Cm)^t (F(x_0) - F(x^*)).
+\]
+\end{proposition}
+
+\subsection{Line search}
+\Cref{prop:descent.gen} states that, to ensure that \cref{eq:descent.good} holds, it suffices to take a small enough step parameter $\alpha$. However, the   values of $\alpha$ that are acceptable depend on properties of the objective function that are rarely known in practice. Moreover, even if a valid choice is determined (this can  sometimes be done in practice by trial and error), setting a fixed value of $\alpha$ for the whole algorithm is often too conservative, as the best $\alpha$ when starting the algorithm may be different from the best one close to convergence.
+
+For this reason, most gradient descent procedures select a parameter $\alpha_t$ at each step using a line search.  Given a current position and direction of descent $h$, a line search explores the values of $F(x + \al h)$, $\alpha\in (0, \alpha_{\mathrm{max}}] $ in order to discover some $\alpha^*$ that satisfies some desirable properties. We will assume in the following that $x$ and $h$ satisfy \cref{eq:grad.angle} and \cref{eq:grad.norm} for fixed $\epsilon, \gamma_1, \gamma_2$.
+
+One possible strategy is to define $\alpha^*$ as a minimizer of  the scalar function 
+\[
+f_h(\alpha) = F(x + \alpha h)
+\] 
+over $ (0, \alpha_{\mathrm{max}}]$ for a given upper-bound $\ep_{\mathrm{max}}$. This can be implemented using, e.g.,  binary or ternary search algorithms, but  such algorithms would typically require a large number of number of evaluations of the function $F$, and would be too costly to be run at each iteration of a gradient descent procedure.  
+
+Based on the previous convergence study, we should be happy with a line search procedure that ensures that \cref{eq:descent.good} is satisfied for some fixed value of the constant $C$. One such condition is the so-called Armijo rule that requires (with a fixed, typically small, value of $c_1>0$):
+\begin{equation}
+f_h(\alpha) \leq f_h(0) + c_1\alpha h^T\nabla f(x)\,.
+\label{eq:armijo}
+\end{equation}
+We know that, under the assumptions of \cref{prop:descent.gen}, this condition can always be satisfied with a small enough value of $\alpha$. Such a value can be determined using a ``backtracking procedure,''  which, given $\alpha_{\mathrm{max}}$ and $\rho \in (0,1)$, takes $\alpha = \rho^k \al_{\mathrm{max}}$ where $k$ is the smallest integer such that \cref{eq:armijo} is satisfied. This value of $k$ is then determined iteratively, trying $\alpha_{\mathrm{max}}$, $\rho\alpha_{\mathrm{max}}$, $\rho^2\alpha_{\mathrm{max}}, \ldots$ until \cref{eq:armijo} is true (this provides the ``backtracking method''). 
+
+A stronger requirement in the line search is to ensure that $\prt f_h(\alpha)$ is not ``too negative'' since one would otherwise be able to further reduce $f_h$ by taking a larger value of $\alpha$. This leads to the weak Wolfe conditions, which combine the Armijo's rule in \cref{eq:armijo} and  
+\begin{subequations}
+\begin{equation}
+\label{eq:weak.wolfe}
+\prt f_h(\alpha) = h^T \nabla F(x + \alpha h) \geq c_2  h^T \nabla F(x)
+\end{equation}
+for some constant $c_2 \in (c_1, 1)$. The strong Wolfe conditions require \cref{eq:armijo} and  
+\begin{equation}
+|h^T \nabla F(x + \alpha h)| \leq c_2  |h^T \nabla F(x)|.
+\label{eq:strong.wolfe}
+\end{equation}
+(Since $h$ is a direction of descent, \cref{eq:strong.wolfe} requires \cref{eq:weak.wolfe} and the fact that $h^T \nabla F(x + \alpha h)$ does not take too large positive values.)
+\end{subequations}
+If $F$ is $L$-$C^1$, these conditions, with \cref{eq:grad.angle,eq:grad.norm}, imply \cref{eq:descent.good}. Indeed, \cref{eq:weak.wolfe} and the $L$-$C^1$ condition imply
+\[
+-(1-c_2) h^T \nabla F(x) \leq h^T (\nabla F(x + \alpha h) - \nabla F(x)) \leq L\alpha |h|^2
+\]
+and \cref{eq:grad.angle,eq:grad.norm} give
+\[
+(1-c_2) \epsilon |\nabla F(x)|^2 \leq \alpha L \gamma_2^2 |\nabla F(x)|^2
+\]
+showing that $\alpha \geq  (1-c_2)\epsilon / ( L \gamma_2^2)$. Moreover
+\[
+F(x+\alpha h) \leq F(x) + c_1\alpha h^T\nabla f(x) \leq F(x) -  c_1\alpha \epsilon |\nabla F(x)|^2
+\]
+so that
+\[
+F(x+\alpha h) \leq F(x) - \frac{c_1(1-c_2)\epsilon^2}{ L \gamma_2^2} |\nabla F(x)|^2.
+\]
+We have just proved the following proposition.
+\begin{proposition}
+\label{prop:wolfe.good}
+Assume that $F$ is $L$-$C^1$ and that \cref{eq:grad.angle,eq:grad.norm,eq:armijo,eq:weak.wolfe} are satisfied.
+Then there exists $C>0$, depending only of $L, \epsilon, \gamma_2, c_1$ and $c_2$such that
+\[
+F(x+\alpha h) \leq F(x) - C |\nabla F(x)|^2.
+\]
+\end{proposition}
+
+
+The Wolfe conditions
+can always be satisfied by some $\alpha$ as soon as $F$ is $C^1$ and bounded from below, and $h^T \nabla F(x) < 0$.  
+%This is implied by the following two propositions  applied to $f = f_h$. The first proposition addresses the case of the weak Wolfe condition.
+%\begin{proposition}
+%\label{prop:line.search.w}
+%Let $f: \alpha \mapsto f(\alpha)$ be a $C^1$ function defined on $[0, +\infty)$ such that $f$ is bounded from below and $\prt_\alpha f(0) < 0$. Let $0 < c_1 < c_2 < 1$. Assume that $0\leq \alpha_0 < \alpha_1$ are such that
+%\begin{enumerate}[label = (\arabic*)]
+%\item  $f(\alpha_0) \leq  f(0) + c_1\alpha_0 \prt_\alpha f(0)$ and $\prt f(\alpha_0) < c_2 \prt_\alpha f(0)$
+%\item  $f(\alpha_1) >  f(0) + c_1\alpha_1 \prt_\alpha f(0)$
+%\end{enumerate}
+%Then, there exists a sub-interval $I$ of $[\alpha_0, \alpha_1]$ such that
+%\[
+%f(\alpha) \leq  f(0) + c_1\alpha \prt_\alpha f(0) \text{ and } \prt f(\alpha) \geq c_2 \prt_\alpha f(0)
+%\]
+%for all $\alpha\in I$.
+%\end{proposition}
+%We will prove this by showing that the following line search algorithm converges in a finite number of steps. 
+The next proposition shows this result for the weak condition, while providing an algorithm finding an $\alpha$ that satisfies it in a finite number of steps.
+\begin{proposition}
+\label{prop:weak.wolfe.alg}
+Let $f: \alpha \mapsto f(\alpha)$ be a $C^1$ function defined on $[0, +\infty)$ such that $f$ is bounded from below and $\prt_\alpha f(0) < 0$. Let $0 < c_1 < c_2 < 1$. 
+
+Let $\alpha_{0,0} = \alpha_{0,1} = 0$ and $\alpha_0 > 0$. Define recursively sequences $\alpha_{n,0}, \alpha_{n,1}$ and $\alpha_{n}$ as follows. 
+\begin{enumerate}[label=(\roman*)]
+\item If  $f(\alpha_n) \leq  f(0) + c_1\alpha_n \prt_\alpha f(0)$ and  $\prt f(\alpha_n) \geq c_2 \prt_\alpha f(0)$ stop the construction.
+%\item If $f(\alpha_n) >  f(0) + c_1\alpha_n \prt_\alpha f(0)$ and $\alpha_n > \alpha_{n,1}$, let $\alpha_{n+1} = 2\alpha_n$, $\alpha_{n+1,1} = \alpha_{n}$ and $\alpha_{n+1,0} = \alpha_{n,0}$.
+\item If $f(\alpha_n) >  f(0) + c_1\alpha_n \prt_\alpha f(0)$ 
+%and $\alpha_n \leq \alpha_{n,1}$, 
+let $\alpha_{n+1} = (\alpha_n+\alpha_{n,0})/2$, $\alpha_{n+1,1} = \alpha_{n}$ and $\alpha_{n+1,0} = \alpha_{n,0}$.
+\item If $f(\alpha_n) \leq  f(0) + c_1\alpha_n \prt_\alpha f(0)$ and $\prt f(\alpha_n) < c_2 \prt_\alpha f(0)$:
+\begin{enumerate}[label = (\alph*),itemindent=1cm]
+\item If $\alpha_{n,1}=0$, let  $\alpha_{n+1} = 2\alpha_n$, $\alpha_{n+1,0} = \alpha_{n}$ and $\alpha_{n+1,1} = \alpha_{n,1}$.
+\item If $\alpha_{n,1}>0$,  let 
+$\alpha_{n+1} = (\alpha_n+\alpha_{n,1})/2$, $\alpha_{n+1,0} = \alpha_{n}$ and $\alpha_{n+1,1} = \alpha_{n,1}$.
+\end{enumerate}
+%
+%, let  $\alpha_{n+1} = 2\alpha_n$ if $\alpha_{n,1}=0$ and $\alpha_{n+1} = (\alpha_n+\alpha_{n,1})/2$ otherwise. Let $\alpha_{n+1,0} = \alpha_{n}$ and $\alpha_{n+1,1} = \alpha_{n,1}$.
+\end{enumerate}
+Then the sequences are always finite, i.e., the algorithm terminates in a finite number of steps.
+\end{proposition}  
+
+\begin{proof}
+Assume, to get a contradiction, that the algorithm runs indefinitely, so that case (i) never occurs. If case (ii) never occurs, then one runs  step (iii-a) indefinitely, so that $\alpha_n \to \infty$ with $f(\alpha_n) \leq  f(0) + c_1\alpha_n \prt_\alpha f(0)$, and $f$ cannot be bounded from below, yielding a contradiction. As soon as case (ii) occurs, we have, at every step, $\alpha_{n,0} \geq \alpha_{n-1,0}$, $\alpha_{n,1} \leq \alpha_{n-1,1}$,
+$\alpha_n \in [\alpha_{n,0}, \alpha_{n,1}]$, $f(\alpha_{n,1}) >  f(0) + c_1\alpha_{n,1} \prt_\alpha f(0)$, $f(\alpha_{n,0}) \leq  f(0) + c_1\alpha_{n,0} \prt_\alpha f(0)$ and $\prt f(\alpha_{n,0}) < c_2 \prt_\alpha f(0)$. This implies that
+\[
+f(\alpha_{n,1}) - f(\alpha_{n,0}) > c_1(\alpha_{n,1} - \alpha_{n,0}) \prt_\alpha f(0).
+\]
+Moreover, the updates imply that $(\alpha_{n+1,1} - \alpha_{n+1, 0}) = (\alpha_{n,1} - \alpha_{n,0})/2$. This requires that the three sequences $\alpha_n, \alpha_{n,0}$ and $\alpha_{n,1}$ converge to the same limit, $\alpha$. We have
+\[
+\prt_\alpha f(\alpha) = \lim_{n\to \infty}\frac{f(\alpha_{n,1}) - f(\alpha_{n,0})}{\alpha_{n,1} - \alpha_{n,0}} \geq c_1 \prt_\alpha f(0)
+\]
+and
+\[
+\prt_\alpha f(\alpha) = \lim_{n\to\infty} \prt_\alpha f(\alpha_{n,0}) \leq c_2 \prt_\alpha f(0)
+\]
+yielding $c_1 \prt_\alpha f(0) \leq c_2 \prt_\alpha f(0)$ which is impossible since $c_2>c_1$ and  $\prt_\alpha f(0)<0$.
+\end{proof}
+
+The existence of $\alpha$ satisfying the strong Wolfe condition is a consequence of the following proposition, which also provides an algorithm.
+\begin{proposition}
+Let $f: \alpha \mapsto f(\alpha)$ be a $C^1$ function defined on $[0, +\infty)$ such that $f$ is bounded from below and $\prt_\alpha f(0) < 0$. Let $0 < c_1 < c_2 < 1$. 
+
+Let $\alpha_{0,0} = \alpha_{0,1} = 0$ and $\alpha_0 > 0$. Define recursively sequences $\alpha_{n,0}, \alpha_{n,1}$ and $\alpha_{n}$ as follows. 
+\begin{enumerate}[label=(\roman*)]
+\item If  $f(\alpha_n) \leq  f(0) + c_1\alpha_n \prt_\alpha f(0)$ and  $|\prt_\alpha f(\alpha_n)| \leq c_2 |\prt_\alpha f(0)|$ stop the construction.
+%\item If $f(\alpha_n) >  f(0) + c_1\alpha_n \prt_\alpha f(0)$ and $\alpha_n > \alpha_{n,1}$, let $\alpha_{n+1} = 2\alpha_n$, $\alpha_{n+1,1} = \alpha_{n}$ and $\alpha_{n+1,0} = \alpha_{n,0}$.
+\item If $f(\alpha_n) >  f(0) + c_1\alpha_n \prt_\alpha f(0)$ 
+%and $\alpha_n \leq \alpha_{n,1}$, 
+let $\alpha_{n+1} = (\alpha_n+\alpha_{n,0})/2$, $\alpha_{n+1,1} = \alpha_{n}$ and $\alpha_{n+1,0} = \alpha_{n,0}$.
+\item If $f(\alpha_n) \leq  f(0) + c_1\alpha_n \prt_\alpha f(0)$ and $|\prt_\alpha f(\alpha_n)| > c_2 |\prt_\alpha f(0)|$:
+\begin{enumerate}[label = (\alph*),itemindent=1cm]
+\item If $\alpha_{n,1}=0$ and $\prt_\alpha f(\alpha_n) > -c_2 \prt_\alpha f(0)$, let  $\alpha_{n+1} = 2\alpha_n$, $\alpha_{n+1,0} = \alpha_{n,0}$ and $\alpha_{n+1,1} = \alpha_{n,1}$.
+\item If $\alpha_{n,1}=0$ and $\prt_\alpha f(\alpha_n) < c_2 \prt_\alpha f(0)$, let  $\alpha_{n+1} = 2\alpha_n$, $\alpha_{n+1,0} = \alpha_{n}$ and $\alpha_{n+1,1} = \alpha_{n,1}$.
+\item If $\alpha_{n,1}>0$ and $\prt_\alpha f(\alpha_n) > - c_2 \prt_\alpha f(0)$, let 
+$\alpha_{n+1} = (\alpha_n+\alpha_{n,0})/2$, $\alpha_{n+1,1} = \alpha_{n}$ and $\alpha_{n+1,0} = \alpha_{n,0}$.
+\item If $\alpha_{n,1}>0$ and $\prt_\alpha f(\alpha_n) < c_2 \prt_\alpha f(0)$, let 
+$\alpha_{n+1} = (\alpha_n+\alpha_{n,1})/2$, $\alpha_{n+1,0} = \alpha_{n}$ and $\alpha_{n+1,1} = \alpha_{n,1}$.
+\end{enumerate}
+\end{enumerate} 
+Then the sequences are always finite, i.e., the algorithm terminates in a finite number of steps.
+
+\label{prop:line.search}
+\end{proposition}
+
+\begin{proof}
+Assume that the algorithm runs indefinitely in order to get a contradiction.
+If the algorithm never enters case (ii), then $\alpha_{n,1} = 0$ for all $n$, $\alpha_n$ tends to infinity and $f(\alpha_n) \leq  f(0) + c_1\alpha_n \prt_\alpha f(0)$, which contradicts the fact that $f$ is bounded from below. 
+
+As soon as the algorithm enter (ii), we have, for all subsequent iterations:
+$\alpha_{n,0}\leq \alpha_n\leq \alpha_{n,1}$, $\alpha_{n+1, 0}\geq \alpha_{n,0}$, $\alpha_{n+1, 1}\leq \alpha_{n,1}$ and $\alpha_{n+1,1} - \alpha_{n+1,0} = (\alpha_{n,1} - \alpha_{n,0})/2$. This implies that both $\alpha_{n,0}$ and $\alpha_{n,1}$ converge to the same limit $\alpha$.
+
+Moreover, we have, at each step:
+\[
+f(\alpha_{n,1}) >  f(0) + c_1\alpha_{n,1} \prt_\alpha f(0) \text{ or }
+\prt_\alpha f(\alpha_{n,1}) > - c_2 \prt_\alpha f(0)
+\]
+and
+\[
+f(\alpha_{n,0}) \leq  f(0) + c_1\alpha_{n,0} \prt_\alpha f(0) \text{ and }
+\prt_\alpha f(\alpha_{n,0}) \leq c_2 \prt_\alpha f(0)\,.
+\]
+
+This implies that, at each step:
+\[
+\frac{f(\alpha_{n,1}) - f(\alpha_{n,0})}{\alpha_{n,1} - \alpha_{n,0}} > c_1 \prt_\alpha f(0) \text{ or }
+\prt_\alpha f(\alpha_{n,1}) > - c_2 \prt_\alpha f(0)
+\]
+and
+\[
+\prt_\alpha f(\alpha_{n,0}) \leq c_2 \prt_\alpha f(0)\,.
+\]
+There inequalities remain satisfied at the limit, and we must have
+\[
+\prt_\alpha f(\alpha)  > c_1 \prt_\alpha f(0) \text{ or }
+\prt_\alpha f(\alpha) > - c_2 \prt_\alpha f(0)
+\]
+and
+\[
+\prt_\alpha f(\alpha) \leq c_2 \prt_\alpha f(0)\,,
+\]
+which is a contradiction since $c_2>c_1$ and  $\prt_\alpha f(0)<0$.
+\end{proof}
+
+
+
+\section{Stochastic gradient descent}
+\label{sec:sgd}
+\subsection{Stochastic approximation methods}
+In some situations, the computation of $\nabla F$ can be too costly, if not intractable, to run gradient descent updates while a low-cost stochastic approximation is available. For example, if $F$ is an average of a sum of many terms, the approximation may simply be based on averaging over a randomly selected subset of the terms. This leads to  a {\em stochastic approximation algorithm }\cite{robbins1985stochastic,kushner2003stochastic,benveniste2012adaptive,duflo2013random} called stochastic gradient descent (SGD). 
+ 
+A general stochastic approximation algorithm of the Robbins-Monro type updates a parameter, denoted $x\in \mR^d$, using stochastic rules. One associates to each $x$ a probability distribution $(\pi_x)$ on some set $\CS$, and, for some function $H: \mR^d\times \CS \to \mR^d$, considers the sequence of random iterations:
+\begin{equation}
+\label{eq:sa.0}
+\left\{
+\begin{aligned}
+\boldsymbol\xi_{t+1} &\sim \pi_{X_t}\\
+X_{t+1} &= X_t + \al_{t+1} H(X_t, \boldsymbol\xi_{t+1})
+\end{aligned}
+\right.
+\end{equation}
+where $\boldsymbol\xi_{t+1}$ is a random variable and the notation $\boldsymbol\xi_{t+1} \sim \pi_{X_t}$ should be interpreted as the more precise statement that the conditional distribution of $\boldsymbol\xi_{t+1}$ given all past random variables $\mathcal U_t = (\boldsymbol\xi_1, X_1, \ldots, \boldsymbol\xi_t, X_t)$ only depends on $X_t$ and is given by $\pi_{X_t}$. 
+
+It is sometimes assumed in the literature that $\pi_x$ does not depend on $x$. This is no real loss of generality because under mild assumptions, a random variable $\boldsymbol\xi$ following $\pi_x$ can be generated as function $U(x, \tilde {\boldsymbol\xi})$ where $\tilde {\boldsymbol\xi}$ follows a fixed distribution (such as that of a family of independent uniformly distributed variables) and one can replace $H(x, \xi)$ by $H(x, U(x, \tilde{\xi}))$. On the other hand, allowing $\pi$ to depend on $x$ brings little additional complication in the notation, and corresponds to the natural form of many applications.
+
+More complex situations can also be considered, in which $\boldsymbol\xi_{t+1}$ is not conditionally independent of the past variables given $X_t$. For example, the conditional distribution of $\boldsymbol\xi_{t+1}$ given the past may also depends on $\boldsymbol\xi_t$, which allows for the combination of stochastic gradient methods with Markov chain Monte-Carlo methods. This situation is studied, for example, in \citet{metivier1987theoremes,benveniste2012adaptive}, and we will discuss an example in \cref{sec:stoc.grad}.
+ 
+ \subsection{Deterministic approximation and convergence study} 
+ \label{sec:sgd.convergence}
+Introduce the  function
+\[
+\bar H(x) = E_{\pi_x}(H(x, \cdot))
+\]
+and write
+\[
+X_{t+1}  = X_t + \alpha_{t+1} \bar H(X_t)  + \al_{t+1} \boldsymbol\eta_{t+1}
+\]
+with $\boldsymbol\eta_{t+1} = H(X_t, \boldsymbol\xi_{t+1}) - \bar H(X_t)$ in order to represent the evolution of $X_t$ in \cref{eq:sa.0} as a perturbation
+of the deterministic algorithm
+\begin{equation}
+\label{eq:sa.deter}
+\bar x_{t+1}  = \bar x_t + \al_{n+1} \bar H(\bar x_t) 
+\end{equation}
+by the ``noise term'' $\al_{t+1} \boldsymbol\eta_{t+1}$. In many cases, the deterministic algorithm provides the limit behavior of the stochastic sequence, and one should ensure that this limit is as desired.  By definition, the conditional expectation of $\boldsymbol\eta_{t+1}$ given $\CU_t$ (the past) is zero and one says that $\alpha_{t+1}\boldsymbol\eta_{t+1}$ is a ``martingale increment.'' Then, 
+\begin{equation}
+\label{eq:sa.M}
+M_T = \sum_{t=0}^T \al_{t+1} \boldsymbol\eta_{t+1}
+\end{equation}
+ is called a ``martingale.'' The theory of martingales offers numerous  tools for controlling the size of $M_T$ and is often a key element in proving the convergence of the method. 
+ 
+ Many convergence results have been provided in the literature and can be found in textbooks or lecture notes such as \citet{benaim1999dynamics,kushner2003stochastic,benveniste2012adaptive}. These  results rely on some smoothness and growth assumptions made on the function $H$, and on the dynamics of the deterministic equation \cref{eq:sa.deter}. Depending on these assumptions, proofs may become quite technical. We will here restrict to a reasonably simple context and assume that
+\begin{enumerate}[label=(H\arabic*)]
+\item There exists a constant $C$ such that, for all $x\in \mR^d$,
+\[
+E_{\pi_x}(|H(x, \cdot)|^2) \leq C(1+|x|^2).
+\]
+\item There exists $x^*\in\mR^d$ and $\mu > 0$ such that, for all $x\in \mR^d$ 
+\[
+(x - x^*)^T \bar H(x) \leq - \mu |x - x^*|^2.
+\]
+\end{enumerate}
+ 
+Assuming this, let $A_t = |X_t - x^*|^2$ and  $a_t = \myE(A_t)$. Then, using \cref{eq:sa.0},
+\[
+A_{t+1} = A_t + 2\al_{t+1} (X_t - x^*)^T H(X_t, \boldsymbol\xi_{t+1}) + \al_{t+1}^2 |H(X_t, \boldsymbol\xi_{t+1})|^2\,.
+\]
+Taking the conditional expectation given past variables yields
+\begin{align*}
+\myE(A_{t+1}\mid\CU_t) &= A_t + 2\al_{t+1} (X_t - x^*)^T \bar H(X_t) + \al_{t+1}^2 E_{\pi_{x_t}}(|H(X_t, \cdot)|^2)\\
+&\leq A_t - 2\al_{t+1}\mu A_t  + \al_{t+1}^2 C (1+|X_t|^2)\\ 
+&\leq (1 - 2\al_{t+1}\mu + C\al_{t+1}^2)  A_t  + \al_{t+1}^2 \tilde C
+\end{align*}
+with $\tilde C = 1 + |x^*|^2$. Taking expectations on both sides yields
+\begin{equation}
+\label{eq:sg.upper.bound.alpha}
+a_{t+1} \leq (1 - 2\al_{t+1}\mu + C\al_{t+1}^2)  a_t  + \al_{t+1}^2 \tilde C.
+\end{equation}
+
+We state the next step in the computation as a lemma.
+\begin{lemma}
+\label{lem:sg.upper.bound}
+Assume that the sequence $a_t$ satisfies the recursive inequality 
+\begin{equation}
+\label{eq:sg.upper.bound.0}
+a_{t+1} \leq (1-\delta_t) a_t + \epsilon_t
+\end{equation}
+with $0 \leq \delta_t \leq 1$.
+Let $v_{k,t} = \prod_{j=k+1}^t (1-\de_{j})$. Then
+\begin{equation}
+a_t \leq a_0 v_{0,t} + \sum_{k=1}^t \ep_k v_{k,t}.
+\label{eq:sg.upper.bound}
+\end{equation}
+\end{lemma}
+\begin{proof}
+Letting $b_t = a_t /v_{0,t}$, we get
+\[
+b_{t+1} \leq b_t + \frac{\ep_{t+1}}{v_{0,t+1}}
+\]
+so that
+\[
+b_t \leq b_0 + \sum_{k=1}^t \frac{\ep_{k}}{v_{0,k}},
+\]
+and
+\[
+a_t \leq a_0 v_{0,t} + \sum_{k=1}^t \ep_k v_{k,t}.
+\]
+\end{proof}
+Using \cref{eq:sg.upper.bound.alpha}, 
+we can apply this lemma with $\ep_t = \tilde C \al_t^2$ and $\de_t = 2\al_{t}\mu - C\al_{t}^2$, making the additional assumption that, for all $t$, $\al_t < \min(\frac1{2\mu}, \frac{2\mu}{C})$, which ensures that $0<\de_t < 1$. 
+
+Starting with a simple case, assume that the steps $\ga_t$ are constant, equal to some value $\ga$ (yielding also constant $\de$ and $\ep$). Then, \cref{eq:sg.upper.bound} gives 
+\begin{equation}
+\label{eq:sgd.constant}
+a_t \leq a_0 (1-\de)^t + \ep \sum_{k=1}^t (1-\de)^{t-k-1} \leq a_0 (1-\de)^t + \frac{\ep}{\de}.
+\end{equation}
+Returning to the expression of $\de$ and $\ep$ as functions of $\alpha$, this gives
+\[
+a_t \leq a_0 (1-2\alpha\mu+\alpha^2C)^t + \frac{\alpha \tilde C}{2\mu - \alpha C}.
+\]
+This shows that $\mathrm{limsup}\, a_t = O(\alpha)$.
+
+Return to the general case in which the steps depend on $t$, we will  use the following simple result, that we state as a lemma for future reference.
+\begin{lemma}
+\label{lem:sgd.simple}
+Assume that the double indexed sequence $w_{st}$, $s\leq t$ of non-negative numbers is bounded and such that, for all $s$, $\lim_{t\to \infty} w_{st} = 0$. Let $\beta_1, \beta_2, \ldots$ be such that
+\[
+\sum_{t=1}^\infty |\beta_t| < \infty.
+\]
+Then
+\[
+\lim_{t \to \infty} \sum_{s=1}^t \beta_s w_{st} = 0.
+\]
+\end{lemma}
+\begin{proof}
+For any $t_0$, we have
+\[
+\left|\sum_{s=1}^t \beta_s w_{st}\right| \leq \max_{s} |\beta_s| \sum_{s=1}^{t_0}  w_{st} + \max_{s,t} |w_{st}| \sum_{s=t_0+1} |\beta_s|
+\]
+so that
+\[
+\limsup_{t\to \infty} \left|\sum_{s=1}^t \beta_s w_{st}\right| \leq \max_{s,t} |w_{st}| \sum_{s=t_0+1} |\beta_s|
+\]
+and since this upper bound can be made arbitrarily small, the result follows. 
+\end{proof}
+
+\Cref{lem:sg.upper.bound} implies that 
+\[
+a_t \leq a_0 v_{0,t} + \tilde C \sum_{s=1}^t \alpha^2_{s+1} v_{s,t}.
+\]
+Assume that 
+\begin{enumerate}[label=(H3)]
+\item $\sum_{k=1}^\infty \al_k = \infty$ and $\sum_{k=1}^\infty \al_k^2 < \infty$,
+\end{enumerate} 
+Then $\lim_{t\to\infty} v_{st} = 0$ for all $s$ and \cref{lem:sgd.simple} implies that $a_t$ tends to zero. So, we have just proved that, if (H1), (H2) and (H3) are true,
+the sequence $X_t$ converges in the $L^2$ sense to $x^*$. Actually, under these conditions, one can show that $X_t$ converge to $x^*$ almost surely, and we refer to \citet{benveniste2012adaptive}, Chapter 5, for a proof (the argument above for an $L^2$ convergence follows the one given in \citet{nemirovski_robust_2009}).
+
+\bigskip
+
+Under (H3), one can say much more on the asymptotic behavior of the algorithm by comparing it with an ordinary differential equation. The ``ODE method,'' introduced in \citet{ljung1977analysis}, is indeed a fundamental tool for the analysis of stochastic approximation algorithms. The correspondence between discrete and continuous times is provided by the sequence $\al_t$.  More precisely, let $\tau_0=0$ and $\tau_{t} =  \tau_{t-1} + \alpha_t$, $t\geq 1$. From (H3), $\tau_t \to \infty$ when $t\to\infty$. Define the piecewise linear interpolation $x^\ell(\rho)$ of the sequence $x_t$  by 
+\[
+X^\ell(\rho) = X_t +  \frac{\rho-\tau_t}{\al_{t+1}} (X_{t+1} - X_t),\quad  \rho\in [\tau_{t}, \tau_{t+1}).
+\] 
+Switching to continuous time allows us to interpret the average iteration $\bar x_{t+1} = \bar x_t + \al_{t+1} \bar H(\bar x_t) $ as an Euler discretization scheme for the ordinary differential equation (ODE)
+\begin{equation}
+\label{eq:sa.ode}
+\prt_\rho \bar x = \bar H(\bar x).
+\end{equation}
+
+Most of the insight on long-term behavior of  stochastic approximations results from the fact that the random process $x$ behaves asymptotically like solutions of this ODE. One has, for example, the following result, for which we introduce some additional notation. 
+
+Assume that \cref{eq:sa.ode} has unique solutions for given initial conditions on any finite interval, and denote by $\phi(\rho, \omega)$ its solution at time $\rho$ initialized with $\bar x(0) = \omega$. Let $\al^c(\rho)$ and $\boldsymbol\eta^c(\rho)$ be piecewise constant interpolations of $(\al_t)$ and $(\boldsymbol\eta_t)$ defined by $\al^c(\rho) = \al_{t+1}$ and $\boldsymbol\eta^c(\rho) = \boldsymbol\eta_{t+1}$ on the interval $[\tau_{t}, \tau_{t+1})$. Finally, let 
+\[
+\De(\rho, T) = \max_{s\in [\rho, \rho+T]} \left| \int_\rho^s \boldsymbol\eta^c(u) du\right|.
+\]
+The following proposition (see \cite{benaim1999dynamics}) compares the tails of the process $x^\ell$  (i.e., the functions $x^\ell(\rho+s)$, $s\geq 0$) with the solutions of the ODE over finite intervals. 
+\begin{proposition}[Benaim]
+\label{prop:sgd.ode}
+%Assume that 
+%\begin{equation}
+%\label{eq:ode.1}
+%\lim_{t\to\infty} \De(t, T)  = 0
+%\end{equation}
+% for any $T>0$. 
+Assume that $\bar H$ is Lipschitz and bounded. Then, for some constant $C(T)$ that only depends on $T$ and $\bar H$, one has, for all $\rho\geq 0$
+\begin{equation}
+\label{eq:ode.2}
+\sup_{h\in [0,T]} |X^\ell(\rho+h) - \phi(h, X^\ell(\rho))| \leq C(T) \left( \Delta(\rho-1, T+1) + \max_{s\in[\rho, \rho+T]} \al^c(s)\right)\,.
+\end{equation}
+\end{proposition}
+Recall that $\bar H$ being Lipschitz means that there exists a constant $C$ such that
+\[
+|\bar H (w) - \bar H(w') |\leq C |w-w'|
+\]
+for all $w, w' \in \mR^p$. 
+
+In the upper-bound in \cref{eq:ode.2}, the term $\Delta(\rho-1, T+1)$ is a random variable. It can be related to the variations
+\[
+\De'(t, N) = \max_{k = 0, \ldots, N}  |M_{t+k} - M_t|, 
+\]
+where $M$ is defined in \eqref{eq:sa.M},
+because, if $m(\rho)$ is the largest integer $t$ such that $\tau_t \leq \rho$, then
+\[
+\De'(m(\rho)+1, m(\rho+T) - m(\rho)) \leq \De(\rho, T) \leq  \De'(m(\rho), m(\rho+T) - m(t)+1).
+\]
+In the case we are considering, one can use martingale inequalities (called Doob's inequalities) to control $\De'$. One has, for example,
+\begin{equation}
+\label{eq:doob}
+P\left(\max_{0\leq k\leq N}|M_{t+k} - M_t| > \la\right) \leq \frac{E(|M_{t+N} - M_t|^2)}{\la^2}.
+\end{equation}
+Furthermore, using the fact that $E(\eta_{k+1}\eta_{l+1}) = 0$ if $k\neq l$, one has
+\[
+E(|M_{t+N} - M_t|^2 )= \sum_{k=t}^{t+N} \alpha_{k+1}^2 E(|\boldsymbol\eta_{t+1}|^2).
+\]
+If we assume (to simplify) that $H$ is bounded and $\sum_{k=1}^\infty \alpha_k^2 <\infty$ then, for some constant $C$, we have
+\[
+E(|M_{t+N} - M_t|^2) \leq C \sum_{k=t}^{\infty} \alpha_{k+1}^2 \to 0
+\]
+and inequality \eqref{eq:doob} can then be used in \eqref{eq:ode.2} to control the probability of deviation of the stochastic approximation from the solution of the ODE over finite intervals (a little more work is required under weaker assumptions on $H$, such as (H1)).
+\bigskip
+
+Proposition \ref{prop:sgd.ode} cannot be used with $T = \infty$ because the constant $C(T)$ typically grows exponentially with $T$. In order to draw conclusions on the limit of the process $W$, one needs additional assumptions on the stability of the ODE. We refer to \cite{benaim1999dynamics} for a collection of results on the 
+relationship between invariant sets and attractors of the ODE and  limit trajectories of the stochastic approximation. We here quote one of these results which is especially relevant for SGD. 
+\begin{proposition}
+\label{prop:sgd.conv}
+Assume that $\bar H = -\nabla E$ is the gradient of a function $E$ and that $\nabla E$ only vanishes at a finite number of points. Assume also that $X_t$ is bounded. Then $X_t$ converges to a point $x^*$ such that  $\nabla E(x^*) = 0$.
+\end{proposition}
+
+
+Some additional conditions on $\bar H$ can ensure that stochastic approximation trajectories remain bounded. The simplest one assumes the existence of a ``Lyapunov function'' that controls the ODE at infinity. The following result is a simplified version of Theorem 17 in \citet{benveniste2012adaptive}.
+\begin{theorem}
+\label{th:sgd.lyap}
+In addition to the hypotheses previously made, 
+assume that there exists a $C^2$ function $U$ with bounded second derivatives and $K_0 >0$ such that, for all$x$ such that  $|x| \geq K_0$, 
+\begin{align*}
+&\nabla U(x)^T\bar H(x) \leq 0,\\
+&U(x) \geq \gamma |x|^2, \gamma>0.
+\end{align*}
+Then, the trajectories $X^\ell(\rho)$ are almost surely bounded.
+\end{theorem}
+Note that hypothesis (H2) above implies the theorem's assumptions. 
+
+%In order to ensure that the stochastic approximation algorithm converges with probability one, the previous results require that the sequence $\ga_n$ tends to zero at sufficient speed. If this is not satisfied, the algorithm will typically move from local minimizer to local minimizer over time, often with a non-zero probability of ``explosion''. In spite of this, many implementations use constant, albeit small, steps, for which one can prove some good behavior of the algorithm over some finite time interval with high probability (using e.g., results similar to \cref{eq:sgd.constant}). 
+
+\subsection{The ADAM algorithm}
+\label{sec:adam}
+ADAM (for adaptive moment estimation \citep{kingma2014adam}) is a popular variant of stochastic gradient descent.
+ When dealing with high-dimensional vectors $\CW$, using a single ``gain'' parameter ($\gamma_{n+1}$ in \cref{eq:nn.sgd}) is a limiting assumption since all parameters do not need to scale the same way. This can sometimes be handled by reweighting the components of $H$, i.e., using iterations
+ \[
+ X_{t+1} = X_t + \alpha_t D_t H(X_t, \boldsymbol\xi_{t+1})
+ \]
+ where $D_t$ is a (typically diagonal) matrix. The previous theory can be applied to situations in which $D$ may be random, provided it converges almost surely to a fixed matrix.
+ 
+ 
+The ADAM algorithm provides such a construction (without the theoretical guarantees) in which $D_t$ is computed using past iterations of the algorithm. It requires several parameters, namely: $\alpha$: the algorithm gain, taken as constant (e.g., $\alpha=0.001$);
+Two parameters $\beta_1$ and $\beta_2$ for moment estimates (e.g. $\be_1 = 0.9$ and $\be_2=0.999$);
+A small number $\ep$ (e.g., $\ep = 10^{-8}$) to avoid divisions by 0.
+In addition, ADAM defines two vectors: a mean $m$ and a second moment $v$, respectively initialized at $\boldsymbol 0$ and $\dsone$. The ADAM iterations are given below, in which $g^{\otimes 2}$ denotes the vector obtained by squaring each coefficient of a vector $g$.
+
+\begin{algorithm}[ADAM]
+\label{alg:adam}
+\begin{enumerate}[label=\arabic*., wide=0.5cm]
+\item Let $X_t$ be the current state, $m_t$ and $v_t$ the current mean and variance.
+\item Generate $\boldsymbol\xi_{t+1}$ and let $g_{t+1} = H(X_t, \boldsymbol\xi_{t+1})$.
+\item Update $m_{t+1} = \beta_1 m_t + (1-\beta_1) g_{t+1}$.
+\item Update $v_{t+1} = \beta_2 v_t + (1-\beta_2) g^{\odot 2}_{t+1}$.
+\item Let $\hat m_{t+1} = m_{t+1} / (1-\beta_1^{t+1})$ and $\hat v_{t+1} = v_{t+1} / (1-\beta_2^{t+1})$
+\item
+Set 
+\[
+X_{t+1}  = X_t - \alpha \frac{\hat m_{t+1}}{\sqrt{\hat v_{t+1}} + \ep}
+\]
+\end{enumerate}
+\end{algorithm}
+Note that the iteration on $m_t$ and $v_{t}$ correspond to defining 
+\[ 
+\hat m_t = \frac{\be_1}{1 - \be_1^t} \sum_{k=0}^t (1 - \be_1)^{t-k} g_k
+\]
+and   
+\[
+\hat v_t = \frac{\be_2}{1 - \be_2^t} \sum_{k=0}^t (1 - \be_2)^{t-k} g_k^{\odot 2}.
+\]
+
+
+
+\section{Constrained optimization problems}
+
+\subsection{Lagrange multipliers}
+A constrained optimization problem minimizes a function $F$ over a closed subset $\Omega$ of $\mR^d$, with $\Omega \neq \mR^d$. This restriction invalidates, in a large part, the optimality conditions discussed in \cref{sec:unconstrained}. These conditions indeed apply to minimizers belonging to the interior of $\Omega$, and therefore do not hold when they lie at its boundary, which is a very common situation in practice ($\Omega$  often has an empty interior).
+
+In this section, which follows the discussion given in \citet{wright2022optimization}, we review conditions for optimality for constrained minimization of smooth functions, in two cases. The first one, discussed in this section, is when $\Omega$ is defined by a finite number of smooth constraints, leading, under some assumptions, to the Karush-Kuhn-Tucker (or KKT) conditions. The second one, in the next section, specializes to closed convex $\Omega$.
+
+\subsubsection{KKT conditions}
+\label{sec:kkt.smooth}
+
+We introduce some notation.
+Let $\ga_i$, for $i\in \CC$, be $C^1$ functions  $\gamma_i: \mR^d \to \mR$, where $\CC$ is a finite set of indices.
+We assume that $\CC$ is divided into two non-intersecting parts, $\CC = \CE \cup \CI$ and consider minimization problems searching for
+\begin{equation}
+\label{eq:min.eq.cons}
+x^* \in \argmin_{\Om} F
+\end{equation}
+where
+\begin{equation}
+\label{eq:omega.constraints}
+\Omega = \{x\in \mR^d: \ga_i(x) = 0, i\in \CE \text{ and } \ga_i(x) \leq 0, i\in \CI\}.
+\end{equation}
+The set  $\Omega$ of all $x$ that satisfy the constraints is called the {\em feasible set} for the considered problem. We will always assume that  it is non-empty. If $x\in \Omega$, one defines the set $\CA(x)$ of {\em active constraints} at $x$ to be 
+\[
+\CA(x) = \defset{i\in \CC: \ga_i(x) = 0}.
+\]
+One obviously has $\CE\subset \CA(x)$ for $x\in \Omega$. 
+
+To be valid, the KKT conditions require some additional assumptions on potential minimizers, called ``constraint qualifications.''  An instance of such assumptions is provided by the next definition.
+\begin{definition}
+\label{def:mfcq}
+A point $x\in \Omega$ satisfies the  Mangasarian-Fromovitz constraint qualifications (MF-CQ) if the following two conditions are satisfied. 
+\begin{enumerate}[label=(MF\arabic*)]
+\item The vectors $(\nabla \ga_i(x), i\in \CE)$ are linearly independent.
+\item There exists  a vector $h\in \mR^d$ such that $h^T \nabla \ga_i(x) = 0$ for all $i\in\CE$ and $h^T \nabla \ga_i(x) < 0$ for all $i\in \CA(x)\cap\CI$. 
+\end{enumerate}
+\end{definition}
+A sufficient (and easier to check) condition for $x$ to satisfy these constraints is when the vectors  $(\nabla \ga_i(x), i\in \CA(x))$ are linearly independent \citep{borwein2010convex}. Indeed, if the latter ``LI-CQ'' condition is true, then any set of values can be assigned to $h^T \nabla \gamma_i(x)$ with the existence of a vector $h$ that achieves them.
+
+%\section{Necessary conditions for optimality}
+We introduce the {\em Lagrangian}
+\begin{equation}
+\label{eq:lag}
+L(x, \la) = F(x) + \sum_{i\in \CC} \la_i \ga_i(x)
+\end{equation}
+where the real numbers $\la_i$, $ i\in \CC$ are called {\em Lagrange multipliers}.
+The following theorem (stated without proof, see, e.g., \citep{nocedal2006nonlinear,bonnans2006numerical}) provides necessary conditions satisfied by solutions of the constrained minimization problem that satisfy the constraint qualifications. 
+\begin{theorem}
+\label{th:lag.finite}
+Assume $x^*\in \Omega$ is a solution of \cref{eq:min.eq.cons}, and that $x^*$ satisfies the MF-CQ conditions. Then there exist Lagrange multipliers $\la_i$, $i\in \CC$, such that
+\begin{equation}
+\label{eq:opt.kkt}
+\left\{
+\begin{aligned}
+&\prt_x L(x^*, \la)  = 0\\
+&\la_i \geq 0 \text{ if } i \in \CI, \text{ with } \la_i = 0 \text{ when } i\not\in \CA(x^*) 
+\end{aligned}
+\right.
+\end{equation}
+\end{theorem}
+Conditions \eqref{eq:opt.kkt} are the KKT conditions for the constrained optimization problem. The second set of conditions is often called the {\em complementary slackness conditions} and state that $\la_i = 0$ for an inequality constraint unless this constraint is satisfied with an equality. The next section provides examples in which the MF-CQ conditions are not satisfied and Theorem \ref{th:lag.finite} does not hold. However, these conditions are not needed in the special case when the constraints are affine.
+%\footnote{A function $\ga:H \to \mR$ is affine (where $H$ is an inner-product space) if it takes the form $\ga(x) = \scp{b}{x}_H + \be_0$ for some $b\in H$ and $\be_0\in\mR$.}.
+\begin{theorem}
+\label{th:lag.finite.aff}
+Assume that for all $i\in \CA(x^*)$, the functions $\ga_i$ are affine, i.e., $\gamma_i(x) = b_i^T x + \beta_i$ for some $b\in \mR^d$ and $\beta\in \mR$.  Then \cref{eq:opt.kkt} holds at any solution of \cref{eq:min.eq.cons}.
+\end{theorem}
+
+\begin{remark}
+\label{rem:positive.const}
+We have taken the convention to express the inequality constraints as $\ga_i(x)\leq 0$, $i\in\CI$. With the reverse convention, i.e., $\ga_i(x)\geq 0$, $i\in\CI$, one generally defines the Lagrangian as
+\[
+L(x, \la) = F(x) - \sum_{i\in \CC} \la_i \ga_i(x)
+\]
+and the KKT conditions remain unchanged.
+\end{remark}
+
+
+\paragraph{Examples.}
+Constraint qualifications are important to ensure the validity of the theorem.
+Consider a problem with equality constraints only, and replace it by
+\[
+x^* \in \argmin_{\Om} F
+\]
+subject to  $\tilde \ga_i(x) = 0$, $i\in \CE$, with $\tilde \ga_i = \ga_i^2$.
+We clearly did not change the problem. However, the previous theorem applied to the Lagrangian 
+\[
+L(x, \la) = F(x) + \sum_{i\in \CC} \la_i \tilde \ga_i(x)
+\]
+would require an optimal solution to satisfy $\nabla F(x) = 0$, because $\nabla\tilde \ga_i(x) = 2\ga_i(x) \nabla \ga_i(x) = 0$ for any feasible solution. Minimizers of constrained problems do not necessarily satisfy $\nabla F(x) = 0$, however. This is no contradiction with the theorem since $\nabla\tilde \ga_i(x) = 0$ for all $i$ shows that no feasible point satisfies the MF-CQ.
+
+
+To take a more specific example, still with equality constraints,
+let $d=3$, $\CC=\{1,2\}$ with
+$F(x,y,z) =  x/2 + y$ and $\ga_1(x,y,z) = x^2 - y^2, \ga_2(x,y,z) = y-z^2$. 
+Note that
+$\ga_1 = \ga_2 = 0$ implies that $y = |x|$, so that, for a feasible point, $F(x,y,z) = |x| + x/2 \geq 0$ and
+vanishes only when $x=y=0$, in which case $z=0$ also. So $(0,0,0)$ is a global minimizer.
+We have $dF(0) = (1/2, 1, 0)$, $d\ga_1(0) = (0,0,0)$ and $d\ga_2(0) = (0,1,0)$ so that 0 does not satisfy the MF-CQ.
+The equation
+\[
+dF(0) + \la_1 d\ga_1(0) + \la_2 d\ga_2(0) = 0
+\]
+has no solution $(\la_1, \la_2)$, so that the conclusion of the theorem does not hold.
+
+\subsection{Convex constraints}
+
+%\subsubsection{Normal cone}
+We now consider the case in which $\Omega$ is a closed convex set. 
+To specify the optimality conditions in this case, we need the following definition.
+\begin{definition}
+\label{def:normal.cone}
+Let $\Omega\subset \mR^d$ be convex and let $x\in \Omega$. The normal cone to $\Omega$ at $x$ is the set 
+\begin{equation}
+\CN_\Omega(x) = \{h\in \mR^d: h^T(y-x) \leq 0 \text{ for all } y \in\Omega\}
+\label{eq:normal.cone}
+\end{equation}
+\end{definition}
+The normal cone is an example of convex cone. (A convex subset  $\Gamma$  of $\mR^d$ is called a convex cone, if it is such that $\lambda x \in \Gamma$ for all $x\in \Gamma$ and $\lambda \geq 0$, a property obviously satisfied by $\CN_\Omega(x)$.) It should also be clear from the definition that  non-zero vectors in $\CN_\Omega(x)$ always point outside $\Omega$, i.e.,  $x+h \not\in\Omega$ if $h\in\CN_\Omega(x)$, $h\neq 0$.  Here are some examples.
+\begin{itemize}[wide]
+\item
+If $x$ is in the interior of $\Omega$, then $\CN_\Omega(x) = \{0\}$. 
+\item Assume that $\Omega$ is a half space, i.e.,  $\Omega = \{x: b^Tx + \beta \leq 0\}$ with $|b|=1$, and take $x \in \prt\Omega$, i.e., $b^Tx + \beta = 0$.  Then
+\[
+ \CN_\Omega(x) = \{h = \mu b: \mu\geq 0\}\,.
+\]
+
+Indeed, any element of $\mR^d$ can be written as $y = x + \lambda b + q$ with $q^T b = 0$, and $y\in \Omega$ if and only if $\lambda \leq 0$. Fix such a $y$ and take $h\in \mR^d$, decomposed as $h = \mu b + r$, with $r^Tb = 0$. We have $h^T(y-x) = \lambda\mu + r^Tq$. Clearly, if $\mu < 0$, or if $r \neq 0$, one can find $\lambda \leq 0$ and $q \perp b$ such that $h^T(y-x) > 0$. One the other hand, if $\mu \leq 0$ and $r=0$, we have $h^T(y-x)\leq 0$ for all $y\in \Omega$, which proves the above statement. 
+\item
+With a similar argument, if $\Omega = \{x: b^Tx + \beta = 0\}$ is a hyperplane, one finds that
+\[
+ \CN_\Omega(x) = \{h = \lambda b: \lambda\in \mR \}\,.
+\]
+\end{itemize}
+
+One can build normal cones to domains associated with multiple inequalities or equalities based on the following theorem.
+%, whose proof is a consequence of \cref{th:subg.sum} which will be stated later in these notes.. 
+%We have the following theorem.
+\begin{theorem}
+\label{th:normal.cone.intersect}
+Let $\Omega_1$ and $\Omega_2$ be two convex sets with $\relint(\Omega_1) \cap \relint(\Omega_2) \neq \emptyset$. Then, if $x\in \Omega_1\cap \Omega_2$
+\[
+\CN_{\Omega_1\cap \Omega_2} (x) = \CN_{\Omega_1} (x) + \CN_{\Omega_2} (x) 
+\] 
+Here, the addition is the standard sum between sets in a vector space:
+\[
+A+B = \{x+y: x\in A, y\in B\}.
+\]
+\end{theorem} 
+%\begin{proof}[Partial]
+%One side of the identity between the two sets is straightforward, namely that
+%\[
+%\CN_{\Omega_1} (x) + \CN_{ \Omega_2} (x) \subset \CN_{\Omega_1\cap \Omega_2} (x)\,.
+%\]
+%Indeed, if $x\in \Omega_1\cap\Omega_2$, $h_1\in \CN_{\Omega_1} (x)$, $h_2\in \CN_{\Omega_2} (x)$, then for all $y\in \Omega_1\cap\Omega_2$, we have $h_1^T(y-x) \leq 0$ and $h_2^T(y-x)\leq 0$, hence $(h_1+h_2)^T (y-x) \leq 0$. 
+%
+%We skip the proof of the reverse inclusion which is more delicate and requires a few advanced concepts in convex analysis.  
+%\end{proof}
+
+
+%The relative interior of the closed half space $[b^Tx+\beta \geq 0]$ is the open half space $[b^Tx+\beta > 0]$, and the relative interior of the hyperplane $[b^Tx+\beta = 0]$ is the hyperplane itself. Assume that $b_1, b_2\in \mR^d$ are linearly independent. Then  one can apply the theorem to
+%\[
+%\Omega = \{x: b_1^Tx+\beta_1 \geq 0 \text{ and }b_2^Tx+\beta_2 \geq 0\},
+%\]
+%and one finds, for $x\in \Omega$:
+%\begin{itemize}
+%\item $\CN_\Omega(x) = \{0\}$ if $b_1^Tx+\beta_1 > 0$ and  $b_2^Tx+\beta_2 > 0$.
+%\item $\CN_\Omega(x) = \{\pe\lambda 1 b_1, \pe\lambda 1 > 0\}$ if $b_1^Tx+\beta_1 = 0$ and  $b_2^Tx+\beta_2 > 0$.
+%\item $\CN_\Omega(x) = \{\pe\lambda 2 b_2, \pe\lambda 2 > 0\}$ if $b_1^Tx+\beta_1 > 0$ and  $b_2^Tx+\beta_2 = 0$.
+%\item $\CN_\Omega(x) = \{\pe\lambda 1 b_1 + \pe\lambda 2 b_2, \pe\lambda 1, \pe\lambda 2 > 0\}$ if $b_1^Tx+\beta_1 = 0$ and  $b_2^Tx+\beta_2 = 0$.
+%\end{itemize}
+
+Finally, we note that, if $x\in \relint(\Omega)$, then
+\begin{equation}
+\label{eq:normal.relint}
+\CN_\Omega(x) = \{h\in \mR^d: h^T(y-x) = 0, y\in \Omega\}.
+\end{equation}
+Indeed, if $y\in \Omega$, then $x + \epsilon (y-x)\in \Omega$ for small enough $\epsilon$ (positive or negative).  For $ h \in \CN_\Omega(x)$, the condition $\epsilon h^T(y-x) \leq 0$ for small enough $\epsilon$ requires that $h^T(y-x)=0$.
+
+\bigskip
+%\subsubsection{Optimality conditions}
+
+With this definition in hand, we have the following theorem.
+\begin{theorem}
+\label{th:optimality.convex.constraints}
+Let $F$ be a $C^1$ function and $\Omega$ a closed convex set. If $x^* \in \argmin_\Omega F$, then
+\begin{equation}
+- \nabla F(x^*) \in \CN_\Omega(x^*).
+\label{eq:optimality.convex.constraints}
+\end{equation}
+
+If $F$ is convex and \cref{eq:optimality.convex.constraints} holds, then $x^* \in \argmin_\Omega F$.
+\end{theorem}
+\begin{proof}
+Assume that $x^* \in \argmin_\Omega F$. If $y\in \Omega$, then $x^* + t(y-x^*)\in \Omega$ for all $t\in [0,1]$ and the function $f(t) = F(x+ t(y-x^*))$ is $C^1$ on $[0,1]$, with a minimum at $t=0$. This requires that $\prt_t f(0) = \nabla F(x^*)^T(y-x^*) \geq 0$, because, if $\prt_t f(0) <0$, a Taylor expansion  would show that $f(t) < f(0)$ for small enough $t>0$.
+
+If $F$ is convex and \cref{eq:optimality.convex.constraints} holds, we have $F(y) \geq F(x^*) +  \nabla F(x^*)^T(y-x^*)$ by convexity, so that
+\[
+F(x^*) \leq F(y) + (-\nabla F(x^*))^T(y-x^*) \leq F(y).
+\]
+\end{proof}
+
+
+\subsection{Applications}
+
+\noindent{\bf Lagrange multipliers revisited.}
+Consider $\Omega$ defined by \cref{eq:omega.constraints}, with the additional assumptions that $\gamma_i(x) = b_i^T x + \beta_i$ for $i\in \CE$ and $\gamma_i$ is convex for $i\in \CI$, which ensure that $\Omega$ is convex. 
+Define
+\[
+\CN'_\gamma(x) = \left\{g = \sum_{i\in \CA(x)} \lambda_i \nabla \gamma_i(x): \lambda_i \geq 0, i\in \CA(x) \cap \CI\right \}.
+\]
+Then, the KKT conditions in \cref{eq:opt.kkt} can be rewritten as 
+\[
+- \nabla F(x^*) \in \CN'_\gamma(x^*).
+\]
+Note that one always have $\CN'_\gamma(x) \subset \CN_\Omega(x)$ since, for $g =  \sum_{i\in \CA(x)} \lambda_i \nabla \gamma_i(x)\in \CN'_\gamma(x)$, one has, for $y\in \Omega$,
+\begin{align*}
+g^T (y-x) &= \sum_{i\in \CA(x)} \lambda_i \nabla \gamma_i(x)^T(y-x)\\
+&= \sum_{i\in \CE} \lambda_i (a_i^T y - a_i^Tx) + \sum_{i\in \CA(x)\cap\CI} \lambda_i(\gamma_i(x) + \nabla \gamma_i(x)^T(y-x))\\
+& =  \sum_{i\in \CA(x)\cap\CI} \lambda_i(\gamma_i(x) + \nabla \gamma_i(x)^T(y-x))\\
+&\leq \lambda_i \gamma_i(y) \leq 0,
+\end{align*}
+in which the have used the facts that $a_i^Tx = a_i^T y = -\beta_i$ for $x,y\in\Omega$, $i\in \CE$, $\gamma_i(x) = 0$ for $i\in\CA(x)$ and the convexity of $\gamma_i$. Constraint qualifications such as those considered above are sufficient conditions that ensure the identity between the two sets. 
+
+
+
+
+Consider now the situation of \cref{th:lag.finite.aff}, and assume that  all constraints are affine inequalities, $\gamma_i(x) = b_i^T x + \beta \leq 0, i\in \CI$. Then, the statement 
+$\CN_\Omega(x) \subset \CN'_\gamma(x)$ can be reexpressed as follows. All $h \in \mR^d$ such that
+\[
+h^T(y-x) \leq 0
+\]
+as soon as $b_i^T(y-x)\leq 0$ for all $i\in \CA(x)$ must take the form
+\[
+h = \sum_{i\in\CA(x)} \lambda_i b_i
+\]
+with $\pe\lambda i \geq 0$. This property is called  {\em Farkas's lemma} (see, e.g. \citep{rockafellar1970convex}). Note that affine equalities $b_i^T x + \beta=0$ can be included as two inequalities $b_i^T x + \beta\leq 0$, $-b_i^T x - \beta\leq 0$, which removes the sign constraint on the corresponding $\pe\lambda i$ and therefore yields
+\cref{th:lag.finite.aff}. 
+
+%The convexity condition  implies important regularity properties for $F$ in the {\em relative interior} of its domain. 
+%If $\Om$ is a convex set, its relative interior, denoted $\relint(\Om)$, is defined by
+%\begin{equation}
+%\label{eq:relint}
+%\relint(\Om) = \defset{x\in \Om:\, \forall y\in \Om, \exists \ep>0 \text{ such that }x - \ep(y-x)\in \Om}.
+%\end{equation}
+% 
+% Then, one shows that, if $F$ is convex, it is locally Lipschitz continuous on $\rdom(F)$, i.e., for every compact subset $C \sub \rdom(F)$, there exists a constant $L>0$ such that $|F(x) - F(y)| \leq L|x-y|$ for all $x,y\in C$. 
+%In particular, $F$ is continuous on  $\rdom(F)$. 
+%
+
+\noindent{\bf Positive semi-definite matrices.}
+We now take an example in which \cref{th:lag.finite.aff} does not apply directly. Let $\Omega = \CS_n^+$ be the space of positive semidefinite $n\times n$  matrices, considered as a subset of the space $\CM_n$ of $n\times n$ matrices, itself identified with $\mR^{n^2}$. With this identification, the Euclidean inner product between two matrices can be expressed as  $(A,B) \mapsto \trace(A^TB)$.
+
+We have $A\in \CS_n^+$ if and only if, for all $u\in \mR^d$, 
+$u^T A u \geq 0$, which provides an infinity of linear inequality constraints on $A$. Elements of $\CN_{\CS^+}(A)$ are matrices $H\in \CM_n$ such that
+\[
+\trace(H^T (B-A)) \leq 0
+\]
+for all $B\in \CS_n^+$, and we want to make this normal cone explicit. We first note that, every square matrix $H$ can be decomposed as the sum of a symmetric matrix, $H_s$ and of a skew symmetric one, $H_a$ (namely, $H_s = (H+H^T)/2$ and $H_a = (H-H^T)/2$). We have moreover 
+$\trace(H_a^T (B-A)) = 0$, so the condition is only on the symmetric part of $H$.
+
+For any $u\in \mR^d$, one can take $B = A + uu^T$, which belongs to $\CS^+_n$, with
+$\trace(H_s^T(B-A)) = u^T H_s u$. This shows that, for $H$ to belong to $\CN_{S^+_n}(A)$, one needs $H_s \preceq 0$. 
+
+
+Now, take an eigenvector $u$ of $A$ with eigenvalue $\rho>0$. Then $B = A - \alpha uu^T$ is also in $\CS_n^+$ as soon as $0 \leq \alpha \leq \rho$, and $\trace(H_s^T (B-A))  = - \alpha u^T H_s u$. So, if $H \in \CN_{\CS^+_n}(A)$, we have  $u^T H_s u \geq 0$, and since $H_s \preceq 0$, this gives $u^T H_s u = 0$. Still because $H_s$ is negative semi-definite, this implies $H_s u = 0$. (This can be shown, for example, using Schwarz's inequality which says that $(u^T H_s v)^2 \leq (u^T H_s u) (v^T H_s v)$ for all $v\in \mR^d$.) Decomposing $A$ with respect to its non-zero eigenvectors, i.e., writing
+\[
+A = \sum_{k=1}^p \rho_k u_ku_k^T
+\]
+where $p = \mathrm{rank}(A)$, we get $AH_s = H_s A = 0$. We therefore obtained the proposition
+\begin{proposition}
+\label{prop:semidefinite.normal}
+Let $A \in \CS^+_n$. Then $H\in \CM_{n}$ belongs to $\CN_{\CS^+_n}(A)$ if and only if $-H_s \in \CS_n^+$ and $H_s A = 0$, where $H_s = (H+H^T)/2$.
+\end{proposition}
+%
+% 
+%  
+% For this to  be nonpositive for all $\alpha$, we need $u^TH_su = 0$. This shows that elements $H$ of $\CN_\Omega(A)$ must satisfy $H_su=0$ for all eigenvectors $u$ of $A$ with non-vanishing eigenvalues, and since such vectors generate the range of $A$, this is the same as writing $H_sA = 0$. Note that, since $H_s$ and $A$ are symmetric, this also implies that $AH_s = (H_sA)^T = 0$. Finally, this implies that $H_s$ takes the null space of $A$ into itself.
+%
+%If $u$ is an eigenvector of $A$ such that $Au=0$, the same computation with $\alpha=1$ requires $ u^TH_su \leq 0$ for $u$ in the null space of $A$, i.e., $-H_s$ restricted to that space is positive semi-definite. Since $H_s$ vanishes on the range of $A$ (which is perpendicular to its null space), we find the conditions that $-H_s \in \CS_n^+$ with $AH_s = 0$. These conditions are also sufficient to ensure $H\in \CN_\Omega(A)$, since, when they are true, $\trace(H (B-A)) = - \trace((-H_s)B) \leq 0$, using the fact that the trace of the product of two matrices in $\CS_n^+$ is always non-negative.
+
+Now, if one wants to minimize a function $F$ over positive semidefinite matrices, and $A^*$ is a minimizer, we get the necessary condition that $A^* (\nabla F(A^*))_s = 0 $ with  $(\nabla F(A^*))_s$ positive semidefinite. These conditions are sufficient if $F$ is convex. 
+
+For example, 
+take
+\begin{equation}
+\label{eq:semi.definite.example}
+F(A) = \frac{1}{2} \trace(A^2) - \trace(BA)
+\end{equation}
+with $B\in \CS_n$. Then $(\nabla F(A))_s = A -B$ and the condition is $A(A-B) = 0$ with $A \succeq B$. If $B$ is diagonalized in the form $B = U^T D U$, with $U$ orthogonal and $D$ diagonal, then the solution is $A^* = U^T D^+ U$ where $D^+$ is deduced from $U$ by replacing non-negative entries by zeros.
+
+
+\noindent{\bf Projection.}
+Let $\Omega$ be closed convex, $x_0\in \mR^d$ and $F(x) =\frac12 |x-x_0|^2$. We have 
+\[
+\min_\Omega F = \min_{\Omega\cap \bar B(0, R)} F
+\]
+for large enough $R$ (e.g., larger than $F(x)$ for any fixed point in $\Omega$), and since the latter minimization is over a compact set, $\argmin_\Omega F$ is not empty. The function $F$ being strongly convex, its minimizer over $\Omega$ is unique and called the projection of $x_0$ on $\Omega$, denoted $\proj_\Omega(x_0)$. 
+
+Since $\nabla F(x) = x-x_0$, \cref{th:optimality.convex.constraints} implies that $\proj_\Omega(x_0)$ is characterized by $\proj_{\Omega}(x_0) \in \Omega$ and
+\begin{equation}
+\label{eq:projection.1}
+x_0 - \proj_\Omega(x_0)  \in \CN_\Omega(\proj_\Omega(x_0))
+\end{equation}
+or
+\begin{equation}
+\label{eq:projection.2}
+(x_0 - \proj_\Omega(x_0) )^T(y-  \proj_\Omega(x_0)) \leq 0 \text{ for all } y\in \Omega.
+\end{equation}
+If $x_0\not\in \Omega$, then $\proj_\Omega(x_0) \in \prt\Omega$, since otherwise we would have $\CN_\Omega(\proj_\Omega(x_0)) = \{0\}$ and $x_0 = \proj_\Omega(x_0)$, a contradiction. Of course, if $x_0\in \Omega$, then $\proj_\Omega(x_0) = x_0$.
+
+Here are some important examples.
+\begin{enumerate}[label={\bf\arabic*.}, wide]
+\item
+Let $\Omega = z_0 + V$, where $z_0\in \mR^d$ and $V$ is a linear space (i.e., $\Omega$ is an affine subset of $\mR^d$). Then $N_\Omega(x) = z_0 + V^\perp = x + V^\perp$ for all $x\in \Omega$, where $V^\perp$ is the vector space of vectors orthogonal to $V$, and $\proj_\Omega(x_0)$ is characterized by $\proj_\Omega(x_0)\in \Omega$ and
+\[
+(x_0 - \proj_\Omega(x_0) ) \in V^\perp
+\]
+which is the usual characterization of the orthogonal projection on an affine space (compare to \cref{sec:orth.proj}).
+\item
+If $\Omega = \bar B(0,1)$, the closed unit sphere, then $N_\Omega(x) = \mR^+ x$ for $x\in \prt\Omega$ (i.e., $|x|=1$).  One can indeed note that, if $h\neq 0$ in normal to $\Omega$ at $x$, then $h/|h| \in \Omega$ so that
+\[
+h^T\left(\frac{h}{|h|} - x\right) \leq 0
+\]
+which yields $|h| \leq h^T x$. The Cauchy-Schwartz inequality implying that $h^T x \leq |h|\,|x|=|h|$, we must have equality, $h^T x = |h|\, |x|$, which is only possible when $x$ and $h$ are collinear.
+
+Given $x_0\in \mR^d$ with $x_0 \geq 1$, we see that $\proj_{\Omega}(x_0)$ must satisfy the conditions $|\proj_\Omega(x_0)|  =  1$ (to be in $\prt\Omega$) and $x_0 - \proj_\Omega(x_0) = \lambda x_0$ for some $\lambda \geq 0$, which gives $\proj_{\Omega}(x_0) = x_0/|x_0|$.  
+
+\item If $\Omega = \CS^+_n$ and $B$ (taking the role of $x_0$) is a symmetric matrix, then 
+$\proj_\Omega(B)$ was found in the previous section, and is given by $A = U^T D^+ U$ where $U^TDU$ provides  a diagonalization of $B$.
+ 
+\end{enumerate}
+
+The projection has the important property of being 1-Lipschitz.
+\begin{proposition}
+\label{prop:proj.lip}
+Let $\Omega$ be a closed convex subset of $\mR^d$. Then, for all $x,y\in \mR^d$
+\begin{equation}
+\label{eq:proj.lip}
+|\proj_\Omega(x) - \proj_\Omega(y)| \leq |x-y|.
+\end{equation}
+\end{proposition}
+\begin{proof}
+This proposition is a special case of \cref{prop:prox.lip} below.
+%Writing $x-y = \proj_\Omega(x) - \proj_\Omega(y) + (x - \proj_\Omega(x)  + \proj_\Omega(y) - y)$, we get
+%\begin{multline*}
+%|x-y|^2 = |\proj_\Omega(x) - \proj_\Omega(y)|^2 + (- 2 (x -\proj_\Omega(x))^T(\proj_\Omega(y) - \proj_\Omega(x)) \\
+%+ (-2 (y-\proj_\Omega(y))^T(\proj_\Omega(x) - \proj_\Omega(y)) 
+%+  |x - \proj_\Omega(x)  + \proj_\Omega(y) - y|^2
+%\end{multline*}
+%and all terms in the r.h.s. are non-negative from the characteristic properties of the projection, yielding
+%\[
+%|\proj(x) - \proj(y)|^2 \leq |x-y|^2.
+%\]
+\end{proof}
+
+%\chapter{Smooth constrained optimization: Algorithms}
+
+\subsection{Projected gradient descent}
+\label{sec:proj.grad}
+The projected gradient descent algorithm minimizes $F$ over $\Omega$ by iterating
+\begin{equation}
+\label{eq:proj.grad}
+x_{t+1} = \proj_\Omega(x_t - \alpha_t \nabla F(x_t)),
+\end{equation}
+which provides a feasible method when $\proj_\Omega$ is easy to compute. An equivalent formulation is
+\begin{equation}
+\label{eq:proj.grad.2}
+x_{t+1} = \argmin_\Omega F(x_t) + \nabla F(x_t)^T (x-x_t) + \frac1{2\alpha_t} |x-x_t|^2.
+\end{equation}
+To justify this last statement it suffices to notice that the function in the r.h.s. can be written as
+\[
+\frac{1}{2\alpha_t} |x - x_t + \alpha_t \nabla F(x_t)|^2 - \frac{\alpha_t}{2} |\nabla F(x_t)|^2 + F(x_t)
+\]
+and apply the definition of the projection. 
+
+The convergence properties of this algorithm will be discussed in \cref{sec:proximal}, in a more general context.
+
+%Using the characterization of the projection, we must have  $x_{t+1}\in \Omega$ and
+%\[
+%(x_t - \alpha_t \nabla F(x_t) - x_{t+1})^T(y-x_{t+1}) \leq 0
+%\]
+%for all $y\in \Omega$. In particular, taking $y=x_t$:
+%\begin{equation}
+%\alpha_t (x_{t+1} - x_t)^T \nabla F(x_t) \leq - |x_{t+1} - x_t|^2  
+%\label{eq:pg.1}
+%\end{equation}
+%
+%Assume that $F$ is $L$-$C^1$, so that
+%\begin{equation}
+%F(x_{t+1}) \leq F(x_t) + \nabla F(x_t)^T (x_{t+1}-x_t) + \frac L{2} |x_{t+1}-x_t|^2.
+%\label{eq:pg.2}
+%\end{equation}
+%Using \cref{eq:pg.1}, we get
+%\begin{equation}
+%\label{eq:pg.decrease.1}
+%F(x_{t+1}) \leq F(x_t) - \left(\frac{1}{\alpha_t} - \frac L2\right) |x_{t+1}-x_t|^2.
+%\end{equation}
+%Under the assumption that $\alpha_t < 2/L$, this can be rewritten as
+%\[
+% \left |\frac{x_{t+1}-x_t}{\alpha_t}\right|^2 \leq \frac2{\alpha_t(2-\alpha_t L)} (F(x_{t}) - F(x_{t+1}).
+%\]
+%This inequality should be compared to \cref{eq:grad.desc} in the unconstrained case. It yields, in particular, the inequality
+%\begin{equation}
+%\label{eq:pg.convergence.1}
+%\min\left\{ \left |\frac{x_{t+1}-x_t}{\alpha_t}\right|: t\leq T\right\} \leq \frac{F(x_0) - \min F}{2T \min \{\alpha_t(2-\alpha_t L), t\leq T\}}\,.
+%\end{equation}
+%
+%From \cref{eq:pg.1,eq:pg.2}, we can also get
+%\begin{equation}
+%\label{eq:pg.decrease.2}
+%F(x_{t+1}) \leq F(x_t) + \left(1 - \frac{L\alpha_t}{2}\right)  (x_{t+1} - x_t)^T \nabla F(x_t)   
+%\end{equation}
+%Recall that (from \cref{eq:pg.1}) one has $(x_{t+1} - x_t)^T \nabla F(x_t)\leq 0$.
+%This implies that, given $c_1 < 1$, one can always ensure that 
+%\[
+%F(x_{t+1}) \leq F(x_t) + c_1  (x_{t+1} - x_t)^T \nabla F(x_t) \,. 
+%\]
+%This provides the analogous of \cref{eq:armijo} for projected gradient. If $L$ is not known, a value of $\alpha_t$ such that this inequality is satisfied can be computed using a backtracking algorithm, like in the unconstrained case.
+%
+%Note that, by \cref{eq:pg.1}, $ (x_{t+1} - x_t)^T \nabla F(x_t)$ vanishes if and only if $x_{t+1} = x_t$, that is: $x_t = \proj_\Omega(x_t -\alpha_t \nabla F(x_t))$. If this happens, using \cref{eq:projection.1} with $x_0 = x_t -\alpha_t \nabla F(x_t)$ and $\proj_\Omega(x_0) = x_t$, we get 
+%$- \alpha_t \nabla F(x_t) \in \CN_\Omega(x_t)$
+%or equivalently $-\nabla F(x_t) \in \CN_\Omega(x_t)$, so that $x_t$ satisfies the necessary optimality conditions.
+
+%\section{Frank-Wolfe's algorithm}
+%Projected gradient descent requires solving \cref{eq:pg.2} at each step of the algorithm. In the quite common case in which $\Omega$ is defined through a finite number of affine inequalities or equalities, this constitutes a quadratic programming problem, which may be time-consuming, especially for large scale problems.
+% 
+%The Frank-Wolfe algorithm uses instead a linear program, under the additional requirement that $\Omega$ is bounded. It implements
+%\begin{equation}
+%\label{eq:frank.wolfe}
+%x_{t+1} = (1-\alpha_t) x_t + \alpha_t \argmin_\Omega(x\mapsto \nabla F(x_t)^Tx)
+%\end{equation}
+%with $x_0 \in \Omega$.
+%These iterations satisfy the following properties.
+%
+%\begin{theorem}
+%\label{th:frank.wolfe}
+%Assume that $\Omega$ is a bounded closed convex set and that $F$ is convex and $L$-$C^1$. Assume that $\alpha_0 = 1$ and that, for $t\geq 1$, 
+%\[
+%(1-\rho \alpha_t) \alpha_t \leq \alpha_{t+1} \leq \alpha_t.
+%\]
+%Then,
+%%$F(x_t)$ converges to $F(x^*)$ as soon as $\sum_t \alpha_t = \infty$ and $\sum_t \alpha_t^2 < \infty$. 
+%%
+%%With $\alpha_t = 2/(t+2)$, one has
+%\begin{equation}
+%\label{eq:fw}
+%F(x_t) - F(x^*) \leq \frac{LD^2}{2(1-\rho)} \alpha_t, t\geq 1 
+%\end{equation}
+%with $D = \max\{|x-y|: x,y\in \Omega\}$.
+%\end{theorem}
+%\begin{proof}
+%Let $y_{t+1} = \argmin_\Omega(x\mapsto \nabla F(x_t)^Tx)$ which is well defined since $\Omega$ is a compact. Then $x_{t+1} - x_t = \alpha_t(y_{t+1} - x_t)$ and the $L$-$C^1$ assumption implies that
+%\begin{align*}
+%F(x_{t+1}) &\leq F(x_t) + \alpha_t \nabla F(x_t)^T (y_{t+1} - x_t) + \frac{L \alpha_t^2}2 |y_t - x_t|^2\\
+%&\leq F(x_t) + \alpha_t \nabla F(x_t)^T (y_{t+1} - x_t) + \frac{L \alpha_t^2 D^2}2 
+%\end{align*}
+%By definition of $y_t$, and the convexity of $F$, we have
+%\[
+%\nabla F(x_t)^T (y_{t+1} - x_t) \leq \nabla F(x_t)^T (x^* - x_t) \leq F(x^*) - F(x_t).
+%\]
+%This yields
+%\[
+%F(x_{t+1}) \leq F(x_t) + \alpha_t (F(x^*) - F(x_t)) + \frac{L \alpha_t^2 D^2}2
+%\]
+%or 
+%\begin{equation}
+%\label{eq:fw.1}
+%F(x_{t+1}) - F(x^*) \leq (1-\alpha_t) (F(x_t) - F(x^*)) + \frac{L \alpha_t^2 D^2}2.
+%\end{equation}
+%Let $q_t = F(x_t) - F(x^*)$. \Cref{eq:fw.1} applied with $t=0$ shows that 
+%\[
+%q_1 \leq  \frac{LD^2}{2} \leq \frac{LD^2}{2(1-\rho)} \alpha_1 
+%\]
+%since $\alpha_1 \geq \alpha_0(1-\rho\alpha_0) = 1-\rho$.
+%
+%Now, assume that $q_t \leq M\alpha_t$ for  $M =  \frac{LD^2}{2(1-\rho)}$ (this is true for $t=1$). Then
+%\[
+%q_{t+1} \leq M(1-\alpha_t)\alpha_t + \frac{L D^2}2 \alpha_t^2 = M\alpha_t (1 - \rho\alpha_t) \leq M\alpha_{t+1}
+%\]
+%and the theorem is proved by induction.
+%\end{proof}
+%As an example, the sequence $\alpha_t = 2/(t+2)$ satisfies the assumptions of the theorem with $\rho=1/2$. 
+%
+
+
+%\subsection{Problem statement}
+%
+%Let $\ga_i$, for $i\in \CC$, be $C^1$ functions taking values in $\mR$, where $\CC$ is a finite set of indices.
+%We assume that $\CC$ is divided into two non-intersecting parts, $\CC = \CE \cup \CI$ and consider minimization problems taking the form
+%\begin{equation}
+%\label{eq:min.eq.cons}
+%x^* = \argmin_{x\in \Om} F(x)
+%\end{equation}
+%subject to the constraints $\ga_i(x) = 0$, $i\in \CE$ and $\ga_i(x) \leq 0$, $i\in \CI$. {\em Starting here and for the remainder of this chapter, we will assume that $\mB$, of which $\Om$ is an open subset, is finite dimensional, i.e., $\mB = \mR^d$.}
+%
+%
+%The set $\Phi$ containing all $x\in \Om$ that satisfy the constraints is called the {\em feasible set} for the considered problem. We will always assume that  it is non-empty. If $x\in \Phi$, one defines the set $\CA(x)$ of {\em active constraints} at $x$ to be 
+%\[
+%\CA(x) = \defset{i\in \CC: \ga_i(x) = 0}.
+%\]
+%One obviously has $\CE\subset \CA(x)$. 
+%
+%We will say that a point $x\in \Phi$ is {\em regular} if the following two conditions are satisfied. 
+%\begin{enumerate}[label=(MF\arabic*)]
+%\item The vectors $(\nabla \ga_i(x), i\in \CE(x))$ are linearly independent.
+%\item There exists  a vector $h\in \mR^d$ such that $h^T \nabla \ga_i(x) = 0$ for all $i\in\CE$ and $h^T \nabla \ga_i(x) < 0$ for all $i\in \CA(x)\cap\CI$. 
+%\end{enumerate}
+%These conditions form the Mangasarian-Fromovitz constraint qualification. They are true, in particular, when  the vectors  $(\nabla \ga_i(x), i\in \CA(x))$ are linearly independent \citep{borwein2010convex}.
+%
+%\subsection{Necessary conditions for optimality}
+%
+%To state necessary conditions satisfied by solutions of the problem, one introduces the {\em Lagrangian}
+%\begin{equation}
+%\label{eq:lag}
+%L(x, \la) = F(x) + \sum_{i\in \CC} \la_i \ga_i(x)
+%\end{equation}
+%where the real numbers $\la_i. i\in \CC$ are called {\em Lagrange multipliers}.
+%The following theorem provides necessary conditions satisfied by {\em regular solutions} of the constrained minimization problem. 
+%\begin{theorem}
+%\label{th:lag.finite}
+%Assume $x^*\in \Phi$ is a solution of \eqref{eq:min.eq.cons}, and that $x^*$ is, in addition, regular. Then there exists Lagrange multipliers $\la_i, i\in \CC$, such that
+%\begin{equation}
+%\label{eq:opt.kkt}
+%\left\{
+%\begin{aligned}
+%&\prt_x L(x^*, \la)  = 0\\
+%&\la_i \geq 0 \text{ if } i \in \CI, \text{ with } \la_i = 0 \text{ when } i\not\in \CA(x^*) 
+%\end{aligned}
+%\right.
+%\end{equation}
+%\end{theorem}
+%Conditions \eqref{eq:opt.kkt} are the Karush-Kuhn-Tucker (or KKT) conditions for the constrained optimization problem. The second set of conditions is often called the {\em complementary slackness conditions} and state that $\la_i = 0$ for an inequality constraint unless this constraint is satisfied with an equality. The next section provides examples in which the regularity condition is not satisfied and Theorem \ref{th:lag.finite} does not hold. However, these conditions are not needed in the special case when the constraints are affine\footnote{A function $\ga:H \to \mR$ is affine (where $H$ is an inner-product space) if it takes the form $\ga(x) = \scp{b}{x}_H + \be_0$ for some $b\in H$ and $\be_0\in\mR$.}.
+%\begin{theorem}
+%\label{th:lag.finite.aff}
+%Assume $x^*\in \Phi$ is a solution of \eqref{eq:min.eq.cons}, and that for all $i\in \CA(x^*)$, the functions $\ga_i$ are affine. Then the conclusion of Theorem \ref{th:lag.finite} hold.
+%\end{theorem}
+%
+%\begin{remark}
+%\label{rem:positive.const}
+%We have taken the convention to express the inequality constraints as $\ga_i(x)\leq 0$, $i\in\CI$. With the reverse convention, i.e., $\ga_i(x)\geq 0$, $i\in\CI$, one generally defines the Lagrangian as
+%\[
+%L(x, \la) = F(x) - \sum_{i\in \CC} \la_i \ga_i(x)
+%\]
+%and the KKT conditions remain unchanged.
+%\end{remark}
+%
+%\subsection{Examples}
+%The regularity condition is important to ensure the validity of the theorem.
+%Consider a problem with equality constraints only, and replace it by
+%\Eq{
+%x^* = \argmin_{x\in \Om} F(x)
+%}
+%subject to  $\tilde \ga_i(x) = 0$ with $\tilde \ga_i = \ga_i^2$.
+%We clearly did not change the problem. However, the previous theorem applied to the Lagrangian 
+%\Eq{
+%L(x, \la) = F(x) + \sum_{i\in \CC} \la_i \tilde \ga_i(x)
+%}
+%would require an optimal solution to satisfy $\nabla F(x) = 0$, because $\nabla\tilde \ga_i(x) = 2\ga_i(x) \nabla \ga_i(x) = 0$ for any feasible solution. Minimizers of constrained problems do not necessarily satisfy $\nabla F(x) = 0$, however. This is no contradiction with the theorem since $\nabla\tilde \ga_i(x) = 0$ for all $i$ shows that no feasible point is regular.
+%
+%
+%To take a more specific example, still with equality constraints,
+%let $d=3$, $\CC=\{1,2\}$ with
+%$F(x,y,z) =  x/2 + y$ and $\ga_1(x,y,z) = x^2 - y^2, \ga_2(x,y,z) = y-z^2$. 
+%Note that
+%$\ga_1 = \ga_2 = 0$ implies that $y = |x|$, so that, for a feasible point, $F(x,y,z) = |x| + x/2 \geq 0$ and
+%vanishes only when $x=y=0$, in which case $z=0$ also. So $(0,0,0)$ is a global minimizer.
+%We have $dF(0) = (1/2, 1, 0)$, $d\ga_1(0) = (0,0,0)$ and $d\ga_2(0) = (0,1,0)$ so that 0 is not regular.
+%The equation
+%\Eq{
+%dF(0) + \la_1 d\ga_1(0) + \la_2 d\ga_2(0) = 0
+%}
+%has no solution $(\la_1, \la_2)$, so that the conclusion of the theorem does not hold.
+%
+
+
+\section{General convex problems}
+
+\subsection{Epigraphs}
+\begin{definition}
+\label{def:epi}
+Let $F$ be a convex function. The  epigraph of $F$ is the set 
+\begin{equation}
+\epi(F) = \defset{(x,a)\in \mR^d \times \mR: F(x)\leq a}\,.
+\label{eq:epi}
+\end{equation}
+One says that $F$ is closed if $\epi(F)$
+is a closed subset of $\mR^d\times \mR$, that is: if $x = \lim_n x_n$ and $a = \lim_n a_n$ with $F(x_n) \leq a_n$, then $F(x) \leq a$.  
+\end{definition}
+Clearly, if $(x,a)\in \epi(F)$, then $x\in \dom(F)$. It should also be clear that $\epi(F)$ is always convex when $F$ is convex: If $(x,a), (y,b) \in \epi(F)$, then 
+\[
+F((1-t) x + t y) \leq (1-t) F(x) + t F(y) \leq (1-t)a + tb
+\]
+so that $(1-t)(x,a) + t(y,b) \in \epi(F)$. 
+
+%There is a converse statement to this fact.
+%One says that $E\subset \mR^n \times \mR$ satisfies the epigraph property if $E$ is convex and, for all $x\in \mR^n$, the $\{a: (x, a)\in E\}$ is  an interval $[a_x, +\infty)$ (where $a_x \in (-\infty, +\infty]$ and $[+\infty, +\infty) = \emptyset$). This property is clearly satisfied by $E = \epi(F)$ for any convex function $F$.
+%
+%Conversely, any $E$ satisfying this property is the  epigraph of the convex function $F(x) = a_x$. To justify the convexity of $F$, we note that the convexity of $E$ implies that $((1-t)x + ty, (1-t)a_x + ta_y)\in E$ as soon as $a_x, a_y<\infty$, yielding 
+%\[
+%a_{(1-t)x + ty} \leq (1-t)a_x + ta_y.
+%\]
+%
+%Moreover, if $E$ is not empty and satisfies the epigraph property, so does its closure, $\bar E$. Indeed, take $x\in \mR^n$ and assume that $(x,a)\in \bar E$ for some $a$. Then there exists sequences $x_k, a_k$ such that $(x_k, a_k)\in E$ that converge to $(x,a)$. Fixing $(y,b) \in E$, we note that $a_{x_k} \geq a_y + (x_k
+%
+%This implies that, for any $b<a$, we will have $a_k < b$ for large enough $k$, implying that $(x_k, b)\in E$ and therefore $(x, b)\in E$. This show that $\{a: (x,a)\in \bar E\}$ is either an interval $[a_x, +\infty)$ of the whole real line. The second case requires that there exists a sequence $x_k \in E$ such that $x_k\to x$ and $a_{x_k}\to -\infty$.  
+
+
+
+To illustrate the definition, consider a simple example.
+Let $F$ be the function defined on $\mR$ by $F(x) = |x|$ if $|x| < 1$ and $F(x) = +\infty$ otherwise. It is convex, but not closed, as can be seen by taking the sequence $(1-1/n,1)\in \epi(F)$, with, at the limit, $F(1) = +\infty > 1$. In contrast, the function defined by  $\tilde F(x) = |x|$ if $|x| \leq 1$ and $\tilde F(x) = +\infty$ otherwise is convex and closed. 
+
+
+We have the following proposition. 
+\begin{proposition}
+\label{prop:closed}
+A convex function $F$ is closed if and only if all its sub-level sets 
+\[
+\Lambda_a(F) = \defset{x\in \mR^d: F(x) \leq a}
+\]
+are closed subsets of $\mR^d$. 
+\end{proposition}
+\begin{proof}
+If $F$ is closed, then $\Lambda_a(F)$ is the intersection of the set $\{(x,a): x\in \mR^d\}$, which is obviously closed, and of $\epi(F)$. It is therefore a closed set. 
+
+Conversely, assume that all $\Lambda_a(F)$ are closed and  take a sequence $(x_n, a_n)$ in $\epi(F)$ that converges to $(x,a)$. Then, fixing $\epsilon>0$, $x_n \in \Lambda_{a+\epsilon}$ for large enough $n$, and since this set is closed, $F(x) \leq a+\epsilon$. Since this is true for all $\epsilon>0$, we have $F(x)\leq a$ and $(x,a)\in \epi(F)$.
+\end{proof}
+
+Note that, if $F$ is continuous, then it is closed, so that closedness generalizes continuity for convex functions, but it also applies to the non-smooth case.
+
+If $\Om$ is a convex subset of $\mR^d$, its indicator function $\sig_\Om$ (such that $\sig_\Om(x)= 0$ for $x\in \Om$ and $\sig_\Om(x) = +\infty$ otherwise)  is closed if and only if $\Om$ is a closed subset of $\mR^d$. This is obvious since $\Lambda_a(\sigma_\Omega) = \Omega$ if $a\geq 0$ and $\emptyset$ otherwise. 
+
+
+\subsection{Subgradients}
+Several machine learning problems involve convex functions that are not $C^1$, requiring a generalization of the notion of derivative provided by the following definition.
+\begin{definition}
+\label{def:subgradient}
+If $F$ is a convex function and $x\in \dom(F)$, a vector $g\in \mR^d$ such that 
+\begin{equation}
+\label{eq:subg}
+F(x) + g^T(y-x) \leq F(y) 
+\end{equation}
+for all $y\in \mR^d$ is called a {\em subgradient} of $F$ at $x$. 
+
+The set of subgradients of $F$ at $x$ is denoted $\prt F(x)$ and called the {\em subdifferential} of $F$ at $x$. 
+\end{definition}
+
+If $x\in \mathrm{int}({\dom}(F))$ and $F$ is differentiable at $x$, \cref{eq:conv.3} implies that $\nabla F(x) \in \prt F(x)$.  This is in this case the only element of $\prt F(x)$.
+
+\begin{proposition}
+\label{prop:subg.diff}
+If $F$ is differentiable at $x\in \mathrm{int}({\dom}(F))$, then  $\prt F(x) = \{\nabla F(x)\}$.
+\end{proposition}
+\begin{proof}
+We need to prove that there is no other subgradient.
+Assume that $\nabla F(x)$ exists and take 
+$y = x + \ep u$ in \cref{eq:subg}  ($u\in \mR^d$). One gets, for $g\in \prt F(x)$, 
+\[
+\ep g^Tu \leq F(x+\ep u) - F(x) = \ep \nabla F(x)^Tu + o(\ep)
+\]
+Dividing by $|\ep|$ and letting $\ep\to 0$ gives (depending on the sign of $\ep$)
+\[
+ g^Tu \leq  \nabla F(x)^T u\ \text{\color{black}  and } - g^Tu \leq - \nabla F(x)^T u
+\]
+This is only possible if $g^Tu = \nabla F(x)^T u$ for all $u\in\mR^d$, which itself implies $g=\nabla F$. 
+%So, if $F$ is differentiable at $x$, the only subgradient at $x$ is the gradient. 
+\end{proof}
+
+The next theorem, which is an obvious consequence of \cref{def:subgradient},  characterizes minimizers of convex functions in the general case.
+\begin{theorem}
+\label{th:subg}
+Let $F: \mR^d\to \mR$ be convex. Then $x$ is a (global) minimizer of $F$ if and only if $0\in \prt F(x)$.
+\end{theorem}
+
+The following result shows that subgradients exist under generic conditions. We note that $g\in \prt F(x)$ if and only if $\proj_{\vaff(\dom(F))}(g) \in \prt F$, because \cref{eq:subg} is trivial if $F(y) = +\infty$. So $\prt F$ cannot be bounded unless $\mathrm{aff}(\dom(D)) = \mR^d$. However, it is the part of this set that is included in  the $\vaff(\dom(F))$ that is of interest.
+\begin{proposition}
+\label{prop:subg.exist}
+For all $x\in \mR^d$, $\prt F(x)$ is a closed convex set (possibly empty, in particular for $x\not\in \dom(F)$).
+If $x\in\rdom(F)$, then $\prt F(x) \neq \emp$ and $\prt F(x) \cap \vaff(\dom(F))$ is compact.
+\end{proposition}
+\begin{proof}
+The convexity and closedness of $\prt F(x)$ is clear from the definition.  If $x\in \rdom(F)$, there exists $\epsilon>0$ such that $x+\epsilon h\in \rdom(F)$ for all $h\in \vaff(\dom(F))$ with $|h|=1$. For all $g \in \prt F(x)\cap \vaff(\dom(F))$, one has
+\begin{multline*}
+|g| = \max\{g^T h: h\in \vaff(\dom(F)), |h|=1\}\\
+ \leq \max((F(x+\epsilon h) - F(x))/\epsilon: h\in \vaff(\dom(F)), |h|=1)
+\end{multline*}
+and the upper bound is finite because it is the maximum of a continuous function over a bounded set. This shows that $\prt F(x)$ is bounded. We defer the proof that $\prt F(x)\neq \emptyset$ to \cref{sec:separation}.
+\end{proof}
+
+Subdifferentials are, under mild conditions, additive. More precisely, we have the following proposition.
+\begin{theorem}
+\label{th:subg.sum}
+Let $F_1$ and $F_2$ be convex functions such that 
+\[
+\rdom(F_1) \cap \rdom(F_2)\neq \emp\,.
+\]
+Then,
+%\footnote{The sum of two subsets $A,B\sub \mR^d$ is
+%\[
+%A+B = \defset{x+x', x\in A, x'\in B}
+%\]
+%(Minkowsky sum).}, 
+for all $x\in \mR^d$,  $\prt (F_1+F_2)(x) = \prt F_1(x) + \prt F_2(x)$.
+\end{theorem}
+Note that the inclusion
+\[
+\prt F_1(x) + \prt F_2(x) \subset \prt (F_1+F_2)(x)
+\]
+as can be immediately checked by summing the inequalities satisfied by subgradients. The reverse inclusion requires the use of separation theorems for convex sets (see \cref{sec:separation}).
+
+Another important point is how the chain rule works with compositions with affine functions.
+\begin{theorem}
+\label{th:subg.affine}
+Let $F$ be a convex function on $\mR^d$, $A$ a $d\times m$ matrix and $b\in\mR^d$. Let $G(x) = F(Ax+b)$, $x\in \mR^m$. Assume that there exists $x_0\in \mR^m$ such that  $Ax_0\in \rdom(F)$. Then, for all $x\in \mR^m$, 
+\[
+\prt G(x) = A^T\prt F(Ax+b).
+\]
+\end{theorem}
+One direction is straightforward and does not require the condition on $\rdom(F)$. If $g \in \prt F(Ax+b)$, then
+\[
+F(z) - F(Ax+b) \geq g^T (z - Ax -b), z\in \mR^d
+\]
+and applying this inequality to $z = Ay+b$ for $y\in \mR^m$ yields
+\[
+G(y) - G(x) \geq g^T A (y-x)
+\]
+so that $A^Tg\in \prt G$ and   $A^T \prt F \subset \prt G$. The reverse inclusion is proved in \cref{sec:separation}.
+
+
+Subdifferentials can be seen as generalizations of normal cones. 
+%Indeed, if $\Omega$ is a  convex set, and $\sig_\Om$ its indicator function (so that  $\sig_\Om(x)= 0$ for $x\in \Om$ and $\sig_\Om(x) = +\infty$ otherwise). It is called the indicator function of $\Om$. 
+
+\begin{proposition}
+\label{prop:subg.cone}
+Assume that $\Omega$ is a closed convex subset of $\mR^d$. Then $\sigma_\Omega$ (the indicator function of $\Omega$) has a subdifferential  everywhere on $\Omega$ with 
+\[
+\prt \sigma_\Omega (x) = \CN_\Omega(x),\ x\in \Omega
+\]
+\end{proposition}
+\begin{proof}
+For $x\in \Omega$, \cref{eq:subg} is
+\[
+g^T(y-x) \leq \sigma_\Omega(y)
+\]
+for $y\in \mR^d$, but since $\sigma_\Omega(y) = +\infty$ outside of $\Omega$, $g\in \prt \sigma_\Omega(x)$ is equivalent to 
+\[
+g^T(y-x) \leq 0
+\]
+for $y\in \Omega$, which is exactly the definition of the normal cone.
+\end{proof}
+Given this proposition, it is also clear (after noting that $\sigma_{\Omega_1} + \sigma_{\Omega_2} = \sigma_{\Omega_1\cap\Omega_2}$) that \cref{th:subg.sum} is a generalization of \cref{th:normal.cone.intersect}. 
+
+\subsection{Directional derivatives}
+From \cref{prop:conv.2}, applied with $y = x+h$, we see that 
+\[
+t \mapsto \frac{1}{t} (F(x+th) - F(x))
+\]
+is increasing as a function of $t$. This property allows us to define directional derivatives of $F$ at $x$. 
+\begin{definition}
+\label{def:directional}
+Let $F$ be convex and $x\in \dom(F)$. The directional derivative of $F$ at $x$ in the direction $h\in \mR^d$ is defined by
+\begin{equation}
+\label{eq:directional}
+dF(x, h) = \lim_{t\downarrow 0} \frac{1}{t} (F(x+th) - F(x)),
+\end{equation}
+and belong to $[-\infty, +\infty]$.
+\end{definition}
+Note that, still from \cref{prop:conv.2}, one has, for all $x\in \dom(F)$ and $y\in \mR^d$:
+\begin{equation}
+\label{eq:directional.sub}
+F(y) \geq F(x) + dF(x, y-x)
+\end{equation}
+
+We have the proposition:
+\begin{proposition}
+\label{prop:directional.minimum}
+If $F$ is convex, then $x^* \in \argmin(F)$ if and only if $dF(x^*,h) \geq 0$ for all $h\in \mR^d$.
+\end{proposition}
+\begin{proof}
+If $dF(x^*,h) \geq 0$, then $F(x^*+th) - F(x^*) \geq 0$ for all $t>0$ and this being true for all $h$ implies that $x^*$ is a minimizer. Conversely, if $x^*$ is a minimizer, $dF(x^*, h)$ is a limit of non-negative numbers and is therefore non-negative. 
+\end{proof}
+
+\begin{proposition}
+\label{prop:directional.convex}
+If $F$ is convex and $x\in\dom(F)$, then $dF(x, h)$ is positively homogeneous and subadditive (hence convex) as a function of $h$, namely
+\[
+dF(x, \lambda h)  = \lambda dF(x, h), \lambda>0
+\]
+and
+\[
+dF(x, h_1+h_2) \leq dF(x, h_1) + dF(x, h_2).
+\]
+\end{proposition}
+\begin{proof}
+Positive homogeneity is straightforward and left to the reader. For the second one, we can write
+\[
+F(x+th_1 + th_2) \leq \frac12 (F(x+th_1/2) + F(x+th_2/2))
+\]
+by convexity so that
+\[
+\frac1t(F(x+th_1 + th_2)-F(x)) \leq \frac12 \left(\frac1t (F(x+th_1/2)-F(x)) + \frac1t(F(x+th_2/2) - F(x))\right).
+\]
+Taking $t\downarrow 0$, 
+\[
+dF(x;h_1+h_2) \leq \frac12 (dF(x; h_1/2) + dF(x, h_2/2)) = dF(x, h_1) + dF(x, h_2).
+\]
+\end{proof}
+
+\begin{proposition}
+\label{prop:directional.subg}
+If $F$ is convex and $x\in \dom(F)$, then
+\[
+dF(x, h) \geq \sup\{ g^T h, g\in \prt F(x)\}.
+\]
+If $x\in \rdom(F)$, then
+\[
+dF(x, h) = \max\{ g^T h, g\in \prt F(x)\}.
+\]
+\end{proposition}
+\begin{proof}
+If $g\in \prt F(x)$, then for all $t>0$
+\[
+F(x + th) - F(x) \geq t g^Th.
+\]
+Dividing by $t$ and passing to the limit yields $dF(x,h) \geq g^T h$. 
+
+We prove that the maximum is attained at some $g \in \prt F(x)$ when $x\in \rdom(F)$. In this case,  the domain of the convex function  $G: \tilde h \mapsto dF(x,\tilde h)$  is the vector space parallel to $\mathrm{aff}(\dom(F))$, namely
+\[
+\dom(G) = \{h: x+h \in \mathrm{aff}(\dom(F))\}.
+\]
+Indeed, for any $h$ in this set, there exists $\epsilon>0$ such that $x+th \in \dom(F)$ for $0<t<\epsilon$ and $dF(x, h) \leq (F(x+th) - F(x))/t < \infty$. Conversely, if $h\in \dom(G)$, then $F(x+th) - F(x)$ must be finite for small enough $t$, so that $x+th\in \dom(F)$ and $x+h \in \mathrm{aff}(\dom(F))$.
+
+As a consequence, for any $h\in\mathrm{aff}(\dom(F))$,  there exists $\hat g \in  \prt G(h)$, which therefore satisfies
+\[
+dF(x, \tilde h) \geq dF(x, h) + \hat g^T(\tilde h - h)
+\]
+for any   $\tilde h\in \mR^d$ (the upper bound is infinite if $\tilde h\not\in \dom(G)$). Letting $\tilde h\to 0$, we get $dF(x,h) \leq \hat g^T h$. 
+
+Also, by positive homogeneity, we have
+\[
+tdF(x, \tilde h) \geq dF(x, h) + \hat g^T(t\tilde h - h)
+\]
+for all $t>0$, which requires $dF(x,\tilde h) \geq \hat g^T \tilde h$ for all $\tilde h$, and in particular $dF(x,h)  = \hat g^T h$. 
+
+Since 
+\[
+F(x+\tilde h) - F(x) \geq dF(x, \tilde h) \geq \hat g^T \tilde h
+\]
+we see that $\hat g \in \prt F(x)$, with $\hat g^T h = dF(x,h)$, which concludes the proof. 
+\end{proof}
+
+The next proposition gives a criterion for a vector $g$ to belong to $\prt F(x)$ based on directional derivatives.
+
+\begin{proposition}
+\label{prop:subg.directional}
+Assume that $x\in \dom(F)$ where $F$ is convex. If $g\in \mR^d$ is such that 
+\[
+dF(x,h) \geq g^T h
+\]
+for all $h\in \mR^d$, then $g\in \prt F(x)$.
+\end{proposition}
+\begin{proof}
+Just use the fact that $dF(x, h) \leq F(x+h) - F(x)$.
+\end{proof}
+
+\subsection{Subgradient descent}
+\label{sec:subg.descent}
+When $F$ is a non-differentiable a convex function, directions $g$ such that $-g\in \prt F(x)$ do not always provide directions of descent. Indeed, $g\in\prt F(x)$ implies
+\[
+F(x-\al g) \geq F(x) - \alpha |g|^2
+\]
+but the inequality goes in the ``wrong direction.''  However, we know that, for any $h\in \mR^d$, there exists $g_h\in \prt F(x)$ such that 
+\[
+dF(x, -h) = -g_h^T h \geq -g^T h
+\]
+for all $g \in \prt F(x)$. As a consequence, any non-vanishing solution of the equation $h = g_h$ will provide a direction of descent. This suggests looking for $h\in \prt F(x)$ such that $h\neq 0$ and $|h|^2 \leq g^Th$ for all $g\in \prt F(x)$. Since $g^T h \leq |g|\, |h|$, this requires that $|h| \leq |g|$ for all $g\in \prt F(x)$, i.e., 
+\begin{equation}
+\label{eq:argmin.subg}
+h = \argmin_{\prt F(x)} (g\mapsto |g|).
+\end{equation}
+Conversely, if $h$ is the minimal-norm element of $\prt F(x)$ (which is necessarily unique since the norm is strictly convex and $\prt F(x)$ is convex and compact), then $|h|^2 \leq |h + t(g-h)|^2$ for all $g\in \prt F(x)$ and $t\in [0,1]$, and taking the difference yields
+\[
+2t h^T(g-h) + t^2 |g-h|^2 \geq 0.
+\]
+The fact that this holds for all $t\geq 0$ requires that $h^T(g-h) \geq 0$ as required. We have therefore proved that $h$ defined by \cref{eq:argmin.subg} is a descent direction for $F$ at $x$ (it is actually the steepest descent direction: see \citep{wright2022optimization} for a proof), justifying the algorithm
+\[
+x_{t+1} = x_t - \alpha_t \argmin_{\prt F(x)} (g\mapsto |g|)
+\]
+as subgradient descent iterations. 
+
+\noindent{\bf Example.}
+Consider the minimization of
+\[
+F(x) = \psi(x) + \lambda \sum_{i=1}^n |\pe{x}{i}|
+\]
+where $\psi$ is a $C^1$ convex function on $\mR^d$.
+% (an example of such a problem in machine learning is provided by the lasso regression algorithm where $\psi$ is a quadratic function of $x$. 
+Let $\CA(x) = \{i: \pe{x}{i} = 0\}$. Then
+\[
+\prt F(x) = \left\{\nabla \psi(x) + \lambda  \sum_{i\not\in \CA(x)}\sign(\pe x i) + \lambda \sum_{i\in \CA(x)} \rho_i \mathfrak e_i: |\rho_i|\leq 1, i\in \CA(x)\right\}
+\]
+where $\mathfrak e_i$ is the $i$th vector of the canonical basis of $\mR^d$.
+
+For $g = \nabla \psi(x) +  \lambda  \sum_{i\not\in \CA(x)}\sign(\pe x i) + \lambda \sum_{i\in \CA(x)} \rho_i \mathfrak e_i$, we have
+\[
+|g|^2 = \sum_{i\not\in \CA(x)} ( \prt_i F(x)+\lambda \sign(\pe x i))^2 + \sum_{i\in \CA(x)} (\prt_i \psi(x) - \lambda\rho_i)^2.
+\]
+Define 
+\[
+s(t) = \sign(t) \min(|t|, 1).
+\]
+Then $h$ satisfying \cref{eq:argmin.subg} is given by
+\[
+\pe{h}{i} = \left\{
+\begin{aligned}
+\prt_i \psi(x) - \lambda \sign(\pe x i) & \text{ if } i\not\in \CA(x) \\
+\lambda \  s(\prt_i \psi(x)/\lambda) & \text{ if } i\in \CA(x) .
+\end{aligned}
+\right.
+\]
+
+
+In more complex situations, the extra minimization step at each iteration of the algorithm can be challenging computationally. The following subgradient method uses an averaging approach to minimize $F$ without requiring finding subgradients with minimal norms. It simply defines
+\[
+x_{t+1} = x_t  - \alpha_t g_t, \quad g_t \in \prt F(x_t)
+\]
+and computes
+\[
+\bar x_{t} = \frac{\sum_{j=1}^t \alpha_j x_j}{\sum_{j=1}^t\alpha_j}\,.
+\]
+We refer to \citep{wright2022optimization} for a proof of convergence of this method.
+
+
+
+\subsection{Proximal Methods}
+\label{sec:proximal}
+
+\noindent{\bf Proximal operator.}
+We start with a few simple facts. Let $F$ be a closed convex function and $\psi$ be convex and differentiable, with $\dom(\psi) = \mR^d$. Let $G = F + \psi$. Then $G$ is a closed convex function. Indeed, consider the sub-level set $\Lambda_a(G) = \{x: G(x) \leq a\}$ and assume that $x_n\to x$ with $x_n \in \Lambda_a(g)$. Then $\psi(x_n) \to \psi(x)$ by continuity, and for all $\epsilon > 0$, we have, for large enough $n$, $F(x_n) \leq a - \psi(x) + \epsilon$. This inequality remains true at the limit because $F$ is closed, yielding $G(x) \leq a+\epsilon$ for all $\epsilon>0$, so that $x\in \Lambda_a(G)$.
+
+We have $\rdom(F) \cap \rdom(\psi) \neq \emptyset$ so that (by \cref{th:subg.sum} and \cref{prop:subg.diff}) $\prt G(x) = \nabla \psi(x) + \prt F(x)$. In particular, $x^*$ is a minimizer of $G$ if and only if $-\nabla \psi(x^*) \in \prt F(x^*)$. 
+
+It one assumes that $\psi$ is strongly convex, so that there exists $m$ and $L$ such that
+\[
+\frac{m}{2} |y-x|^2 \leq \psi(y) - \psi(x) - \nabla \psi(x)^T(y-x) \leq \frac{L}{2} |y-x|^2
+\]
+for all $x,y\in \mR^d$, then a minimizer of $G$ exists and is unique. To see this, fix $x_0\in \rdom(F)$ and consider the closed convex set
+\[
+\Omega_0 = \Lambda_{G(x_0)}(G) = \{x: G(x) \leq G(x_0)\}.
+\]
+Any minimizer of $G$ must clearly belong to $\Omega_0$. If $x\in \Omega_0$, we have
+\[
+F(x) + \psi(x_0) + \nabla \psi(x_0)^T(x-x_0) +  \frac{m}{2} |x-x_0|^2 \leq G(x) \leq G(x_0)\,.
+\]
+Moreover, there exists (from \cref{prop:subg.exist}) an element $g\in\prt F(x_0)$ so that 
+$F(x) \geq F(x_0) + g^T (x-x_0)$ for all $x\in \mR^d$. We therefore get
+\[
+F(x_0) + \psi(x_0) + (g+\nabla \psi(x_0))^T(x-x_0) +  \frac{m}{2} |x-x_0|^2  \leq G(x_0)\,.
+\]
+for all $x\in \Omega_0$, which shows that $\Omega_0$ must be bounded and therefore compact. There exists a minimizer $x^*$ of $G$ on $\Omega_0$, and therefore on all $\mR^d$. This minimizer is unique, since the sum of a convex function and a strictly convex function is strictly convex. 
+ 
+
+In particular, for any closed convex $F$, we can apply the previous remarks to 
+\[
+G:  v \mapsto F(v) + \frac1{2} |x-v|^2
+\]
+where  $x\in \mR^d$ is fixed. The function $\psi: v\mapsto |v-x|^2/2$ is strongly convex (with $L=m = 1$) and $G$ therefore has a unique minimizer $v^*$. This is summarized in the following definition.
+\begin{definition}
+\label{def:proximal}
+Let $F$ be a closed convex function. The proximal operator associated to $F$  is the mapping $\prox_{F} : \mR^d \to \dom(F)$ defined by
+\begin{equation}
+\label{eq:proximal}
+\prox_{F}(x) = \argmin_{\mR^d} (v\mapsto  F(v) + \frac1{2} |x-v|^2).
+\end{equation}
+\end{definition}
+
+From the previous discussion, we also deduce
+\begin{proposition}
+\label{prop:proximal.subg}
+Let $F$ be a closed convex function and $\alpha>0$.
+We have $x' = \prox_{\alpha F}(x)$ if and only if $x\in x'+\alpha \prt F(x')$. In particular, $x^*$ is a minimizer of $F$ if and only if $x^* = \prox_{\alpha F}(x^*)$ 
+\end{proposition}
+
+Let us take a few examples.
+\begin{itemize}
+\item Let $F(x) = \lambda |x|$, $x\in \mR^d$, for some $\lambda>0$. Then $F$ is differentiable everywhere except at $x=0$ and $\dom(F) = \mR^d$. We have $\prt F(x) = \lambda x/|x|$ for $x\neq 0$. A vector $g$ belongs to $\prt F(0)$ if and only if
+\[
+g^T x \leq \lambda |x|
+\]
+for all $x\in \mR^d$, which is equivalent to  $|g|\leq \lambda$ so that $\prt F(0) = \bar B(0, \lambda)$. 
+
+We have $x' = \prox_F(x)$ if and only if $x'\neq 0$ and $x = x' + \lambda x'/|x'|$ or $x'=0$ and $|x|\leq \lambda$. For $|x| > \lambda$, the equation $x = x' + \lambda x'/|x'|$ is solved by
+\[
+x' = \frac{|x| - \lambda}{|x|} x
+\]
+yielding
+\begin{equation}
+\label{eq:proximal.norm}
+\prox_F(x) = \left\{
+\begin{aligned}
+\frac{|x| - \lambda}{|x|} x &\text { if } |x| \geq \lambda\\
+0 & \text{ otherwise}
+\end{aligned}
+\right.
+\end{equation}
+
+\item Let $\Omega$ be a closed convex set. Then
+$\prox_{\sigma_\Omega} = \proj_\Omega$, the projection operator on $\Omega$, as directly deduced from the definition.  
+\end{itemize}
+The following proposition can then be compared to \cref{prop:proj.lip}.
+\begin{proposition}
+\label{prop:prox.lip}
+Let $F$ be a closed convex function. Then $\prox_F$ is  1-Lipschitz: for all $x, y\in \mR^d$, 
+\begin{equation}
+\label{eq:prox.lip}
+|\prox_F(x) - \prox_F(y)| \leq |x-y|.
+\end{equation}
+ \end{proposition}
+ \begin{proof}
+ Let $x' = \prox_F(x)$ and $y' = \prox_F(y)$. Then, there exists $g\in \prt F(x')$ and $h\in \prt_F(y')$ such that $x = x' + g$ and $y = y' + h$. Moreover,  we have
+ \begin{align*}
+ F(y') - F(x') &\geq  g^T(y'-x')\\
+ F(x') - F(y') &\geq  h^T(x'-y')\\  
+ \end{align*}
+ from which we deduce $g^T(y'-x') \leq h^T(y'-x')$ or $(h-g)^T(x'-y') \geq 0$. Expressing $g,h$ in terms or $x,x',y,y'$, we get
+ $(y - x - y' + x')^T(y' - x') \geq 0$ or
+ \[
+ |y'-x'|^2 \leq (y-x)^T(y'-x') \leq |y-x|\, |y'-x'|
+ \]
+ which is only possible if $|y'-x'| \leq [y-x|$.
+  \end{proof}
+
+If $F$ is differentiable, then 
+$x' = \prox_{\alpha F}(x)$ satisfies 
+\[
+x' = x - \alpha \nabla F(x')
+\]
+so that $x \mapsto \prox_{\alpha F}(x)$ can be interpreted as an implicit version of the standard gradient step  $x \mapsto x - \alpha \nabla F(x)$. The iterations $x(t+1) = \prox_{\alpha_t F} (x(t))$ provide an algorithm that converges to a minimizer of $F$ (this will be justified below). This algorithm is rarely practical, however, since the minimization required at each step is not necessarily much easier to perform than minimizing $F$ itself. The proximal operator, however, is especially useful when  combined with splitting methods.
+
+\bigskip
+
+\noindent{\bf Proximal gradient descent.}
+Assume that the objective function $F$ takes the form
+\begin{equation}
+\label{eq:split.1}
+F(x) = G(x) + H(x)
+\end{equation}
+where $G$ is $C^1$ on $\mR^d$ and $H$ is a closed convex function. We first note that 
+\[
+dF(x, h) = \lim_{t\downarrow 0} \frac{F(x+th)-F(x)}{t}
+\]
+is well defined (even if $G$ is not convex, because it is smooth), with
+\[
+dF(x,h) = \nabla G(x)^T h + dH(x,h)
+\]
+In particular, if  $x^*$ be a minimizer of $F$, then $dF(x,h) \geq 0$ for all $h$ so that $dH(x,h) \geq -\nabla G(x)^T h$ for all $h$. Using \cref{prop:subg.directional}, this shows that $-\nabla G(x) \in \prt H(x)$, which is a necessary condition for optimality for $F$ (which is sufficient if $G$ is convex).
+
+
+Proximal gradient descent implements the algorithm
+\begin{equation}
+\label{eq:prox.grad}
+x_{t+1} = \prox_{\al_t H} (x_t - \al_t \nabla G(x_t)).
+\end{equation}
+We note that a stationary point of this algorithm, i.e. a point $x$ such that $x = \prox_{\al_t H} (x - \al_t \nabla G(x))$ must be such that $x-\alpha_t \nabla G(x) \in x + \alpha_t \prt H(x)$, so that $-\nabla G(x) \in \prt H(x)$. This shows that the property of being stationary does not depend on $\alpha_t >0$, and is equivalent to the necessary optimality condition that was just discussed.
+
+We first study this algorithm under the assumption that $G$ is $L$-$C^1$, which implies that, for all $x,y\in \mR^d$. 
+\[
+G(y) \leq G(x) + \nabla G(x)^T(y-x) + \frac{L}{2} |x-y|^2.
+\]
+At iteration $t$, we have
+\[
+x_{t} - \alpha_t \nabla G(x_t) \in x_{t+1} + \alpha_t \prt H(x_{t+1})
+\]
+which implies, in particular
+\[
+\alpha_t H(x_t) - \alpha_t H(x_{t+1}) \geq (x_t - x_{t+1} )^T (x_{t} - x_{t+1} - \alpha_t \nabla G(x_t)) = |x_t - x_{t+1}|^2  + \alpha_t \nabla G(x_t)^T(x_{t+1} - x_t)
+\]
+Dividing by $\alpha_t$ and adding $G(x_t) - G(x_{t+1})$, we get
+\begin{align}
+\nonumber
+F(x_t) - F(x_{t+1}) &\geq \frac{1}{\alpha_t} |x_t - x_{t+1}|^2 + G(x_t) + \nabla G(x_t)^T(x_{t+1} - x_t) - G(x_{t+1})\\
+\label{eq:prox.grad.conv.1}
+& \geq \left(\frac{1}{\alpha_t} - \frac{L}{2}\right) |x_t - x_{t+1}|^2
+\end{align}
+so that proximal gradient descent iterations reduce the objective function as soon as $\alpha_t \leq 2/L$. 
+
+%Using the characterization of the projection, we must have  $x_{t+1}\in \Omega$ and
+%\[
+%(x_t - \alpha_t \nabla F(x_t) - x_{t+1})^T(y-x_{t+1}) \leq 0
+%\]
+%for all $y\in \Omega$. In particular, taking $y=x_t$:
+%\begin{equation}
+%\alpha_t (x_{t+1} - x_t)^T \nabla F(x_t) \leq - |x_{t+1} - x_t|^2  
+%\label{eq:pg.1}
+%\end{equation}
+%
+%Assume that $F$ is $L$-$C^1$, so that
+%\begin{equation}
+%F(x_{t+1}) \leq F(x_t) + \nabla F(x_t)^T (x_{t+1}-x_t) + \frac L{2} |x_{t+1}-x_t|^2.
+%\label{eq:pg.2}
+%\end{equation}
+%Using \cref{eq:pg.1}, we get
+%\begin{equation}
+%\label{eq:pg.decrease.1}
+%F(x_{t+1}) \leq F(x_t) - \left(\frac{1}{\alpha_t} - \frac L2\right) |x_{t+1}-x_t|^2.
+%\end{equation}
+Assuming that $\alpha_t < 2/L$, \cref{eq:prox.grad.conv.1} can be rewritten as
+\[
+ \left |\frac{x_{t+1}-x_t}{\alpha_t}\right|^2 \leq \frac2{\alpha_t(2-\alpha_t L)} (F(x_{t}) - F(x_{t+1}).
+\]
+This inequality should be compared to \cref{eq:grad.desc} in the unconstrained case. It yields, in particular, the inequality
+\begin{equation}
+\label{eq:pg.convergence.1}
+\min\left\{ \left |\frac{x_{t+1}-x_t}{\alpha_t}\right|: t\leq T\right\} \leq \frac{F(x_0) - \min F}{2T \min \{\alpha_t(2-\alpha_t L), t\leq T\}}\,.
+\end{equation}
+As a consequence, if one runs proximal gradient descent until $|x_{t+1}-x_t|/\alpha_t$ is small enough, the algorithm will terminate in finite time as soon as $\alpha_t$ is bounded from below (and, in particular, if $\alpha_t$ is constant).
+
+%From \cref{eq:pg.1,eq:pg.2}, we can also get
+%\begin{equation}
+%\label{eq:pg.decrease.2}
+%F(x_{t+1}) \leq F(x_t) + \left(1 - \frac{L\alpha_t}{2}\right)  (x_{t+1} - x_t)^T \nabla F(x_t)   
+%\end{equation}
+%Recall that (from \cref{eq:pg.1}) one has $(x_{t+1} - x_t)^T \nabla F(x_t)\leq 0$.
+%This implies that, given $c_1 < 1$, one can always ensure that 
+%\[
+%F(x_{t+1}) \leq F(x_t) + c_1  (x_{t+1} - x_t)^T \nabla F(x_t) \,. 
+%\]
+%This provides the analogous of \cref{eq:armijo} for projected gradient. If $L$ is not known, a value of $\alpha_t$ such that this inequality is satisfied can be computed using a backtracking algorithm, like in the unconstrained case.
+%
+%Note that, by \cref{eq:pg.1}, $ (x_{t+1} - x_t)^T \nabla F(x_t)$ vanishes if and only if $x_{t+1} = x_t$, that is: $x_t = \proj_\Omega(x_t -\alpha_t \nabla F(x_t))$. If this happens, using \cref{eq:projection.1} with $x_0 = x_t -\alpha_t \nabla F(x_t)$ and $\proj_\Omega(x_0) = x_t$, we get 
+%$- \alpha_t \nabla F(x_t) \in \CN_\Omega(x_t)$
+%or equivalently $-\nabla F(x_t) \in \CN_\Omega(x_t)$, so that $x_t$ satisfies the necessary optimality conditions.
+%
+%
+%
+%
+%Note that the inequality we just obtained is the same as \cref{eq:pg.decrease.1}, from which we deduced \cref{eq:pg.convergence.1}, which therefore also holds for proximal gradient descent. 
+
+If we assume that $G$ is convex, in addition to being $L$-$C^1$, then we have a stronger result.
+Let $x^*$ be a minimizer of $F$. Then, using again $x_{t} - \alpha_t \nabla G(x_t) \in x_{t+1} + \alpha_t \prt H(x_{t+1})$, we have
+\[
+\alpha_t H(x^*) - \alpha_t H(x_{t+1}) \geq (x^* - x_{t+1} )^T (x_{t} - x_{t+1} - \alpha_t \nabla G(x_t)) 
+\]
+and
+\begin{align*}
+\alpha_t F(x^*) - \alpha_t F(x_{t+1}) &\geq (x^* - x_{t+1} )^T (x_{t} - x_{t+1}) - \alpha_t (x^* - x_{t+1} )^T \nabla G(x_t)) + \alpha_t G(x^*) - \alpha_t G(x_{t+1})   
+\\
+&\geq (x^* - x_{t+1} )^T (x_{t} - x_{t+1}) - \alpha_t (x^* - x_{t} )^T \nabla G(x_t)) + \alpha_t G(x^*)\\
+& + \alpha_t (x_{t+1}-x_t)^T \nabla G(x_{t}) - \alpha_t G(x_{t+1})\\
+& \geq   (x^* - x_{t+1} )^T (x_{t} - x_{t+1}) - \frac{\alpha_tL}{2} |x_t - x_{t+1}|^2
+\end{align*}
+Assuming that $\alpha_t L \leq 1$, then
+\[
+\alpha_t F(x^*) - \alpha_t F(x_{t+1}) \geq (x^* - x_{t+1} )^T (x_{t} - x_{t+1}) - \frac{1}{2} |x_t - x_{t+1}|^2 = \frac12 (|x_{t+1} - x^*|^2 - |x_t - x^*|^2), 
+\]
+which we rewrite as
+\[
+\alpha_t (F(x_{t+1}) - F(x^*)) \leq \frac12 (|x_{t} - x^*|^2 - |x_{t+1} - x^*|^2)
+\]
+Note that, from \cref{eq:prox.grad.conv.1}, we also have
+\[
+F(x_{t+1}) \leq F(x_t) - \frac{1}{2\alpha_t}|x_t -x_{t+1}|^2
+\]
+when $\alpha_t L \leq 1$, which shows, in particular that $F(x_t)$ is decreasing. Fixing a time $T$, we have, from these two observations
+\[
+\alpha_t (F(x_{T}) - F(x^*)) \leq \frac12 (|x_{t} - x^*|^2 - |x_{t+1} - x^*|^2)
+\]
+for all $t \leq T-1$, and summing over $T$, 
+\[
+(F(x_T) - F(x_*)) \sum_{t=0}^{T-1} \alpha_t \leq \frac12 (|x_{0} - x^*|^2 - |x_{T} - x^*|^2)
+\]
+yielding
+\begin{equation}
+\label{eq:prox.conv.2.0}
+F(x_T) - F(x_*) \leq \frac{|x_0 -x^*|^2}{2\sum_{t=0}^{T-1} \alpha_t}.
+\end{equation}
+We summarize this in the following theorem, specializing to the case of constant step $\alpha_t$.
+\begin{theorem}
+\label{th:proximal.convergence}
+Let $G$ be am $L$-$C^1$ function defined on $\mR^d$ and $H$ be closed convex. Assume that $F = G+H$ has a minimizer $x^*$. Then the algorithm \cref{eq:prox.grad} run with $\alpha_t = \alpha \leq 1/L$ for all $t$ is such that, for all $T>0$,  
+\begin{equation}
+\label{eq:prox.conv.2}
+F(x_T) - F(x_*) \leq \frac{|x_0 -x^*|^2}{2\alpha T}.
+\end{equation}
+\end{theorem}
+
+Also, when $G = 0$, $F=H$, we retrieve  the proximal iterations algorithm
+\begin{equation}
+\label{eq:prox.iterations}
+x_{t+1} = \prox_{\alpha F}(x_t),
+\end{equation}
+and we have just proved that it
+converges for any $\alpha > 0$ as soon as $F$ is a closed convex function.
+
+One gets a stronger result under the assumption that $G$ is $C^2$, and is such that the eigenvalues of $\nabla^2 G(x)$ are included in a fixed interval $[m, L]$ for all $x\in \mR^d$ with $m>0$. Such a $G$ is strongly convex, which implies that $F$ has a unique minimizer.
+We have
+\begin{align*}
+|x_{t+1} - x^*| &= \left| \prox_{\al_t H}(x_t - \alpha_t \nabla G(x_t)) - \prox_{\alpha_t H} (x^* - \alpha_t \nabla G(x^*)\right| \\
+&\leq \left|x_t - x^* - \alpha_t (\nabla G(x_t)) - \nabla G(x^*))\right|.
+\end{align*}
+
+
+Write
+\begin{align*}
+\left|x_t - x^* - \alpha_t (\nabla G(x_t)) - \nabla G(x^*)\right| &= \left|\int_0^1 (\Id[n] - \alpha_t \nabla^2 G(x^* + t(x_t-x^*)))(x_t - x^*) dt\right| \\
+&\leq  \int_0^1 \left|(\Id[n] - \alpha_t \nabla^2 G(x^* + t(x_t-x^*)))(x_t - x^*)\right| dt\\
+&\leq \max(|1-\alpha_t m|, |1-\alpha_t L|) |x_t - x^*|
+\end{align*}
+where we have use the fact that the eigenvalues of $\Id[n] - \alpha_t \nabla^2 G(x)$ are included in $[1-\alpha_t L, 1-\alpha_t m]$ for all $x\in \mR^d$. If one assumes that $\alpha_t \leq 1/L$, so that $\max(|1-\alpha_t m|, |1-\alpha_t L|) \leq 1-\alpha_t m$, one gets
+\[
+|x_{t+1} - x^*| \leq (1-\alpha_t m) |x_t - x^*|\,.
+\]
+Iterating this inequality, we get the theorem that we state for constant $\alpha_t$.
+\begin{theorem}
+\label{th:proximal.convergence.strong}
+Let $F = G+H$ where $G$ is a $C^2$ convex function and $H$ is a closed convex function. Assume that the eigenvalues of $\nabla^2 G$ are uniformly included  in $[m, L]$ with $m>0$. Let $x^*\argmin F$.
+
+Let $(x_t)$ satisfy \cref{eq:prox.grad} with constant $\alpha_t = \alpha < 1/L$. Then
+\[
+|x_t - x^*| \leq (1-\alpha m)^t |x_0 - x^*|.
+\]
+
+\end{theorem}
+
+Note that these results also apply to projected gradient descent (\cref{sec:proj.grad}), which is a special case (taking $G = \sigma_\Omega$). 
+
+
+\section{Duality}
+\label{sec:convex.optim}
+
+
+\subsection{Generalized KKT conditions}
+A constrained convex minimization problem consists in the minimization of a closed convex function $F$ over a closed convex set $\Omega\subset \rdom(F)$. We have seen in \cref{th:optimality.convex.constraints} that, for smooth $F$, any solution $x^*$ of this problem had to satisfy $-\nabla F(x^*) \in \CN_\Omega(x)$ where
+\[
+\CN_\Omega(x) = \{h: h^T(y-x) \leq 0 \text{ for all } y\in\Om\}\,.
+\]
+
+The next theorem generalizes this property to the non-smooth convex case, for which the necessary optimality condition is also sufficient.
+\begin{theorem}
+\label{th:optimality.convex.constraints.non-smooth}
+Let $F$ be a closed convex function, $\Omega\subset \rdom(F)$ a nonempty closed convex set. Then $x^* \in \argmin_\Omega F$ if and only if
+\[
+0 \in \prt F(x^*) + \CN_\Omega(x^*)
+\]
+\end{theorem}
+\begin{proof}
+Introduce the indicator function $\sigma_\Omega$. Then minimizing $F$ over $\Omega$ is the same as minimizing $G = F + \sigma_\Omega$ over $\mR^d$. The assumptions imply that $\rdom(\sigma_\Omega) = \relint(\Omega) \subset \rdom(F)$ and therefore
+\[
+\prt G(x) = \prt F(x) + \prt \sigma_\Omega(x)
+\]
+for all $x\in \Omega$. Since
+\[
+\prt \sigma_\Omega(x) = \CN_\Omega(x)
+\]
+the result follows for the characterization of minimum of convex functions. 
+\end{proof}
+
+In the following, we will restrict to the situation in which $F$ is finite (i.e., $\dom(F) = \mR^d$) and $\Omega$ is defined through a finite number of equalities and inequalities, taking the form
+\[
+\Om = \defset{x\in \mR^d: \ga_i(x) = 0, i\in \CE \text{ and } \ga_i(x) \leq 0, i\in\CI}
+\]
+for functions $(\ga_i, i\in \CC = \CE\cup\CI)$ such that  $\ga_i:x \mapsto b_i^Tx +\beta_t$ is affine 
+for all $i\in\CE$ and $\ga_i$ is closed convex for all $i\in \CI$. This is similar to the situation considered in \cref{sec:kkt.smooth}, with additional convexity assumptions, but without assuming smoothness. We recall the definition of active constraints from \cref{sec:kkt.smooth}, namely, for $x\in \Omega$, 
+\[
+\CA(x) = \{i\in \CC: \gamma_i(x) = 0\}.
+\]
+Following the discussion in the smooth case, define the set $\CN'_\gamma(x)\subset \mR^d$ by
+\[
+\CN'_\gamma(x) = \left\{\sum_{i\in \CA(x)} \lambda_i s_i: s_i\in \prt \gamma_i(x), i\in \CA(x), \lambda_i \geq 0, i\in \CA(x) \cap \CI\right \}.
+\]
+The property $0 \in \prt F(x^*) + \CN_\gamma(x^*)$ is the expression of the KKT conditions in the non-smooth case. It holds for $x^*\in \argmin_\Omega F$ as soon as $\CN_\Omega(x^*) = \CN'_\gamma(x^*)$, which is true under appropriate constraint qualifications. We here replace the MF-CQ in \cref{def:mfcq} by the following conditions that do not involve gradients.
+\begin{definition}
+\label{def:slater}
+Let $(\ga_i, i\in \CC = \CE\cup\CI)$ be a set of equality and inequality constraints, with $\gamma_i: x\mapsto b_i^T x + \beta_i$, $i, \in\CE$ and $\gamma_i$ closed convex, $i\in\CI$. One says that these constraints satisfy the Slater constraint qualifications (Sl-CQ) if and only if:
+\begin{enumerate}[label=(Sl\,\arabic*)]
+\item The vectors $(b_i, i\in\CE)$ are linearly independent.
+\item There exists $x\in \mR^d$ such that $\ga_i(x) = 0$ for $i\in\CE$ and $\ga_i(x) < 0$ for $i\in\CI$.
+\end{enumerate}
+\end{definition}
+The first constraint is a very mild condition. When it is not satisfied, this means that some $b_i$'s are linear combinations of others, and equality constraints for the latter implies equality constraints for the former. These redundancies can therefore be removed without changing the problem.
+
+Note that (Sl2) can be replaced by the apparently weaker condition that, for all $i\in \CI$, there exists $x_i\in \mR^d$ satisfying all the constraints and $\ga_i(x_i) < 0$.  Indeed, if this is true, then the average, $\bar x$, of $(x_i, i\in\CI)$ also satisfies the equality constraints by linearity, and if $i\in \CI$, 
+\[
+\ga_i(\bar x) \leq \frac1{|\CI|} \sum_{j\in\CI} \ga_{i}(x^{(j)}) \leq \frac1{|\CI|} \ga_{i}(x^{(i)}) < 0.
+\]
+
+The following proposition makes a connection between the Slater conditions and the MF-CQ in \cref{def:mfcq}.
+\begin{proposition}
+\label{prop:mf.sl}
+Assume  that $\gamma_i$, $i\in \CI$ are convex $C^1$ functions. Then, if there exists a feasible point $x^*$  that satisfies the MF-CQ, there exists another point $x$ satisfying the Sl-CQ. Conversely, if there exists $x$ satisfying the Sl-CQ, then every feasible point $x^*$ satisfies the MF-CQ.
+\end{proposition}
+\begin{proof}
+The linear independence conditions on equality constraints are the same in MF-CQ and Sl-CQ, so that we only need to consider inequality constraints.
+
+Let $x^*$ satisfy MF-CQ, and take $h\neq 0$ such that $b_i^Th = 0$ for all $i\in\CE$, and $\nabla \gamma_i(x^*)^Th < 0$, $i\in\CA(x)\cap\CI$. Then $x^* + th$ satisfies the equality constraints for all $t\in \mR$. If $i\in \CI$ is not active, then  $\gamma_i(x^*) < 0$ and this will remain true at $x^*+th$ for small $t$ by continuity. If $i\in \CA(x)\cap\CI$, then a first order expansion gives $\gamma_i(x^*+th) = t\nabla \gamma_i(x^*)^T h + o(|h|)$, which is also negative for small enough $t>0$. So, $x^*+th$ satisfies the Sl-CQ for small enough $t>0$. 
+
+Conversely, let $x$ satisfy the Sl-CQ. Take a feasible point $x^*$. If $x^* = x$, then there is no active inequality constraint and $x^*$ satisfies MF-CQ. Assume $x^*\neq x$ and let $h = x-x^*$. Then $b_i^T h = 0$ for all $i\in\CE$, and if $i\in \CI\cap \CA(x^*)$, 
+\[
+0 > \gamma_i(x) = \gamma_i(x^* + h) \geq \gamma_i(x^*) + \nabla \gamma_i(x^*)^Th = \nabla \gamma_i(x^*)^Th
+\]
+so that $x^*$ satisfies MF-CQ.
+\end{proof}
+
+The following theorem, that we give without proof, states that the Slater conditions implies that the KKT conditions are satisfied for a minimizer.
+\begin{theorem}
+\label{th:kkt.convex}
+Assume that all the constraints are affine, or that they satisfy the Sl-CQ in \cref{def:slater}. Let $x^*\in \argmin_\Omega F$. 
+Then $\CN_\Omega(x^*) = \CN'_\gamma(x^*)$, so that there exist $s_0\in \prt F(x^*)$, $s_i\in \prt\gamma_i(x^*)$, $i\in \CA(x^*)$, $(\lambda_i, i\in \CA(x^*))$ with $\lambda_i \geq 0 $ if $i\in \CI\cap \CA(x^*)$, such that
+\begin{equation}
+\label{eq:kkt.convex}
+s_0 + \sum_{i\in\CA(x)} \lambda_i s_i = 0
+\end{equation}
+\end{theorem} 
+
+\subsection{Dual problem}
+Consider the Lagrangian 
+\[
+L(x, \lambda) = F(x) + \sum_{i\in \CC} \lambda_i \gamma_i(x)
+\]
+defined in \cref{eq:lag} and let $D = \{\la: \la_i\geq 0, i\in \CI\}$. Because the functions $\ga_i$ are non-positive on $\Om$, we have
+\[
+L(x, \la) \leq F(x)
+\]
+for all $x\in \Om$ and $\la\in D$, which implies that
+\[
+L^*(\la) = \inf \{L(x,\la): x\in \mR^d\}
+\]
+is such that $L^*(\la) \leq F(x)$ for all $\la\in D$ and $x\in \Om$. Define 
+\[
+\hat d = \sup \{L^*(\la): \lambda\in D\}
+\]
+and
+\[
+\hat p = \inf \{F(x): x\in \Omega\},
+\] 
+whose computations respectively represent the {\em dual} and {\em primal} problems. Then, we have $\hat d \leq \hat p$.
+
+We did not need much of our assumptions (not even $F$ to be convex) to reach this conclusion. When the converse inequality is true (so that the {\em duality gap} $\hat p - \hat d$ vanishes),  the dual problem provides important insights on the primal problem, as well as alternative ways to solve it. This is true under the Slater conditions.
+
+\begin{theorem}
+\label{th:slater}
+The duality gap vanishes when the constraints are all affine, or when they satisfy the Sl-CQ in \cref{def:slater}. In this case, any solution $\lambda^*$ of the dual problem provides Lagrange multipliers in \cref{th:kkt.convex} and conversely. 
+\end{theorem}
+
+We justify this statement, as a consequence of \cref{th:kkt.convex} and the following analysis. The Lagrangian
+$L(x, \lambda)$ is linear in $\lambda$, and when $\lambda \in D$, is a convex function of $x$. Moreover, one can use subdifferential calculus (\cref{th:subg.sum}) to conclude that, for any $\lambda\in D$, \cref{eq:kkt.convex} expresses the fact that $0\in \prt_x L(x^*, \lambda)$, i.e., that $x^* \in \argmin_{\mR^d} L(\cdot, \lambda)$.
+
+Fixing $x\in \mR^d$, one can also consider the maximization of $L$ in $\lambda\in D$. Clearly, if $x\not \in \Omega$, so that $\gamma_i(x) \neq 0$ for some $i\in \CE$ or $\gamma_i(x) > 0$ for some $i\in \CI$, then $\max_D L(x, \lambda) = +\infty$. If $x\in \Omega$, then the slackness conditions, which require $\pe \lambda i \gamma_i(x)=0$, $i\in \CI$, ensure that $\lambda \in \argmax_D L(x,\cdot)$. 
+
+As a consequence, any pair $x^*\in \Omega$, $\lambda^*\in D$ satisfying the KKT conditions is such that
+\begin{equation}
+L(x^*, \lambda) \leq L(x^*, \lambda^*) \leq L(x, \lambda^*)
+\label{eq:dual.saddle}
+\end{equation}
+for all $x\in \mR^d$ and $\lambda\in D$. Such a pair $(x^*, \lambda^*)$ is called a {\em saddle point} of the function $L$. Conversely, any saddle point of $L$, i.e., any $(x^*, \lambda^*)\in \mR^d \times D$ satisfying  \cref{eq:dual.saddle}, must be such that $x^*\in \Omega$ (to ensure that $L(x^*, \cdot)$ is bounded), and satisfies the KKT conditions. 
+
+We therefore obtain the equivalence of the two properties, for $(x^*, \lambda^*)\in \mR^d \times D$:
+\begin{enumerate}[label=(\roman*)]
+\item $x^*\in \Omega$ and $(x^*, \lambda^*)$ satisfies the KKT conditions.
+\item \Cref{eq:dual.saddle} holds for all $(x, \lambda) \in \mR^d \times D$.
+\end{enumerate}
+
+Consider now the additional condition that
+\begin{enumerate}[label=(iii)]
+\item $x^*\in \argmin_\Omega F$ and $\lambda^* \in \argmax_D L^*$.
+\end{enumerate}
+We already know that, if $(x^*, \lambda^*)$ satisfy the KKT conditions, then $x^* \in \argmin_\Omega F$ (because $\CN'_\gamma(x^*) \subset \CN_\Omega(x^*)$). Moreover, if \cref{eq:dual.saddle} holds, then the  inequality $L(x^*, \lambda) \leq L(x^*, \lambda^*)$ implies that $L^*(\lambda) \leq L(x^*, \lambda^*)$ for all $\lambda\in D$. The inequality   $L(x^*, \lambda^*) \leq L(x, \lambda^*)$ for all $x$ implies that $L(x^*, \lambda^*) \leq L^*(\lambda^*)$. We therefore obtain the fact that $\lambda^*\in \argmax L^*(\lambda)$. To summarize, we have
+\[
+\mathrm{(i)} \Leftrightarrow \mathrm{(ii)} \Rightarrow \mathrm{(iii)}.
+\]
+
+To obtain the final equivalence, we need to assume constraints qualifications, such as Slater's conditions, to ensure that $\CN'_\gamma(x^*) = \CN_\Omega(x^*)$. If this holds, then (iii) implies (via \cref{th:kkt.convex}) that there exists $\tilde \lambda$ such that (i) and (ii) are satisfied for $(x^*, \tilde \lambda)$, with $L(x^*, \tilde\lambda) = L^*(\tilde\lambda)$ and $\tilde \lambda\in \argmin_D L^*$. This shows that $L^*(\tilde \lambda) =  L^*(\lambda^*)$. Moreover, from \cref{eq:dual.saddle}, we have
+\[
+L(x^*, \lambda^*) \leq L(x^*, \tilde \lambda) = L^*(\tilde \lambda),
+\]
+and, by definition of $L^*$, $L(x^*, \lambda^*) \geq L^*(\lambda^*)$. This shows that $L(x^*, \lambda^*) = L(x^*, \tilde \lambda)$. As a consequence, for all $(x, \lambda)\in \mR^d\times D$:
+\[
+L(x^*, \lambda) \leq L(x^*, \tilde{\lambda}) = L(x^*, \lambda^*) = L^*(\lambda^*) = \inf_{\mR^d} L(\cdot, \lambda^*) \leq L(x, \lambda^*)
+\]
+so that $(x^*, \lambda^*)$ satisfies (ii).
+
+
+
+%
+%\subsection{KKT conditions}
+% When $F$ and $\ga_{i}$, $i\in \CC$, are differentiable, necessary conditions for optimality (KKT conditions) are  sufficient. As a consequence, $x^{*}$ is solution of the primal problem if and only if there exists $\la\in D$ such that
+%\[
+%\left\{
+%\begin{aligned}
+%&\prt_x L(x^*, \la)  = 0\\
+%&\la_i \ga_{i}(x^{*}) = 0 \text{ for } i\in \CI 
+%\end{aligned}
+%\right.
+%\]
+%If the duality gap vanishes, the Lagrange multipliers for $x^{*}$ coincide with the solution $\la^{*}$ of the dual problem.
+%\bigskip
+
+\subsection{Example: Quadratic programming}
+\label{sec:example.svm}
+Quadratic programming problems minimize $F(x) = \frac12 x^TAx - b^Tx$, where $A$ is a positive semidefinite matrix and $b\in \mR^d$,  subject to affine constraints $c_i^Tx - d_i = 0$, $i\in \CE$ and $c_i^T x - d_i \leq 0$, $i\in\CI$. 
+%Slater's condition requires the existence, for each $i\in \CI$, of a feasible point $x_i$ such that $c_i^T x_i - d_i < 0$. This is a not really a restriction in this case, since, if no such point exists, one can replace the $i$th inequality constraint by an equality without changing the problem. So, the only assumption that needs to be made for an absence of duality gap is that there exists at least one feasible solution. Moreover, since the constraints are affine, the KKT conditions characterize the solutions of the problem.
+
+
+We here consider the following objective function. Introduce variables $x\in \mR^d$, $x_0\in \mR$ and $\xi \in \mR^N$ and minimize, for a fixed parameter $\gamma$,
+\[
+F(x, x_0, \xi) = \frac12 |x|^2 + \gamma \sum_{k=1}^N \pe \xi k 
+\]
+subject to constraints, for $k=1, \ldots, N$ $\pe \xi k \geq 0$ and 
+\[
+b_k(x_0 + x^Ta_k) + \pe \xi k \geq 1
+\]
+where $b_k\in \{-1,1\}$ and $a_k\in \mR^n$ respectively denote the $k$th output and input training sample. This algorithm minimizes a quadratic function of the input variables $(x, x_0, \xi)$ subject to linear constraints, and is an instance of a quadratic programming problem (this is actually the support vector machine problem for classification, which will be described in \cref{sec:lin.svm}).
+
+Introduce Lagrange multipliers $\eta_k$ for the constraint $\pe\xi k \geq 0$ and $\alpha_k$ for $b_k(x_0 + x^Ta_k) + \pe \xi k \geq 1$. The Lagrangian then takes the form
+\begin{align*}
+L(x, x_0, \xi, \alpha, \eta) &= \frac12 |x|^2 + \gamma \sum_{k=1}^N \pe \xi k 
+- \sum_{i=1}^N \eta_k \pe \xi k - \sum_{k=1}^N \alpha_k (b_k(x_0 + x^Ta_k) + \pe \xi k - 1)\\
+&= \frac12 |x|^2 +  \sum_{k=1}^N (\gamma - \eta_k - \alpha_k)\pe \xi k - x_0 \sum_{k=1}^N \alpha_k b_k - x^T \sum_{k=1}^N \alpha_k b_k a_k + \sum_{k=1}^N \alpha_k .
+\end{align*}
+We compute the dual Lagrangian $L^*$ by minimizing with respect to the primal variables. We note that $L^*(\alpha, \eta) = -\infty$ when $\sum_{k=1}^N \\alpha_k b_k \neq 0$, so that $\sum_{k=1}^N \alpha_k b_k = 0$ is a constraint for the dual problem. The minimization in $\pe \xi k$ also gives $-\infty$ unless $\gamma - \eta_k - \alpha_k = 0$, which is therefore another constraint. 
+Finally, the optimal values of $x$ is 
+\[
+x = \sum_{k=1}^N \alpha_k b_k a_k
+\]
+and we obtain the expression of the dual problem, which maximizes
+\[
+- \frac 12 \sum_{k, l=1}^N \alpha_k \alpha_l b_kb_l a_k^T a_l + \sum_{k=1}^N \alpha_k 
+\]
+subject to $\eta_k, \alpha_k\geq 0$, $\gamma - \eta_k - \alpha_k = 0$ and $\sum_{k=1}^N \alpha_k b_k = 0$. The conditions on $\eta_k$ and $\alpha_k$ can be rewritten as $0 \leq \alpha_k \leq \gamma$, $\eta_k = \gamma - \alpha_k$, and since the rest of the problem does not depends on $\eta$, the dual problem can be reduced to maximizing
+\[
+L^*(\alpha) = - \frac 12 \sum_{k, l=1}^N \alpha_k \alpha_l a_k^T a_l 
++ \sum_{k=1}^N \alpha_k
+\]
+subject to $0 \leq \alpha_k \leq \gamma$ and $\sum_{k=1}^N \alpha_k b_k = 0$.
+
+
+%If $A$ is positive definite, $x \mapsto L(x, \la)$ is minimized at $x = A^{-1}(b - \sum_{i\in\CC} \pe\la i c_i)$, and the dual problem requires to maximize
+%\[
+%L^*(\la) = -\frac12 \Big(\sum_{i\in\CC} \pe\la i c_i - b\Big)^T A^{-1} \Big(\sum_{i\in\CC} \pe\la i c_i - b\Big) - \sum_{i\in CC} \pe\la id_i
+%\]
+%subject to $\pe\la i\geq 0$, $i\in \CI$, which is another quadratic programming problem.. 
+%
+%When $A$ is singular, one can always makes a linear change of variables and choose to describe the problem in a basis that first spans the range of $A$ (with associated coordinates $u$), then its null space (with coordinates $v$). Using this, one sees that there is no loss of generality in assuming that $F$ takes the form  
+%\[
+%F(x)= \frac12 u^TBu - (b^{(1)})^Tu - (b^{(2)})^Tv
+%\]
+%and  
+%\[
+%L(x, \la) = \frac12 u^TBu - (b^{(1)})^Tu - (b^{(2)})^Tv  + \sum_{i\in\CC} \pe\la i \big((c^{(1)}_i)^Tu + (c^{(2)}_i)^Tv - d_i\big)\,,
+%\]
+%with $x=(u,v)$.
+%This implies that $L^*(\la) = -\infty$ if $\sum_{i\in \CC} \pe\la i c_i^{(2)} - b^{(2)} \neq 0 $. Therefore, the dual problem requires to maximize 
+%\[
+%L^*(\la) = -\frac12 \Big(\sum_{i\in\CC} \pe\la i c^{(1)}_i - b^{(1)}\Big)^T B^{-1} \Big(\sum_{i\in\CC} \pe\la i c^{(1)}_i - b^{(1)}\Big) - \sum_{i\in CC} \pe\la id_i
+%\]
+%subject to $\pe\la i\geq 0$, $i\in \CI$ and $\sum_{i\in \CC} \pe\la i c_i^{(2)} - b^{(2)} =0$. 
+
+\subsection{Proximal iterations and augmented Lagrangian}
+The concave function $L^*$ can be maximized by minimizing $-L^*$ using proximal iterations (\cref{eq:prox.iterations}):
+\[
+\lambda(t+1) = \prox_{-\alpha_t L^*}(\lambda(t)) = \argmax_D(\lambda \mapsto L^*(\lambda) - \frac{1}{2\alpha_t} |\lambda - \lambda(t)|^2).
+\]
+
+Introduce the function
+\[
+\phi(x, \lambda) = F(x) + \sum_{i\in \CC} \pe\lambda i \gamma_i(x) - \frac{1}{2\alpha_t} |\lambda - \lambda(t)|^2
+\]
+so that
+\[
+\lambda(t+1) = \argmax_{ \mu\in D} \inf_{x \in \mR^n} \phi(x, \mu).
+\]
+
+The function $\phi$ is convex in $x$ and strongly concave in $\mu$. Results in ``minimax theory'' \cite{bertsekas2009convex} implies that one has the equality 
+\begin{equation}
+\label{eq:inf.sup}
+\max_{\mu\in D} \inf_{x\in \mR^n} \phi(x, \mu) = \inf_{x\in \mR^d} \sup_{\mu\in D} \phi(x, \mu)
+\end{equation}
+(Note that the left-hand side of this equation is never larger than the right-hand side, but their equality requires additional hypotheses---which are satisfied in our context---in order to hold.)
+
+Importantly, the maximization in $\mu$ in the right-hand side has a closed form solution. It requires to maximize
+\[
+\sum_{i\in \CC} \Big(\mu_i \gamma_i(x) - \frac{1}{2\alpha_t} (\mu_i - \lambda_i(t))^2\Big)
+\]
+subject to $\mu_i \geq 0$ for $i\in \CI$, and each $\mu_i$ can be computed separately.
+For $i \in \CE$, there is no constraint on $\mu_i$, and one finds
+\[
+\mu_i = \lambda_i(t) + \alpha_t \gamma_i(x),
+\]
+and
+\[
+\mu_i \gamma_i(x) - \frac{1}{2\alpha_t} (\mu_i - \lambda_i (t))^2 = \lambda_i(t) \gamma_i + \frac{\alpha_t}{2} \gamma_i(x)^2\\ = \frac{1}{2\alpha_t} (\lambda_i(t) + \alpha_t \gamma_i(x))^2 - \frac{\lambda_i(t)^2}{2\alpha_t}.
+\]
+For $i\in \CI$, the solution is 
+\[
+\mu_i = \max(0, \lambda_i(t) + \alpha_t \gamma_i(x))
+\]
+and one can check that, in this case:
+\[
+\mu_i \gamma_i(x) - \frac{1}{2\alpha_t} (\mu_i - \lambda_i(t))^2 =
+\frac{1}{2\alpha_t} \max(0, \lambda_i(t) + \alpha_t \gamma_i(x))^2 - \frac{\lambda_i(t)^2}{2\alpha_t}
+\]
+
+As a consequence, the right-hand side of \cref{eq:inf.sup} requires to minimize
+\begin{multline*}
+G(x) = F(x) + \frac{1}{2\alpha_t} \sum_{i\in\CE} (\lambda_i(t) + \alpha_t \gamma_i(x))^2 + \frac{1}{2\alpha_t} \sum_{i\in\CI} \max(0,\lambda_i(t) + \alpha_t \gamma_i(x)))^2\\
+-  \frac{1}{2\alpha_t}\sum_{i\in \CC} \lambda_i(t)^2.
+\end{multline*}
+If we assume that the sub-level sets $\{x\in \Omega: F(x) \leq \rho\}$ are bounded (or empty) for any $\rho\in \mR$, then so are the sets $\{x\in \mR^n: G(x) \leq \rho\}$, and this is a sufficient condition for the existence of a {\em saddle point} for $\phi$, which is a pair $(x^*, \lambda^*)$ such that, for all $(x, \lambda) \in \mR^n \times D$, 
+\[
+\phi(x^*, \lambda) \leq \phi(x^*, \lambda^*) \leq \phi(x, \lambda^*).
+\]
+One can then check that this implies that $x^*\in \argmin_{\mR^n} G$ while $\lambda^* = \lambda(t+1)$, so that the latter can be computed as follows:
+\begin{equation}
+\left\{
+\begin{aligned}
+&x(t) = \argmin_{x\in \mR^n}\bigg\{ F(x) + \frac{1}{2\alpha_t} \sum_{i\in\CE} (\lambda_i(t) + \alpha_t \gamma_i(x))^2 \\
+& \qquad + \frac{1}{2\alpha_t} \sum_{i\in\CI} \max(0,\lambda_i(t) + \alpha_t \gamma_i(x)))^2\bigg\} \\
+&\lambda_i (t+1)= \lambda_i (t) + \alpha_t \gamma_i(x(t)),\ i\in \CE\\
+&\lambda_i (t+1) = \max(0, \lambda_i (t) + \alpha_t \gamma_i(x(t))),\ i\in\CI
+\end{aligned}
+\right.
+\label{eq:augmented.lagrangian}
+\end{equation}
+These iterations define the augmented Lagrangian algorithm. Starting this algorithm  with some $\lambda(0)\in \mR^{|\CC|}$, and constant $\alpha$, $\lambda(t)$ will converge to a solution $\hat \lambda$ of the dual problem. The last two iterations stabilizing imply that $\gamma_i(x(t))$ converges to 0 for $i\in \CE$, and also  for $i\in \CI$ such that $\hat \lambda_i >0$, and that $\limsup \gamma_i(x(t)) = 0$ otherwise. This shows that, if $x(t)$ converges to a limit $\tilde x$, then $G(\tilde x) = F(\tilde x)$.
+However, for any $x\in \Omega$, we have
+\[
+G(x(t)) \leq G(x)\leq F(x)
+\]
+(the proof being left to the reader),
+showing that $\tilde x\in \argmin_\Omega F$.
+
+Note that the augmented Lagrangian method can also be used in non-convex optimization problems \cite{nocedal2006nonlinear}, requiring in that case that $\alpha$ is small enough.
+
+
+\subsection{Alternative direction method of multipliers}
+We return to a situation considered in \cref{sec:proximal} where the function to minimize takes the form $F(x) = G(x) + H(x)$. Here, we do not assume that $G$ or $H$ is smooth,  but we will need their respective proximal operators to be easy to compute. 
+
+The problem can be reformulated as a minimization with equality constraints, namely that of minimizing $\tilde F(x,z) = G(x) + F(z)$ subject to $x=z$. We will actually consider a more general situation, namely the problem minimizing a function $\tilde F(x,z)$ subject to constraints $Ax + Bz = c$ where $A$ and $B$ are respectively $d\times n$ and $d\times m$ matrices, $x\in \mR^n$, $z\in mR^m$, $c\in \mR^d$. The augmented Lagrangian algorithm applied to this problem leads to iterate (with only equality constraints)
+\[
+\left\{
+\begin{aligned}
+x_{t}, z_t &= \argmin\{ G(x) + F(z) + \frac{1}{2\alpha_t} |\lambda_t + \alpha_t (Ax + Bz - c)|^2\} \\
+\lambda_{t+1} &= \lambda_t + \alpha_t (Ax_t+Bz_t -c)
+\end{aligned}
+\right.
+\]
+with $\lambda_t\in \mR^d$. 
+
+One can now consider splitting the first step in two and iterate:
+\begin{equation}
+\label{eq:admm.2}
+\left\{
+\begin{aligned}
+x_{t} &= \argmin\{ G(x) + F(z_{t-1}) + \frac{1}{2\alpha_t} |\lambda_t + \alpha_t (Ax + Bz_{t-1} - c)|^2\} \\
+z_t &= \argmin\{ G(x_t) + F(z) + \frac{1}{2\alpha_t} |\lambda_t + \alpha_t (Ax_t + Bz - c)|^2\} \\
+\lambda_{t+1} &= \lambda_t + \alpha_t (Ax_t+Bz_t -c)
+\end{aligned}
+\right.
+\end{equation}
+These iterations constitute the ``alternative direction method of multipliers,'' or ADMM (it is also sometimes called Douglas-Rachford splitting). It is not equivalent to the augmented Lagrangian algorithm (one would need to iterate a large number of times over the first two steps before applying the third one for this), but still satisfies good convergence properties.  The reader can refer to \citet{boyd2011distributed} for a relatively elementary proof that shows that this algorithm converges as soon as, in addition to the hypotheses that were already made, the Lagrangian
+\[
+L(x,z,\lambda) = G(x) + H(z) + \lambda^T(Ax+Bz-c)
+\]
+has a saddle point: there exists $x^*, z^*, y^*$ such that
+\[
+\max_y L(x^*, z^*, \lambda) = L(x^*, z^*, \lambda^*) = \min_{x,z} L(x, z, \lambda^*).
+\]
+
+
+\section{Convex separation theorems and additional proofs}
+\label{sec:separation}
+
+We conclude this chapter by completing some of the proofs left aside when discussion convex functions. These proofs use convex separation theorems, stated below (without proof). 
+\begin{theorem}[c.f., \citet{rockafellar1970convex}]
+\label{th:separation.1}
+Let $\Omega_1$ and $\Omega_2$ be two nonempty convex sets with $\relint(\Omega_1)\cap\relint(\Omega_2) = \emptyset$. Then there exists $b\in \mR^d$ and $\beta\in \mR$ such that $b\neq 0$,  
+$b^T x  \leq \beta$ for all $x\in \Omega_1$ and  $b^T x  \geq \beta$ for all $x\in \Omega_2$, with a strict inequality for at least one $x\in \Omega_1\cup \Omega_2$.
+\end{theorem}
+
+\begin{theorem}
+\label{th:separation.2}
+Let $\Omega_1$ and $\Omega_2$ be two nonempty convex sets with $\Omega_1\cap\Omega_2 = \emptyset$ and $\Omega_1$ compact. Then there exists $b\in \mR^n$, $\beta\in \mR$ and $\epsilon<0$ such that 
+$b^T x  \leq \beta - \epsilon$ for all $x\in \Omega_1$ and  $b^T x \geq \beta + \epsilon$ for all $x\in \Omega_2$.
+\end{theorem}
+
+
+%Using these theorems, we can prove the reverse inclusion in \cref{th:subg.sum}. 
+
+\subsection{Proof of \cref{prop:subg.exist}}
+
+We start with a few general remarks. If $x\in \mR^d$, the set $\{x\}$ is convex and $\relint(\{x\}) = \{x\}$. If $\Omega$ is any convex set such that $x\not\in \relint(\Omega)$, then \cref{th:separation.1} implies that there exist $b\in \mR^d$ and $\beta \in \mR$ such that $b^Ty \geq \beta \geq b^Tx$ for all $y\in \Omega$ (with $b^Ty > b^Tx$ for at least one $y$). If $x$  is in $\Omega\setminus(\relint(\Omega))$ (so that $x$ is a point on the relative boundary of $\Omega$), then, necessarily $b^T x = \beta$ and we can write
+ \[
+ b^T y \geq b^T x 
+ \]
+ for all $y\in \Omega$ with a strict inequality for some $y\in \Omega$. One says that $b$ and $\beta$ provide a {\em supporting hyperplane} for $\Omega$ at $x$.
+ 
+ Now, if $F$ is a convex function, with
+ \[
+ \epi(F) = \{(y,a)\in \mR^d\times \mR: F(y) \leq a\}
+ \]
+ then 
+ \[
+ \relint(\epi(F)) = \{(y,a)\in \rdom(F) \times \mR: F(y) < a\}
+ \]
+ (this simple fact is proved in \cref{lem:relint.epi} below). In particular, if $x\in \dom(F)$, then $(x, F(x))$ must be in the relative boundary of $\epi(F)$. This implies that there exists $(b, b_0)\neq(0,0) \in \mR^d \times \mR$ such that, for all $(y, a) \in \epi(F)$:
+ \[
+ b^T y + b_0 a \geq b^T x + b_0 F(x)\,.
+ \] 
+
+If one assumes that $x\in \rdom(F)$, then, necessarily, $b_0\neq 0$. To show this, assume otherwise, so that $b^T y \geq b^T x$ for all $y\in \dom(F)$, with $b\neq 0$. We get a contradiction using the fact that, for some $\epsilon>0$, $[y, x - \epsilon(y-x)]$ belongs to $\dom(\Om)$, because $b^T(y-x)$ cannot have a constant sign on this segment.
+
+So $b_0\neq 0$ and necessarily $b_0>0$ to ensure that $b^Ty + b_0 a$ is bounded from below for all $a\geq F(y)$. Without loss of generality, we can assume $b_0=1$ and we get, for all $y\in \dom(F)$
+\[
+F(y) + b^T y \geq F(x) + b^T x
+\]
+which shows that $-b \in \prt F(x)$, justifying the fact that $\prt F(x)\neq \emptyset$ for $x\in \rdom(F)$.
+
+We now state and prove the result announced above on the relative interior of the epigraph of a convex function.
+ \begin{lemma}
+ \label{lem:relint.epi}
+Let $F$ be a convex function with epigraph
+\[
+\epi(F) = \{(y,a): y\in \dom(F), F(y) \leq a\}.
+\]
+Then
+\[
+\relint(\epi(G)) = \{(y,a): y\in \rdom(F), F(y) < a\}.
+\]
+\end{lemma}
+\begin{proof}
+Let $\Gamma = \{(y,a): y\in \rdom(F), F(y) < a\}$. Assume that $(y,a) \in \relint(\epi(F))$. Then $(y,b) \in \epi(F)$ for all $b>a$ and there exists $\ep>0$ such that $(y,a) - \ep ((y,b) - (y,a)) \in \epi(F)$ which  requires that $F(y) \leq a - \epsilon(b-1) < a$. Now, take $x\in \dom(F)$. Then, $(x,F(x))\in \epi(\dom(F))$ and $(y, a) - \ep ((x, F(x)) - (y,a)) \in \epi(F)$ for small enough $\epsilon$, showing that $F(y - \epsilon(x-y)) \leq (1+\epsilon) a -\epsilon F(x)$ and $y - \epsilon(x-y) \in\dom(F)$. This proves that $y\in \rdom(F)$ and the fact that $\relint(\epi(F)) \subset \Gamma$.    
+
+Take $(y,a) \in \Gamma$, and $(x,b) \in \epi(F)$. We need to show that $(y - \ep(x-y), a - \ep(b-a))\in \epi(F)$ for small enough $\epsilon$, i.e., that
+\[
+F(y - \ep(x-y)) \leq a - \epsilon(b-a)
+\]
+for small enough $\epsilon$. But this is an immediate consequence of the facts that $F$ is continuous at $y\in\rdom(G)$ and $F(y) < a$.
+\end{proof}
+
+\subsection{Proof of \cref{th:subg.sum}}
+Assume that there exists $\bar x\in \rdom(F_1) \cap \rdom(F_2)$. Take $x\in \dom(F_1) \cap \dom(F_2)$ and $g \in \prt (F_1+F_2)(x)$. We want to show that $g = g_1 + g_2$ with $g_1\in \prt F_1(x)$ and $g_2\in \prt F_2(x)$. 
+
+By definition, we have
+\[
+F_1(y) + F_2(y) \geq F_1(x) + F_2(x) + g^T(y-x)
+\]
+for all $y$. 
+We want to decompose $g$ as $g = g_1 + g_2$ with $g_1\in \prt F_1(x)$ and $g_2\in \prt F_2(x)$. Equivalently, we want to find $g_2\in \mR^d$ such that, for all $y\in \mR^d$,
+\begin{align*}
+F_1(y)& \geq F_1(x) + (g-g_2)^T(y-x)\\
+F_2(y)& \geq F_2(x) + g_2^T(y-x)
+\end{align*}
+First note that we can replace $F_1$ by $y \mapsto F_1(y) - F_1(x) - g^T (y-x)$ and $F_2$ by $y\mapsto F_2(y) - F_2(x)$ and assume with loss of generality that $F_1(x) = F_2(x) = 0$ and $g=0$. Making this assumption, we need to find $g_2$ such that
+\begin{align*}
+F_1(y)& \geq -g_2^T(y-x)\\
+F_2(y)& \geq  g_2^T(y-x)
+\end{align*}
+for all $y\in\mR^d$ and some $g_2\in \mR^d$, under the assumption that $F_1(y) + F_2(y)\geq 0$ for all $y$.
+Introduce the two convex sets in $\mR^d\times \mR$
+\begin{align*}
+\Omega_1 & =\epi(F_1) = \{(y, a) \in \mR^d\times \mR: F_1(y)  \leq a\}
+\\
+\Omega_2 &= \{(y, a) \in \mR^d\times \mR:  F_2(y) \leq -a\}\,.
+\end{align*}
+The set $\Omega_2$ is the image of $\epi(F_2)$ by the transformation $(y,a) \mapsto (y, -a)$. 
+We have
+\begin{align*}
+\relint(\Omega_1) & =\epi(F_1) = \{(y, a) \in \rdom(F_1) \times \mR: F_1(y)  < a\}
+\\
+\relint(\Omega_2) &= \{(y, a) \in \rdom(F_2) \times \mR:  F_2(y) < -a\}\,.
+\end{align*}
+Since $F_1+F_2 \geq 0$, $\Omega_1$ and $\Omega_2$ have non-intersecting relative interiors. 
+We can apply the first separation theorem, providing  $\bar b = (b, b_0) \in \mR^d \times \mR$ and $\beta\in \mR$ such that $\bar b \neq (0,0)$, 
+$b^Ty + b_0a - \beta \leq 0$ for $(y, a)\in \Omega_1$ and $b^Ty + b_0a - \beta \geq 0$ for $(y,b) \in \Omega_2$, with a strict inequality for at least one point in $\Omega_1\cup \Omega_2$. We therefore obtain the fact that, for all $y$ and $a$,
+\begin{align*}
+F_1(y)  \leq a \Rightarrow b^Ty + b_0 a -\beta \leq 0 \\
+F_2(y)  \leq -a \Rightarrow b^Ty + b_0 a -\beta \geq 0.
+\end{align*}
+We claim that  $b_0 \neq 0$. Indeed, if $b_0=0$, the statement for $F_1$ would imply  that $b^T y -\beta \leq 0$ for all $y\in \dom(F_1)$ and the one on $F_2$ that $b^Ty - \beta \geq 0$ for $y\in \dom(F_2)$.  The point $\bar x \in \relint(\Omega_1) \cap \relint(\Omega_2)$ should then satisfy $b^T \bar x -\beta = 0$. We know that there exists a point $y\in \Omega_1 \cup \Omega_2$ such that $b^T y\neq \beta$. Assume that $y\in \Omega_1$, so that $b^T y -\beta < 0$ and take $\epsilon >0$ such that $\tilde y = \bar{x} - \epsilon(y-\bar x) \in \Omega_1$. Then 
+\[
+b^T \tilde y - \beta  = - \epsilon (b^T y - \beta) < 0,
+\]
+which is a contradiction. A similar contradiction is obtained when $y$ belongs to $\Omega_2$, yielding the fact that $b_0$ cannot vanish.
+
+Moreover, we clearly need $b_0<0$ to ensure that $b^Ty + b_0 a -\beta \leq 0$ for all large enough $a$ if $y\in \dom(\Omega_1)$. There is then no loss of generality in assuming $b_0 = -1$ and we get 
+\begin{align*}
+F_1(y)  \leq a \Rightarrow b^Ty -\beta \leq a \\
+F_2(y) \leq -a \Rightarrow b^Ty -\beta \geq a,
+\end{align*}
+which is equivalent to 
+\[
+ - F_2(y) \leq b^Ty -\beta \leq F_1(y)
+\]
+Taking $y=x$ gives $\beta = b^T x$ and we get the desired inequality with $g_2 = -b$.
+
+%To conclude the proof, we return to the statement on the $\relint(\Omega_1)$, which, noting that $\Omega_1$ is the epigraph of $G_1: y \mapsto F_1(y) - F_1(x) - g^T(y-x)$, follows from the next lemma.
+
+\subsection{Proof of \cref{th:subg.affine}}
+Let $\bar x\in \mR^m$ such that $A\bar x\in \rdom(F)$. 
+We need to prove that $\prt G(x) \subset A^T \prt F(Ax+b)$ when $G(x) = F(Ax+b)$. We assume in the following that $b=0$, since the theorem with $G(x) = F(x+b)$ is obvious.
+If $g\in \prt G(x)$, we have
+\[
+F(Ay) \geq F(Ax) + g^T(y-x)
+\]
+for all $y\in \mR^m$. We want to show that there exists $h\in \mR^d$ such that $g = A^T h$ and, for all $z\in \mR^d$,
+\[
+F(z) \geq F(Ax) + h^T(z- Ax) = F(Ax) + h^T z - g^T x.
+\]
+
+Let $\Omega_1 = \epi(F) = \{(z,a): , z\in \mR^d, F(z) \leq a\}$ and
+\[
+\Omega_2 = \{(Ay, a): y\in \mR^m, a = g^T(y-x) + G(x)\}\subset \mR^d \times \mR.
+\]
+Note that $\Omega_2$ is an affine space with $\relint(\Omega_2) = \Omega_2$.
+If $(z, a) \in \relint(\Omega_1)\cap \Omega_2$, then $z = Ay$ for some $y\in \mR^m$ and $g^T(y-x) + G(x) > F(z) = G(y)$. This contradicts the fact that $g\in \prt G(x)$ and shows that  $\relint(\Omega_1) \cap \Omega_2 = \emptyset$. As a consequence, there exist $(b,b_0)\neq (0,0)$ and $\beta$ such that 
+\begin{align*}
+F(z) \leq a \Rightarrow b^T z + b_0 a\leq \beta\\
+z=Ay, a = g^T(y-x) + G(x) \Rightarrow b^T z + b_0 a\geq \beta
+\end{align*}
+Assume, to get a contradiction, that $b_0 = 0$ (so that $b\neq 0$). Then $b^T Ay \geq \beta$ for all $y$, which is only possible if $b$ is perpendicular to the range of $A$ and $\beta\leq 0$. On the other hand, $F(A\bar x) <\infty$ implies that $0 = b^T A\bar x + b_0 F(A\bar x) \leq \beta$, so that $\beta = 0$. Furthermore, we know that one of the inequalities above has to be strict for at least one element of $\Omega_1\cup\Omega_2$, but this cannot be true on $\Omega_2$, so there exists $z\in \dom(F)$ such that $b^T z < 0$. Since $b^TA\bar x = 0$ and $A\bar x\in \rdom(F)$, we have $A\bar x - \epsilon(z - A\bar x) \in \dom(F)$, so that $b^T(-\epsilon z) \leq 0$, yielding a contradiction.
+
+So, we need $b_0\neq 0$, and the first pair of inequalities clearly requires $b_0<0$, so that we can take $b_0 = -1$. This shows that 
+\[
+b^Tz - \beta \leq F(z)
+\]
+for all $z$ and
+\[
+b^T Ay - \beta \geq g^T(y-x) + F(Ax)
+\]
+for all $y$. Taking $y=x$, $z=Ax$, we find that $\beta = b^TAx - F(Ax)$ yielding
+\[
+F(z) - F(Ax) \geq b^T(z-x) 
+\]
+for all $z$ and $b^TA (y - x) \geq g^T (y-x)$ for all $y$. This last inequality implies that $g = A^Tb$ and the first one that $b\in \prt F(Ax)$, therefore concluding the proof. 
