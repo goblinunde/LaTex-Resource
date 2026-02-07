@@ -1,0 +1,24 @@
+% file: westernfonts.tex
+
+\newcommand{\nndlMono}{Source Code Pro}
+\IfFontExistsTF{Source Code Pro}{}{%
+  \renewcommand{\nndlMono}{Latin Modern Mono}%
+}
+\newcommand{\nndlSerif}{Source Serif Pro}
+\IfFontExistsTF{Source Serif Pro}{}{%
+  \renewcommand{\nndlSerif}{Latin Modern Roman}%
+}
+
+\newfontfamily\SourceCodePro{\nndlMono}[
+  AutoFakeSlant=true,
+  AutoFakeBold=true]
+
+\newfontfamily\SourceSerifPro{\nndlSerif}[
+  AutoFakeSlant=true,
+  AutoFakeBold=true]
+
+\newcommand{\serif}[0]{\SourceSerifPro}
+ 
+\setmonofont{\nndlMono}[
+  AutoFakeSlant=true,
+  AutoFakeBold=true]

@@ -1,0 +1,29 @@
+% file: fonts.tex
+
+% font scheme & title style from entry file
+\providecommand{\nndlFontScheme}{auto}
+\providecommand{\nndlTitleStyle}{classic}
+
+\def\nndlFontSchemeAuto{auto}
+\def\nndlFontSchemeNoto{noto}
+\def\nndlFontSchemeFandol{fandol}
+\def\nndlFontSchemeWestern{western}
+
+\newif\ifnndlUseCJK
+\nndlUseCJKtrue
+\ifx\nndlFontScheme\nndlFontSchemeWestern
+  \nndlUseCJKfalse
+\fi
+
+% load cjkfonts and set Source Han Sans SC as the default CJK fonts:
+\ifnndlUseCJK
+  \ifx\nndlFontScheme\nndlFontSchemeFandol
+    \def\nndlCJKForce{fandol}
+  \fi
+  \ifx\nndlFontScheme\nndlFontSchemeNoto
+    \def\nndlCJKForce{noto}
+  \fi
+  \usepackage[default]{cjkfonts}
+\else
+  \typeout{nndl: CJK fonts disabled (western-only build).}
+\fi

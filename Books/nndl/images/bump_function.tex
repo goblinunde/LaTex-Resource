@@ -1,0 +1,17 @@
+%!TEX TS-program = xelatex
+%!TEX encoding = UTF-8 Unicode
+
+\documentclass[11pt,tikz,border=1]{standalone}
+\usetikzlibrary{calc,positioning}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\pgfplotsset{compat/show suggested version=false}
+
+\usepackage{cjkfonts}
+\input{../plots}
+
+\begin{document}
+
+  \manipulateTwoHNNetwork{0.40}{0.8}{0.60}{-0.8}
+
+\end{document}

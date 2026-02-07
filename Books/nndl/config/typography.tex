@@ -1,0 +1,66 @@
+% file: typography.tex
+
+\usepackage{titlesec}
+
+\def\nndlTitleStyleClassic{classic}
+\def\nndlTitleStyleDual{dual}
+
+\ifx\nndlTitleStyle\nndlTitleStyleDual
+  \titleformat{\chapter}[display]
+    {\bfseries\huge}%
+    {\huge 第 \thechapter{} 章\\\large Chapter \thechapter}%
+    {8 pt}%
+    {\bfseries\huge}%
+\else
+  \titleformat{\chapter}[display]
+    {\bfseries\huge}%
+    {\huge 第 \thechapter{} 章}%
+    {10 pt}%
+    {\bfseries\huge}%
+\fi
+
+\titleformat{\section}
+  {\bfseries\Large}%
+  {\thesection}%
+  {0.6em}%
+  {}%
+
+\titleformat{\subsection}
+  {\bfseries\large}%
+  {\thesubsection}%
+  {0.6em}%
+  {}%
+
+\titleformat{\subsubsection}
+  {\bfseries\normalsize}%
+  {\thesubsubsection}%
+  {0.6em}%
+  {}%
+
+\titleformat{\paragraph}
+  {\bfseries\normalsize}%
+  {\theparagraph}%
+  {0.6em}%
+  {}%
+
+\titlespacing*{\chapter}{0pt}{0pt}{18pt}
+\titlespacing*{\section}{0pt}{12pt}{8pt}
+\titlespacing*{\subsection}{0pt}{10pt}{6pt}
+\titlespacing*{\subsubsection}{0pt}{8pt}{6pt}
+\titlespacing*{\paragraph}{0pt}{6pt}{6pt}
+
+% Better line breaking for CJK text
+\ifnndlUseCJK
+  \XeTeXlinebreaklocale "zh"
+  \XeTeXlinebreakskip = 0pt plus 1pt
+\fi
+
+\renewcommand{\contentsname}{目录}
+\renewcommand{\indexname}{索引}
+
+% Redefine \emph to be both bold and italic, better in chinese document
+% \let\emph\relax
+%\DeclareTextFontCommand{\emph}{\bfseries\em} % bold and italic
+% \DeclareTextFontCommand{\emph}{\bfseries} % just bold
+
+\usepackage{indentfirst}

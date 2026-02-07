@@ -1,0 +1,16 @@
+%!TEX TS-program = xelatex
+%!TEX encoding = UTF-8 Unicode
+
+\documentclass[11pt,tikz,border=1]{standalone}
+\usetikzlibrary{calc,positioning}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\pgfplotsset{compat/show suggested version=false}
+
+\usepackage{cjkfonts}
+
+\input{../plots}
+
+\begin{document}
+  \manipulateBumpFunction{0.4}{0.6}{0.6}
+\end{document}

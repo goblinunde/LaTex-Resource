@@ -1,0 +1,18 @@
+%!TEX TS-program = xelatex
+%!TEX encoding = UTF-8 Unicode
+
+\documentclass[11pt,tikz,border=1]{standalone}
+\usetikzlibrary{calc,positioning}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\pgfplotsset{compat/show suggested version=false}
+
+\usepackage{cjkfonts}
+
+\input{../plots}
+
+\begin{document}
+
+  \manipulateFiveBumps{-0.3}{-1.3}{-0.5}{1.3}{-0.2}
+
+\end{document}

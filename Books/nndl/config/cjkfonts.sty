@@ -1,0 +1,202 @@
+% cjkfonts.sty
+%
+% A XeLaTeX package for typesetting CJK documents.
+%
+% Options:
+%   default: boolean option, cjkfonts is set as the default font family and as the sans serif family for CJK text.
+
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{cjkfonts}[2015/12/12 A simple XeLaTeX package to set CJK fonts]
+
+\RequirePackage{ifthen}
+\RequirePackage{xeCJK}
+\RequirePackage{fontspec}
+\RequirePackage{kvoptions}
+
+\DeclareBoolOption[false]{default}
+\ProcessKeyvalOptions*
+
+%% Configuration for parindent
+%% ===========================
+\def\elegant@CJKChar@size{\hskip \f@size \p@}
+\newdimen\elegant@CJKChar@size@dimen
+\settowidth\elegant@CJKChar@size@dimen{\elegant@CJKChar@size\CJKglue}
+\setlength{\parindent}{2\elegant@CJKChar@size@dimen}
+
+%% Configuration for fonts
+%% =======================
+
+% Optional scheme override from entry file
+\providecommand{\nndlCJKForce}{}
+\def\nndlCJKForceFandol{fandol}
+\def\nndlCJKForceNoto{noto}
+
+\newif\ifnndlCJKUseFile
+\ifx\nndlCJKForce\nndlCJKForceFandol
+  \nndlCJKUseFilefalse
+\else
+  \IfFileExists{/usr/share/fonts/google-noto-sans-cjk-fonts/NotoSansCJK-Regular.ttc}{%
+    \nndlCJKUseFiletrue
+  }{%
+    \nndlCJKUseFilefalse
+  }
+\fi
+
+\ifnndlCJKUseFile
+  % Use system Noto CJK TTC fonts with explicit FontIndex for SC.
+  \newcommand{\nndlCJKSansPath}{/usr/share/fonts/google-noto-sans-cjk-fonts/}
+  \newcommand{\nndlCJKSerifPath}{/usr/share/fonts/google-noto-serif-cjk-fonts/}
+  \newcommand{\nndlCJKSCIndex}{2}
+  \newcommand{\nndlCJKMonoIndex}{7}
+
+  \newCJKfontfamily[NotoSansSC]\NotoSansSC{NotoSansCJK-Regular.ttc}[
+    Path=\nndlCJKSansPath,
+    FontIndex=\nndlCJKSCIndex,
+    BoldFont=NotoSansCJK-Bold.ttc,
+    BoldFeatures={FontIndex=\nndlCJKSCIndex},
+    ItalicFeatures=FakeSlant,
+    BoldItalicFeatures=FakeSlant]
+
+  \newCJKfontfamily[NotoSansMonoSC]\NotoSansMonoSC{NotoSansCJK-Regular.ttc}[
+    Path=\nndlCJKSansPath,
+    FontIndex=\nndlCJKMonoIndex,
+    BoldFont=NotoSansCJK-Bold.ttc,
+    BoldFeatures={FontIndex=\nndlCJKMonoIndex},
+    ItalicFeatures=FakeSlant,
+    BoldItalicFeatures=FakeSlant]
+
+  \newCJKfontfamily[NotoSansSCBold]\NotoSansSCBold{NotoSansCJK-Regular.ttc}[
+    Path=\nndlCJKSansPath,
+    FontIndex=\nndlCJKSCIndex,
+    BoldFont=NotoSansCJK-Bold.ttc,
+    BoldFeatures={FontIndex=\nndlCJKSCIndex},
+    AutoFakeSlant=true]
+
+  \newCJKfontfamily[NotoSerifSC]\NotoSerifSC{NotoSerifCJK-Regular.ttc}[
+    Path=\nndlCJKSerifPath,
+    FontIndex=\nndlCJKSCIndex,
+    BoldFont=NotoSerifCJK-Bold.ttc,
+    BoldFeatures={FontIndex=\nndlCJKSCIndex},
+    ItalicFeatures=FakeSlant,
+    BoldItalicFeatures=FakeSlant]
+
+  \newCJKfontfamily[NotoSerifSCBold]\NotoSerifSCBold{NotoSerifCJK-Regular.ttc}[
+    Path=\nndlCJKSerifPath,
+    FontIndex=\nndlCJKSCIndex,
+    BoldFont=NotoSerifCJK-Bold.ttc,
+    BoldFeatures={FontIndex=\nndlCJKSCIndex},
+    AutoFakeSlant=true]
+
+  \ifthenelse{\boolean{cjkfonts@default}}{
+    \setCJKmainfont{NotoSerifCJK-Regular.ttc}[
+      Path=\nndlCJKSerifPath,
+      FontIndex=\nndlCJKSCIndex,
+      BoldFont=NotoSerifCJK-Bold.ttc,
+      BoldFeatures={FontIndex=\nndlCJKSCIndex},
+      ItalicFeatures=FakeSlant,
+      BoldItalicFeatures=FakeSlant]
+
+    \setCJKsansfont{NotoSansCJK-Regular.ttc}[
+      Path=\nndlCJKSansPath,
+      FontIndex=\nndlCJKSCIndex,
+      BoldFont=NotoSansCJK-Bold.ttc,
+      BoldFeatures={FontIndex=\nndlCJKSCIndex},
+      ItalicFeatures=FakeSlant,
+      BoldItalicFeatures=FakeSlant]
+
+    \setCJKmonofont{NotoSansCJK-Regular.ttc}[
+      Path=\nndlCJKSansPath,
+      FontIndex=\nndlCJKMonoIndex,
+      BoldFont=NotoSansCJK-Bold.ttc,
+      BoldFeatures={FontIndex=\nndlCJKMonoIndex},
+      ItalicFeatures=FakeSlant,
+      BoldItalicFeatures=FakeSlant]
+  }{%
+    % Provide a sensible default to avoid xeCJK warnings in standalone figures.
+    \setCJKmainfont{NotoSerifCJK-Regular.ttc}[
+      Path=\nndlCJKSerifPath,
+      FontIndex=\nndlCJKSCIndex,
+      BoldFont=NotoSerifCJK-Bold.ttc,
+      BoldFeatures={FontIndex=\nndlCJKSCIndex},
+      ItalicFeatures=FakeSlant,
+      BoldItalicFeatures=FakeSlant]
+  }
+\else
+  % Fallback: use installed CJK family names (Noto or Fandol).
+  \newcommand{\nndlCJKSans}{Noto Sans SC}
+  \newcommand{\nndlCJKSerif}{Noto Serif SC}
+  \newcommand{\nndlCJKMono}{Noto Sans Mono CJK SC}
+
+  \ifx\nndlCJKForce\nndlCJKForceFandol
+    \renewcommand{\nndlCJKSans}{FandolHei}
+    \renewcommand{\nndlCJKSerif}{FandolSong}
+    \renewcommand{\nndlCJKMono}{FandolFang}
+  \else
+    \IfFontExistsTF{Noto Sans SC}{}{%
+      \IfFontExistsTF{Noto Sans CJK SC}{%
+        \renewcommand{\nndlCJKSans}{Noto Sans CJK SC}%
+      }{%
+        \renewcommand{\nndlCJKSans}{FandolHei}%
+      }%
+    }
+    \IfFontExistsTF{Noto Serif SC}{}{%
+      \IfFontExistsTF{Noto Serif CJK SC}{%
+        \renewcommand{\nndlCJKSerif}{Noto Serif CJK SC}%
+      }{%
+        \renewcommand{\nndlCJKSerif}{FandolSong}%
+      }%
+    }
+    \IfFontExistsTF{Noto Sans Mono CJK SC}{}{%
+      \IfFontExistsTF{Noto Sans Mono SC}{%
+        \renewcommand{\nndlCJKMono}{Noto Sans Mono SC}%
+      }{%
+        \IfFontExistsTF{FandolFang}{%
+          \renewcommand{\nndlCJKMono}{FandolFang}%
+        }{%
+          \renewcommand{\nndlCJKMono}{\nndlCJKSans}%
+        }%
+      }%
+    }
+  \fi
+
+  \newCJKfontfamily[NotoSansSC]\NotoSansSC[
+    AutoFakeSlant=true,
+    AutoFakeBold=true]{\nndlCJKSans}
+
+  \newCJKfontfamily[NotoSansMonoSC]\NotoSansMonoSC[
+    AutoFakeSlant=true,
+    AutoFakeBold=true]{\nndlCJKMono}
+
+  \newCJKfontfamily[NotoSansSCBold]\NotoSansSCBold[
+    AutoFakeSlant=true,
+    AutoFakeBold=true]{\nndlCJKSans}
+
+  \newCJKfontfamily[NotoSerifSC]\NotoSerifSC[
+    AutoFakeSlant=true,
+    AutoFakeBold=true]{\nndlCJKSerif}
+
+  \newCJKfontfamily[NotoSerifSCBold]\NotoSerifSCBold[
+    AutoFakeSlant=true,
+    AutoFakeBold=true]{\nndlCJKSerif}
+
+  \ifthenelse{\boolean{cjkfonts@default}}{
+    \setCJKmainfont[
+      AutoFakeSlant=true,
+      AutoFakeBold=true]{\nndlCJKSerif}
+
+    \setCJKsansfont[
+      AutoFakeSlant=true,
+      AutoFakeBold=true]{\nndlCJKSans}
+
+    \setCJKmonofont[
+      AutoFakeSlant=true,
+      AutoFakeBold=true]{\nndlCJKMono}
+  }{%
+    % Provide a sensible default to avoid xeCJK warnings in standalone figures.
+    \setCJKmainfont[
+      AutoFakeSlant=true,
+      AutoFakeBold=true]{\nndlCJKSerif}
+  }
+\fi
+
+\endinput

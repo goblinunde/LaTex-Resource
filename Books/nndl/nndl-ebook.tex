@@ -1,0 +1,51 @@
+%!TEX TS-program = xelatex
+%!TEX encoding = UTF-8 Unicode
+
+% -----------------------
+% Build profile switches
+% -----------------------
+\newif\ifnndlprint
+\newif\ifnndldraft
+
+% Uncomment for print-style layout (twoside + openright)
+% \nndlprinttrue
+% Uncomment for draft build (silence layout warnings)
+% \nndldrafttrue
+
+% -----------------------
+% Paper size & margins
+% -----------------------
+% Use a paper option supported by your class/geometry.
+\def\nndlPaper{a4paper}
+% For oneside builds:
+\def\nndlGeometry{margin=2.5cm}
+% For print (twoside) builds:
+% \def\nndlGeometry{inner=3.0cm,outer=2.5cm,top=2.8cm,bottom=2.8cm}
+
+% -----------------------
+% Font scheme & title style
+% -----------------------
+% font scheme: auto | noto | fandol | western
+\def\nndlFontScheme{auto}
+% title style: classic | dual
+\def\nndlTitleStyle{classic}
+
+% Document class options derived from build profile.
+\ifnndlprint
+  \documentclass[11pt,\nndlPaper,twoside,openright]{book}
+\else
+  \documentclass[11pt,\nndlPaper,oneside,openany]{book}
+\fi
+
+\usepackage[\nndlGeometry]{geometry}
+
+% Entry file: keep minimal, but set a few build-specific toggles here.
+\newif\ifnndlclean
+\ifnndldraft
+  \nndlcleantrue
+\fi
+
+\makeatletter
+\def\nndl@main{}
+\makeatother
+\input{main}
